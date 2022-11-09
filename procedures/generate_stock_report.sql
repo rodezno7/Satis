@@ -96,7 +96,7 @@ BEGIN
 		s.*,
 		SUM(vld.qty_available) AS vld_stock
 	FROM stock AS s
-	INNER JOIN variation_location_details AS vld ON s.variation_id = vld.variation_id
+	LEFT JOIN variation_location_details AS vld ON s.variation_id = vld.variation_id
 	WHERE (vld.location_id = v_location_id OR v_location_id = 0)
 		AND (vld.warehouse_id = v_warehouse_id OR v_warehouse_id = 0)
 	GROUP BY s.variation_id;

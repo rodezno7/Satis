@@ -257,7 +257,7 @@
 						{{-- PRECIO UNITARIO --}}
 						<td class="text-right" style="padding-right: 0.2cm">
 							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['unit_price'] }}
+								{{ $line['unit_price_exc'] }}
 							</span>
 						</td>
 
@@ -265,7 +265,7 @@
                         <td class="text-right" style="padding-right: 0.3cm">
 							@if ($receipt_details->is_exempt == 0)
 							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['line_total'] }}
+								{{ $line['line_total_exc_tax'] }}
 							</span>
 							@else
 							&nbsp;

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Business;
 use App\Category;
+use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
-use Yajra\DataTables\Facades\DataTables;
+
 use DB;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -14,6 +17,7 @@ class CategoryController extends Controller
      * All Utils instance.
      */
     protected $transactionUtil;
+    private $productUtil;
 
     /**
      * Constructor
@@ -21,12 +25,16 @@ class CategoryController extends Controller
      * @param \App\Utils\TransactionUtil $transactionUtil
      * @return void
      */
-    public function __construct(TransactionUtil $transactionUtil)
+    public function __construct(TransactionUtil $transactionUtil, ProductUtil $productUtil)
     {
+        $this->productUtil = $productUtil;
         $this->transactionUtil = $transactionUtil;
 
         // Binnacle data
         $this->module_name = 'category';
+
+        /** clone product config */
+        $this->clone_product = config('app.clone_product');
     }
 
     /**
@@ -148,6 +156,8 @@ class CategoryController extends Controller
             $input['business_id'] = $request->session()->get('user.business_id');
             $input['created_by'] = $request->session()->get('user.id');
 
+            DB::beginTransaction();
+
             $category = Category::create($input);
 
             // Store binnacle
@@ -158,20 +168,31 @@ class CategoryController extends Controller
                 $category
             );
 
-            $output = ['success' => true,
-            'data' => $category,
-            'msg' => __("category.added_success")
-        ];
-    } catch (\Exception $e) {
-        \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            /** Clone category */
+            if ($this->clone_product) {
+                $this->productUtil->syncCategory($category->id, $category->name);
+            }
 
-        $output = ['success' => false,
-        'msg' => __("messages.something_went_wrong")
-    ];
-}
+            DB::commit();
 
-return $output;
-}
+            $output = [
+                'success' => true,
+                'data' => $category,
+                'msg' => __("category.added_success")
+            ];
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+
+            $output = ['success' => false,
+                'msg' => __("messages.something_went_wrong")
+            ];
+
+        }
+
+        return $output;
+    }
 
     /**
      * Display the specified resource.
@@ -283,7 +304,10 @@ return $output;
                 $input = $request->only(['name', 'short_code']);
                 $business_id = $request->session()->get('user.business_id');
 
+                DB::beginTransaction();
+
                 $category = Category::where('business_id', $business_id)->findOrFail($id);
+                $name = $category->name;
 
                 // Clone record before action
                 $category_old = clone $category;
@@ -306,20 +330,30 @@ return $output;
                     $category
                 );
 
-                $output = ['success' => true,
-                'msg' => __("category.updated_success")
-            ];
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                /** Sync category */
+                if ($this->clone_product) {
+                    $this->productUtil->syncCategory($category->id, $name);
+                }
 
-            $output = ['success' => false,
-            'msg' => __("messages.something_went_wrong")
-        ];
+                DB::commit();
+
+                $output = [
+                    'success' => true,
+                    'msg' => __("category.updated_success")
+                ];
+            } catch (\Exception $e) {
+                DB::rollback();
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
+            }
+
+            return $output;
+        }
     }
-
-    return $output;
-}
-}
 
     /**
      * Remove the specified resource from storage.
@@ -337,6 +371,8 @@ return $output;
             try {
                 $business_id = request()->session()->get('user.business_id');
 
+                DB::beginTransaction();
+
                 $category = Category::where('business_id', $business_id)->findOrFail($id);
 
                 // Clone record before action
@@ -352,18 +388,29 @@ return $output;
                     $category_old
                 );
 
-                $output = ['success' => true,
-                'msg' => __("category.deleted_success")
-            ];
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-            'msg' => __("messages.something_went_wrong")
-        ];
-    }
+                /** Sync category */
+                if ($this->clone_product) {
+                    $this->productUtil->syncCategory($id, "", $category_old, $this->transactionUtil, $this->module_name);
+                }
 
-    return $output;
-}
-}
+                DB::commit();
+
+                $output = [
+                    'success' => true,
+                    'msg' => __("category.deleted_success")
+                ];
+
+            } catch (\Exception $e) {
+                DB::rollback();
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
+            }
+
+            return $output;
+        }
+    }
 }

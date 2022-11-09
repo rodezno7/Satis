@@ -311,6 +311,7 @@
                             <option value="{{ $account->id }}">{{ $account->code }} {{ $account->name }}=>{{$account->padre->name}}</option>
                             @endforeach
                             <option value="-1">@lang('accounting.close_result_accounts')</option>
+                            <option value="-2">Apertura de Saldos</option>
                         </select>
                         <input type="hidden" name="numeration-mode" id="numeration-mode" value="{{ $business_numeration_entries->entries_numeration_mode }}">
 
@@ -1083,9 +1084,68 @@
                         });
                     });
                 });
-}
-else
-{
+} else if (id == -2) {
+
+    $("#newData tbody tr").remove();
+
+    $("#total_debe").val('');
+    $("#total_haber").val('');
+
+    $("#difference_debit").val('');
+    $("#difference_credit").val('');
+
+    total = 0;
+    cont = 0;
+    id_a.length = 0;
+    valor.length = 0;
+
+    total_debtors = 0.00;
+    total_creditors = 0.00;
+
+    date = $("#date").val();
+
+
+    var route = "/entries/getApertureDebitAccounts/"+date;
+    $.get(route, function(res){
+        $(res).each(function(key,value){
+            if((value.balance != 0.00) && (value.balance != null)) {
+                id_c = value.id;
+                code = value.code;
+                name = value.name;
+                balance = value.balance;
+                total_creditors = parseFloat(total_creditors) + parseFloat(value.balance);
+                id_a.push(id_c);
+                valor.push(cont);
+                var fila='<tr class="selected" id="fila'+cont+'" style="height: 10px"><td style="width: 5%"><button id="bitem'+cont+'" type="button" class="btn btn-warning btn-sm" onclick="eliminar('+cont+', '+id_c+');">X</button></td><td style="width: 15%"><input type="hidden" name="account_id[]" value="'+id_c+'">'+code+'</td><td style="width: 50%">'+name+'</td><td style="width: 15%"><input type="text" name="debe[]" onchange="deshabilitar1('+cont+')" id="debe'+cont+'" value="'+balance+'" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" step="0.01"></td><td style="width: 15%"><input type="text" name="haber[]" onchange="deshabilitar2('+cont+')" id="haber'+cont+'" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" value="0.00" readonly></td></tr><tr id="fila_description'+cont+'"><td colspan="5"><input type="text" name="description_line[]" id="description_line'+cont+'" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" placeholder="{{ __('accounting.description') }}"></td></tr>';
+                $("#lista").append(fila);
+                cont++;
+            }
+        });
+
+        var route = "/entries/getApertureCreditAccounts/"+date;
+        $.get(route, function(res){
+            $(res).each(function(key,value){
+                if((value.balance != 0.00) && (value.balance != null)) {
+                    id_c = value.id;
+                    code = value.code;
+                    name = value.name;
+                    balance = value.balance;
+                    total_debtors = parseFloat(total_debtors) + parseFloat(value.balance);
+                    id_a.push(id_c);
+                    valor.push(cont);
+                    var fila='<tr class="selected" id="fila'+cont+'" style="height: 10px"><td style="width: 5%"><button id="bitem'+cont+'" type="button" class="btn btn-warning btn-sm" onclick="eliminar('+cont+', '+id_c+');">X</button></td><td style="width: 15%"><input type="hidden" name="account_id[]" value="'+id_c+'">'+code+'</td><td style="width: 50%">'+name+'</td><td style="width: 15%"><input type="text" name="debe[]" onchange="deshabilitar1('+cont+')" id="debe'+cont+'" value="0.00" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" readonly></td><td style="width: 15%"><input type="text" name="haber[]" onchange="deshabilitar2('+cont+')" id="haber'+cont+'" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" value="'+balance+'"></td></tr><tr id="fila_description'+cont+'"><td colspan="5"><input type="text" name="description_line[]" id="description_line'+cont+'" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-control" placeholder="{{ __('accounting.description') }}"></td></tr>';
+                    $("#lista").append(fila);
+                    cont++;
+                }
+                $("#button_save").show();
+                $("#pie").show();
+                calcular();
+            });
+        });
+    });
+
+} else {
+
     agregar();
 }
 }

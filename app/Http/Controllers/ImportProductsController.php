@@ -743,6 +743,9 @@ class ImportProductsController extends Controller
                                 $this->addOpeningStockForVariable($variation_data, $product, $business_id);
                             }
                         }
+
+                        /** sync product */
+                        $this->productUtil->syncProduct($product->id, $product->sku);
                     }
                 }
             }
@@ -2064,6 +2067,9 @@ class ImportProductsController extends Controller
                             $this->addOpeningStock($opening_stock, $product, $business_id);
                         }
                     }
+
+                    /** sync product */
+                    $this->productUtil->syncProduct($product->id, $product->sku, "store");
                 }
             }
 
@@ -2844,7 +2850,7 @@ class ImportProductsController extends Controller
             
             // Check exist
             $sub_category = Category::where('business_id', $business_id)
-                ->whereRaw('UPPER(name) = UPPER(?)', [$row['sub_category']])
+                ->whereRaw('UPPER(name) = UPPER(?)', [$row['subcategory']])
                 ->where('parent_id', '>', 0)
                 ->first();
 
@@ -3503,7 +3509,7 @@ class ImportProductsController extends Controller
                         $purchase_price = is_null($data['default_purchase_price']) ? $update_variation->default_purchase_price : $data['default_purchase_price'];
 
                         // Calculate sell price
-                        $sell_price = is_null($data['sales_price']) ? ($data['tax_type'] == 'exclusive' ? $update_variation->default_purchase_price : $update_variation->dpp_inc_tax) : $data['sales_price'];
+                        $sell_price = is_null($data['sales_price']) ? ($data['tax_type'] == 'exclusive' ? $update_variation->default_sell_price : $update_variation->sell_price_inc_tax) : $data['sales_price'];
 
                         // Calculate product prices
                         $product_prices = $this->calculateVariationPrices($purchase_price, 0, $sell_price, $tax_amount, $data['tax_type'], $profit_margin);

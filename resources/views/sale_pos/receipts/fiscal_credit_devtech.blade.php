@@ -138,19 +138,29 @@
 	@if ($receipt_details->discount_amount > 0)
     
 	div#details {
-        height: 10.3cm;
+        height: 8.5cm;
+    }
+
+    div#reference {
+        position: relative;
+        height: 2.1cm;
+    }
+
+    div#reference-text {
+        position: absolute;
+        left: 1.9cm;
+        top: 0.1cm;
     }
 
 	div#extra-details {
         position: relative;
-        height: 0.8cm;
+        height: 0.5cm;
     }
 
 	div#extra-details #discount-text {
         position: absolute;
         left: 14.5cm;
         top: 0.1cm;
-        width: ;
     }
 
 	div#extra-details #discount-amount {
@@ -164,7 +174,18 @@
 	@else
 
 	div#details {
-        height: 11.1cm;
+        height: 9.0cm;
+    }
+
+    div#reference {
+        position: relative;
+        height: 2.1cm;
+    }
+
+    div#reference-text {
+        position: absolute;
+        left: 1.9cm;
+        top: 0.1cm;
     }
 	
     @endif
@@ -367,7 +388,7 @@
 
             {{-- NIT --}}
             <div id="nit" class="cutter">
-                {{ $receipt_details->customer_nit }}
+                {{ $receipt_details->customer_dui }}
             </div>
 
             {{-- GIRO --}}
@@ -477,6 +498,16 @@
 				</tbody>
 			</table>
 		</div>
+
+        <div id="reference">
+            <div id="reference-text">
+                Referencia <br>
+                Usuario Final LIC CSP ABRIL <br>
+                Puede hacer depósito a las siguientes cuentas: <br>
+                Banco Cuscatlán: 043303000005969 <br>
+                Banco de América Central: 201073350 <br>
+            </div>
+        </div>
 
 		@if ($receipt_details->discount_amount > 0)
 		<div id="extra-details">

@@ -59,6 +59,7 @@
             <tr>
                 <th>{{ mb_strtoupper(__('customer.customer')) }}</th>
                 <th>{{ mb_strtoupper(__('customer.seller')) }}</th>
+                <th style="width: 5%;">{{ mb_strtoupper(__('document_type.doc')) }}</th>
                 @foreach ($products as $p)
                     <th style="width: 7%;"><span class="text-vertical">{{ mb_strtoupper( $p->product_name) }}</span></th>
                 @endforeach
@@ -80,9 +81,13 @@
                 <tr>
                     <td>{{ $dp->customer_name }}</td>
                     <td>{{ $dp->seller_name }}</td>
+                    <td>{{ $dp->doc }}</td>
                     @foreach ($products as $p)
                         @php
-                            $qty = $dispatched_products->where('customer_id', $dp->customer_id)->sum('product_'. $p->variation_id);
+                            $qty = $dispatched_products->where('customer_id', $dp->customer_id)
+                                ->where('transaction_id', $dp->transaction_id)
+                                ->sum('product_'. $p->variation_id);
+                                
                             $total['product_'. $p->variation_id] += $qty;
                         @endphp
                         <td class="text-right">{{ $qty > 0 ? number_format($qty, 1) : "" }}</td>
@@ -98,7 +103,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2">{{ mb_strtoupper(__('report.grand_total')) }}</td>
+                <td colspan="3">{{ mb_strtoupper(__('report.grand_total')) }}</td>
                 @foreach ($products as $p)
                     <td class="text-right">{{ number_format($total['product_'. $p->variation_id], 1) }}</td>
                 @endforeach

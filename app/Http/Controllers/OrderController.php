@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Excel;
+use App\User;
 use App\City;
 use DateTime;
 use App\Order;
@@ -15,11 +16,11 @@ use App\Customer;
 use App\Employees;
 use App\QuoteLine;
 use App\Warehouse;
+use App\Variation;
+use App\DocumentType;
 use App\BusinessLocation;
 use App\CustomerVehicle;
 use App\VariationGroupPrice;
-
-use App\DocumentType;
 
 use App\Utils\TaxUtil;
 use App\SellingPriceGroup;
@@ -29,7 +30,6 @@ use App\TransactionSellLine;
 use Illuminate\Http\Request;
 use App\Utils\TransactionUtil;
 use App\Exports\OrderTransactionExport;
-use App\Variation;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -77,8 +77,12 @@ class OrderController extends Controller
 
         $business_id = request()->session()->get("user.business_id");
         if(request()->ajax()){
+            $start_date = request()->input('start_date');
+            $end_date = request()->input('end_date');
+
             $orders = Quote::join("employees", "quotes.employee_id", "employees.id")
                 ->leftJoin("transactions", "quotes.transaction_id", "transactions.id")
+                ->whereRaw('DATE(quotes.quote_date) BETWEEN ? AND ?', [$start_date, $end_date])
                 ->where("quotes.business_id", $business_id)
                 ->where("quotes.type", "order")
                 ->select(
@@ -130,7 +134,7 @@ class OrderController extends Controller
                     $query->whereRaw('CONCAT(employees.first_name, " ", employees.last_name) LIKE ?', ['{$keyword}']);
                 })
                 ->editColumn('invoiced', '{{ __("messages.".$invoiced) }}')
-                ->editColumn('final_total', '<span class="display_currency" data-currency_symbol="true">$ {{ $final_total ? $final_total : 0 }}</span>')
+                ->editColumn('final_total', '<span class="display_currency" data-currency_symbol="true" data-precision="2">$ {{ $final_total ? $final_total : 0 }}</span>')
                 ->editColumn('delivery_type', '{{ __("order.".$delivery_type) }}')
                 ->editColumn('quote_date', '{{ @format_date($quote_date) }}')
                 ->removeColumn('id')
@@ -859,12 +863,17 @@ class OrderController extends Controller
             $product_settings = empty($business->product_settings) ? null : json_decode($business->product_settings, true);
             $decimals_in_sales = $product_settings['decimals_in_sales'];
 
+            // Check if user is admin
+            $user = User::find(request()->user()->id);
+            $is_admin = $user->hasRole('Super Admin#' . $business_id);
+
             return view('sale_pos.product_row')
                 ->with(compact(
                     'product',
                     'row_count',
                     'enabled_modules',
                     'pos_settings',
+                    'is_admin',
                     'check_qty_available',
                     'decimals_in_sales'
                 ))

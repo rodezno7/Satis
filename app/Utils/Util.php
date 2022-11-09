@@ -108,7 +108,11 @@ class Util
     public function get_percent($base, $number)
     {
         $diff = $number - $base;
-        return ($diff / $base) * 100;
+        if ($base <= 0) {
+            return 0;
+        } else {
+            return ($diff / $base) * 100;
+        }
     }
 
     //Returns all avilable purchase statuses
@@ -154,6 +158,7 @@ class Util
             "referral_note" => __("document_type.referral_note"),
             "fiscal_credit_return" => __("document_type.fiscal_credit_return"),
             "excluded_subject" => __("document_type.excluded_subject"),
+            "commercial_invoice" => __("document_type.commercial_invoice"),
         ];
 
         return $print_formats;

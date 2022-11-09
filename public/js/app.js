@@ -1549,14 +1549,21 @@ $(document).ready(function() {
                 d.end_date = $('input#expense_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
             }
         },
-        columnDefs: [{
-            "targets": [6, 7],
-            "orderable": false,
-            "searchable": false
-        }],
+        columnDefs: [
+            {
+                "targets": [6, 7],
+                "orderable": false,
+                "searchable": false
+            },
+            {
+                "targets": 'hide-column',
+                "visible": false
+            },
+        ],
         columns: [
         { data: 'transaction_date', name: 'transaction_date' },
         { data: 'location_name', name: 'bl.name' },
+        { data: 'supplier', name: 'contacts.name' },
         { data: 'category', name: 'ec.name' },
         { data: 'short_name', name: 'document_types.short_name'},
         { data: 'ref_no', name: 'ref_no' },

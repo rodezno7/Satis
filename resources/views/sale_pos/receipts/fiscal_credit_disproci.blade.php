@@ -249,7 +249,7 @@
 
             {{-- CONDICIONES DE PAGO --}}
             <div class="payment-condition cutter">
-                {{ __('messages.' . $receipt_details->payment_condition) }}
+                CONTADO
             </div>
 		</div>
 

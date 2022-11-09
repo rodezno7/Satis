@@ -27,6 +27,7 @@
                     <a href="#" class="list-group-item text-center">@lang('business.product')</a>
                     <a href="#" class="list-group-item text-center">@lang('business.sale')</a>
                     <a href="#" class="list-group-item text-center">@lang('purchase.purchases')</a>
+                    <a href="#" class="list-group-item text-center">@lang('expense.expenses')</a>
                     <a href="#" class="list-group-item text-center">@lang('lang_v1.stock_transfers')</a>
                     @if(!config('constants.disable_expiry', true))
                     <a href="#" class="list-group-item text-center">@lang('business.dashboard')</a>
@@ -57,6 +58,7 @@
                 <!-- tab 5 start -->
                 @include('business.partials.settings_purchase')
                 <!-- tab 5 end -->
+                @include('business.partials.settings_expense')
                 <!-- tab 6 start -->
                 @include('business.partials.settings_stock_transfer')
                 <!-- tab 6 end -->

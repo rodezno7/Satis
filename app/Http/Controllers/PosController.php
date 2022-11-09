@@ -20,10 +20,13 @@ class PosController extends Controller
             abort(403, 'Unauthorized action.');
         }
         if (request()->ajax()) {
+            $business_id = auth()->user()->business_id;
+
             $pos = Pos::join('bank_accounts as ba', 'pos.bank_account_id', 'ba.id',)
                 ->join('business', 'business.id', '=', 'pos.business_id')
                 ->leftJoin('employees', 'employees.id', '=', 'pos.employee_id')
                 ->join('business_locations as bl', 'bl.id', '=', 'pos.location_id')
+                ->where('pos.business_id', $business_id)
                 ->select([
                     'pos.id',
                     'pos.name',

@@ -35,23 +35,27 @@ class FiscalYearController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         $validateData = $request->validate(
             [
-                'year' => 'required|unique:fiscal_years',
+                'year' => 'required',
             ],
             [
                 'year.required' => __('accounting.year_required'),
-                'year.unique' => __('accounting.year_unique'),
             ]
         );
-        if($request->ajax())
-        {
-            $year = FiscalYear::create($request->all());
+
+        if($request->ajax()) {
+
+            $data = $request->all();
+            $data['business_id'] = request()->session()->get('user.business_id');
+
+            $year = FiscalYear::create($data);
             return response()->json([
                 "msj" => 'Created'
             ]);
+
         }
     }
 
@@ -88,11 +92,10 @@ class FiscalYearController extends Controller
     {
         $validateData = $request->validate(
             [
-                'year' => 'required|unique:fiscal_years,year,'.$fiscalYear->id,
+                'year' => 'required',
             ],
             [
                 'year.required' => __('accounting.year_required'),
-                'year.unique' => __('accounting.year_unique'),
             ]
         );
         if($request->ajax())
@@ -141,15 +144,25 @@ class FiscalYearController extends Controller
         }
     }
 
-    public function getFiscalYearsData()
-    {
-        $years = FiscalYear::select('id', 'year')->get();
+    public function getFiscalYearsData() {
+
+        $business_id = request()->session()->get('user.business_id');
+
+        $years = FiscalYear::select('id', 'year')
+        ->where('business_id', $business_id)
+        ->get();
+
         return DataTables::of($years)->toJson();
     }
 
-    public function getYears()
-    {
-        $years = FiscalYear::select('id', 'year')->get();
+    public function getYears() {
+
+        $business_id = request()->session()->get('user.business_id');
+
+        $years = FiscalYear::select('id', 'year')
+        ->where('business_id', $business_id)
+        ->get();
+
         return response()->json($years);
     }
 }

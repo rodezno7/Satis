@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 use DataTables;
 use DB;
 
-class AccountingPeriodController extends Controller
-{
+class AccountingPeriodController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
+
         //
     }
 
@@ -25,8 +25,8 @@ class AccountingPeriodController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
+
         //
     }
 
@@ -36,27 +36,31 @@ class AccountingPeriodController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         $validateData = $request->validate(
             [
-                'name' => 'required|unique:accounting_periods',
+                'name' => 'required',
                 'fiscal_year_id' => 'required',
                 'month' => 'required',
             ],
             [
                 'name.required' => __('accounting.name_required'),
-                'name.unique' => __('accounting.name_unique'),
                 'fiscal_year_id.required' => __('accounting.fiscal_year_id_required'),
                 'month.required' => __('accounting.month_required'),
             ]
         );
-        if($request->ajax())
-        {
-            $period = AccountingPeriod::create($request->all());
+        
+        if($request->ajax()) {
+
+            $data = $request->all();
+            $data['business_id'] = request()->session()->get('user.business_id');
+
+            $period = AccountingPeriod::create($data);
             return response()->json([
                 "msj" => 'Created'
             ]);
+
         }
     }
 
@@ -66,8 +70,8 @@ class AccountingPeriodController extends Controller
      * @param  \App\AccountingPeriod  $accountingPeriod
      * @return \Illuminate\Http\Response
      */
-    public function show(AccountingPeriod $accountingPeriod)
-    {
+    public function show(AccountingPeriod $accountingPeriod) {
+
         return response()->json($accountingPeriod);
     }
 
@@ -77,8 +81,8 @@ class AccountingPeriodController extends Controller
      * @param  \App\AccountingPeriod  $accountingPeriod
      * @return \Illuminate\Http\Response
      */
-    public function edit(AccountingPeriod $accountingPeriod)
-    {
+    public function edit(AccountingPeriod $accountingPeriod) {
+
         return response()->json($accountingPeriod);
     }
 
@@ -89,23 +93,23 @@ class AccountingPeriodController extends Controller
      * @param  \App\AccountingPeriod  $accountingPeriod
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AccountingPeriod $accountingPeriod)
-    {
+    public function update(Request $request, AccountingPeriod $accountingPeriod) {
+
         $validateData = $request->validate(
             [
-                'name' => 'required|unique:accounting_periods,name,'.$accountingPeriod->id,
+                'name' => 'required',
                 'fiscal_year_id' => 'required',
                 'month' => 'required',
             ],
             [
                 'name.required' => __('accounting.name_required'),
-                'name.unique' => __('accounting.name_unique'),
                 'fiscal_year_id.required' => __('accounting.fiscal_year_id_required'),
                 'month.required' => __('accounting.month_required'),
             ]
         );
-        if($request->ajax())
-        {
+        
+        if($request->ajax()) {
+
             $accountingPeriod->update($request->all());
             return response()->json([
                 "msj" => 'Updated'
@@ -119,20 +123,22 @@ class AccountingPeriodController extends Controller
      * @param  \App\AccountingPeriod  $accountingPeriod
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AccountingPeriod $accountingPeriod)
-    {
+    public function destroy(AccountingPeriod $accountingPeriod) {
+
         if (request()->ajax()) {
             try{
 
                 $entries = AccountingEntrie::where('accounting_period_id', $accountingPeriod->id)->count();
 
-                if($entries > 0){
+                if($entries > 0) {
+                    
                     $output = [
                         'success' => false,
                         'msg' =>  __('accounting.period_has_entries')
                     ];
-                }
-                else{
+                
+                } else {
+                    
                     $accountingPeriod->forceDelete();
                     $output = [
                         'success' => true,
@@ -140,7 +146,7 @@ class AccountingPeriodController extends Controller
                     ];
                 }
             }
-            catch (\Exception $e){
+            catch (\Exception $e) {
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
@@ -150,17 +156,25 @@ class AccountingPeriodController extends Controller
         }
     }
 
-    public function getPeriodsData()
-    {
+    public function getPeriodsData() {
+
+        $business_id = request()->session()->get('user.business_id');
+
         $periods = DB::table('accounting_periods')
         ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
         ->select('accounting_periods.*', 'fiscal_years.year')
+        ->where('accounting_periods.business_id', $business_id)
         ->get();
+
         return DataTables::of($periods)->toJson();
-    }     
-    public function getPeriodStatus($id)
-    {
-        $period = AccountingPeriod::select('status')->where('id', $id)->first();
+    }
+
+    public function getPeriodStatus($id) {
+
+        $period = AccountingPeriod::select('status')
+        ->where('id', $id)
+        ->first();
+        
         return $period->status;
     }
 }

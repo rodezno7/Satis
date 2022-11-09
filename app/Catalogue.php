@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 class Catalogue extends Model
 {
-	protected $fillable = ['code', 'name', 'parent', 'type', 'status', 'level', 'catalogue_id'];
+	protected $fillable = ['code', 'name', 'parent', 'type', 'status', 'level', 'catalogue_id', 'business_id'];
 
 	public function detail()
 	{

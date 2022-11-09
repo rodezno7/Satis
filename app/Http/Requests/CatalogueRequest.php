@@ -29,45 +29,45 @@ class CatalogueRequest extends FormRequest
     {
         $parent = $request->input('parent');
         $prefijo = Catalogue::select('code')->where('id', $parent)->first();
-        if($parent == 0)
-        {
-            if($prefijo != null)
-            {
+        if($parent == 0) {
+
+            if($prefijo != null) {
+
                 $prefijo = $prefijo->code;
                 return [
-                    'code' => 'required|integer|unique:catalogues|regex:/^('.$prefijo.')/',
+                    'code' => 'required|integer|regex:/^('.$prefijo.')/',
                     'name' => 'required',
                     'type' => 'required',
                     'parent' => 'unique:accounting_entries_details,account_id',
                 ];
-            }
-            else
-            {
+            
+            } else {
+
                 return [
-                   'code' => 'required|integer|digits:1|unique:catalogues',
+                   'code' => 'required|integer|digits:1',
                    'name' => 'required',
                    'type' => 'required',
                    'parent' => 'unique:accounting_entries_details,account_id',
                    'name' => 'required',
                ];
            }
-       }
-       else
-       {
-            if($prefijo != null)
-            {
+       
+       } else {
+
+            if($prefijo != null) {
+
                 $prefijo = $prefijo->code;
                 return [
-                    'code' => 'required|integer|unique:catalogues|regex:/^('.$prefijo.')/',
+                    'code' => 'required|integer|regex:/^('.$prefijo.')/',
                     'name' => 'required',
                     'type' => 'required',
                     'parent' => 'unique:accounting_entries_details,account_id',
                 ];
-            }
-            else
-            {
+            
+            } else {
+
                 return [
-                    'code' => 'required|integer|unique:catalogues',
+                    'code' => 'required|integer',
                     'name' => 'required',
                     'type' => 'required',
                     'parent' => 'unique:accounting_entries_details,account_id',
@@ -75,4 +75,13 @@ class CatalogueRequest extends FormRequest
             }
        }
    }
+
+   public function messages() {
+
+        return [
+            
+            'parent.unique' => __('accounting.account_auxiliar'),
+        ];
+    }
+
 }

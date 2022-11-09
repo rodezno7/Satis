@@ -153,4 +153,5 @@ return [
     'decimals_in_inventories' => 'Decimales en inventarios',
     'no_note_full_payment' => 'No crear nota de abono al realizar pago completo',
     'default_products_tax' => 'Impuesto de producto predeterminado',
+    'hide_location_column' => 'Ocultar columna de sucursal',
 ];

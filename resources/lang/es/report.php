@@ -223,4 +223,5 @@
     'amount_without_vat' => 'Monto sin IVA',
     'payment_date' => 'Fecha de abono',
     'no_data_available' => 'No hay datos disponibles',
+    'total_price' => 'Costo total',
 ];

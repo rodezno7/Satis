@@ -77,7 +77,7 @@
 
                 {{-- CONDICIONES DE LA OPERACION --}}
 				<div style="height: 0.7cm; padding-left: 4.95cm; vertical-align: top; padding-top: 0.35cm;">
-					{{ $receipt_details->payment_condition }}
+					{{ mb_strtoupper(__("messages." . $receipt_details->payment_condition)) }}
 				</div>
 			</div>
 
@@ -149,6 +149,7 @@
 
 				<tbody>
 					@forelse($receipt_details->lines as $line)
+					@if ($line['quantity_uf'] > 0)
 					<tr>
 						{{-- CODIGO --}}
 						<td class="break-word">
@@ -157,7 +158,7 @@
 
 						{{-- CANTIDAD --}}
 						<td class="text-right" style="padding-right: 0.2cm">
-							{{ $line['quantity'] }}
+							{{ number_format($line['quantity_uf'], 0) }}
 						</td>
 
 						{{-- DESCRIPCION --}}
@@ -170,7 +171,7 @@
 
 						{{-- PRECIO UNITARIO --}}
 						<td class="text-right" style="padding-right: 0.35cm">
-							{{ $line['unit_price_before_discount'] }}
+							{{ $line['unit_price_exc'] }}
 						</td>
 
 						{{-- VENTAS NO SUJETAS --}}
@@ -199,6 +200,7 @@
 							@endif
 						</td>
 					</tr>
+					@endif
 					@empty
 					<tr>
 						<td colspan="7">&nbsp;</td>
@@ -279,7 +281,7 @@
 						}
 					@endphp
 					<span class="display_currency" data-currency_symbol="false">
-						{{ number_format($receipt_details->order_taxes, 4) }}
+						{{ number_format($tax_amount, 4) }}
 					</span>
 					@else
 					&nbsp;

@@ -27,16 +27,16 @@ use Carbon\Carbon;
 
 use App\Exports\BankReconciliationReportExport;
 
-class BankTransactionController extends Controller
-{
+class BankTransactionController extends Controller {
+
     /**
      * Constructor
      *
      * @param TransactionUtil $transactionUtil
      * @return void
      */
-    public function __construct(TransactionUtil $transactionUtil)
-    {
+    public function __construct(TransactionUtil $transactionUtil) {
+
         $this->transactionUtil = $transactionUtil;
     }
 
@@ -45,8 +45,9 @@ class BankTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    
+    public function index() {
+
         return view('banks.index');
     }
 
@@ -55,8 +56,8 @@ class BankTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
+
         return view('banks.index');
     }
 
@@ -66,8 +67,8 @@ class BankTransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         $account_id = $request->input('account_id');
         $debe = $request->input('debe');
         $haber = $request->input('haber');
@@ -124,8 +125,9 @@ class BankTransactionController extends Controller
                     'business_location_id.required' => __('accounting.location_required'),
                 ]
             );
-        }
-        else {
+
+        } else {
+
             $validateData = $request->validate(
                 [
                     "select-type-transaction" => "required",
@@ -174,10 +176,8 @@ class BankTransactionController extends Controller
             );
         }
         
+        if ($request->ajax()) {
 
-        
-        if ($request->ajax())
-        {
             // Validation to allow the check amount not to match expenses total
             $check_amount = $this->transactionUtil->num_uf($request->input('txt-amount-transaction'));
 
@@ -198,75 +198,108 @@ class BankTransactionController extends Controller
             $config_numeration = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
             $mode_numeration = $config_numeration->entries_numeration_mode;
             
-            if($mode_numeration == 'month'){
-                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))->whereMonth('date', $mdate)->first();
-                if($count->last_number == null){
+            if($mode_numeration == 'month') {
+
+                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
+                ->where('business_id', $business_id)
+                ->whereMonth('date', $mdate)
+                ->first();
+
+                if($count->last_number == null) {
+
                     $code = 1;
-                }
-                else
-                {
+
+                } else {
+
                     $code = $count->last_number + 1;
+
                 }
+
             }
             
-            if($mode_numeration == 'year'){
-                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))->whereYear('date', $ydate)->first();
-                if($count->last_number == null){
+            if($mode_numeration == 'year') {
+
+                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
+                ->where('business_id', $business_id)
+                ->whereYear('date', $ydate)
+                ->first();
+
+                if($count->last_number == null) {
+
                     $code = 1;
-                }
-                else
-                {
+
+                } else {
+
                     $code = $count->last_number + 1;
+
                 }
             }
             
             if($mode_numeration == 'manual'){
+
                 $code = 0;
+
             }
 
-            try
-            {
+            try {
+
                 $checkbook = BankCheckbook::where('id', $request->input("select-checkbook-transaction"))->first();
+                
                 if ($checkbook != null) {
+
                     $checkbook_initial = $checkbook->initial_correlative;
                     $checkbook_final = $checkbook->final_correlative;
-                }
-                else {
+
+                } else {
+
                     $checkbook_initial = 0;
                     $checkbook_final = 0;
                 }
-                if(($request->input('txt-check-number-transaction') < $checkbook_initial) || ($request->input('txt-check-number-transaction') > $checkbook_final)){
+
+                if(($request->input('txt-check-number-transaction') < $checkbook_initial) || ($request->input('txt-check-number-transaction') > $checkbook_final)) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.check_number_invalid")
                     ];
+                    
                     return $output;
                 }
                 
                 $period = DB::table('accounting_periods as period')
                 ->join('fiscal_years as year', 'year.id', '=', 'period.fiscal_year_id')
                 ->select('year.year', 'period.month')
+                ->where('period.business_id', $business_id)
                 ->where('period.id', $request->input('period_id'))
                 ->first();
+
                 $date = Carbon::parse($request->input('txt-date-transaction'));
                 $mdate = $date->month;
                 $ydate = $date->year;
-                if($period->year != $ydate){
+                
+                if($period->year != $ydate) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.period_invalid")
                     ];
-                    return $output;
-                }                    
-                if($period->month != $mdate){
-                    $output = [
-                        'success' => false,
-                        'msg' => __("accounting.period_invalid")
-                    ];
+                    
                     return $output;
                 }
 
-                $type_transaction_row = TypeBankTransaction::where('id', $request->input('select-type-transaction'))->first();
+                if($period->month != $mdate) {
+
+                    $output = [
+                        'success' => false,
+                        'msg' => __("accounting.period_invalid")
+                    ];
+
+                    return $output;
+                }
+
+                $type_transaction_row = TypeBankTransaction::where('id', $request->input('select-type-transaction'))
+                ->first();
+
                 DB::beginTransaction();
 
                 $entrie = new AccountingEntrie;
@@ -277,37 +310,43 @@ class BankTransactionController extends Controller
                 $entrie->type_entrie_id = $type_transaction_row->type_entrie_id;
                 $entrie->business_location_id = $request->input('business_location_id');
                 $entrie->correlative = $code;
+                $entrie->business_id = $business_id;
 
                 $short_name_cont = str_pad($code, 5, "0", STR_PAD_LEFT);
                 $type_q = TypeEntrie::where('id', $type_transaction_row->type_entrie_id)->first();
                 $short_name_type = $type_q->short_name;
                 
                 if ($mdate < 10) {
+
                     $short_name_month = '0' . $mdate;
+
                 } else {
+
                     $short_name_month = $mdate;
+
                 }
+
                 $short_name_year = $ydate;
                 $short_name_full = $short_name_type . '-' . $short_name_year . $short_name_month . '-' . $short_name_cont;
                 $entrie->short_name = $short_name_full;
 
-
-                
                 if ($business->enable_validation_entries == 1) {
+
                     $entrie->status = 0;
-                }
-                else {
+
+                } else {
+
                     $entrie->status = 1;
                     
                 }
 
-
                 $entrie->save();
                 $cont = 0;
-                if (!empty($account_id))
-                {
-                    while($cont < count($account_id))
-                    {
+                
+                if (!empty($account_id)) {
+
+                    while($cont < count($account_id)) {
+
                         $detalle = new AccountingEntriesDetail;
                         $detalle->entrie_id = $entrie->id;
                         $detalle->account_id = $account_id[$cont];
@@ -316,33 +355,42 @@ class BankTransactionController extends Controller
                         $detalle->description = $description[$cont];
                         $detalle->save();
                         $cont = $cont + 1;
+
                     }
                 }
+                
                 $transaction = new BankTransaction;
                 $transaction->bank_account_id = $request->input('select-bank-account-id-transaction');
                 $transaction->accounting_entrie_id =$entrie->id;
                 $transaction->type_bank_transaction_id = $request->input("select-type-transaction");
                 $transaction->bank_checkbook_id = $request->input("select-checkbook-transaction");
+                $transaction->business_id = $business_id;
 
                 if ($type_transaction_row->enable_checkbook == 0) {
+
                     $transaction->reference = $request->input('txt-reference-transaction');
+
                 }
 
                 $transaction->date = $request->input('txt-date-transaction');
                 $transaction->amount = $request->input('txt-amount-transaction');
                 $transaction->description = $request->input('txt-description-transaction');
                 $transaction->headline = $request->input('txt-payment-to');
+                
                 if($request->input('txt-check-number-transaction') != "0") {
+
                     $transaction->check_number = $request->input('txt-check-number-transaction');
                     $actual_correlative = $checkbook->actual_correlative;
                     $checkbook->actual_correlative = $actual_correlative + 1;
                     $checkbook->save();
 
                     if ($transaction->check_number == $checkbook->final_correlative) {
+
                         $checkbook->status = 0;
                         $checkbook->save();
                     }
                 }
+
                 $transaction->save();
 
                 // Save expenses
@@ -414,7 +462,8 @@ class BankTransactionController extends Controller
                     'msg' => __('accounting.bank_transaction_added')
                 ];
 
-            } catch(\Exception $e){
+            } catch(\Exception $e) {
+
                 DB::rollBack();
 
                 \Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage());
@@ -424,6 +473,7 @@ class BankTransactionController extends Controller
                     'msg' => __("messages.something_went_wrong")
                 ];
             }
+
             return $output;
         }
     }
@@ -434,8 +484,8 @@ class BankTransactionController extends Controller
      * @param  \App\BankTransaction  $bankTransaction
      * @return \Illuminate\Http\Response
      */
-    public function show(BankTransaction $bankTransaction)
-    {
+    public function show(BankTransaction $bankTransaction) {
+
         $transaction = DB::table('bank_transactions as transaction')
         ->join('accounting_entries as entrie', 'entrie.id', '=', 'transaction.accounting_entrie_id')
         ->join('accounting_periods as period', 'period.id', '=', 'entrie.accounting_period_id')
@@ -443,6 +493,7 @@ class BankTransactionController extends Controller
         ->select('transaction.*', 'entrie.number as partida', 'bank_account.name as banco', 'entrie.type_entrie_id', 'entrie.business_location_id', 'period.id as period_id', 'bank_account.catalogue_id as accounting_account')
         ->where('transaction.id', $bankTransaction->id)
         ->first();
+
         return response()->json($transaction);
     }
 
@@ -452,13 +503,14 @@ class BankTransactionController extends Controller
      * @param  \App\BankTransaction  $bankTransaction
      * @return \Illuminate\Http\Response
      */
-    public function edit(BankTransaction $bankTransaction)
-    {
+    public function edit(BankTransaction $bankTransaction) {
+
         $transaction = DB::table('bank_transactions as transaction')
         ->join('accounting_entries as entrie', 'entrie.id', '=', 'transaction.accounting_entrie_id')
         ->select('transaction.*', 'entrie.accounting_period_id as period_value')
         ->where('transaction.id', $bankTransaction->id)
         ->first();
+        
         return response()->json($transaction);
     }
 
@@ -469,8 +521,8 @@ class BankTransactionController extends Controller
      * @param  \App\BankTransaction  $bankTransaction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
+
         $bankTransaction = BankTransaction::findOrFail($id);
         $account_id = $request->input('account_id2');
         $debe = $request->input('debe2');
@@ -485,99 +537,97 @@ class BankTransactionController extends Controller
 
         if (($business_selected->allow_uneven_totals_entries == 1) && ($entrie_selected->status == 0)) {
 
-            
-
             $validateData = $request->validate(
-            [
-                "eselect-type-transaction" => "required",
-                "eselect-bank-account-id-transaction" => "required",
-                "txt-ereference-transaction" => 'required',
-                "txt-edescription-transaction" => "required",
-                "txt-echeck-number-transaction" => "required|numeric",
-                'debe2.*' => ['required', 'numeric'],
-                'haber2.*' => ['required', 'numeric'],
-                'total_debe2' => 'required|numeric',
-                'total_haber2' => 'required|numeric',
+                [
+                    "eselect-type-transaction" => "required",
+                    "eselect-bank-account-id-transaction" => "required",
+                    "txt-ereference-transaction" => 'required',
+                    "txt-edescription-transaction" => "required",
+                    "txt-echeck-number-transaction" => "required|numeric",
+                    'debe2.*' => ['required', 'numeric'],
+                    'haber2.*' => ['required', 'numeric'],
+                    'total_debe2' => 'required|numeric',
+                    'total_haber2' => 'required|numeric',
 
-                'haber2.*' => ['different:debe2.*'],
+                    'haber2.*' => ['different:debe2.*'],
 
-                'txt-edate-transaction' => 'required|date',
-                'eperiod_id' => 'required',
-                'ebusiness_location_id' => 'required',
-            ],
-            [
-                "eselect-bank-account-id-transaction.required" => __('accounting.account_required'),
-                "txt-ereference-transaction.required" => __('accounting.reference_required'),
-                "txt-edescription-transaction.required" => __('accounting.description_required'),
-                "eselect-type-transaction.required" => __('accounting.type_required'),
-                'txt-echeck-number-transaction.required' => __('accounting.check_number_required'),
-                'txt-echeck-number-transaction.numeric' => __('accounting.check_number_numeric'),
-                'debe2.*.required' => __('accounting.debit_required'),
-                'haber2.*.required' => __('accounting.credit_required'),
-                'debe2.*.numeric' => __('accounting.debit_numeric'),
-                'haber2.*.numeric' => __('accounting.credit_numeric'),
-                'total_debe2.required' => __('accounting.total_debit_required'),
-                'total_haber2.required' => __('accounting.total_credit_required'),
-                'total_debe2.numeric' => __('accounting.total_debit_numeric'),
-                'total_haber2.numeric' => __('accounting.total_credit_numeric'),
-                'total_haber2.in' => __('accounting.total_credit_in'),
-                'haber2.*.different' => __('accounting.credit_different'),
+                    'txt-edate-transaction' => 'required|date',
+                    'eperiod_id' => 'required',
+                    'ebusiness_location_id' => 'required',
+                ],
+                [
+                    "eselect-bank-account-id-transaction.required" => __('accounting.account_required'),
+                    "txt-ereference-transaction.required" => __('accounting.reference_required'),
+                    "txt-edescription-transaction.required" => __('accounting.description_required'),
+                    "eselect-type-transaction.required" => __('accounting.type_required'),
+                    'txt-echeck-number-transaction.required' => __('accounting.check_number_required'),
+                    'txt-echeck-number-transaction.numeric' => __('accounting.check_number_numeric'),
+                    'debe2.*.required' => __('accounting.debit_required'),
+                    'haber2.*.required' => __('accounting.credit_required'),
+                    'debe2.*.numeric' => __('accounting.debit_numeric'),
+                    'haber2.*.numeric' => __('accounting.credit_numeric'),
+                    'total_debe2.required' => __('accounting.total_debit_required'),
+                    'total_haber2.required' => __('accounting.total_credit_required'),
+                    'total_debe2.numeric' => __('accounting.total_debit_numeric'),
+                    'total_haber2.numeric' => __('accounting.total_credit_numeric'),
+                    'total_haber2.in' => __('accounting.total_credit_in'),
+                    'haber2.*.different' => __('accounting.credit_different'),
 
-                'eperiod_id.required' => __('accounting.period_id_required'),
-                "txt-edate-transaction.date" => __('accounting.date_date'),
-                'ebusiness_location_id.required' => __('accounting.location_required'),
-            ]
-        );
+                    'eperiod_id.required' => __('accounting.period_id_required'),
+                    "txt-edate-transaction.date" => __('accounting.date_date'),
+                    'ebusiness_location_id.required' => __('accounting.location_required'),
+                ]
+            );
 
         } else {
 
             $validateData = $request->validate(
-            [
-                "eselect-type-transaction" => "required",
-                "eselect-bank-account-id-transaction" => "required",
-                "txt-ereference-transaction" => 'required',
-                "txt-edescription-transaction" => "required",
-                "txt-echeck-number-transaction" => "required|numeric",
-                'debe2.*' => ['required', 'numeric'],
-                'haber2.*' => ['required', 'numeric'],
-                'total_debe2' => 'required|numeric',
-                'total_haber2' => 'required|numeric|in:'.$variable,
+                [
+                    "eselect-type-transaction" => "required",
+                    "eselect-bank-account-id-transaction" => "required",
+                    "txt-ereference-transaction" => 'required',
+                    "txt-edescription-transaction" => "required",
+                    "txt-echeck-number-transaction" => "required|numeric",
+                    'debe2.*' => ['required', 'numeric'],
+                    'haber2.*' => ['required', 'numeric'],
+                    'total_debe2' => 'required|numeric',
+                    'total_haber2' => 'required|numeric|in:'.$variable,
 
-                'haber2.*' => ['different:debe2.*'],
+                    'haber2.*' => ['different:debe2.*'],
 
-                'txt-edate-transaction' => 'required|date',
-                'eperiod_id' => 'required',
-                'ebusiness_location_id' => 'required',
-            ],
-            [
-                "eselect-bank-account-id-transaction.required" => __('accounting.account_required'),
-                "txt-ereference-transaction.required" => __('accounting.reference_required'),
-                "txt-edescription-transaction.required" => __('accounting.description_required'),
-                "eselect-type-transaction.required" => __('accounting.type_required'),
-                'txt-echeck-number-transaction.required' => __('accounting.check_number_required'),
-                'txt-echeck-number-transaction.numeric' => __('accounting.check_number_numeric'),
-                'debe2.*.required' => __('accounting.debit_required'),
-                'haber2.*.required' => __('accounting.credit_required'),
-                'debe2.*.numeric' => __('accounting.debit_numeric'),
-                'haber2.*.numeric' => __('accounting.credit_numeric'),
-                'total_debe2.required' => __('accounting.total_debit_required'),
-                'total_haber2.required' => __('accounting.total_credit_required'),
-                'total_debe2.numeric' => __('accounting.total_debit_numeric'),
-                'total_haber2.numeric' => __('accounting.total_credit_numeric'),
-                'total_haber2.in' => __('accounting.total_credit_in'),
-                'haber2.*.different' => __('accounting.credit_different'),
+                    'txt-edate-transaction' => 'required|date',
+                    'eperiod_id' => 'required',
+                    'ebusiness_location_id' => 'required',
+                ],
+                [
+                    "eselect-bank-account-id-transaction.required" => __('accounting.account_required'),
+                    "txt-ereference-transaction.required" => __('accounting.reference_required'),
+                    "txt-edescription-transaction.required" => __('accounting.description_required'),
+                    "eselect-type-transaction.required" => __('accounting.type_required'),
+                    'txt-echeck-number-transaction.required' => __('accounting.check_number_required'),
+                    'txt-echeck-number-transaction.numeric' => __('accounting.check_number_numeric'),
+                    'debe2.*.required' => __('accounting.debit_required'),
+                    'haber2.*.required' => __('accounting.credit_required'),
+                    'debe2.*.numeric' => __('accounting.debit_numeric'),
+                    'haber2.*.numeric' => __('accounting.credit_numeric'),
+                    'total_debe2.required' => __('accounting.total_debit_required'),
+                    'total_haber2.required' => __('accounting.total_credit_required'),
+                    'total_debe2.numeric' => __('accounting.total_debit_numeric'),
+                    'total_haber2.numeric' => __('accounting.total_credit_numeric'),
+                    'total_haber2.in' => __('accounting.total_credit_in'),
+                    'haber2.*.different' => __('accounting.credit_different'),
 
-                'eperiod_id.required' => __('accounting.period_id_required'),
-                "txt-edate-transaction.date" => __('accounting.date_date'),
-                'ebusiness_location_id.required' => __('accounting.location_required'),
-            ]
-        );
+                    'eperiod_id.required' => __('accounting.period_id_required'),
+                    "txt-edate-transaction.date" => __('accounting.date_date'),
+                    'ebusiness_location_id.required' => __('accounting.location_required'),
+                ]
+            );
 
         }
 
         
-        if($request->ajax())
-        {
+        if($request->ajax()) {
+
             $date = $request->input('txt-edate-transaction');
             $business_id = request()->session()->get('user.business_id');
             $date_entrie = Carbon::parse($date);
@@ -585,75 +635,111 @@ class BankTransactionController extends Controller
             $ydate = $date_entrie->year;
             $config_numeration = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
             $mode_numeration = $config_numeration->entries_numeration_mode;
-            if($mode_numeration == 'month'){
-                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))->whereMonth('date', $mdate)->first();
-                if($count->last_number == null){
+            
+            if($mode_numeration == 'month') {
+
+                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
+                ->where('business_id', $business_id)
+                ->whereMonth('date', $mdate)
+                ->first();
+
+                if($count->last_number == null) {
+
                     $code = 1;
+
+                } else {
+
+                    $code = $count->last_number + 1;
                 }
-                else
-                {
+
+            }
+            
+            if($mode_numeration == 'year') {
+
+                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
+                ->where('business_id', $business_id)
+                ->whereYear('date', $ydate)
+                ->first();
+
+                if($count->last_number == null) {
+
+                    $code = 1;
+
+                } else {
+
                     $code = $count->last_number + 1;
                 }
             }
-            if($mode_numeration == 'year'){
-                $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))->whereYear('date', $ydate)->first();
-                if($count->last_number == null){
-                    $code = 1;
-                }
-                else
-                {
-                    $code = $count->last_number + 1;
-                }
-            }
-            if($mode_numeration == 'manual'){
+
+            if($mode_numeration == 'manual') {
+
                 $code = 0;
             }
-            try
-            {
+
+            try {
+
                 $entrie = AccountingEntrie::find($bankTransaction->accounting_entrie_id);
+                
                 $checkbook = BankCheckbook::where('id', $request->input("eselect-checkbook-transaction"))->first();
+                
                 if ($checkbook != null) {
+
                     $checkbook_initial = $checkbook->initial_correlative;
                     $checkbook_final = $checkbook->final_correlative;
-                }
-                else {
+
+                } else {
+
                     $checkbook_initial = 0;
                     $checkbook_final = 0;
                 }
-                if(($request->input('txt-echeck-number-transaction') < $checkbook_initial) || ($request->input('txt-echeck-number-transaction') > $checkbook_final)){
+
+                if(($request->input('txt-echeck-number-transaction') < $checkbook_initial) || ($request->input('txt-echeck-number-transaction') > $checkbook_final)) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.check_number_invalid")
                     ];
+
                     return $output;
                 }
+
                 $period = DB::table('accounting_periods as period')
                 ->join('fiscal_years as year', 'year.id', '=', 'period.fiscal_year_id')
                 ->select('year.year', 'period.month')
                 ->where('period.id', $entrie->accounting_period_id)
                 ->first();
+
                 $date = Carbon::parse($request->input('txt-edate-transaction'));
                 $mdate = $date->month;
                 $ydate = $date->year;
 
-                if($period->year != $ydate){
+                if($period->year != $ydate) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.period_invalid")
                     ];
+
                     return $output;
-                }                    
-                if($period->month != $mdate){
+                }   
+
+                if($period->month != $mdate) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.period_invalid")
                     ];
+                    
                     return $output;
+
                 }
 
                 $type_transaction_row = TypeBankTransaction::findOrFail($request->input('eselect-type-transaction'));
+                
                 DB::beginTransaction();
+                
                 AccountingEntriesDetail::where('entrie_id', $bankTransaction->accounting_entrie_id)->forceDelete();
+
                 $entrie->description = $request->input('txt-edescription-transaction');
                 $entrie->type_entrie_id = $type_transaction_row->type_entrie_id;
                 $entrie->date = $request->input('txt-edate-transaction');
@@ -661,10 +747,11 @@ class BankTransactionController extends Controller
                 $entrie->business_location_id = $request->input('ebusiness_location_id');
                 $entrie->save();
                 $cont = 0;
-                if (!empty($account_id))
-                {
-                    while($cont < count($account_id))
-                    {
+                
+                if (!empty($account_id)) {
+
+                    while($cont < count($account_id)) {
+
                         $detalle = new AccountingEntriesDetail;
                         $detalle->entrie_id = $entrie->id;
                         $detalle->account_id = $account_id[$cont];
@@ -675,12 +762,14 @@ class BankTransactionController extends Controller
                         $cont = $cont + 1;
                     }
                 }
+
                 $bankTransaction->bank_account_id = $request->input('eselect-bank-account-id-transaction');
                 $bankTransaction->accounting_entrie_id =$entrie->id;
                 $bankTransaction->type_bank_transaction_id = $request->input("eselect-type-transaction");
                 $bankTransaction->bank_checkbook_id = $request->input("eselect-checkbook-transaction");
 
                 if ($type_transaction_row->enable_checkbook == 0) {
+
                     $bankTransaction->reference = $request->input('txt-ereference-transaction');
                 }
 
@@ -688,29 +777,40 @@ class BankTransactionController extends Controller
                 $bankTransaction->amount = $request->input('txt-eamount-transaction');
                 $bankTransaction->description = $request->input('txt-edescription-transaction');
                 $bankTransaction->headline = $request->input('txt-epayment-to');
+                
                 if($request->input('txt-echeck-number-transaction') != "0") {
+
                     $bankTransaction->check_number = $request->input('txt-echeck-number-transaction');
 
                     if ($bankTransaction->check_number == $checkbook->final_correlative) {
+
                         $checkbook->status = 0;
                         $checkbook->save();
                     }
                 }
+
                 $bankTransaction->save();
+                
                 DB::commit();
+                
                 $output = [
                     'success' => true,
                     'msg' => __('accounting.bank_transaction_updated')
                 ];
-            }
-            catch(\Exception $e){
+
+            } catch(\Exception $e) {
+
                 DB::rollBack();
+
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
+
             }
+
             return $output;
         }
     }
@@ -721,25 +821,32 @@ class BankTransactionController extends Controller
      * @param  \App\BankTransaction  $bankTransaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BankTransaction $bankTransaction)
-    {
-        if(request()->ajax()){
-            try{
+    public function destroy(BankTransaction $bankTransaction) {
+
+        if(request()->ajax()) {
+
+            try {
+
                 $entrie = AccountingEntrie::findOrFail($bankTransaction->accounting_entrie_id);
                 $entrie->forceDelete();
                 $bankTransaction->forceDelete();
+
                 $outpout = [
                     'success' => true,
                     'msg' => __("accounting.transaction_deleted")
                 ];
-            }
-            catch(\Exception $e){
+
+            } catch(\Exception $e){
+
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+                
                 $outpout = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
+
             }
+            
             return $outpout;
         }
         
@@ -749,6 +856,7 @@ class BankTransactionController extends Controller
      * Generate bank reconciliation report
      */
     public function getBankReconciliation(Request $request){
+
         if (!auth()->user()->can('bank_reconciliation')) {
             abort(403, 'Unauthorized action.');
         }
@@ -763,18 +871,21 @@ class BankTransactionController extends Controller
         /** get bank transactions */
         $bank_transactions =
         BankTransaction::where('bank_account_id', $bank_account_id)
-            ->whereRaw('DATE(date) BETWEEN ? AND ?', [$start_date, $end_date]);
+        ->where('business_id', $business_id)
+        ->whereRaw('DATE(date) BETWEEN ? AND ?', [$start_date, $end_date]);
         
         /** filter bank transaction by transaction type*/
-        if($transaction_type != 'all'){
+        if($transaction_type != 'all') {
+
             $bank_transactions = $bank_transactions->where('type_bank_transaction_id', $transaction_type);
+
         }
 
         $bank_transactions =
-            $bank_transactions->select('id',
-                DB::raw('IF(check_number > 0, check_number, reference) as reference'),
-                'date', 'description', 'amount')
-                ->get();
+        $bank_transactions->select('id',
+            DB::raw('IF(check_number > 0, check_number, reference) as reference'),
+            'date', 'description', 'amount')
+        ->get();
 
         /** get transactions from uploaded file */
         $file = $request->file('bank_reconciliation_xlsx');
@@ -831,10 +942,10 @@ class BankTransactionController extends Controller
                 $row_system_amount = $row_ref->amount;
                 
                 $row_amount =
-                    $bank_transactions
-                        ->where('reference', $transaction_reference)
-                        ->where('amount', $transaction_amount)
-                        ->first();
+                $bank_transactions
+                ->where('reference', $transaction_reference)
+                ->where('amount', $transaction_amount)
+                ->first();
                 
                 $row_status = !empty($row_amount) ? 'green' : 'yellow';
 
@@ -883,18 +994,20 @@ class BankTransactionController extends Controller
         $transactions = $transactions->sortBy('transaction_date');
 
         $business_name = Business::where('id', $business_id)
-            ->first()->business_full_name;
+        ->first()->business_full_name;
 
         $bank_account_name = BankAccount::find($bank_account_id)->name;
 
         $report_name = __('accounting.bank_reconciliation') . " " . __('accounting.from') . " " .
-            $this->transactionUtil->format_date($start_date) . " " . __('accounting.to') . " " . $this->transactionUtil->format_date($end_date);
+        $this->transactionUtil->format_date($start_date) . " " . __('accounting.to') . " " . $this->transactionUtil->format_date($end_date);
 
         return Excel::download(new BankReconciliationReportExport($transactions, $business_name, $report_name, $bank_account_name, $this->transactionUtil), __('accounting.bank_reconciliation') . '.xlsx');
     }
 
-    public function getBankTransactionsData($period, $type, $bank)
-    {
+    public function getBankTransactionsData($period, $type, $bank) {
+
+        $business_id = request()->session()->get('user.business_id');
+
         $bankTransactions = DB::table('bank_transactions as transaction')
         ->join('accounting_entries as entrie', 'entrie.id', '=', 'transaction.accounting_entrie_id')
         ->join('bank_accounts', 'bank_accounts.id', '=', 'transaction.bank_account_id')
@@ -910,113 +1023,138 @@ class BankTransactionController extends Controller
             'entrie.status as entrie_status',
             DB::raw('transaction.id as bank_transaction_query'),
             DB::raw('(select COUNT(id) from transactions where bank_transaction_id = bank_transaction_query) as expenses')
-        );
+        )
+        ->where('transaction.business_id', $business_id);
 
         if($period != 0) {
+
             $bankTransactions->where('entrie.accounting_period_id', $period);
         }
 
         if($type != 0) {
+
             $bankTransactions->where('type_bank_transaction_id', $type);
         }
 
         if($bank != 0) {
+
             $bankTransactions->where('bank_account_id', $bank);
         }
         
         return DataTables::of($bankTransactions)->toJson();
     }
-    public function getConfiguration()
-    {
+
+    public function getConfiguration() {
+
         $business_id = request()->session()->get('user.business_id');
         $config_transactions = Business::select('enable_sub_accounts_in_bank_transactions as config', 'accounting_supplier_id', 'accounting_customer_id')
         ->where('id', $business_id)
         ->first();
         return $config_transactions;
+
     }
 
-    public function getDateValidation($type, $checkbook, $date)
-    {
+    public function getDateValidation($type, $checkbook, $date) {
+
         $type_transaction_row = TypeBankTransaction::where('id', $type)->first();
+        
         if ($type_transaction_row != null) {
+
             if ($type_transaction_row->enable_date_constraint == 1) {
+
                 $count = BankTransaction::where('date', '>', $date)
                 ->where('bank_checkbook_id', $checkbook)
                 ->count();
+                
                 if ($count > 0) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.invalid_check_date")
                     ];
+                    
                     return $output;
-                }
-                else {
+
+                } else {
+
                     $output = [
                         'success' => true,
                         'msg' => "OK"
                     ];
                 }
-            }
-            else {
+
+            } else {
+
                 $output = [
                     'success' => true,
                     'msg' => "OK"
                 ];
             }
-        }
-        else {
+
+        } else {
+
             $output = [
                 'success' => true,
                 'msg' => "OK"
             ];
         }        
+        
         return $output;
     }
-    public function getDateByPeriod($id)
-    {
+    
+    public function getDateByPeriod($id) {
+
         $period = DB::table('accounting_periods')
         ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
         ->select('accounting_periods.month as month', 'fiscal_years.year as year')
         ->where('accounting_periods.id', $id)
         ->first();
+        
         $date = Carbon::createFromDate($period->year, $period->month);
+        
         $output = [
             'date' => $date->format('Y-m-d'),
             'year' => $period->year,
             'month' => $period->month
         ];
+        
         return $output;
     }
 
-    public function validateDate($id, $dat)
-    {
+    public function validateDate($id, $dat) {
+
         $period = DB::table('accounting_periods as period')
         ->join('fiscal_years as year', 'year.id', '=', 'period.fiscal_year_id')
         ->select('year.year', 'period.month')
         ->where('period.id', $id)
         ->first();
+
         $date = Carbon::parse($dat);
         $mdate = $date->month;
         $ydate = $date->year;
-        if(($period->year != $ydate) || ($period->month != $mdate)){
+        
+        if(($period->year != $ydate) || ($period->month != $mdate)) {
+
             $output = [
                 'success' => false,
                 'msg' => __("accounting.period_invalid")
             ];
-        }
-        else {
+
+        } else {
+
             $output = [
                 'success' => true,
                 'msg' => 'OK'
             ];
         }
+
         return $output;
     }
 
-    public function cancelCheck($id)
-    {
-        try
-        {
+    public function cancelCheck($id) {
+
+        try {
+
             $business_id = request()->session()->get('user.business_id');
             $business_numeration_entries = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
             $numeration = $business_numeration_entries->entries_numeration_mode;
@@ -1033,8 +1171,8 @@ class BankTransactionController extends Controller
                 $entrie->correlative = 0;
                 
 
-            }
-            else {
+            } else {
+
                 $transaction->status = 1;
                 $entrie->status_bank_transaction = 1;
             }
@@ -1047,14 +1185,18 @@ class BankTransactionController extends Controller
                 'success' => true,
                 'msg' => __('accounting.updated_successfully')
             ];
-        }
-        catch(\Exception $e){
+
+        } catch(\Exception $e) {
+
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
             $output = [
                 'success' => false,
                 'msg' => __("messages.something_went_wrong")
             ];
+
         }
+        
         return $output;
 
     }
@@ -1066,20 +1208,20 @@ class BankTransactionController extends Controller
      * @param  int  $print
      * @return \Illuminate\Http\Response
      */
-    public function printCheck($id, $print)
-    {
+    public function printCheck($id, $print) {
+
         $business_id = request()->session()->get('user.business_id');
 
         $business = Business::find($business_id);
         
         switch ($business->check_format_kit) {
             case 1:
-                return $this->printCheckFormat1($id, $print);
-                break;
+            return $this->printCheckFormat1($id, $print);
+            break;
 
             case 2:
-                return $this->printCheckFormat2($id, $print);
-                break;
+            return $this->printCheckFormat2($id, $print);
+            break;
         }
     }
 
@@ -1090,12 +1232,12 @@ class BankTransactionController extends Controller
      * @param  int  $print
      * @return \Illuminate\Http\Response
      */
-    public function printCheckFormat1($id, $print)
-    {
+    public function printCheckFormat1($id, $print) {
+
         // ----- CHECK -----
 
         $business_id = request()->session()->get('user.business_id');
-		$business = Business::where('id', $business_id)->first();
+        $business = Business::where('id', $business_id)->first();
 
         $transaction = BankTransaction::findOrFail($id);
 
@@ -1111,10 +1253,10 @@ class BankTransactionController extends Controller
         $account = Catalogue::findOrFail($bank->catalogue_id);
 
         $amount_check_q = DB::table('accounting_entries_details')
-            ->select('accounting_entries_details.credit')
-            ->where('entrie_id', $transaction->accounting_entrie_id)
-            ->where('account_id', $account->id)
-            ->first();
+        ->select('accounting_entries_details.credit')
+        ->where('entrie_id', $transaction->accounting_entrie_id)
+        ->where('account_id', $account->id)
+        ->first();
 
         $format = $bank->bank->print_format;
         
@@ -1225,176 +1367,189 @@ class BankTransactionController extends Controller
 
         # ----- ENTRIE -----
 
-		$business_name = mb_strtoupper($business->business_full_name);
-		$accountant = mb_strtoupper($business->accountant);
-		$enable_description_line = $business->enable_description_line_entries_report;
+        $business_name = mb_strtoupper($business->business_full_name);
+        $accountant = mb_strtoupper($business->accountant);
+        $enable_description_line = $business->enable_description_line_entries_report;
 
-		$numero = 0;
+        $numero = 0;
 
-		$entries = DB::table('accounting_entries as ae')
-			->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
-			->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie')
-			->where('ae.id', $transaction->accounting_entrie_id)
-			->orderBy('ae.correlative', 'asc')
-			->get();
+        $entries = DB::table('accounting_entries as ae')
+        ->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
+        ->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie')
+        ->where('ae.id', $transaction->accounting_entrie_id)
+        ->orderBy('ae.correlative', 'asc')
+        ->get();
 
-		$entrie_details = DB::table('accounting_entries_details as detalle')
-			->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
-			->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
-			->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
-			->where('partida.id', $transaction->accounting_entrie_id)
-			// ->where('partida.status', 1)
-			->orderBy('cuenta.code', 'asc')
-			->get();
+        $entrie_details = DB::table('accounting_entries_details as detalle')
+        ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
+        ->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
+        ->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
+        ->where('partida.id', $transaction->accounting_entrie_id)
+        ->orderBy('cuenta.code', 'asc')
+        ->get();
 
-		$grupos = array();
-		$elementos = array();
-		$detalles = array();
+        $grupos = array();
+        $elementos = array();
+        $detalles = array();
 
         $digits = $business->ledger_digits;
 
-		foreach ($entrie_details as $detail) {
-			$mayor = substr($detail->code, 0, $digits);
-			$id_partida = $detail->entrie_id;
+        foreach ($entrie_details as $detail) {
 
-			if ($detail->debit != 0) {
-				$columna = "D";
-			}
+            $mayor = substr($detail->code, 0, $digits);
+            $id_partida = $detail->entrie_id;
 
-			if ($detail->credit != 0) {
-				$columna = "H";
-			}
+            if ($detail->debit != 0) {
 
-			$elemento_grupos = $columna . '.' . $id_partida . '.' . $mayor;
+                $columna = "D";
 
-			if (!in_array($elemento_grupos, $grupos)) {
-				array_push($grupos, $elemento_grupos);
+            }
 
-				$debe = 0;
-				$haber = 0;
+            if ($detail->credit != 0) {
+                $columna = "H";
+            }
 
-				$cuenta = DB::table('catalogues')
-					->select('name')
-					->where('code', $mayor)
-					->first();
+            $elemento_grupos = $columna . '.' . $id_partida . '.' . $mayor;
 
-				$nombre = $cuenta->name;
+            if (!in_array($elemento_grupos, $grupos)) {
 
-				if (($id_partida == $detail->entrie_id)) {
-					$valor = $this->getHigherEntrieBalance($id_partida, $mayor);
-					$debe = $valor->debe;
-					$haber = $valor->haber;
-				}
+                array_push($grupos, $elemento_grupos);
 
-				$item_elemento = array(
-					'partida' => $id_partida,
-					'mayor' => $mayor,
-					'nombre' => $nombre,
-					'columna' => $columna,
-					'debe' => $debe,
-					'haber' => $haber,
-				);
+                $debe = 0;
+                $haber = 0;
 
-				array_push($elementos, $item_elemento);
-			}
+                $cuenta = DB::table('catalogues')
+                ->select('name')
+                ->where('business_id', $business_id)
+                ->where('code', $mayor)
+                ->first();
 
-			$item_detalle = array(
-				'entrie_id' => $detail->entrie_id,
-				'debe' => $detail->debit,
-				'haber' => $detail->credit,
-				'mayor' => $mayor,
-				'code' => $detail->code,
-				'name' => $detail->name,
-				'description' => $detail->description,
-			);
+                $nombre = $cuenta->name;
 
-			array_push($detalles, $item_detalle);
-		}
+                if (($id_partida == $detail->entrie_id)) {
 
-		$elements = json_decode(json_encode($elementos), FALSE);
-		$details = json_decode(json_encode($detalles), FALSE);
-		$partidas = array();
+                    $valor = $this->getHigherEntrieBalance($id_partida, $mayor);
+                    $debe = $valor->debe;
+                    $haber = $valor->haber;
+                }
 
-		foreach ($entries as $entrie) {
-			$grupos_debe = array();
-			$grupos_haber = array();
-			$total_debe = 0;
-			$total_haber = 0;
+                $item_elemento = array(
+                 'partida' => $id_partida,
+                 'mayor' => $mayor,
+                 'nombre' => $nombre,
+                 'columna' => $columna,
+                 'debe' => $debe,
+                 'haber' => $haber,
+             );
 
-			foreach ($elements as $elemento) {
-				$items_debe = array();
-				$items_haber = array();
+                array_push($elementos, $item_elemento);
+            }
 
-				foreach ($details as $detalle) {
-					if (($entrie->id == $detalle->entrie_id) && ($elemento->partida == $detalle->entrie_id) && ($elemento->mayor == $detalle->mayor)) {
-						if ($detalle->debe != 0 && $elemento->columna == "D") {
-							$elemento_items_debe = array(
-								'code' => $detalle->code,
-								'name' => $detalle->name,
-								'valor' => $detalle->debe,
-								'description_line' => $detalle->description,
-							);
+            $item_detalle = array(
+                'entrie_id' => $detail->entrie_id,
+                'debe' => $detail->debit,
+                'haber' => $detail->credit,
+                'mayor' => $mayor,
+                'code' => $detail->code,
+                'name' => $detail->name,
+                'description' => $detail->description,
+            );
 
-							array_push($items_debe, $elemento_items_debe);
-						}
+            array_push($detalles, $item_detalle);
+        }
 
-						if ($detalle->haber != 0 && $elemento->columna == "H") {
-							$elemento_items_haber = array(
-								'code' => $detalle->code,
-								'name' => $detalle->name,
-								'valor' => $detalle->haber,
-								'description_line' => $detalle->description,
-							);
+        $elements = json_decode(json_encode($elementos), FALSE);
+        $details = json_decode(json_encode($detalles), FALSE);
+        $partidas = array();
 
-							array_push($items_haber, $elemento_items_haber);
-						}
-					}
-				}
+        foreach ($entries as $entrie) {
 
-				if (($entrie->id == $elemento->partida) && ($elemento->columna == "D")) {
-					$elemento_grupo_debe = array(
-						'mayor' => $elemento->mayor,
-						'nombre' => $elemento->nombre,
-						'debe' => $elemento->debe,
-						'items' => $items_debe,
-					);
+            $grupos_debe = array();
+            $grupos_haber = array();
+            $total_debe = 0;
+            $total_haber = 0;
 
-					array_push($grupos_debe, $elemento_grupo_debe);
+            foreach ($elements as $elemento) {
 
-					$total_debe = $total_debe + $elemento->debe;
-				}
+                $items_debe = array();
+                $items_haber = array();
 
-				if (($entrie->id == $elemento->partida) && ($elemento->columna == "H")) {
-					$elemento_grupo_haber = array(
-						'mayor' => $elemento->mayor,
-						'nombre' => $elemento->nombre,
-						'haber' => $elemento->haber,
-						'items' => $items_haber,
-					);
+                foreach ($details as $detalle) {
 
-					array_push($grupos_haber, $elemento_grupo_haber);
+                    if (($entrie->id == $detalle->entrie_id) && ($elemento->partida == $detalle->entrie_id) && ($elemento->mayor == $detalle->mayor)) {
 
-					$total_haber = $total_haber + $elemento->haber;
-				}
-			}
+                        if ($detalle->debe != 0 && $elemento->columna == "D") {
 
-			$elemento_partidas = array(
-				'id' => $entrie->id,
-				'correlative' => $entrie->correlative,
-				'date' => $entrie->date,
-				'total_debe' => $total_debe,
-				'total_haber' => $total_haber,
-				'description' => $entrie->description,
-				'grupos_debe' => $grupos_debe,
-				'grupos_haber' => $grupos_haber,
-				'accountant' => $accountant,
-				'type_entrie' => $entrie->type_entrie,
-			);
+                            $elemento_items_debe = array(
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->debe,
+                                'description_line' => $detalle->description,
+                            );
 
-			array_push($partidas, $elemento_partidas);
-		}
+                            array_push($items_debe, $elemento_items_debe);
+                        }
 
-		$datos = json_decode(json_encode($partidas), FALSE);
+                        if ($detalle->haber != 0 && $elemento->columna == "H") {
+
+                            $elemento_items_haber = array(
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->haber,
+                                'description_line' => $detalle->description,
+                            );
+
+                            array_push($items_haber, $elemento_items_haber);
+                        }
+                    }
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "D")) {
+
+                    $elemento_grupo_debe = array(
+                      'mayor' => $elemento->mayor,
+                      'nombre' => $elemento->nombre,
+                      'debe' => $elemento->debe,
+                      'items' => $items_debe,
+                  );
+
+                    array_push($grupos_debe, $elemento_grupo_debe);
+
+                    $total_debe = $total_debe + $elemento->debe;
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "H")) {
+
+                    $elemento_grupo_haber = array(
+                      'mayor' => $elemento->mayor,
+                      'nombre' => $elemento->nombre,
+                      'haber' => $elemento->haber,
+                      'items' => $items_haber,
+                  );
+
+                    array_push($grupos_haber, $elemento_grupo_haber);
+
+                    $total_haber = $total_haber + $elemento->haber;
+                }
+            }
+
+            $elemento_partidas = array(
+                'id' => $entrie->id,
+                'correlative' => $entrie->correlative,
+                'date' => $entrie->date,
+                'total_debe' => $total_debe,
+                'total_haber' => $total_haber,
+                'description' => $entrie->description,
+                'grupos_debe' => $grupos_debe,
+                'grupos_haber' => $grupos_haber,
+                'accountant' => $accountant,
+                'type_entrie' => $entrie->type_entrie,
+            );
+
+            array_push($partidas, $elemento_partidas);
+        }
+
+        $datos = json_decode(json_encode($partidas), FALSE);
 
         $pdf = \PDF::loadView('banks.receipts.check_1', compact(
             'place_date_x',
@@ -1425,7 +1580,7 @@ class BankTransactionController extends Controller
         ));
 
         $pdf->setPaper('letter');
-        
+
         return $pdf->stream('check.pdf');
     }
 
@@ -1436,12 +1591,12 @@ class BankTransactionController extends Controller
      * @param  int  $print
      * @return \Illuminate\Http\Response
      */
-    public function printCheckFormat2($id, $print)
-    {
+    public function printCheckFormat2($id, $print) {
+
         // ----- CHECK -----
 
         $business_id = request()->session()->get('user.business_id');
-		$business = Business::where('id', $business_id)->first();
+        $business = Business::where('id', $business_id)->first();
 
         $transaction = BankTransaction::findOrFail($id);
 
@@ -1457,10 +1612,10 @@ class BankTransactionController extends Controller
         $account = Catalogue::findOrFail($bank->catalogue_id);
 
         $amount_check_q = DB::table('accounting_entries_details')
-            ->select('accounting_entries_details.credit')
-            ->where('entrie_id', $transaction->accounting_entrie_id)
-            ->where('account_id', $account->id)
-            ->first();
+        ->select('accounting_entries_details.credit')
+        ->where('entrie_id', $transaction->accounting_entrie_id)
+        ->where('account_id', $account->id)
+        ->first();
 
         $format = $bank->bank->print_format;
         
@@ -1500,6 +1655,7 @@ class BankTransactionController extends Controller
         $value_letters = $letters4 . $letters5;
 
         if ($format == 'credomatic' || $format == 'default' || is_null($format)) {
+
             $place_date = $place . $day . $of . $month . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $year;
             $place_date_x = 3.3;
             $place_date_y = 2.65;
@@ -1751,177 +1907,193 @@ class BankTransactionController extends Controller
 
         # ----- ENTRIE -----
 
-		$business_name = mb_strtoupper($business->business_full_name);
-		$accountant = mb_strtoupper($business->accountant);
-		$enable_description_line = $business->enable_description_line_entries_report;
+        $business_name = mb_strtoupper($business->business_full_name);
+        $accountant = mb_strtoupper($business->accountant);
+        $enable_description_line = $business->enable_description_line_entries_report;
 
-		$numero = 0;
+        $numero = 0;
 
-		$entries = DB::table('accounting_entries as ae')
-			->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
-			->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie')
-			->where('ae.id', $transaction->accounting_entrie_id)
-			->orderBy('ae.correlative', 'asc')
-			->get();
+        $entries = DB::table('accounting_entries as ae')
+        ->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
+        ->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie')
+        ->where('ae.id', $transaction->accounting_entrie_id)
+        ->orderBy('ae.correlative', 'asc')
+        ->get();
 
-		$entrie_details = DB::table('accounting_entries_details as detalle')
-			->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
-			->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
-			->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
-			->where('partida.id', $transaction->accounting_entrie_id)
-			// ->where('partida.status', 1)
-			->orderBy('cuenta.code', 'asc')
-			->get();
+        $entrie_details = DB::table('accounting_entries_details as detalle')
+        ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
+        ->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
+        ->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
+        ->where('partida.id', $transaction->accounting_entrie_id)
 
-		$grupos = array();
-		$elementos = array();
-		$detalles = array();
+        ->orderBy('cuenta.code', 'asc')
+        ->get();
+
+        $grupos = array();
+        $elementos = array();
+        $detalles = array();
 
 
         $digits = $business->ledger_digits;
 
-		foreach ($entrie_details as $detail) {
-			$mayor = substr($detail->code, 0, $digits);
-			$id_partida = $detail->entrie_id;
+        foreach ($entrie_details as $detail) {
 
-			if ($detail->debit != 0) {
-				$columna = "D";
-			}
+            $mayor = substr($detail->code, 0, $digits);
+            $id_partida = $detail->entrie_id;
 
-			if ($detail->credit != 0) {
-				$columna = "H";
-			}
+            if ($detail->debit != 0) {
+                $columna = "D";
+            }
 
-			$elemento_grupos = $columna . '.' . $id_partida . '.' . $mayor;
+            if ($detail->credit != 0) {
+                $columna = "H";
+            }
 
-			if (!in_array($elemento_grupos, $grupos)) {
-				array_push($grupos, $elemento_grupos);
+            $elemento_grupos = $columna . '.' . $id_partida . '.' . $mayor;
 
-				$debe = 0;
-				$haber = 0;
+            if (!in_array($elemento_grupos, $grupos)) {
 
-				$cuenta = DB::table('catalogues')
-					->select('name')
-					->where('code', $mayor)
-					->first();
+                array_push($grupos, $elemento_grupos);
 
-				$nombre = $cuenta->name;
+                $debe = 0;
+                $haber = 0;
 
-				if (($id_partida == $detail->entrie_id)) {
-					$valor = $this->getHigherEntrieBalance($id_partida, $mayor);
-					$debe = $valor->debe;
-					$haber = $valor->haber;
-				}
+                $cuenta = DB::table('catalogues')
+                ->select('name')
+                ->where('code', $mayor)
+                ->first();
 
-				$item_elemento = array(
-					'partida' => $id_partida,
-					'mayor' => $mayor,
-					'nombre' => $nombre,
-					'columna' => $columna,
-					'debe' => $debe,
-					'haber' => $haber,
-				);
+                $nombre = $cuenta->name;
 
-				array_push($elementos, $item_elemento);
-			}
+                if (($id_partida == $detail->entrie_id)) {
 
-			$item_detalle = array(
-				'entrie_id' => $detail->entrie_id,
-				'debe' => $detail->debit,
-				'haber' => $detail->credit,
-				'mayor' => $mayor,
-				'code' => $detail->code,
-				'name' => $detail->name,
-				'description' => $detail->description,
-			);
+                    $valor = $this->getHigherEntrieBalance($id_partida, $mayor);
+                    $debe = $valor->debe;
+                    $haber = $valor->haber;
+                }
 
-			array_push($detalles, $item_detalle);
-		}
+                $item_elemento = array(
 
-		$elements = json_decode(json_encode($elementos), FALSE);
-		$details = json_decode(json_encode($detalles), FALSE);
-		$partidas = array();
+                    'partida' => $id_partida,
+                    'mayor' => $mayor,
+                    'nombre' => $nombre,
+                    'columna' => $columna,
+                    'debe' => $debe,
+                    'haber' => $haber,
+                );
 
-		foreach ($entries as $entrie) {
-			$grupos_debe = array();
-			$grupos_haber = array();
-			$total_debe = 0;
-			$total_haber = 0;
+                array_push($elementos, $item_elemento);
+            }
 
-			foreach ($elements as $elemento) {
-				$items_debe = array();
-				$items_haber = array();
+            $item_detalle = array(
+                'entrie_id' => $detail->entrie_id,
+                'debe' => $detail->debit,
+                'haber' => $detail->credit,
+                'mayor' => $mayor,
+                'code' => $detail->code,
+                'name' => $detail->name,
+                'description' => $detail->description,
+            );
 
-				foreach ($details as $detalle) {
-					if (($entrie->id == $detalle->entrie_id) && ($elemento->partida == $detalle->entrie_id) && ($elemento->mayor == $detalle->mayor)) {
-						if ($detalle->debe != 0 && $elemento->columna == "D") {
-							$elemento_items_debe = array(
-								'code' => $detalle->code,
-								'name' => $detalle->name,
-								'valor' => $detalle->debe,
-								'description_line' => $detalle->description,
-							);
+            array_push($detalles, $item_detalle);
+        }
 
-							array_push($items_debe, $elemento_items_debe);
-						}
+        $elements = json_decode(json_encode($elementos), FALSE);
+        $details = json_decode(json_encode($detalles), FALSE);
+        $partidas = array();
 
-						if ($detalle->haber != 0 && $elemento->columna == "H") {
-							$elemento_items_haber = array(
-								'code' => $detalle->code,
-								'name' => $detalle->name,
-								'valor' => $detalle->haber,
-								'description_line' => $detalle->description,
-							);
+        foreach ($entries as $entrie) {
 
-							array_push($items_haber, $elemento_items_haber);
-						}
-					}
-				}
+            $grupos_debe = array();
+            $grupos_haber = array();
+            $total_debe = 0;
+            $total_haber = 0;
 
-				if (($entrie->id == $elemento->partida) && ($elemento->columna == "D")) {
-					$elemento_grupo_debe = array(
-						'mayor' => $elemento->mayor,
-						'nombre' => $elemento->nombre,
-						'debe' => $elemento->debe,
-						'items' => $items_debe,
-					);
+            foreach ($elements as $elemento) {
 
-					array_push($grupos_debe, $elemento_grupo_debe);
+                $items_debe = array();
+                $items_haber = array();
 
-					$total_debe = $total_debe + $elemento->debe;
-				}
+                foreach ($details as $detalle) {
 
-				if (($entrie->id == $elemento->partida) && ($elemento->columna == "H")) {
-					$elemento_grupo_haber = array(
-						'mayor' => $elemento->mayor,
-						'nombre' => $elemento->nombre,
-						'haber' => $elemento->haber,
-						'items' => $items_haber,
-					);
+                    if (($entrie->id == $detalle->entrie_id) && ($elemento->partida == $detalle->entrie_id) && ($elemento->mayor == $detalle->mayor)) {
 
-					array_push($grupos_haber, $elemento_grupo_haber);
+                        if ($detalle->debe != 0 && $elemento->columna == "D") {
 
-					$total_haber = $total_haber + $elemento->haber;
-				}
-			}
+                            $elemento_items_debe = array(
 
-			$elemento_partidas = array(
-				'id' => $entrie->id,
-				'correlative' => $entrie->correlative,
-				'date' => $entrie->date,
-				'total_debe' => $total_debe,
-				'total_haber' => $total_haber,
-				'description' => $entrie->description,
-				'grupos_debe' => $grupos_debe,
-				'grupos_haber' => $grupos_haber,
-				'accountant' => $accountant,
-				'type_entrie' => $entrie->type_entrie,
-			);
 
-			array_push($partidas, $elemento_partidas);
-		}
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->debe,
+                                'description_line' => $detalle->description,
+                            );
 
-		$datos = json_decode(json_encode($partidas), FALSE);
+                            array_push($items_debe, $elemento_items_debe);
+                        }
+
+                        if ($detalle->haber != 0 && $elemento->columna == "H") {
+
+                            $elemento_items_haber = array(
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->haber,
+                                'description_line' => $detalle->description,
+                            );
+
+                            array_push($items_haber, $elemento_items_haber);
+                        }
+                    }
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "D")) {
+
+                    $elemento_grupo_debe = array(
+                        'mayor' => $elemento->mayor,
+                        'nombre' => $elemento->nombre,
+                        'debe' => $elemento->debe,
+                        'items' => $items_debe,
+                    );
+
+                    array_push($grupos_debe, $elemento_grupo_debe);
+
+                    $total_debe = $total_debe + $elemento->debe;
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "H")) {
+
+                    $elemento_grupo_haber = array(
+
+                        'mayor' => $elemento->mayor,
+                        'nombre' => $elemento->nombre,
+                        'haber' => $elemento->haber,
+                        'items' => $items_haber,
+                    );
+
+                    array_push($grupos_haber, $elemento_grupo_haber);
+
+                    $total_haber = $total_haber + $elemento->haber;
+                }
+            }
+
+            $elemento_partidas = array(
+
+                'id' => $entrie->id,
+                'correlative' => $entrie->correlative,
+                'date' => $entrie->date,
+                'total_debe' => $total_debe,
+                'total_haber' => $total_haber,
+                'description' => $entrie->description,
+                'grupos_debe' => $grupos_debe,
+                'grupos_haber' => $grupos_haber,
+                'accountant' => $accountant,
+                'type_entrie' => $entrie->type_entrie,
+            );
+
+            array_push($partidas, $elemento_partidas);
+        }
+
+        $datos = json_decode(json_encode($partidas), FALSE);
 
         $pdf = \PDF::loadView('banks.receipts.check_2', compact(
             'place_date_x',
@@ -1964,7 +2136,7 @@ class BankTransactionController extends Controller
         ));
 
         $pdf->setPaper('letter');
-        
+
         return $pdf->stream('check.pdf');
     }
 
@@ -1975,19 +2147,21 @@ class BankTransactionController extends Controller
      * @param  string  $code
      * @return collect
      */
-    protected function getHigherEntrieBalance($id, $code)
-	{
-		$valor = DB::table('accounting_entries_details as detalle')
-			->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
-			->select(DB::raw('SUM(detalle.debit) debe, SUM(detalle.credit) haber'))
-			->where('detalle.entrie_id', $id)
-			->where('cuenta.code', 'like', '' . $code . '%')
-			->first();
+    protected function getHigherEntrieBalance($id, $code) {
 
-		return $valor;
-	}
+        $valor = DB::table('accounting_entries_details as detalle')
+        ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
+        ->select(DB::raw('SUM(detalle.debit) debe, SUM(detalle.credit) haber'))
+        ->where('detalle.entrie_id', $id)
+        ->where('cuenta.code', 'like', '' . $code . '%')
+        ->first();
 
-    protected function unidad($numuero){
+        return $valor;
+    }
+
+    protected function unidad($numuero) {
+
+
         switch ($numuero)
         {
             case 9:
@@ -2044,7 +2218,8 @@ class BankTransactionController extends Controller
         return $numu;
     }
 
-    protected function decena($numdero){
+    protected function decena($numdero) {
+
         if ($numdero >= 90 && $numdero <= 99)
         {
             $numd = "NOVENTA ";
@@ -2153,8 +2328,9 @@ class BankTransactionController extends Controller
             $numd = $this->unidad($numdero);
         return $numd;
     }
-    
-    protected function centena($numc){
+
+    protected function centena($numc) {
+
         if ($numc >= 100)
         {
             if ($numc >= 900 && $numc <= 999)

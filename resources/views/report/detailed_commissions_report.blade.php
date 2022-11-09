@@ -129,7 +129,6 @@
                                     <th>@lang('quote.seller')</th>
                                     <th>@lang('graduation_card.optometrist')</th>
                                     <th>@lang('report.unit_cost')</th>
-                                    <th>@lang('report.total_cost')</th>
                                 @else
                                     <th>@lang('accounting.date')</th>
                                     <th>@lang('inflow_outflow.document_no')</th>
@@ -207,11 +206,10 @@
                 { data: 'sku', name: 'sku', orderable: false },
                 { data: 'product_name', name: 'product_name', orderable: false },
                 { data: 'quantity', name: 'quantity', orderable: false },
-                { data: 'price_inc', name: 'price_inc', orderable: false },
+                { data: 'unit_price', name: 'unit_price', orderable: false },
                 { data: 'seller_name', name: 'seller_name', orderable: false },
                 { data: 'optometrist', name: 'optometrist', orderable: false },
                 { data: 'unit_cost', name: 'unit_cost', orderable: false },
-                { data: 'total_cost', name: 'total_cost', orderable: false },
             ];
 
         } else {

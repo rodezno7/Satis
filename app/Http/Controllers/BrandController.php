@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Brands;
+
+use DB;
 use App\Utils\ProductUtil;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ class BrandController extends Controller
      *
      */
     protected $productUtil;
+    private $clone_product;
 
     /**
      * Constructor
@@ -24,6 +27,9 @@ class BrandController extends Controller
     public function __construct(ProductUtil $productUtil)
     {
         $this->productUtil = $productUtil;
+
+        /** clone product config */
+        $this->clone_product = config('app.clone_product');
     }
 
     /**
@@ -100,15 +106,26 @@ class BrandController extends Controller
             $input['business_id'] = $business_id;
             $input['created_by'] = $request->session()->get('user.id');
 
+            DB::beginTransaction();
+
             // Upload logo
             $input['logo'] = $this->productUtil->uploadFile($request, 'logo', config('constants.product_img_path'));
 
             $brand = Brands::create($input);
+
+            /** sync brand */
+            if ($this->clone_product) {
+                $this->productUtil->syncBrand($brand->id, $brand->name);
+            }
+
+            DB::commit();
+
             $output = ['success' => true,
                             'data' => $brand,
                             'msg' => __("brand.added_success")
                         ];
         } catch (\Exception $e) {
+            DB::rollback();
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             
             $output = ['success' => false,
@@ -169,7 +186,11 @@ class BrandController extends Controller
                 $input = $request->only(['name', 'description']);
                 $business_id = $request->session()->get('user.business_id');
 
+                DB::beginTransaction();
+
                 $brand = Brands::where('business_id', $business_id)->findOrFail($id);
+                $name = $brand->name;
+
                 $brand->name = $input['name'];
                 $brand->description = $input['description'];
 
@@ -182,10 +203,20 @@ class BrandController extends Controller
 
                 $brand->save();
 
-                $output = ['success' => true,
-                            'msg' => __("brand.updated_success")
-                            ];
+                /** sync brand */
+                if ($this->clone_product) {
+                    $this->productUtil->syncBrand($brand->id, $name);
+                }
+
+                DB::commit();
+
+                $output = [
+                    'success' => true,
+                    'msg' => __("brand.updated_success")
+                ];
+
             } catch (\Exception $e) {
+                DB::rollback();
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             
                 $output = ['success' => false,
@@ -213,13 +244,27 @@ class BrandController extends Controller
             try {
                 $business_id = request()->user()->business_id;
 
+                DB::beginTransaction();
+
                 $brand = Brands::where('business_id', $business_id)->findOrFail($id);
+                $old_brand = clone $brand;
                 $brand->delete();
 
-                $output = ['success' => true,
-                            'msg' => __("brand.deleted_success")
-                            ];
+                /** sync brand */
+                if ($this->clone_product) {
+                    $this->productUtil->syncBrand($brand->id, "", $old_brand);
+                }
+
+                DB::commit();
+
+                $output = [
+                    'success' => true,
+                    'msg' => __("brand.deleted_success")
+                    
+                ];
+
             } catch (\Exception $e) {
+                DB::rollback();
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             
                 $output = ['success' => false,

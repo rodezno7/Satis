@@ -436,6 +436,9 @@ class CustomerController extends Controller
 
             // return $customer_details;
             $customer = Customer::create($customer_details);
+            $customer->code = 'C'. str_pad($customer->id, 4, 0, STR_PAD_LEFT);
+            $customer->save();
+            
             $customer_id = $customer->id;
 
             // Store binnacle
@@ -1745,38 +1748,11 @@ class CustomerController extends Controller
         return DataTables::of($customers)
             ->addColumn(
                 'total_remaining', function ($row) {
-                    $total_remaining =  0;
-
-                    if ($row->final_total && $row->total_paid) {
-                        $total_remaining =  round($row->final_total - $row->total_paid, 6);
-                    }
+                    $total_remaining =  round(($row->final_total - $row->total_paid), 6);
 
                     return '<span class="display_currency remaining_credit" data-currency_symbol="true" data-orig-value="' . $total_remaining . '">' . $total_remaining . '</span>';
                 }
             )
-            // ->addColumn(
-            //     'actions', function ($row) {
-            //         $html = '<div class="btn-group">
-            //             <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">' .
-            //                 __("messages.actions") . '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>
-            //             </button>
-            //             <ul class="dropdown-menu dropdown-menu-right" role="menu">';
-
-            //         if (auth()->user()->can('customer.view')) {
-            //             $html .= '<li><a href="' . action('CustomerController@showBalances', [$row->id]) . '"><i class="glyphicon glyphicon-eye-open"></i> ' . __("messages.view") . '</a></li>';
-            //         }
-
-            //         if (auth()->user()->can('purchase.payments') || auth()->user()->can('sell.payments')) {
-            //             if ($row->opening_balance > 0) {
-            //                 $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->opening_balance_id]) . '" class="add_payment_modal"><i class="fa fa-money"></i> ' . __("customer.pay_opening_balance") . '</a></li>';
-            //             }
-            //         }
-                    
-            //         $html .= '</ul></div>';
-
-            //         return $html;
-            //     }
-            // )
             ->editColumn(
                 'final_total', function ($row) {
                     $final_total = 0;

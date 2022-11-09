@@ -535,6 +535,7 @@ $(document).ready( function(){
         }, columns: [
             { data: 'customer_name', name: 'customer_name' },
             { data: 'seller_name', name: 'seller_name' },
+            { data: 'doc', name: 'doc' },
             { data: 'qty_total', name: 'qty_total', class: 'align-right' },
             { data: 'weight_total', name: 'weight_total', class: 'align-right' },
             { data: 'final_total', name: 'final_total', class: 'align-right' }

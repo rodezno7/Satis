@@ -15,7 +15,7 @@ use App\PaymentTerm;
 use App\TransactionPayment;
 use App\TypeBankTransaction;
 use App\User;
-
+use App\Utils\BusinessUtil;
 use Validator;
 
 use Yajra\DataTables\Facades\DataTables;
@@ -33,11 +33,12 @@ class ExpenseController extends Controller
      * @param TransactionUtil $transactionUtil
      * @return void
      */
-    public function __construct(TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, TaxUtil $taxUtil)
+    public function __construct(TransactionUtil $transactionUtil, ModuleUtil $moduleUtil, TaxUtil $taxUtil, BusinessUtil $businessUtil)
     {
         $this->transactionUtil = $transactionUtil;
         $this->moduleUtil = $moduleUtil;
         $this->taxUtil = $taxUtil;
+        $this->businessUtil = $businessUtil;
     }
 
     /**
@@ -59,6 +60,7 @@ class ExpenseController extends Controller
                 ->leftJoin('users AS U', 'transactions.expense_for', '=', 'U.id')
                 ->leftJoin('transaction_payments AS TP', 'transactions.id', 'TP.transaction_id')
                 ->join('document_types', 'document_types.id', '=', 'transactions.document_types_id')
+                ->leftJoin('contacts', 'contacts.id', 'transactions.contact_id')
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', 'expense')
                 ->select(
@@ -71,6 +73,7 @@ class ExpenseController extends Controller
                     'ref_no',
                     'payment_status',
                     'final_total',
+                    'contacts.name as supplier'
                 )
                 ->groupBy('transactions.id');
 
@@ -159,8 +162,14 @@ class ExpenseController extends Controller
 
         $business_locations = BusinessLocation::forDropdown($business_id, true);
 
+        // Expense settings
+        $business_details = $this->businessUtil->getDetails($business_id);
+
+        $expense_settings = empty($business_details->expense_settings) ? $this->businessUtil->defaultExpenseSettings() : json_decode($business_details->expense_settings, true);
+        $hide_location_column = isset($expense_settings['hide_location_column']) ? $expense_settings['hide_location_column'] : 0;
+
         return view('expense.index')
-            ->with(compact('categories', 'business_locations', 'users'));
+            ->with(compact('categories', 'business_locations', 'users', 'hide_location_column'));
     }
 
     /**

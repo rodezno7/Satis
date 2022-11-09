@@ -441,6 +441,22 @@ class BusinessController extends Controller
             $sale_settings = json_decode($business->sale_settings, true);
         }
 
+        // Expense settings
+        if (empty($business->expense_settings)) {
+            $expense_settings = $this->businessUtil->defaultExpenseSettings();
+
+        } else {
+            $expense_settings = json_decode($business->expense_settings, true);
+
+            $default_expense_settings = $this->businessUtil->defaultExpenseSettings();
+
+            foreach ($default_expense_settings as $key => $value) {
+                if (! isset($expense_settings[$key])) {
+                    $expense_settings[$key] = $value;
+                }
+            }
+        }
+
         $modules = $this->avlble_modules;
 
         $theme_colors = $this->theme_colors;
@@ -476,7 +492,8 @@ class BusinessController extends Controller
             'customer_settings',
             'product_settings',
             'sale_settings',
-            'product_taxes'
+            'product_taxes',
+            'expense_settings'
         ));
     }
 
@@ -770,6 +787,23 @@ class BusinessController extends Controller
             }
 
             $business_details['sale_settings'] = json_encode($sale_settings);
+
+            // Expense settings
+            $expense_settings = $request->input('expense_settings');
+
+            $default_expense_settings = $this->businessUtil->defaultExpenseSettings();
+
+            foreach ($default_expense_settings as $key => $value) {
+                if (! isset($expense_settings[$key])) {
+                    if ($value === 1) {
+                        $expense_settings[$key] = 0;
+                    } else {
+                        $expense_settings[$key] = $value;
+                    }
+                }
+            }
+
+            $business_details['expense_settings'] = json_encode($expense_settings);
 
             //Enabled modules
             $enabled_modules = $request->input('enabled_modules');

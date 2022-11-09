@@ -645,14 +645,15 @@ class PurchaseController extends Controller
                 // }
 
                 // Edit average cost
-                if ($transaction->purchase_type == 'national') {
-                    if ($enable_editing_avg_cost == 1) {
+                if ($transaction->purchase_type == 'national'
+                    && $transaction->status == 'received'
+                    && $enable_editing_avg_cost == 1) {
+
                         $this->productUtil->updateAverageCost(
                             $purchase['variation_id'],
                             $this->productUtil->num_uf($purchase['purchase_price']),
                             $this->productUtil->num_uf($purchase['quantity'])
                         );
-                    }
                 }
 
                 // Update quantity only if status is "received"
@@ -1216,16 +1217,6 @@ class PurchaseController extends Controller
                     $purchase_line->initial_purchase_price = ! is_null($purchase_line->initial_purchase_price) ? $this->productUtil->num_uf($purchase['purchase_price']) : null;
 
                     $updated_purchase_lines[] = $purchase_line;
-
-                    // Edit product price
-                    // if ($enable_product_editing == 1) {
-                    //     $variation_data['default_sell_price'] = $this->productUtil->num_uf($purchase['default_sell_price'], $currency_details);
-                    //     $variation_data['pp_without_discount'] = $this->productUtil->num_uf($purchase['pp_without_discount'], $currency_details)*$exchange_rate;
-                    //     $variation_data['variation_id'] = $purchase_line->variation_id;
-                    //     $variation_data['purchase_price'] = $purchase_line->purchase_price;
-
-                    //     $this->productUtil->updateProductFromPurchase($variation_data);
-                    // }
                 }
 
                 //unset deleted purchase lines
@@ -1269,9 +1260,12 @@ class PurchaseController extends Controller
                 // Edit avarage cost
                 $enable_editing_avg_cost = $request->session()->get('business.enable_editing_avg_cost_from_purchase');
 
-                if ($transaction->purchase_type == 'national' && $enable_editing_avg_cost == 1) {
+                if ($transaction->purchase_type == 'national'
+                    && $transaction->status == 'received'
+                    && $enable_editing_avg_cost == 1) {
+
                     $variation_ids = PurchaseLine::where('transaction_id', $transaction->id)->pluck('variation_id');
-    
+                        
                     foreach ($variation_ids as $variation_id) {
                         $this->productUtil->recalculateProductCost($variation_id);
                     }

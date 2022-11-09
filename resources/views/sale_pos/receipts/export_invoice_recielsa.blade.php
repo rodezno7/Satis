@@ -114,7 +114,7 @@
 					<tr>
 						{{-- CANT. --}}
 						<td class="text-right" style="padding-right: 0.2cm">
-							{{ $line['quantity'] }}
+							{{ number_format($line['quantity_uf'], 0) }}
 						</td>
 
 						{{-- CODIGO --}}

@@ -957,8 +957,6 @@ $(document).ready(function () {
 			if (cnf) {
 				$('div.pos-processing').show();
 
-				$('#pos-save').attr('disabled', 'true');
-
 			 	var data = $(form).serialize();
 				data = data + '&status=final&is_quotation=0';
 
@@ -1034,7 +1032,6 @@ $(document).ready(function () {
 						}
 
 						$('div.pos-processing').hide();
-						$('#pos-save').removeAttr('disabled');
 
 						// Reset variables
 						$('input#is_cash').val('0');
@@ -1542,14 +1539,14 @@ $(document).ready(function () {
 
 		} else {
 			e.preventDefault();
-			let btn = $(this);
-			btn.attr('disabled', 'true');
+
+			$(this).prop('disabled', true);
 	
 			$('input#is_cash').val('1');
 	
 			setTimeout(() => {
-				btn.removeAttr('disabled');
-			}, 5000);
+				$(this).prop('disabled', false);
+			}, 10000);
 	
 			$('form#add_pos_sell_form').trigger('submit');
 		}

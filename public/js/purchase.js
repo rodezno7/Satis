@@ -4,12 +4,42 @@ decimals_in_purchases = $('#decimals_in_purchases').length > 0 ? $('#decimals_in
 // Number of decimal places to store and use in calculations
 price_precision = $('#price_precision').length > 0 ? $('#price_precision').val() : 6;
 
-$(document).ready(function() {
+$(function() {
 
     if($('input#iraqi_selling_price_adjustment').length > 0){
         iraqi_selling_price_adjustment = true;
     } else {
         iraqi_selling_price_adjustment = false;
+    }
+
+    /** Purchase daterange filter */
+    if($('button#purchase_daterange').length == 1){
+        dateRangeSettings['startDate'] = moment().subtract(29, 'days')
+        dateRangeSettings['endDate'] = moment();
+        //Date range as a button
+        $('button#purchase_daterange').daterangepicker(
+            dateRangeSettings,
+            function(start, end) {
+                $('button#purchase_daterange span').html(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+                
+                let start_date = $('button#purchase_daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                let end_date = $('button#purchase_daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                $("input#start_date").val(start_date);
+                $("input#end_date").val(end_date);
+
+                purchase_table.ajax.reload();
+            }
+        );
+        $('button#purchase_daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $('button#purchase_daterange').html('<i class="fa fa-calendar"></i>'+ LANG.filter_by_day);
+            
+            let start_date = $('button#purchase_daterange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+            let end_date = $('button#purchase_daterange').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            $("input#start_date").val(start_date);
+            $("input#end_date").val(end_date);
+            
+            purchase_table.ajax.reload();
+        });
     }
 
     /**
@@ -19,7 +49,7 @@ $(document).ready(function() {
      */
     
     // Purchase datatable.
-    purchase_table = $('#purchase_table').DataTable({
+    let purchase_table = $('#purchase_table').DataTable({
         processing: true,
         serverSide: true,
         aaSorting: [[0, 'desc']],
@@ -28,6 +58,8 @@ $(document).ready(function() {
             data: function(d) {
                 d.purchase_type = $('#purchase-type').val();
                 d.payment_status = $('#payment-status').val();
+                d.start_date = $('input#start_date').val();
+                d.end_date = $('input#end_date').val();
             }
         },
         columnDefs: [ {

@@ -33,17 +33,20 @@ BEGIN
 	CREATE TEMPORARY TABLE customer_transactions AS
 		SELECT
 			c.id AS customer_id,
+			t.id AS transaction_id,
 			c.customer_portfolio_id,
+			CONCAT(dt.short_name, t.correlative) AS doc,
 			IF(c.business_name IS NOT NULL, c.business_name, c.name) AS customer_name
 		FROM transactions AS t
 		INNER JOIN customers AS c ON t.customer_id = c.id
-		INNER JOIN quotes AS q ON t.id = q.transaction_id
+		INNER JOIN document_types AS dt ON t.document_correlative_id = dt.id
+		LEFT JOIN quotes AS q ON t.id = q.transaction_id
 		WHERE DATE(t.transaction_date) BETWEEN start_date AND end_date
 			AND t.`type` = 'sell'
 			AND t.status = 'final'
 			AND (t.location_id = location OR location = 0) 
 			AND (q.employee_id = seller OR seller = 0)
-		GROUP BY c.id
+		GROUP BY c.id, t.id
 		ORDER BY c.name ASC;
 	
 	/* create temporary table to store product transactions by customer */
@@ -54,7 +57,7 @@ BEGIN
 			t.customer_id,
 			tsl.variation_id,
 			SUM(tsl.quantity - tsl.quantity_returned) AS quantity,
-			SUM(t.final_total) AS final_total
+			(t.final_total) AS final_total
 		FROM transactions AS t
 		INNER JOIN transaction_sell_lines AS tsl ON t.id = tsl.transaction_id
 		INNER JOIN quotes AS q ON t.id = q.transaction_id
@@ -94,17 +97,17 @@ BEGIN
 		SET @id := (SELECT pt.id FROM product_transactions AS pt LIMIT start_count, 1);
 		SET @variation_id := (SELECT pt.variation_id FROM product_transactions AS pt LIMIT start_count, 1);
 		SET @customer_id := (SELECT pt.customer_id FROM product_transactions AS pt LIMIT start_count, 1);
-		SET @qty := (SELECT pt.quantity FROM product_transactions AS pt LIMIT start_count, 1);
-		SET @quantity := (SELECT SUM(pt.quantity) FROM product_transactions AS pt WHERE pt.variation_id = @variation_id AND pt.customer_id = @customer_id);
+		SET @quantity := (SELECT pt.quantity FROM product_transactions AS pt LIMIT start_count, 1);
 		SET @weight := (SELECT dp.weight FROM dispatched_products AS dp WHERE dp.variation_id = @variation_id LIMIT 1);
 		SET @final_total := (SELECT pt.final_total FROM product_transactions AS pt LIMIT start_count, 1);
 	
 		SET @query := CONCAT('
-				UPDATE customer_transactions as ct
+				UPDATE customer_transactions AS ct
 				SET ct.product_', @variation_id, ' = ', @quantity,
-					', ct.weight_total = ((', @weight, ' * ', @qty,') + IFNULL(ct.weight_total, 0))',
+					', ct.weight_total = ((', @weight, ' * ', @quantity,') + IFNULL(ct.weight_total, 0))',
 					', ct.final_total = IF(', @id, ' != ', @transaction_id, ', IFNULL(ct.final_total, 0) + ', @final_total, ', ct.final_total) ',
-				'WHERE ct.customer_id = ', @customer_id);
+				'WHERE ct.customer_id = ', @customer_id,
+					' AND ct.transaction_id = ', @id);
 		
 		PREPARE stmt FROM @query;
 		EXECUTE stmt;
@@ -127,5 +130,5 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL get_dispatched_products('2022-09-22', '2022-09-22', 0, 0);
+CALL get_dispatched_products('2022-10-17', '2022-10-17', 0, 3);
 

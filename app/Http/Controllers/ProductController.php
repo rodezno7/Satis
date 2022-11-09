@@ -31,6 +31,7 @@ use App\Employees;
 use App\KitHasProduct;
 use App\ProductAccountsLocation;
 use App\SalePriceScale;
+use App\TaxGroup;
 use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ use Excel;
 use App\Utils\ProductUtil;
 use App\Utils\TaxUtil;
 use App\Utils\ModuleUtil;
+use ProductHasSupplier;
 
 class ProductController extends Controller
 {
@@ -50,6 +52,7 @@ class ProductController extends Controller
     protected $productUtil;
     private $taxUtil;
     private $barcode_types;
+    private $clone_product;
 
     /**
      * Constructor
@@ -69,6 +72,8 @@ class ProductController extends Controller
         $this->business_type = ['small_business', 'medium_business', 'large_business'];
         /** Payment conditions */
         $this->payment_conditions = ['cash', 'credit'];
+
+        $this->clone_product = config('app.clone_product');
     }
 
     /**
@@ -714,6 +719,11 @@ class ProductController extends Controller
                 $this->productUtil->addRackDetails($business_id, $product->id, $product_racks);
             }
 
+            /** Sync product */
+            if ($this->clone_product && $product->type == "single") {
+                $this->productUtil->syncProduct($product->id, $product->sku, "store");
+            }
+
             DB::commit();
             $output = [
                 'success' => 1,
@@ -1110,6 +1120,11 @@ class ProductController extends Controller
                 }
             }
 
+            /** Sync product */
+            if ($this->clone_product && $product->type == "single") {
+                $this->productUtil->syncProduct($product->id, $product->sku, "update");
+            }
+
             DB::commit();
             $output = [
                 'success' => 1,
@@ -1226,6 +1241,7 @@ class ProductController extends Controller
                         ->first();
                     if (!empty($product)) {
                         DB::beginTransaction();
+
                         //Delete variation location details
                         VariationLocationDetails::where('product_id', $id)
                             ->delete();
@@ -1410,17 +1426,19 @@ class ProductController extends Controller
                 $term = substr($term, 0, -1);
             }
 
-            $location_id = request()->input('location_id', '');
-            $warehouse_id = request()->input('warehouse_id', '');
+            $location_id = request()->get('location_id', '');
+            $warehouse_id = request()->get('warehouse_id', '');
 
-            $check_qty = request()->input('check_qty', false);
+            $check_qty = request()->get('check_qty', false);
 
-            $price_group_id = request()->input('price_group', '');
+            $price_group_id = request()->get('price_group', '');
 
             $business_id = request()->session()->get('user.business_id');
 
             $products = Product::join('variations', 'products.id', 'variations.product_id')
                 ->where('status', 'active')
+                ->where('products.business_id', $business_id)
+                ->where('products.type', '!=', 'modifier')
                 ->whereNull('variations.deleted_at')
                 ->leftjoin(
                     'variation_location_details AS VLD',
@@ -1439,6 +1457,15 @@ class ProductController extends Controller
                         }
                     }
                 );
+
+            //Include search
+            if (!empty($term)) {
+                $products->where(function ($query) use ($term) {
+                    $query->where('products.name', 'like', '%' . $term . '%');
+                    $query->orWhere('sku', 'like', '%' . $term . '%');
+                    $query->orWhere('sub_sku', 'like', '%' . $term . '%');
+                });
+            }
 
             if (!empty($price_group_id)) {
                 $products->leftjoin(
@@ -1539,17 +1566,19 @@ class ProductController extends Controller
     public function getProductsTransferStock()
     {
         if (request()->ajax()) {
-            $term = request()->input('term', '');
-            $warehouse_id = request()->input('warehouse_id', '');
+            $term = request()->get('term', '');
+            $warehouse_id = request()->get('warehouse_id', '');
 
-            $check_qty = request()->input('check_qty', false);
+            $check_qty = request()->get('check_qty', false);
 
-            $price_group_id = request()->input('price_group', '');
+            $price_group_id = request()->get('price_group', '');
 
             $business_id = request()->session()->get('user.business_id');
 
             $products = Product::join('variations', 'products.id', '=', 'variations.product_id')
                 ->where('status', 'active')
+                ->where('products.business_id', $business_id)
+                ->where('products.type', '!=', 'modifier')
                 ->whereNull('variations.deleted_at')
                 ->leftjoin(
                     'variation_location_details AS VLD',
@@ -1577,8 +1606,6 @@ class ProductController extends Controller
                     }
                 );
             }
-            $products->where('products.business_id', $business_id)
-                ->where('products.type', '!=', 'modifier');
 
             //Include search
             if (!empty($term)) {

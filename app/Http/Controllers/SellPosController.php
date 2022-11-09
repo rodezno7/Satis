@@ -318,8 +318,7 @@ class SellPosController extends Controller
         $bank_accounts = BankAccount::pluck('name', 'id');
         
         /** Pos */
-        $pos = Pos::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        $pos = Pos::forDropdown($business_id);
 
         // FCF document
         $fcf_document = DocumentType::where('short_name', $this->document_names[0])->first();
@@ -350,6 +349,10 @@ class SellPosController extends Controller
         // Number of decimals in sales
         $product_settings = empty($business_details->product_settings) ? $this->businessUtil->defaultProductSettings() : json_decode($business_details->product_settings, true);
         $decimals_in_sales = $product_settings['decimals_in_sales'];
+
+        // Check if user is admin
+        $user = User::find(request()->user()->id);
+        $is_admin = $user->hasRole('Super Admin#' . $business_id);
 
         if (config('app.business') == 'optics') {
             // Patients
@@ -382,10 +385,6 @@ class SellPosController extends Controller
             // Show note field
             $show_note = true;
             $show_multiple_notes = false;
-
-            // Check if user is admin
-            $user = User::find(request()->user()->id);
-            $is_admin = $user->hasRole('Super Admin#' . $business_id);
 
             return view('sale_pos.create')
                 ->with(compact(
@@ -468,6 +467,7 @@ class SellPosController extends Controller
                     'bank_accounts',
                     'pos',
                     'default',
+                    'is_admin',
                     'fcf_document',
                     'ccf_document',
                     'default_warehouse',
@@ -1361,6 +1361,10 @@ class SellPosController extends Controller
         $product_settings = empty($business_details->product_settings) ? $this->businessUtil->defaultProductSettings() : json_decode($business_details->product_settings, true);
         $decimals_in_sales = $product_settings['decimals_in_sales'];
 
+        // Check if user is admin
+        $user = User::find(request()->user()->id);
+        $is_admin = $user->hasRole('Super Admin#' . $business_id);
+
         if (config('app.business') == 'optics') {
             // Document types
             $documents =  DocumentType::where('business_id',$business_id)
@@ -1383,10 +1387,6 @@ class SellPosController extends Controller
 
             // Check if it's a quote
             $is_quote = false;
-
-            // Check if user is admin
-            $user = User::find(request()->user()->id);
-            $is_admin = $user->hasRole('Super Admin#' . $business_id);
 
             return view('sale_pos.edit')
                 ->with(compact(
@@ -1452,6 +1452,7 @@ class SellPosController extends Controller
                     'price_groups',
                     'pos',
                     'banks',
+                    'is_admin',
                     'doc_tax_inc',
                     'doc_tax_exempt',
                     'decimals_in_sales'

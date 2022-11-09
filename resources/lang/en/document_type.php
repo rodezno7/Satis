@@ -30,6 +30,7 @@ return [
     'edit_documents'    => 'Edit  documents',
     'documents'         => 'Documents',
     'document'          => 'Document',
+    'doc'   => 'Doc.',
     'document_type'     => 'Document type',
     'doc_type'     => 'Doc. type',
     'types'             => 'Document types',
@@ -50,4 +51,5 @@ return [
     'document_class' => 'Document class',
     'fiscal_credit_return' => 'Credit note',
     'excluded_subject' => 'Excluded subject invoice',
+    'commercial_invoice' => 'Commercial invoice',
 ];

@@ -522,6 +522,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('entries/getResultCreditorAccounts/{date}', 'AccountingEntrieController@getResultCreditorAccounts');
     Route::get('entries/getResultDebtorAccounts/{date}', 'AccountingEntrieController@getResultDebtorAccounts');
     Route::get('entries/getProfitAndLossAccount', 'AccountingEntrieController@getProfitAndLossAccount');
+
+    Route::get('entries/getApertureDebitAccounts/{date}', 'AccountingEntrieController@getApertureDebitAccounts');
+    Route::get('entries/getApertureCreditAccounts/{date}', 'AccountingEntrieController@getApertureCreditAccounts');
+    
     Route::get('/entries/assign-short-name', 'AccountingEntrieController@assignShortName');
     Route::get('entries/setNumeration/{mode}/{period}', 'AccountingEntrieController@setNumeration');
     Route::resource('entries', 'AccountingEntrieController')->except(['create']);

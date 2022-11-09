@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BankTransaction extends Model
 {
-    protected $fillable = ['bank_account_id', 'accounting_entrie_id', 'type_bank_transaction_id', 'bank_checkbook_id', 'reference', 'date', 'amount', 'description', 'headline'];
+    protected $fillable = ['business_id', 'bank_account_id', 'accounting_entrie_id', 'type_bank_transaction_id', 'bank_checkbook_id', 'reference', 'date', 'amount', 'description', 'headline'];
 
     public function bankAccount()
     {

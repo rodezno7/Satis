@@ -1,25 +1,28 @@
 <?php
 
 namespace App\Http\Controllers;
-use Datatables;
-use DB;
 
-use App\TaxGroup;
 use App\TaxRate;
-use App\TaxRateTaxGroup;
+use App\TaxGroup;
 use App\Transaction;
+use App\TaxRateTaxGroup;
 
+use DB;
+use Datatables;
+use App\Utils\TaxUtil;
+use App\Utils\ProductUtil;
 use Illuminate\Http\Request;
 
-use App\Utils\TaxUtil;
 
 class TaxGroupController extends Controller
 {
     /**
      * All utils instance
      */
-     protected $taxUtil;
-     protected $types;
+    protected $types;
+    protected $taxUtil;
+    private $productUtil;
+    private $clone_product;
 
     /**
      * Constructor
@@ -27,11 +30,15 @@ class TaxGroupController extends Controller
      * @return void
      */
 
-    public function __construct(TaxUtil $taxUtil) {
+    public function __construct(TaxUtil $taxUtil, ProductUtil $productUtil) {
         $this->taxUtil = $taxUtil;
+        $this->productUtil = $productUtil;
 
         /** types */
         $this->types = ['products', 'contacts'];
+
+        /** clone product config */
+        $this->clone_product = config('app.clone_product');
     }
 
     /**
@@ -125,6 +132,11 @@ class TaxGroupController extends Controller
                 $tax_group->tax_rates()->attach($tax);
             }
 
+            /** Sync tax group */
+            if ($this->clone_product) {
+                $this->productUtil->syncTaxGroup($tax_group->id, $tax_group->description);
+            }
+
             DB::commit();
             
             $output = ['success' => true,
@@ -196,6 +208,8 @@ class TaxGroupController extends Controller
         if(request()->ajax()){
             try {
                 $tax_group = TaxGroup::findOrFail($id);
+                $description = $tax_group->description;
+
                 $tax_group->type = $request->input('types');
                 $tax_group->description = $request->input('name');
 
@@ -211,6 +225,11 @@ class TaxGroupController extends Controller
 
                     /** Sync records on pivot table */
                     $tax_group->tax_rates()->sync($request->input('taxes'));
+
+                    /** Sync tax group */
+                    if ($this->clone_product) {
+                        $this->productUtil->syncTaxGroup($tax_group->id, $description);
+                    }
 
                     $output = ['success' => true,
                                 'msg' => __("tax_rate.tax_group_updated_success")
@@ -266,8 +285,15 @@ class TaxGroupController extends Controller
                     /** Delete all records on pivot table */
                     $tax_group->tax_rates()->detach();
 
+                    $old_tax_group = clone $tax_group;
+
                     /** Delete tax group */
                     $tax_group->delete();
+
+                    /** Sync tax group */
+                    if ($this->clone_product) {
+                        $this->productUtil->syncTaxGroup($tax_group->id, "", $old_tax_group);
+                    }
 
                     $output = ['success' => true,
                                 'msg' => __("tax_rate.tax_group_deleted_success")

@@ -551,4 +551,6 @@ return[
 	'account_name' => 'Nombre de cuenta',
 	'period_not_found' => 'No se encontró el período actual o está cerrado',
 	'add_period' => 'Desea habilitar el período de la fecha actual',
+	'define_cost_account' => 'Defina el rubro de agrupación de costos en la pestaña cuentas',
+	'account_auxiliar' => 'La cuenta ya fue utilizada como auxiliar',
 ];

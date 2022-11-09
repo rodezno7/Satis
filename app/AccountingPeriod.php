@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccountingPeriod extends Model
 {
-	protected $fillable = ['name', 'month', 'fiscal_year_id', 'status'];
+	protected $fillable = ['name', 'month', 'fiscal_year_id', 'status', 'business_id'];
 
 	public function year()
 	{

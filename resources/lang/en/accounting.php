@@ -551,4 +551,6 @@ return[
 	'account_name' => 'Account name',
 	'period_not_found' => 'Period not found',
 	'add_period' => 'Create period',
+	'define_cost_account' => 'Define cost account',
+	'account_auxiliar' => 'Account is auxiliar',
 ];

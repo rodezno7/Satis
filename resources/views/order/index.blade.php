@@ -31,6 +31,20 @@
                             "id" => "location", "placeholder" => __("business.select_location")]) !!}
                     </div>
                 </div>
+                <div class="col-sm-3">
+                    <div class="form-group" style="margin-top: 25px;">
+                        <div class="input-group">
+                            <button type="button" class="btn btn-primary" id="order_daterange_filter">
+                                <span>
+                                    <i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                            {!! Form::hidden("start_date", date('Y-m-d', strtotime('- 6 days')), ['id' => 'start_date']) !!}
+                            {!! Form::hidden("end_date", date('Y-m-d'), ['id' => 'end_date']) !!}
+                        </div>
+                    </div>
+                </div>
             </div>
             @if(auth()->user()->can('order.view'))
             <div class="table-responsive-md">

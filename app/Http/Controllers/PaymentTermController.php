@@ -16,15 +16,14 @@ class PaymentTermController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $payment_terms = PaymentTerm::all();
-
-        return view('payment_terms.index', compact('payment_terms'));
+        return view('payment_terms.index');
     }
 
     public function getPaymentTermData()
     {
-        $payment_terms = DB::table('payment_terms')
-            ->select('*');
+        $business_id = request()->user()->business_id;
+
+        $payment_terms = PaymentTerm::where('business_id', $business_id);
 
         return DataTables::of($payment_terms)
             ->addColumn(

@@ -29,7 +29,7 @@
         <div class="col-sm-12">
         	<div class="box">
                 <div class="box-body">
-                    {!! Form::open(['url' => action('ImportOpeningStockController@store'), 'method' => 'post', 'enctype' => 'multipart/form-data' ]) !!}
+                    {!! Form::open(['url' => action('ImportOpeningStockController@store'), 'method' => 'post', 'enctype' => 'multipart/form-data', 'id' => 'opening_stock_form' ]) !!}
                         <div class="row">
                             <div class="col-sm-6">
                             <div class="col-sm-8">
@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-sm-4">
                             <br>
-                                <button type="submit" class="btn btn-primary">@lang('messages.submit')</button>
+                                <button type="submit" class="btn btn-primary" id="btn_submit">@lang('messages.submit')</button>
                             </div>
                             </div>
                         </div>
@@ -122,4 +122,13 @@
 </section>
 <!-- /.content -->
 
+@endsection
+@section('javascript')
+    <script>
+        $(function () {
+            $("form#opening_stock_form").on('submit', function () {
+                $('button#btn_submit').prop('disabled', true);
+            });
+        });
+    </script>
 @endsection

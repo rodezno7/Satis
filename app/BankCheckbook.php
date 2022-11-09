@@ -9,6 +9,7 @@ class BankCheckbook extends Model
     protected $table = "bank_checkbooks";
 
     protected $fillable = [
+        'business_id',
         'name',
         'description',
         'serie',

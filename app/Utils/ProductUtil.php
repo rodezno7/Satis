@@ -2,23 +2,30 @@
 
 namespace App\Utils;
 
-use Illuminate\Support\Facades\DB;
-
+use App\Unit;
+use App\Brands;
 use App\Product;
-use App\Variation;
 use App\TaxRate;
-use App\ProductVariation;
+use App\TaxGroup;
+use App\Category;
 use App\Business;
-use App\Transaction;
-use App\VariationLocationDetails;
+use App\Variation;
 use App\ProductRack;
-use App\VariationGroupPrice;
-use App\VariationTemplate;
-use App\VariationValueTemplate;
-use App\BusinessLocation;
-use App\PurchaseLine;
+use App\Transaction;
 use App\DocumentType;
+use App\PurchaseLine;
+use App\TaxRateTaxGroup;
+use App\BusinessLocation;
+use App\KitHasProduct;
+use App\ProductVariation;
+use App\VariationTemplate;
+use App\ProductHasSuppliers;
+use App\VariationGroupPrice;
 use App\TransactionSellLine;
+use App\VariationValueTemplate;
+use App\VariationLocationDetails;
+
+use DB;
 
 class ProductUtil extends Util
 {
@@ -1524,5 +1531,578 @@ class ProductUtil extends Util
         }
 
         return $result;
+    }
+
+    /**
+     * Sync category. Create, update or delete category for others business
+     * 
+     * @param int $id
+     * @param string $name
+     * @param App\Category $delete
+     * @param App\Utils\TransactionUtil $transactionUtil
+     * @param string $module_name
+     * 
+     * @return void
+     * @author Arquímides Martínez
+     */
+    public function syncCategory($id, $name = "", $delete = null, $transactionUtil = null, $module_name = "") {
+        /** Get others business */
+        $business_id = auth()->user()->business_id;
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        /** If there is not more business, exit */
+        if (empty($business)) {
+            return true;
+        }
+
+        /** Start delete category */
+        if (!is_null($delete)) {
+            foreach ($business as $b) {
+                $category = Category::where('name', $delete->name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                /** delete category */
+                if (!empty($category)) {
+                    $category->delete();
+
+                    // Store binnacle
+                    $transactionUtil->registerBinnacle(
+                        $module_name,
+                        'delete',
+                        $delete->name,
+                        $delete
+                    );
+                }
+            }
+
+            return true; // exit
+        }
+        /** End delete category */
+
+        /** Start create or update category */
+        $category = Category::findOrFail($id)->toArray();
+
+        /** remove needless columns */
+        unset(
+            $category['id'],
+            $category['deleted_at'],
+            $category['created_at'],
+            $category['updated_at'],
+            $category['catalogue_id']
+        );
+
+        foreach ($business as $b) {
+
+            /** New business */
+            $category['business_id'] = $b->id;
+
+            /** Create or update cloned category */
+            $cloned_cat = Category::updateOrCreate(
+                [
+                    'name' => $name,
+                    'business_id' => $b->id
+                ],
+                $category
+            );
+
+            /** If is subcategory */
+            if ($cloned_cat->parent_id) {
+                $parent_cat = Category::find($cloned_cat->parent_id);
+
+                /** Find this business category */
+                if (!empty($parent_cat)) {
+                    $parent_cat_id = Category::where('name', $parent_cat->name)
+                        ->where('business_id', $b->id)
+                        ->value('id');
+                        
+                    /** If category exists */
+                    if ($parent_cat_id) {
+                        $cloned_cat->parent_id = $parent_cat_id;
+                        $cloned_cat->save();
+                    }
+                }
+            }
+        }
+        /** End create or update category */
+    }
+
+    /**
+     * Sync unit. Create, update or delete unit for others business
+     * 
+     * @param int $id
+     * @param string $name
+     * @param App\Unit $delete
+     * 
+     * @return void
+     * @author Arquímides Martínez
+     */
+    public function syncUnit($id, $name = "", $delete = null) {
+        /** Get others business */
+        $business_id = auth()->user()->business_id;
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        /** If there is not more business, exit */
+        if (empty($business)) {
+            return true;
+        }
+
+        /** Start delete unit */
+        if (!is_null($delete)) {
+            foreach ($business as $b) {
+                $unit = Unit::where('actual_name', $delete->actual_name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                /** delete unit */
+                if (!empty($unit)) {
+                    $unit->delete();
+                }
+            }
+
+            return true; // exit
+        }
+        /** End delete unit */
+
+        /** Start create or update unit */
+        $unit = Unit::findOrFail($id)->toArray();
+     
+        /** remove needless columns */
+        unset(
+            $unit['id'],
+            $unit['deleted_at'],
+            $unit['created_at'],
+            $unit['updated_at']
+        );
+
+        foreach ($business as $b) {
+            /** New business */
+            $unit['business_id'] = $b->id;
+
+            /** Create or update cloned unit */
+            $cloned_unit = Unit::updateOrCreate(
+                [
+                    'actual_name' => $name,
+                    'business_id' => $b->id
+                ],
+                $unit
+            );
+        }
+    }
+
+    /**
+     * Sync brand. Create, update or delete brand for others business
+     * 
+     * @param int $id
+     * @param string $name
+     * @param App\Brands $delete
+     * 
+     * @return void
+     * @author Arquímides Martínez
+     */
+    public function syncBrand($id, $name = "", $delete = null) {
+        /** Get others business */
+        $business_id = auth()->user()->business_id;
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        /** If there is not more business, exit */
+        if (empty($business)) {
+            return true;
+        }
+
+        /** Start delete brand */
+        if (!is_null($delete)) {
+            foreach ($business as $b) {
+                $brand = Brands::where('name', $delete->name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                /** delete brand */
+                if (!empty($brand)) {
+                    $brand->delete();
+                }
+            }
+
+            return true; // exit
+        }
+        /** End delete brand */
+
+        /** Start create or update brand */
+        $brand = Brands::findOrFail($id)->toArray();
+     
+        /** remove needless columns */
+        unset(
+            $brand['id'],
+            $brand['deleted_at'],
+            $brand['created_at'],
+            $brand['updated_at']
+        );
+
+        foreach ($business as $b) {
+            /** New business */
+            $brand['business_id'] = $b->id;
+
+            /** Create or update cloned brand */
+            $cloned_brand = Brands::updateOrCreate(
+                [
+                    'name' => $name,
+                    'business_id' => $b->id
+                ],
+                $brand
+            );
+        }
+    }
+
+    /**
+     * Sync tax group. Create, update or delete taxes for others business
+     * 
+     * @param int $id
+     * @param string $description
+     * @param App\TaxGroup $delete
+     * 
+     * @return void
+     * @author Arquímides Martínez
+     */
+    public function syncTaxGroup($id, $description = "", $delete = null) {
+        /** Get others business */
+        $business_id = auth()->user()->business_id;
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        /** If there is not more business, exit */
+        if (empty($business)) {
+            return true;
+        }
+
+        /** Start delete tax group */
+        if (!is_null($delete)) {
+            foreach ($business as $b) {
+                $tax = TaxGroup::where('description', $delete->description)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                /** delete group */
+                if (!empty($tax)) {
+                    $tax->tax_rates()->detach();
+
+                    $tax->delete();
+                }
+            }
+
+            return true; // exit
+        }
+        /** End delete brand */
+
+        /** Start create or update brand */
+        $tax = TaxGroup::findOrFail($id)->toArray();
+     
+        /** remove needless columns */
+        unset(
+            $tax['id'],
+            $tax['deleted_at'],
+            $tax['created_at'],
+            $tax['updated_at']
+        );
+
+        foreach ($business as $b) {
+            /** New business */
+            $tax['business_id'] = $b->id;
+
+            /** Create or update cloned tax */
+            $cloned_tax = TaxGroup::updateOrCreate(
+                [
+                    'description' => $description,
+                    'business_id' => $b->id
+                ],
+                $tax
+            );
+
+            $tax_rates = $this->syncTaxRate($id, $b->id);
+
+            $cloned_tax->tax_rates()->sync($tax_rates);
+        }
+    }
+
+    /**
+     * Sync taxes. Create and update taxes for others business
+     * 
+     * @param int $id
+     * @param int $cloned_business_id
+     * 
+     * @return array
+     * @author Arquímides Martínez
+     */
+    private function syncTaxRate($id, $cloned_business_id) {
+        $business_id = auth()->user()->business_id;
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        $taxes = TaxRateTaxGroup::where('tax_group_id', $id)->get();
+    
+        $ids = [];
+        foreach ($taxes as $t) {
+            $tax = TaxRate::findOrFail($t->tax_rate_id)->toArray();
+
+            /** remove needless columns */
+            unset(
+                $tax['id'],
+                $tax['deleted_at'],
+                $tax['created_at'],
+                $tax['updated_at'],
+            );
+
+            $tax['business_id'] = $cloned_business_id;
+
+            $cloned_tax = TaxRate::updateOrCreate(
+                [
+                    'name' => $tax['name'],
+                    'type' => $tax['type'],
+                    'business_id' => $cloned_business_id
+                ],
+                $tax
+            );
+
+            array_push($ids, $cloned_tax->id);
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Sync product for all businees
+     * 
+     * @param int $id
+     * @author Arquímides Martínez
+     */
+    public function syncProduct($id, $sku, $type) {
+        $business_id = auth()->user()->business_id;
+
+        $business = Business::where('id', '!=', $business_id)
+            ->select('id')->get();
+
+        /** If there is not more than one business, exit */
+        if (empty($business)) {
+            return true;
+        }
+
+        /** Star delete product */
+            // TODO
+        /** Star delete product */
+
+        /** Start create o update product */
+        $product = collect();
+        foreach ($business as $b) {
+            $product = Product::findOrFail($id)->toArray();
+            $product['business_id'] = $b->id;
+
+            /** Remove needless columns */
+            unset(
+                $product['id'],
+                $product['sku'],
+                $product['created_at'],
+                $product['updated_at']
+            );
+
+            /** Brand */
+            $brand = Brands::find($product['brand_id']);
+            
+            if (!empty($brand)) {
+                /** Sync brand */
+                $this->syncBrand($brand->id, $brand->name);
+
+                $brand = Brands::where('name', $brand->name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                $product['brand_id'] = !empty($brand) ? $brand->id : null;
+            }
+
+            /** Unit */
+            $unit = Unit::find($product['unit_id']);
+
+            if (!empty($unit)) {
+                /** Sync unit */
+                $this->syncUnit($unit->id, $unit->actual_name);
+
+                $unit = Unit::where('actual_name', $unit->actual_name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                $product['unit_id'] = !empty($unit) ? $unit->id : null;
+            }
+
+            /** Category */
+            $category = Category::find($product['category_id']);
+
+            if (!empty($category)) {
+                /** Sync category */
+                $this->syncCategory($category->id, $category->name);
+
+                $category = Category::where('name', $category->name)
+                    ->where('business_id', $b->id)
+                    ->first();
+
+                $product['category_id'] = !empty($category) ? $category->id : null;
+            }
+
+            /** Subcategory */
+            $sub_category = Category::find($product['sub_category_id']);
+
+            if (!empty($sub_category)) {
+                /** Sync subcategory */
+                $this->syncCategory($sub_category->id, $sub_category->name);
+
+                $sub_category = Category::where('name', $sub_category->name)
+                    ->where('business_id', $b->id)
+                    ->where('parent_id', '!=', '0')
+                    ->first();
+
+                $product['sub_category_id'] = !empty($sub_category) ? $sub_category->id : null;
+            }
+
+            /** Tax */
+            $tax = TaxGroup::find($product['tax']);
+
+            if (!empty($tax)) {
+                /** Sync tax groups */
+                $this->syncTaxGroup($tax->id, $tax->description);
+
+                $tax = TaxGroup::where('description', $tax->description)
+                    ->where('business_id', $b->id)
+                    ->where('type', $tax->type)
+                    ->first();
+
+                $product['tax'] = !empty($tax) ? $tax->id : null;
+            }
+
+            $cloned_product = Product::updateOrCreate(
+                [
+                    'sku' => $sku,
+                    'business_id' => $product['business_id']
+                ],
+                $product
+            );
+
+            if ($product['clasification'] == 'product') {
+                $suppliers = ProductHasSuppliers::where('product_id', $id)->get();
+
+                $old_suppliers = [];
+                foreach ($suppliers as $s) {
+                    $prod_supplier = ProductHasSuppliers::updateOrCreate(
+                        [
+                            'product_id' => $cloned_product->id,
+                            'contact_id' => $s->contact_id
+                        ],
+                        [
+                            'catalogue' => $s->catalogue,
+                            'uxc' => $s->uxc,
+                            'weight' => $s->weight,
+                            'dimensions' => $s->dimensions,
+                            'custom_field' => $s->custom_field
+                        ]
+                    );
+
+                    array_push($old_suppliers, $prod_supplier->contact_id);
+                }
+
+                if (!empty($old_suppliers)) {
+                    $deleted = ProductHasSuppliers::where('product_id', $cloned_product->id)
+                        ->whereNotIn('contact_id', [$old_suppliers])
+                        ->get();
+                } else {
+                    $deleted = ProductHasSuppliers::where('product_id', $cloned_product->id)
+                        ->get();
+                }
+                /** Delete product has suppliers */
+                if (!empty($deleted)) {
+                    foreach ($deleted as $d) {
+                        $d->delete();
+                    }
+                }
+
+            } else if ($product['clasification'] == 'kits') {
+                $kits = KitHasProduct::where('parent_id', $id)->get();
+                KitHasProduct::where('parent_id', $cloned_product->id)->forceDelete();
+
+                $old_children = [];
+                foreach ($kits as $k) {
+                    $fields = [];
+                    
+                    /** Child product */
+                    $child_prod_sku = Variation::where('id', $k->children_id)->value('sub_sku');
+                    
+                    if (!empty($child_prod_sku)) {
+                        $child_prod = Product::join('variations as v', 'products.id', 'v.product_id')
+                            ->where('products.business_id', $b->id)
+                            ->where('v.sub_sku', $child_prod_sku)
+                            ->select('v.id')
+                            ->first();
+                            
+                        $fields['children_id'] = $child_prod->id;
+                    } else {
+                        return true;
+                    }
+
+                    $fields['quantity'] = $k->quantity;
+                    
+                    $unit = Unit::findOrFail($k->unit_id);
+
+                    if (!empty($unit)) {
+                        $unit = Unit::where('actual_name', $unit->actual_name)
+                            ->where('business_id', $b->id)
+                            ->first();
+
+                        $fields['unit_id'] = !empty($unit) ? $unit->id : null;
+                    }
+
+                    $new_child = KitHasProduct::updateOrCreate(
+                        [
+                            'parent_id' => $cloned_product->id,
+                            'children_id' => $fields['children_id']
+                        ],
+                        $fields
+                    );
+                }
+            }
+
+            /** create single and variations */
+            if ($cloned_product->type == 'single') {
+                if ($type == "store") {
+                    $variation = Variation::where('product_id', $id)->first();
+                    $this->createSingleProductVariation(
+                        $cloned_product->id,
+                        $cloned_product->sku,
+                        $variation->default_purchase_price,
+                        $variation->dpp_inc_tax,
+                        $variation->profit_percent,
+                        $variation->default_sell_price,
+                        $variation->sell_price_inc_tax
+                    );
+                } else if ($type == "update") {
+                    $variation = Variation::where('product_id', $id)
+                        ->first();
+
+                    if (!empty($variation)) {
+                        $cloned_variation = Variation::where('product_id', $cloned_product->id)
+                            ->first();
+
+                        $cloned_variation->sub_sku = $cloned_product->sku;
+                        $cloned_variation->default_purchase_price = $variation->default_purchase_price;
+                        $cloned_variation->dpp_inc_tax = $variation->dpp_inc_tax;
+                        $cloned_variation->profit_percent = $variation->profit_percent;
+                        $cloned_variation->default_sell_price = $variation->default_sell_price;
+                        $cloned_variation->sell_price_inc_tax = $variation->sell_price_inc_tax;
+                        $cloned_variation->save();
+                    }
+                }
+
+            } else if ($cloned_product->type == 'variable') {
+                // TODO
+            }
+        }
+        /** End create o update product */
     }
 }

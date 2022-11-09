@@ -30,6 +30,7 @@ return [
     'edit_documents'    => 'Editar documentos',
     'documents'         => 'Documentos Fiscales',
     'document'         => 'Documento',
+    'doc'   => 'Doc.',
     'document_type'     => 'Tipo de documento',
     'doc_type'     => 'Tipo doc.',
     'types'             => 'Tipos de Documentos',
@@ -54,4 +55,5 @@ return [
     'document_class' => 'Clase de documento',
     'fiscal_credit_return' => 'Nota de crédito',
     'excluded_subject' => 'Factura de sujeto excluido',
+    'commercial_invoice' => 'Factura comercial',
 ];

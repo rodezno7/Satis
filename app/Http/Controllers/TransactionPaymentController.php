@@ -75,7 +75,7 @@ class TransactionPaymentController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.payments')) {
+        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.create_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -247,7 +247,7 @@ class TransactionPaymentController extends Controller
      */
     public function show($id)
     {
-        if (!auth()->user()->can('purchase.create') && !auth()->user()->can('sell.create')) {
+        if (!auth()->user()->can('purchase.create') && !auth()->user()->can('sell.view_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -294,7 +294,7 @@ class TransactionPaymentController extends Controller
      */
     public function edit($id, $entity_type = 'transaction')
     {
-        if (!auth()->user()->can('purchase.create') && !auth()->user()->can('sell.create')) {
+        if (!auth()->user()->can('purchase.create') && !auth()->user()->can('$sell.create_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -409,7 +409,7 @@ class TransactionPaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.payments')) {
+        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('$sell.create_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -607,7 +607,7 @@ class TransactionPaymentController extends Controller
      */
     public function destroy($id, $entity_type = 'transaction')
     {
-        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.payments')) {
+        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.delete_payments')) {
             abort(403, 'Unauthorized action.');
         }
 

@@ -49,7 +49,8 @@ BEGIN
             WHERE lo.transaction_id = t.id
             LIMIT 1
         ) AS optometrist,
-        bl.name as location
+        bl.name as location,
+        IF (dt.tax_exempt = 1, tsl.unit_price_before_discount, tsl.unit_price) AS unit_price
     FROM transactions AS t
     INNER JOIN transaction_sell_lines AS tsl
         ON t.id = tsl.transaction_id

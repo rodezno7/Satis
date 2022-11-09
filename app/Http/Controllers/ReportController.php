@@ -3666,7 +3666,9 @@ class ReportController extends Controller
                 ->addColumn('qty_total', function($row) use($products, $dispatched_products) {
                     $qty_total = 0;
                     foreach ($products as $p) {
-                        $qty_total += $dispatched_products->where('customer_id', $row->customer_id)->sum('product_'. $p->variation_id);
+                        $qty_total += $dispatched_products->where('customer_id', $row->customer_id)
+                            ->where('transaction_id', $row->transaction_id)
+                            ->sum('product_'. $p->variation_id);
                     }
 
                     return '<span class="display_currency qty_total" data-precision="1" data-orig-value="'. $qty_total .'">'. $qty_total .'</span>';
@@ -4201,7 +4203,15 @@ class ReportController extends Controller
                 ->editColumn('price_exc', '$ {{ @num_format($price_exc) }}')
                 ->editColumn('unit_cost', '$ {{ @num_format($unit_cost) }}')
                 ->editColumn('total_cost', '$ {{ @num_format($total_cost) }}')
-                ->rawColumns(['quantity', 'price_inc', 'price_exc', 'unit_cost', 'total_cost'])
+                ->editColumn('unit_price', '$ {{ @num_format($unit_price) }}')
+                ->rawColumns([
+                    'quantity',
+                    'price_inc',
+                    'price_exc',
+                    'unit_cost',
+                    'total_cost',
+                    'unit_price'
+                ])
                 ->setTotalRecords($commissions['count'])
                 ->setFilteredRecords($commissions['count'])
                 ->skipPaging()

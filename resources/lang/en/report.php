@@ -225,4 +225,5 @@ return [
     'amount_without_vat' => 'Amount without VAT',
     'payment_date' => 'Payment date',
     'no_data_available' => 'No data available',
+    'total_price' => 'Total cost',
 ];

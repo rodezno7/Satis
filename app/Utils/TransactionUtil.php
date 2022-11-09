@@ -991,9 +991,7 @@ class TransactionUtil extends Util
         $output['customer_city'] = $customer->city;
         $output['customer_state'] = $customer->state;
         $output['customer_tax_number'] = $customer->reg_number;
-        $output['customer_dui'] =
-            $customer->is_default ? $transaction->customer_dui :
-                ($customer->dni ? $customer->dni : $customer->tax_number );
+        $output['customer_dui'] = $customer->is_default ? $transaction->customer_dui : $customer->dni;
         $output['customer_nit'] =  $customer->tax_number;
         $output['customer_business_activity'] = $customer->business_line;
         $output['customer_employee_name'] = $this->contactUtil->getCustomerEmployeeName($customer->id);
@@ -2174,6 +2172,7 @@ class TransactionUtil extends Util
                 'sub_sku' => !empty($variation->sub_sku) ? $variation->sub_sku : '',
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 //Field for 2nd column
+                'quantity_uf' => $line->quantity,
                 'quantity' => $this->num_f($line->quantity, false, $this->quantity_precision),
                 'units' => !empty($unit->short_name) ? $unit->short_name : '',
 
@@ -2306,6 +2305,12 @@ class TransactionUtil extends Util
      */
     protected function _receiptDetailsSellReturnLines($lines, $il, $is_product_expiry_enabled, $is_lot_number_enabled)
     {
+        // Number of decimals
+        $business_id = request()->session()->get('user.business_id');$business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+        $product_settings = empty($business->product_settings) ? null : json_decode($business->product_settings, true);
+        $precision = isset($product_settings['decimals_in_fiscal_documents']) ? $product_settings['decimals_in_fiscal_documents'] : 6;
+
         $output_lines = [];
         $output_taxes = ['taxes' => []];
         foreach ($lines as $line) {
@@ -2342,22 +2347,23 @@ class TransactionUtil extends Util
                 'sub_sku' => !empty($variation->sub_sku) ? $variation->sub_sku : '',
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 //Field for 2nd column
+                'quantity_uf' => $line->quantity_returned,
                 'quantity' => $this->num_f($line->quantity_returned, false, $this->quantity_precision),
                 'units' => !empty($unit->short_name) ? $unit->short_name : '',
 
                 'sell_line_note' => !empty($line->sell_line_note) ? $line->sell_line_note : '',
-                'unit_price_exc' => $this->num_f($line->unit_price_before_discount, false, $this->price_precision),
-                'unit_price' => $this->num_f($line->unit_price),
-                'tax_amount' => $this->num_f($line->quantity_returned * $line->tax_amount),
+                'unit_price_exc' => $this->num_f($line->unit_price_before_discount, false, $precision),
+                'unit_price' => $this->num_f($line->unit_price, false, $precision),
+                'tax_amount' => $this->num_f($line->quantity_returned * $line->tax_amount, false, $precision),
                 'tax_name' => !empty($tax_details) ? $tax_details->name: null,
 
                 //Field for 3rd column
-                'unit_price_inc_tax' => $this->num_f($line->unit_price_inc_tax),
-                'unit_price_exc_tax' => $this->num_f($line->unit_price),
-                'line_total_exc_tax' => $this->num_f($line->quantity_returned * $line->unit_price_before_discount, false, $this->price_precision),
+                'unit_price_inc_tax' => $this->num_f($line->unit_price_inc_tax, false, $precision),
+                'unit_price_exc_tax' => $this->num_f($line->unit_price, false, $precision),
+                'line_total_exc_tax' => $this->num_f($line->quantity_returned * $line->unit_price_before_discount, false, $precision),
 
                 //Fields for 4th column
-                'line_total' => $this->num_f($line->unit_price * $line->quantity_returned)
+                'line_total' => $this->num_f($line->unit_price * $line->quantity_returned, false, $precision)
             ];
             $line_array['line_discount'] = 0;
 

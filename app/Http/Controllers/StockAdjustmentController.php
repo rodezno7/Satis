@@ -142,6 +142,9 @@ class StockAdjustmentController extends Controller
                     </div>'
                 )
                 ->removeColumn('id')
+                ->editColumn('transaction_date', function ($row) {
+                    return $this->transactionUtil->format_date($row->transaction_date);
+                })
                 ->editColumn(
                     'final_total', function ($row) use ($show_costs_or_prices) {
                         $final_total = $row->final_total;
@@ -156,7 +159,7 @@ class StockAdjustmentController extends Controller
                 ->editColumn('adjustment_type', function ($row) {
                     return __('stock_adjustment.' . $row->adjustment_type);
                 })
-                ->rawColumns(['final_total', 'action'])
+                ->rawColumns(['transaction_date', 'final_total', 'action'])
                 ->make(true);
         }
 

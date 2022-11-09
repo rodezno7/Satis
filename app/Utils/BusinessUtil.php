@@ -504,4 +504,16 @@ class BusinessUtil extends Util
             'no_note_full_payment' => 0,
         ];
     }
+
+    /**
+     * Return the default settings for the customers.
+     *
+     * @return array
+     */
+    public function defaultExpenseSettings()
+    {
+        return [
+            'hide_location_column' => 0,
+        ];
+    }
 }

@@ -46,17 +46,34 @@ $(document).ready(function(){
         calculate_discount();
     });
 
-    /** disable save button on submit form */
-    // $(document).on('submit', 'form#add_order_form', function(e){
-    //     e.preventDefault();
+    if($('button#order_daterange_filter').length == 1){
+        dateRangeSettings['startDate'] = moment().subtract(6, 'days')
+        dateRangeSettings['endDate'] = moment();
+        //Date range as a button
+        $('button#order_daterange_filter').daterangepicker(
+            dateRangeSettings,
+            function(start, end) {
+                $('button#order_daterange_filter span').html(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+                
+                let start_date = $('button#order_daterange_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                let end_date = $('button#order_daterange_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                $("input#start_date").val(start_date);
+                $("input#end_date").val(end_date);
 
-    //     let btn_submit = $(this).find('button#btn_submit');
-    //     btn_submit.attr('disabled', true);
+                orders_table.ajax.reload();
+            }
+        );
+        $('button#order_daterange_filter').on('cancel.daterangepicker', function(ev, picker) {
+            $('button#order_daterange_filter').html('<i class="fa fa-calendar"></i>'+ LANG.filter_by_day);
+            
+            let start_date = $('button#order_daterange_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+            let end_date = $('button#order_daterange_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+            $("input#start_date").val(start_date);
+            $("input#end_date").val(end_date);
 
-    //     setTimeout(function() {
-    //         btn_submit.removeAttr('disabled');
-    //     }, 10000);
-    // });
+            orders_table.ajax.reload();
+        });
+    }
 
     //Orders table
     var orders_table = $('table#orders_table').DataTable({
@@ -66,6 +83,8 @@ $(document).ready(function(){
             url: '/orders',
             data: function(data){
                 data.location_id = $("select#location").val();
+                data.start_date = $('input#start_date').val();
+                data.end_date = $('input#end_date').val();
             },
         },
         aaSorting: [
@@ -82,11 +101,14 @@ $(document).ready(function(){
             {data: 'quote_date', name: 'quote_date'},
             {data: 'customer_name', name: 'customer_name'},
             {data: 'invoiced', name: 'invoiced'},
-            {data: 'final_total', name: 'transactions.final_total'},
+            {data: 'final_total', name: 'transactions.final_total', className: 'text-right'},
             {data: 'delivery_type', name: 'delivery_type'},
             {data: 'employee_name', name: 'employee_name'},
             {data: 'action', name: 'action'}
-        ]
+        ],
+        "fnDrawCallback": function (oSettings) {
+            __currency_convert_recursively($('table#orders_table'));
+        },
     });
 
     $(document).on("change", "select#location", function(){

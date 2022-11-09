@@ -8,6 +8,9 @@
 				</ul>
 			</div>
 			<div class="panel-body">
+
+				@if(isset($cost_main_account))
+
 				<div class="tab-content">
 					<div class="tab-pane fade in active" id="tab-cost">
 						<div class="boxform_u box-solid_u">
@@ -29,6 +32,9 @@
 						</div>
 					</div>
 				</div>
+				@else
+				<h2>@lang('accounting.define_cost_account')</h2>
+				@endif
 			</div>
 		</div>
 	</div>

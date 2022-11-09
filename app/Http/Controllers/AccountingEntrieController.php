@@ -21,35 +21,42 @@ use DB;
 use Validator;
 use Carbon\Carbon;
 
-class AccountingEntrieController extends Controller
-{
+class AccountingEntrieController extends Controller {
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
+
         if (!auth()->user()->can('entries')) {
             return redirect('home');
         }
+
+        $business_id = request()->session()->get('user.business_id');
+
         $accounts = Catalogue::with('padre')
+        ->where('business_id', $business_id)
         ->where('status', 1)
         ->whereNOTIn('id', [DB::raw("select parent from catalogues")])
         ->orderBy('code', 'asc')
         ->get();
 
         $months = AccountingPeriod::join('fiscal_years', 'fiscal_years.id', 'accounting_periods.fiscal_year_id')
+        ->where('accounting_periods.business_id', $business_id)
         ->where('status', 1)        
         ->orderBy('fiscal_years.year', 'desc')
         ->orderBy('accounting_periods.month', 'desc')
         ->pluck('accounting_periods.name', 'accounting_periods.id');
 
-        $years = FiscalYear::pluck('year', 'id');
+        $years = FiscalYear::where('business_id', $business_id)
+        ->pluck('year', 'id');
 
         $periods = DB::table('accounting_periods')
         ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
         ->select('accounting_periods.*')
+        ->where('accounting_periods.business_id', $business_id)
         ->where('status', 1)
         ->orderBy('fiscal_years.year', 'desc')
         ->orderBy('accounting_periods.month', 'desc')
@@ -58,6 +65,7 @@ class AccountingEntrieController extends Controller
         $periods_filter = DB::table('accounting_periods')
         ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
         ->select('accounting_periods.*')
+        ->where('accounting_periods.business_id', $business_id)
         ->orderBy('fiscal_years.year', 'desc')
         ->orderBy('accounting_periods.month', 'desc')
         ->get();
@@ -70,17 +78,30 @@ class AccountingEntrieController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
 
-        $business_locations = BusinessLocation::select('name', 'id')->where('business_id', $business_id)->get();
+        $business_locations = BusinessLocation::select('name', 'id')
+        ->where('business_id', $business_id)
+        ->get();
 
         $business_locations_filter = BusinessLocation::where('business_id', $business_id)
         ->pluck('name', 'id');
 
-        $business_numeration_entries = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
-        $business = Business::where('id', $business_id)->first();
+        $business_numeration_entries = Business::select('entries_numeration_mode')
+        ->where('id', $business_id)
+        ->first();
+        
+        $business = Business::where('id', $business_id)
+        ->first();
 
-        $bank_accounts_ddl = BankAccount::select('name', 'id')->get();
-        $bank_transaction_types_ddl = TypeBankTransaction::select('name', 'id')->get();
-        $business_locations_ddl = BusinessLocation::select('name', 'id')->where('business_id', $business_id)->get();
+        $bank_accounts_ddl = BankAccount::select('name', 'id')
+        ->where('business_id', $business_id)
+        ->get();
+
+        $bank_transaction_types_ddl = TypeBankTransaction::select('name', 'id')
+        ->get();
+
+        $business_locations_ddl = BusinessLocation::select('name', 'id')
+        ->where('business_id', $business_id)
+        ->get();
 
         $contacts = Contact::select('id', 'name')
         ->where('business_id', $business_id)
@@ -94,11 +115,12 @@ class AccountingEntrieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
+
         if(!auth()->user()->can('entries.create')) {
             return redirect('home');
         }
+
         return view('entries.index');
     }
 
@@ -108,11 +130,12 @@ class AccountingEntrieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         if(!auth()->user()->can('entries.create')) {
             return redirect('home');
         }
+
         $fecha = $request->input('date');
         $concepto = $request->input('description');
         $cuenta = $request->input('account_id');
@@ -145,9 +168,9 @@ class AccountingEntrieController extends Controller
                     'business_location_id' => 'required',
                 ]
             );
-        }
-        else
-        {
+
+        } else {
+
             $validateData = $request->validate(
                 [
                     'date' => 'required|date',
@@ -166,46 +189,61 @@ class AccountingEntrieController extends Controller
 
         }
         
-        if($request->ajax())
-        {
-            try
-            {
+        if($request->ajax()) {
+
+            try {
+
                 $period = DB::table('accounting_periods as period')
                 ->join('fiscal_years as year', 'year.id', '=', 'period.fiscal_year_id')
                 ->select('year.year', 'period.month')
                 ->where('period.id', $period_id)
+                ->where('period.business_id', $business_id)
                 ->first();
+
                 $date = Carbon::parse($fecha);
                 $mdate = $date->month;
                 $ydate = $date->year;
-                if($period->year != $ydate){
+
+                if($period->year != $ydate) {
+
                     $output = [
                         'success' => false,
                         'msg' => __("accounting.period_invalid")
                     ];
-                }
-                else{
-                    if($period->month != $mdate){
+
+                } else {
+
+                    if($period->month != $mdate) {
+
                         $output = [
                             'success' => false,
                             'msg' => __("accounting.period_invalid")
                         ];
-                    }
-                    else{
+
+                    } else {
+
                         DB::beginTransaction();
+                        
                         $entrie = new AccountingEntrie;
                         $entrie->date = $fecha;
                         $entrie->number = $number;
                         $entrie->correlative = $number;
+                        $entrie->business_id = $business_id;
 
                         $short_name_cont = str_pad($number, 5, "0", STR_PAD_LEFT);
                         $type_q = TypeEntrie::where('id', $type_entrie_id)->first();
                         $short_name_type = $type_q->short_name;
+
                         if($mdate < 10) {
+
                             $short_name_month = '0'.$mdate;
+
                         } else {
+
                             $short_name_month = $mdate;
+
                         }
+                        
                         $short_name_year = $ydate;
                         $short_name_full = $short_name_type.'-'.$short_name_year.$short_name_month.'-'.$short_name_cont;
 
@@ -216,19 +254,20 @@ class AccountingEntrieController extends Controller
                         $entrie->short_name = $short_name_full;
 
                         if ($business->enable_validation_entries == 1) {
-                            $entrie->status = 0;
-                        }
-                        else {
-                            $entrie->status = 1;
-                            
-                            
-                        }
 
+                            $entrie->status = 0;
+
+                        } else {
+
+                            $entrie->status = 1;                           
+                            
+                        }
 
                         $entrie->save();
                         $cont = 0;                
-                        while($cont < count($account_id))
-                        {
+                        
+                        while($cont < count($account_id)) {
+
                             $detalle = new AccountingEntriesDetail;
                             $detalle->entrie_id = $entrie->id;
                             $detalle->account_id = $account_id[$cont];
@@ -237,8 +276,10 @@ class AccountingEntrieController extends Controller
                             $detalle->description = $description[$cont];
                             $detalle->save();
                             $cont = $cont + 1;
-                        }                
+                        }
+
                         DB::commit();
+                        
                         $output = [
                             'success' => true,
                             'msg' => __("accounting.entrie_added")
@@ -247,6 +288,7 @@ class AccountingEntrieController extends Controller
                 }
                 
             } catch(\Exception $e){
+
                 DB::rollback();
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
@@ -254,6 +296,7 @@ class AccountingEntrieController extends Controller
                     'msg' => __("messages.something_went_wrong")
                 ];
             }
+
             return $output;
         }
     }
@@ -264,12 +307,14 @@ class AccountingEntrieController extends Controller
      * @param  \App\AccountingEntrie  $accountingEntrie
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
+
         if(!auth()->user()->can('entries.view')) {
             return redirect('home');
         }
+
         $entrie = AccountingEntrie::where('id', $id)->first();
+
         return response()->json($entrie);
     }
 
@@ -279,11 +324,12 @@ class AccountingEntrieController extends Controller
      * @param  \App\AccountingEntrie  $accountingEntrie
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
+
         if(!auth()->user()->can('entries.update')) {
             return redirect('home');
         }
+        
         $entrie = AccountingEntrie::where('id', $id)->first();
         return response()->json($entrie);
     }
@@ -295,12 +341,14 @@ class AccountingEntrieController extends Controller
      * @param  \App\AccountingEntrie  $accountingEntrie
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
+
         if(!auth()->user()->can('entries.update')) {
             return redirect('home');
         }
+
         $entrie = AccountingEntrie::find($id);
+        
         $validateData = $request->validate(
             [
                 'date' => 'required|date',
@@ -311,10 +359,12 @@ class AccountingEntrieController extends Controller
                 'date.date' => 'El formato de la fecha no es correcto',
                 'description.required' => 'La descripción es requerida',
             ]);
-        if($request->ajax())
-        {
+        
+        if($request->ajax()) {
+
             $entrie->fill($request->all());
             $entrie->save();
+            
             return response()->json([
                 "mensaje" => 'Actualizado'
             ]);
@@ -326,43 +376,56 @@ class AccountingEntrieController extends Controller
      * @param  \App\AccountingEntrie  $accountingEntrie
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
+
         if(!auth()->user()->can('entries.delete')) {
             return redirect('home');
         }
+
         $entrie = AccountingEntrie::findOrFail($id);
-        try{
-            $count = BankTransaction::where('accounting_entrie_id', $entrie->id)->count();
-            if($count > 0){
+        
+        try {
+
+            $count = BankTransaction::where('accounting_entrie_id', $entrie->id)
+            ->count();
+            
+            if($count > 0) {
+
                 $output = [
                     'success' => false,
                     'msg' => __("accounting.entrie_has_transaction")
                 ];
-            }
-            else{
+
+            } else {
+
                 $entrie->forceDelete();
                 $output = [
                     'success' => true,
                     'msg' => __("accounting.entrie_deleted")
                 ];
             }
-        }
-        catch (\Exception $e){
+
+        } catch (\Exception $e) {
+
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             $output = [
                 'success' => false,
                 'msg' => __("messages.something_went_wrong")
             ];
+
         }
+        
         return $output;        
     }
 
     //Additional Functions
-    public function search($id)
-    {
-        $cuenta = Catalogue::where('id', $id)->first();
+    public function search($id) {
+
+        $cuenta = Catalogue::where('id', $id)
+        ->first();
+
         if ($cuenta == null) {
+
             $datos = array(
                 'id' => 'nothing',
                 'code' => 'nothing',
@@ -371,9 +434,9 @@ class AccountingEntrieController extends Controller
                 'status' => 'nothing'
             );
             return response()->json($datos);
-        }
-        else
-        {
+
+        } else {
+
             $datos = array(
                 'id' => $cuenta->id,
                 'code' => $cuenta->code,
@@ -381,29 +444,36 @@ class AccountingEntrieController extends Controller
                 'parent' => $cuenta->parent,
                 'status' => $cuenta->status                
             );
+
             return response()->json($datos);
         }
     }
 
     public function getEntries($type, $location, $period) {
 
+        $business_id = request()->session()->get('user.business_id');
+
         $entries = DB::table('accounting_entries as entrie')
         ->leftJoin('accounting_periods as period', 'period.id', '=', 'entrie.accounting_period_id')
         ->leftJoin('business_locations as location', 'location.id', '=', 'entrie.business_location_id')
         ->leftJoin('type_entries as type', 'type.id', '=', 'entrie.type_entrie_id')
         ->leftJoin('bank_transactions as bank_transaction', 'bank_transaction.accounting_entrie_id', '=', 'entrie.id')
-        ->select('entrie.*', 'period.name as period_name', 'location.name as name_location', 'type.name as name_type');
+        ->select('entrie.*', 'period.name as period_name', 'location.name as name_location', 'type.name as name_type')
+        ->where('entrie.business_id', $business_id);
         
 
         if($type != 0) {
+
             $entries->where('type_entrie_id', $type);
         }
 
         if($location != 0) {
+
             $entries->where('business_location_id', $location);
         }
 
         if($period != 0) {
+
             $entries->where('accounting_period_id', $period);
         }
 
@@ -419,6 +489,7 @@ class AccountingEntrieController extends Controller
         ->where('detalle.entrie_id', $id)
         ->orderBy('detalle.id', 'asc')
         ->get();
+
         return response()->json($detalles);
 
     }
@@ -428,22 +499,10 @@ class AccountingEntrieController extends Controller
 
         try {
 
+            $business_id = request()->session()->get('user.business_id');
+
             $entrie_q = AccountingEntrie::findOrFail($id);
             
-            /*$debits = DB::table('accounting_entries_details as aed')
-            ->join('catalogues as c', 'c.id', '=', 'aed.account_id')
-            ->where('aed.entrie_id', $id)
-            ->where('debit', '<>', 0.00)
-            ->orderByRaw('CONVERT(c.code, CHAR) asc')
-            ->get();
-
-            $credits = DB::table('accounting_entries_details as aed')
-            ->join('catalogues as c', 'c.id', '=', 'aed.account_id')
-            ->where('aed.entrie_id', $id)
-            ->where('credit', '<>', 0.00)
-            ->orderByRaw('CONVERT(c.code, CHAR) asc')
-            ->get();*/
-
             $details = DB::table('accounting_entries_details as aed')
             ->join('catalogues as c', 'c.id', '=', 'aed.account_id')
             ->select('c.id', 'c.code', 'c.name', 'aed.debit', 'aed.credit', 'aed.description')
@@ -460,16 +519,16 @@ class AccountingEntrieController extends Controller
             ->join('fiscal_years as fy', 'fy.id', '=', 'ap.fiscal_year_id')
             ->where('fy.year', $ydate)
             ->where('ap.month', $mdate)
+            ->where('ap.business_id', $business_id)
             ->first();
 
             $entrie = array(
+
                 'date' => $date->format('Y-m-d'),
                 'description' => $entrie_q->description,
                 'accounting_period_id' => $accounting_period->id,
                 'type_entrie_id' => $entrie_q->type_entrie_id,
                 'business_location_id' => $entrie_q->business_location_id,
-                /*'debits' => $debits,
-                'credits' => $credits*/
                 'details' => $details
             );
 
@@ -479,7 +538,7 @@ class AccountingEntrieController extends Controller
             ];
 
         } catch(\Exception $e) {
-            DB::rollback();
+
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
 
             $output = [
@@ -496,7 +555,14 @@ class AccountingEntrieController extends Controller
     }
 
     public function getPeriods() {
-        $periods = AccountingPeriod::select('id', 'name')->where('status', 1)->get();
+
+        $business_id = request()->session()->get('user.business_id');
+
+        $periods = AccountingPeriod::select('id', 'name')
+        ->where('business_id', $business_id)
+        ->where('status', 1)
+        ->get();
+        
         return response()->json($periods);
     }
 
@@ -505,6 +571,8 @@ class AccountingEntrieController extends Controller
         $date = Carbon::now();
         $mdate = $date->month;
         $ydate = $date->year;
+
+        $business_id = request()->session()->get('user.business_id');
 
         $months = array(
             __('accounting.january'),
@@ -533,6 +601,7 @@ class AccountingEntrieController extends Controller
             ->where('fy.year', $ydate)
             ->where('ap.month', $mdate)
             ->where('ap.status', 0)
+            ->where('ap.business_id', $business_id)
             ->first();
 
             if($accounting_period) {
@@ -545,6 +614,7 @@ class AccountingEntrieController extends Controller
 
                 $fiscalYear = FiscalYear::firstOrCreate([
                     'year' => $ydate,
+                    'business_id' => $business_id
                 ]);
 
                 $accounting_period = AccountingPeriod::firstOrCreate([
@@ -552,6 +622,7 @@ class AccountingEntrieController extends Controller
                     'fiscal_year_id' => $fiscalYear->id,
                     'month' => $mdate,
                     'status' => '1',
+                    'business_id' => $business_id
                 ]);
 
             }            
@@ -583,11 +654,14 @@ class AccountingEntrieController extends Controller
         $mdate = $date->month;
         $ydate = $date->year;
 
+        $business_id = request()->session()->get('user.business_id');
+
         $accounting_period = DB::table('accounting_periods as ap')
         ->join('fiscal_years as fy', 'fy.id', '=', 'ap.fiscal_year_id')
         ->where('fy.year', $ydate)
         ->where('ap.month', $mdate)
         ->where('ap.status', 1)
+        ->where('ap.business_id', $business_id)
         ->first();
 
         if ($accounting_period) {
@@ -614,15 +688,18 @@ class AccountingEntrieController extends Controller
         ->select(DB::raw("SUM(debit) as debe, SUM(credit) as haber"))
         ->where('entrie_id', $id)
         ->first();
+
         $datos = array(
             'debe' => $totales->debe,
             'haber' => $totales->haber,
         );
+
         return $datos;
 
     }
-    public function getEntrieDetailsDebe($id)
-    {
+
+    public function getEntrieDetailsDebe($id) {
+
         $detalles = DB::table('accounting_entries_details as detalle')
         ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')        
         ->select(['detalle.id', 'detalle.entrie_id', 'detalle.account_id', 'cuenta.code', 'cuenta.name', 'detalle.debit', 'detalle.credit', 'detalle.description'])
@@ -630,10 +707,12 @@ class AccountingEntrieController extends Controller
         ->where('detalle.debit', '<>', 0.00)
         ->orderBy('detalle.id', 'asc')
         ->get();
+
         return response()->json($detalles);
     }
-    public function getEntrieDetailsHaber($id)
-    {
+
+    public function getEntrieDetailsHaber($id) {
+
         $detalles = DB::table('accounting_entries_details as detalle')
         ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')        
         ->select(['detalle.id', 'detalle.entrie_id', 'detalle.account_id', 'cuenta.code', 'cuenta.name', 'detalle.debit', 'detalle.credit', 'detalle.description'])
@@ -641,22 +720,24 @@ class AccountingEntrieController extends Controller
         ->where('detalle.credit', '<>', 0.00)
         ->orderBy('detalle.id', 'asc')
         ->get();
+        
         return response()->json($detalles);
     }
 
-    public function getEntrieDetails($id)
-    {
+    public function getEntrieDetails($id) {
+
         $detalles = DB::table('accounting_entries_details as detalle')
         ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')        
         ->select(['detalle.id', 'detalle.entrie_id', 'detalle.account_id', 'cuenta.code', 'cuenta.name', 'detalle.debit', 'detalle.credit', 'detalle.description'])
         ->where('detalle.entrie_id', $id)
         ->orderBy('detalle.id', 'asc')
         ->get();
+        
         return response()->json($detalles);
     }
 
-    public function editEntrie(Request $request)
-    {
+    public function editEntrie(Request $request) {
+
         $date = $request->input('date2');
         $description_head = $request->input('description2');
         $cuenta = $request->input('account_id2');
@@ -704,10 +785,10 @@ class AccountingEntrieController extends Controller
 
         }
         
-        if($request->ajax())
-        {
-            try
-            {                
+        if($request->ajax()) {
+
+            try {
+
                 DB::beginTransaction();
                 AccountingEntriesDetail::where('entrie_id', $id_partida)->forceDelete();
                 $entrie = AccountingEntrie::find($id_partida);
@@ -718,8 +799,9 @@ class AccountingEntrieController extends Controller
                 $entrie->business_location_id = $request->input('ebusiness_location_id');
                 $entrie->save();
                 $cont = 0;
-                while($cont < count($account_id))
-                {
+                
+                while($cont < count($account_id)) {
+
                     $detalle = new AccountingEntriesDetail;
                     $detalle->entrie_id = $id_partida;
                     $detalle->account_id = $account_id[$cont];
@@ -728,60 +810,79 @@ class AccountingEntrieController extends Controller
                     $detalle->description = $description[$cont];
                     $detalle->save();
                     $cont = $cont + 1;
-                }                
+
+                }
+
                 DB::commit();
+
                 $output = [
                     'success' => true,
                     'msg' => __('accounting.updated_successfully')
                 ];
+
             } catch(\Exception $e){
+
                 DB::rollback();
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
             }
+
             return $output;
         }
     }
 
-    public function searchBankTransaction($id)
-    {
-        $count = BankTransaction::where('accounting_entrie_id', $id)->count();
+    public function searchBankTransaction($id) {
+
+        $count = BankTransaction::where('accounting_entrie_id', $id)
+        ->count();
+
         if ($count > 0) {
+
             $transaction = BankTransaction::where('accounting_entrie_id', $id)->first();
             $id = $transaction->id;
-        }
-        else {
+
+        } else {
+
             $id = 0;
+
         }
+        
         $output = [
             'count' => $count,
             'id' => $id
         ];
+        
         return $output;
     }
 
-    public function getNumberEntrie($date)
-    {
+    public function getNumberEntrie($date) {
+
         $business_id = request()->session()->get('user.business_id');
         $date_entrie = Carbon::parse($date);
         $mdate = $date_entrie->month;
         $ydate = $date_entrie->year;
         $config_numeration = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
         $mode_numeration = $config_numeration->entries_numeration_mode;
+        $business_id = request()->session()->get('user.business_id');
 
         if($mode_numeration == 'month') {
 
             $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
             ->whereMonth('date', $mdate)
             ->whereYear('date', $ydate)
+            ->where('business_id', $business_id)
             ->first();
 
             if($count->last_number == null) {
+
                 $code = 1;
+
             } else {
+
                 $code = $count->last_number + 1;
             }
         }
@@ -790,17 +891,24 @@ class AccountingEntrieController extends Controller
 
             $count = AccountingEntrie::select(DB::raw('MAX(number) as last_number'))
             ->whereYear('date', $ydate)
+            ->where('business_id', $business_id)
             ->first();
 
             if($count->last_number == null) {
+
                 $code = 1;
+
             } else {
+
                 $code = $count->last_number + 1;
+
             }
         }
 
-        if($mode_numeration == 'manual'){
+        if($mode_numeration == 'manual') {
+
             $code = 0;
+
         }
 
         return response()->json([
@@ -808,25 +916,31 @@ class AccountingEntrieController extends Controller
         ]);
     }
 
-    public function getCorrelativeEntrie($date)
-    {
+    public function getCorrelativeEntrie($date) {
+
         $business_id = request()->session()->get('user.business_id');
         $date_entrie = Carbon::parse($date);
         $mdate = $date_entrie->month;
         $ydate = $date_entrie->year;
         $config_numeration = Business::select('entries_numeration_mode')->where('id', $business_id)->first();
         $mode_numeration = $config_numeration->entries_numeration_mode;
+        
         if($mode_numeration == 'month') {
 
             $count = AccountingEntrie::select(DB::raw('MAX(correlative) as last_number'))
             ->whereMonth('date', $mdate)
             ->whereYear('date', $ydate)
+            ->where('business_id', $business_id)
             ->first();
 
-            if($count->last_number == null){
+            if($count->last_number == null) {
+
                 $code = 1;
+
             } else {
+
                 $code = $count->last_number + 1;
+
             }
         }
 
@@ -834,18 +948,23 @@ class AccountingEntrieController extends Controller
 
             $count = AccountingEntrie::select(DB::raw('MAX(correlative) as last_number'))
             ->whereYear('date', $ydate)
+            ->where('business_id', $business_id)
             ->first();
 
             if($count->last_number == null) {
 
                 $code = 1;
+
             } else {
+
                 $code = $count->last_number + 1;
+
             }
         }
 
 
-        if($mode_numeration == 'manual'){
+        if($mode_numeration == 'manual') {
+
             $code = 0;
         }
 
@@ -854,17 +973,20 @@ class AccountingEntrieController extends Controller
         ]);
     }
 
-    public function changeStatus($id, $number)
-    {
-        try
-        {
+    public function changeStatus($id, $number) {
+
+        try {
+
             $business_id = request()->session()->get('user.business_id');
 
             $entrie = AccountingEntrie::findOrFail($id);
-            $transaction = BankTransaction::where('accounting_entrie_id', $entrie->id)->first();
+            $transaction = BankTransaction::where('accounting_entrie_id', $entrie->id)
+            ->first();
+            
             $date = $entrie->date;
             
             $current_status = $entrie->status;
+            
             if ($current_status == 1) {
                 $entrie->status = 0;
                 
@@ -873,8 +995,10 @@ class AccountingEntrieController extends Controller
                 $entrie->status = 1;               
 
                 if($transaction != null) {
+
                     $transaction->status = 1;
                     $transaction->save();
+
                 }
             }
 
@@ -887,22 +1011,26 @@ class AccountingEntrieController extends Controller
             ];
 
 
-        } catch(\Exception $e){
+        } catch(\Exception $e) {
+
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
             $output = [
                 'success' => false,
                 'msg' => __("messages.something_went_wrong")
             ];
         }
+
         return $output;
     }
 
-    public function getResultCreditorAccounts($date)
-    {
+    public function getResultCreditorAccounts($date) {
+
         $business_id = request()->session()->get('user.business_id');
         $business = Business::where('id', $business_id)->first();
 
-        $account_creditor = Catalogue::where('id', $business->accounting_creditor_result_id)->first();
+        $account_creditor = Catalogue::where('id', $business->accounting_creditor_result_id)
+        ->first();
 
         $accounts_credit = DB::table('catalogues as catalogue')
         ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
@@ -910,61 +1038,69 @@ class AccountingEntrieController extends Controller
         ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
         ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
         ->where('catalogue.code', 'like', ''.$account_creditor->code.'%')
+        ->where('catalogue.business_id', $business_id)
         ->orderBy('catalogue.code', 'asc')
         ->groupBy('catalogue.id')
         ->get();
 
         return response()->json($accounts_credit);
+
     }
 
-    public function getResultDebtorAccounts($date)
-    {
-       $business_id = request()->session()->get('user.business_id');
-       $business = Business::where('id', $business_id)->first();
+    public function getResultDebtorAccounts($date) {
 
-       $account_debtor = Catalogue::where('id', $business->accounting_debtor_result_id)->first();
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
 
-       $accounts_debit = DB::table('catalogues as catalogue')
-       ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
-       ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-       ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
-       ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
-       ->where('catalogue.code', 'like', ''.$account_debtor->code.'%')
-       ->orderBy('catalogue.code', 'asc')
-       ->groupBy('catalogue.id')
-       ->get();
+        $account_debtor = Catalogue::where('id', $business->accounting_debtor_result_id)
+        ->first();
 
-       return response()->json($accounts_debit);
-   }
+        $accounts_debit = DB::table('catalogues as catalogue')
+        ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
+        ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
+        ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
+        ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
+        ->where('catalogue.code', 'like', ''.$account_debtor->code.'%')
+        ->where('catalogue.business_id', $business_id)
+        ->orderBy('catalogue.code', 'asc')
+        ->groupBy('catalogue.id')
+        ->get();
 
-   public function getProfitAndLossAccount()
-   {
-       $business_id = request()->session()->get('user.business_id');
-       $business = Business::where('id', $business_id)->first();
+        return response()->json($accounts_debit);
+    }
 
-       $account = DB::table('catalogues as catalogue')
-       ->select('catalogue.id', 'catalogue.code', 'catalogue.name')
-       ->where('catalogue.id', $business->accounting_profit_and_loss_id)
-       ->first();
+    public function getProfitAndLossAccount() {
 
-       return response()->json($account);
-   }
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+
+        $account = DB::table('catalogues as catalogue')
+        ->select('catalogue.id', 'catalogue.code', 'catalogue.name')
+        ->where('catalogue.id', $business->accounting_profit_and_loss_id)
+        ->where('catalogue.business_id', $business_id)
+        ->first();
+
+        return response()->json($account);
+    }
 
     /**
      * Assign a short name to approved entries that do not have it.
      * 
      * @return string
      */
-    public function assignShortName()
-    {
+    public function assignShortName() {
+
         try {
+
             DB::beginTransaction();
 
             $entries = AccountingEntrie::where('status', 1)
+            ->where('business_id', $business_id)
             ->whereNull('short_name')
             ->get();
 
             foreach ($entries as $entrie) {
+
                 $date = Carbon::parse($entrie->date);
                 $mdate = $date->month;
                 $ydate = $date->year;
@@ -973,9 +1109,13 @@ class AccountingEntrieController extends Controller
                 $short_name_type = $type_q->short_name;
 
                 if ($mdate < 10) {
+
                     $short_name_month = '0' . $mdate;
+
                 } else {
+
                     $short_name_month = $mdate;
+                
                 }
 
                 $code = $entrie->correlative;
@@ -1007,13 +1147,16 @@ class AccountingEntrieController extends Controller
 
         try {
 
-            DB::beginTransaction();            
+            DB::beginTransaction();
+
+            $business_id = request()->session()->get('user.business_id');
 
             if ($mode == 'month') {
 
                 $entries = DB::table('accounting_entries as entrie')
                 ->select('entrie.*')
-                ->where('entrie.accounting_period_id', $period)               
+                ->where('entrie.accounting_period_id', $period)
+                ->where('entrie.business_id', $business_id)
                 ->orderBy('entrie.date', 'ASC')
                 ->orderBy('entrie.id', 'ASC')
                 ->get();
@@ -1025,6 +1168,7 @@ class AccountingEntrieController extends Controller
                 $entries = DB::table('accounting_entries as entrie')
                 ->join('accounting_periods as period', 'period.id', '=', 'entrie.accounting_period_id')
                 ->select('entrie.*')
+                ->where('entrie.business_id', $business_id)
                 ->where('period.fiscal_year_id', $period)                
                 ->orderBy('entrie.date', 'ASC')
                 ->orderBy('entrie.id', 'ASC')
@@ -1036,7 +1180,9 @@ class AccountingEntrieController extends Controller
 
             foreach($entries as $entrie) {
 
-                $entrie = AccountingEntrie::where('id', $entrie->id)->first();
+                $entrie = AccountingEntrie::where('id', $entrie->id)
+                ->first();
+                
                 $entrie->number = $number;
                 $entrie->correlative = $number;
 
@@ -1047,11 +1193,17 @@ class AccountingEntrieController extends Controller
                 $short_name_cont = str_pad($number, 5, "0", STR_PAD_LEFT);
                 $type_q = TypeEntrie::where('id', $entrie->type_entrie_id)->first();
                 $short_name_type = $type_q->short_name;
+                
                 if ($mdate < 10) {
+
                     $short_name_month = '0' . $mdate;
+                
                 } else {
+                    
                     $short_name_month = $mdate;
+                
                 }
+
                 $short_name_year = $ydate;
                 $short_name_full = $short_name_type . '-' . $short_name_year . $short_name_month . '-' . $short_name_cont;
 
@@ -1062,9 +1214,7 @@ class AccountingEntrieController extends Controller
                 $number = $number + 1;
             }
 
-            DB::commit();
-
-            
+            DB::commit();           
 
             $output = [
                 'success' => true,
@@ -1072,14 +1222,68 @@ class AccountingEntrieController extends Controller
                 'data' => $entries
             ];
 
-        } catch(\Exception $e){
+        } catch(\Exception $e) {
+
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
             $output = [
                 'success' => false,
                 'msg' => __('accounting.success_false')
             ];
         }
+
         return $output;
+    }
+
+    public function getApertureDebitAccounts($date) {
+
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+
+        $accounts_debit = DB::table('catalogues as catalogue')
+        ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
+        ->select(
+            DB::raw("catalogue.code as code_query"),
+            'catalogue.id',
+            'catalogue.code',
+            'catalogue.name',
+            DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date < '".$date."') as balance")
+        )
+        ->where('catalogue.business_id', $business_id)
+        ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
+        ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
+        ->where('catalogue.code', 'like', '1%')
+        ->groupBy('catalogue.id')
+        ->orderByRaw('CONVERT(catalogue.code, CHAR) asc')
+        ->get();
+
+        return response()->json($accounts_debit);
+    }
+
+    public function getApertureCreditAccounts($date) {
+
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+
+        $accounts_credit = DB::table('catalogues as catalogue')
+        ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
+        ->select(
+            DB::raw("catalogue.code as code_query"),
+            'catalogue.id',
+            'catalogue.code',
+            'catalogue.name',
+            DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date < '".$date."') as balance")
+        )
+        ->where('catalogue.business_id', $business_id)
+        ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
+        ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
+        ->where('catalogue.code', 'like', '2%')
+        ->orWhere('catalogue.code', 'like', '3%')
+        ->groupBy('catalogue.id')
+        ->orderByRaw('CONVERT(catalogue.code, CHAR) asc')
+        ->get();
+
+        return response()->json($accounts_credit);
     }
 }

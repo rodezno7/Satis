@@ -31,9 +31,20 @@ class WarehouseController extends Controller
         }
 
         if (request()->ajax()) {
-            $warehouse = Warehouse::leftJoin('business_locations as bl', 'warehouses.business_location_id', 'bl.id')
-                ->select(['warehouses.code', 'warehouses.name', 'bl.name as blname', 'warehouses.location', 'warehouses.status', 'warehouses.id']);
-            return Datatables::of($warehouse)
+            $business_id = auth()->user()->business_id;
+
+            $warehouses = Warehouse::leftJoin('business_locations as bl', 'warehouses.business_location_id', 'bl.id')
+                ->where('warehouses.business_id', $business_id)
+                ->select(
+                    'warehouses.code',
+                    'warehouses.name',
+                    'bl.name as blname',
+                    'warehouses.location',
+                    'warehouses.status',
+                    'warehouses.id'
+                );
+
+            return Datatables::of($warehouses)
                 ->addColumn(
                     'action',
                     '@can("warehouse.update")

@@ -259,5 +259,8 @@ return [
     'business' => env('APP_BUSINESS', 'general'),
 
     // Precision of purchase and sale prices
-    'price_precision' => env('PRICE_PRECISION', 6)
+    'price_precision' => env('PRICE_PRECISION', 6),
+
+    // Precision of purchase and sale prices
+    'clone_product' => env('CLONE_PRODUCT', false)
 ];

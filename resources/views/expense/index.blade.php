@@ -77,7 +77,8 @@
                                     <tr>
                                         {{--  --}}
                                         <th>@lang('messages.date')</th>{{-- fecha  --}}
-                                        <th>@lang('business.location')</th>
+                                        <th @if ($hide_location_column) class="hide-column" @endif>@lang('business.location')</th>
+                                        <th>@lang('expense.expense_provider')</th>
                                         <th>@lang('expense.expense_category')</th>
                                         <th>@lang('document_type.title')</th>
                                         <th>@lang('purchase.ref_no')</th> 
@@ -88,11 +89,11 @@
                                 </thead>
                                 <tfoot>
                                     <tr class="bg-gray font-17 text-center footer-total">
-                                        <td colspan="4"><strong>@lang('sale.total'):</strong></td>
+                                        <td colspan="6"><strong>@lang('sale.total'):</strong></td>
                                         <td id="footer_payment_status_count"></td>
                                         <td><span class="display_currency" id="footer_expense_total"
                                                 data-currency_symbol="true"></span></td>
-                                        <td colspan="2"></td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>

@@ -65,7 +65,8 @@ class ReporterController extends Controller
 		$this->transactionUtil = $transactionUtil;
 	}
 
-	public function allEntries(Request $request){
+	public function allEntries(Request $request) {
+
 
 		$date_from = Carbon::parse($request->input('from'));
 		$date_to = Carbon::parse($request->input('to'));
@@ -82,9 +83,6 @@ class ReporterController extends Controller
 		
 		$header2 = "".__('accounting.from_date')." ".$from_date." ".__('accounting.to_date')." ".$to_date;
 		$header3 = "".__('accounting.from_date')." ".$date_from->format('d/m/Y')." ".__('accounting.to_date')." ".$date_to->format('d/m/Y');
-
-
-
 		
 		$business_id = request()->session()->get('user.business_id');
 		$business = Business::where('id', $business_id)->first();
@@ -101,6 +99,7 @@ class ReporterController extends Controller
 		$entries = DB::table('accounting_entries as ae')
 		->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
 		->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie', 'ae.short_name')
+		->where('ae.business_id', $business_id)
 		->whereBetween('ae.date', [$inicio, $final])
 		->orderBy('ae.correlative', 'asc')->get();
 		
@@ -108,6 +107,7 @@ class ReporterController extends Controller
 		->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
 		->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
 		->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
+		->where('partida.business_id', $business_id)
 		->whereBetween('partida.date', [$inicio, $final])
 		->orderBy('cuenta.code', 'asc')
 		->get();
@@ -141,13 +141,18 @@ class ReporterController extends Controller
 				
 				$cuenta = DB::table('catalogues')
 				->select('name')
+				->where('business_id', $business_id)
 				->where('code', $mayor)
 				->first();
 				
 				if ($cuenta) {
+					
 					$nombre = $cuenta->name;
+
 				} else {
+
 					$nombre = 'Sin Mayor';
+
 				}
 				
 				if (($id_partida == $detail->entrie_id)) {
@@ -342,13 +347,18 @@ class ReporterController extends Controller
 				
 				$cuenta = DB::table('catalogues')
 				->select('name')
+				->where('business_id', $business_id)
 				->where('code', $mayor)
 				->first();
 
 				if ($cuenta) {
+
 					$nombre = $cuenta->name;
+
 				} else {
+					
 					$nombre = 'Sin Mayor';
+
 				}
 				
 				$nombre = $cuenta->name;
@@ -477,14 +487,17 @@ class ReporterController extends Controller
 		}
 
 		$datos = json_decode(json_encode ($partidas), FALSE);
-		
 
 		$report_type = $type;
+
 		if ($report_type == 'pdf') {
+
 			$pdf = \PDF::loadView('reports.entrie_pdf', compact('enable_description_line', 'datos', 'numero', 'business_name'));
 			
 			return $pdf->stream('Entries.pdf');
+
 		} else {
+			
 			return Excel::download(new EntrieSingleReportExport($enable_description_line, $datos, $numero, $business_name), 'Entrie.xlsx');
 		}
 		
@@ -492,12 +505,16 @@ class ReporterController extends Controller
 	
 	protected function obtenerSaldoPartidaMayor($id, $code) {
 
+		$business_id = request()->session()->get('user.business_id');
+
 		$valor = DB::table('accounting_entries_details as detalle')
 		->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
 		->select(DB::raw('SUM(detalle.debit) debe, SUM(detalle.credit) haber'))
+		->where('cuenta.business_id', $business_id)
 		->where('detalle.entrie_id', $id)
 		->where('cuenta.code', 'like', ''.$code.'%')
 		->first();
+
 		return $valor;
 	}
 
@@ -507,8 +524,11 @@ class ReporterController extends Controller
 			return redirect('home');
 		}
 
+		$business_id = request()->session()->get('user.business_id');
+
 		$accounts = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->whereNOTIn('id', [DB::raw("select parent from catalogues where parent IS NOT NULL")])
 		->orderBy('code', 'asc')
@@ -516,18 +536,26 @@ class ReporterController extends Controller
 
 		$clasifications = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->where('parent', 0)
 		->orderBy('code', 'asc')
 		->get();
+
 		return view('auxiliars.index', compact('accounts', 'clasifications'));
 	}
-	public function getLedger($id)
-	{
+
+	public function getLedger($id) {
+
 		$cuenta = Catalogue::where('id', $id)->first();
 		$mayor = substr($cuenta->code, 0, 4);
-		$cuenta_mayor = Catalogue::where('code', $mayor)->first();
+		$business_id = request()->session()->get('user.business_id');
+		$cuenta_mayor = Catalogue::where('code', $mayor)
+		->where('business_id', $business_id)
+		->first();
+		
 		return response()->json($cuenta_mayor);
+
 	}
 
 	/**
@@ -538,8 +566,8 @@ class ReporterController extends Controller
 	 * @param  date  $to
 	 * @return json
 	 */
-	public function getAuxiliarDetail($id, $from, $to)
-	{
+	public function getAuxiliarDetail($id, $from, $to) {
+
 		$account = DB::table('catalogues')
 		->where('id', $id)
 		->first();
@@ -571,10 +599,13 @@ class ReporterController extends Controller
 		->first();
 		
 		if ($account->type == 'debtor') {
+			
 			$balance = $initial_balance_q->debit - $initial_balance_q->credit;
 
 		} else {
+
 			$balance = $initial_balance_q->credit - $initial_balance_q->debit;
+		
 		}
 		
 		$lines = array();
@@ -593,10 +624,14 @@ class ReporterController extends Controller
 		array_push($lines, $item_init);
 		
 		foreach ($auxiliars as $auxiliar) {
+
 			if ($account->type == 'debtor') {
+
 				$balance = $balance + $auxiliar->debit - $auxiliar->credit;
 
 			} else {
+
+				
 				$balance = $balance + $auxiliar->credit - $auxiliar->debit;
 			}
 			
@@ -618,48 +653,59 @@ class ReporterController extends Controller
 		return DataTables::of($lines)->toJson();
 	}
 
-	public function getAuxiliarDetails()
-	{
+	public function getAuxiliarDetails() {
+
+		$business_id = request()->session()->get('user.business_id');
+
 		$accounts = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->whereNOTIn('id', [DB::raw("select parent from catalogues where parent IS NOT NULL")])
 		->orderBy('code', 'asc')
 		->get();
+		
 		return response()->json($accounts);
 	}
 
-	public function getAuxiliarRange(Catalogue $start, Catalogue $end)
-	{
+	public function getAuxiliarRange(Catalogue $start, Catalogue $end) {
+
 		$from = $start->code;
 		$to = $end->code;
-		if($from == $to){
+		$business_id = request()->session()->get('user.business_id');
+
+		if($from == $to) {
+
 			$accounts = Catalogue::select('id', 'code', 'name')
 			->where('status', 1)
+			->where('business_id', $business_id)
 			->whereNOTIn('id', [DB::raw("select parent from catalogues where parent IS NOT NULL")])
 			->where('code', 'like', ''.$from.'%')
 			->orderBy('code', 'asc')
 			->get();
+
 			$data = $accounts;
 
-		}
-		else
-		{
+		} else {
+
 			$data = new Collection();
-			for($i = $from; $i <= $to; $i++){
+			
+			for($i = $from; $i <= $to; $i++) {
+
 				$accounts = Catalogue::select('id', 'code', 'name')
+				->where('business_id', $business_id)
 				->where('status', 1)
 				->whereNOTIn('id', [DB::raw("select parent from catalogues where parent IS NOT NULL")])
 				->where('code', 'like', ''.$i.'%')
 				->orderBy('code', 'asc')
 				->get();
+
 				$data = $data->merge($accounts);
 			}
-
-
 		}
 
 		return response()->json($data);
+
 	}
 
 	public function getLedgerRange(Catalogue $start, Catalogue $end) {
@@ -674,26 +720,33 @@ class ReporterController extends Controller
 		if($from == $to) {
 
 			$accounts = Catalogue::select('id', 'code', 'name')
+			->where('business_id', $business_id)
 			->where('status', 1)
 			->where('code', 'like', ''.$from.'%')			
 			->whereRaw('LENGTH(code) = '.$digits.'')
 			->orderBy('code', 'asc')
 			->get();
+
 			$data = $accounts;
 
 		} else {
 
 			$data = new Collection();
-			for($i = $from; $i <= $to; $i++){
+			
+			for($i = $from; $i <= $to; $i++) {
+
 				$accounts = Catalogue::select('id', 'code', 'name')
+				->where('business_id', $business_id)
 				->where('status', 1)
 				->where('code', 'like', ''.$i.'%')
 				->whereRaw('LENGTH(code) = '.$digits.'')
 				->orderBy('code', 'asc')
 				->get();
+
 				$data = $data->merge($accounts);
 			}
 		}
+
 		return response()->json($data);
 	}
 
@@ -756,12 +809,13 @@ class ReporterController extends Controller
 		$ids = $request->input('id');
 
 		$accounts = DB::table('catalogues')
+		->where('business_id', $business_id)
 		->select('id', 'code', 'name')
 		->whereIn('id', $ids)			
 		->orderBy('code', 'asc')
 		->get();
 
-		$accounts_q = collect(DB::select('CALL getAuxiliarAccounts(?, ?)', [$date_from, $date_to]));
+		$accounts_q = collect(DB::select('CALL getAuxiliarAccounts(?, ?, ?)', [$date_from, $date_to, $business_id]));
 
 		$accounts = $accounts_q
 		->whereIn('id', $ids);
@@ -775,6 +829,7 @@ class ReporterController extends Controller
 			'entrie.description as entrie_description',
 			'entrie.correlative as correlative',
 		)
+		->where('entrie.business_id', $business_id)
 		->where('entrie.date', '>=', $date_from)
 		->where('entrie.date', '<=', $date_to)
 		->where('entrie.status', 1)
@@ -806,6 +861,7 @@ class ReporterController extends Controller
 		
 		$accounts = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->whereRaw('LENGTH(code) = '.$digits.'')
 		->orderBy('code', 'asc')
@@ -813,6 +869,7 @@ class ReporterController extends Controller
 
 		$clasifications = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->where('parent', 0)
 		->orderBy('code', 'asc')
@@ -821,16 +878,19 @@ class ReporterController extends Controller
 		return view('ledgers.index', compact('accounts', 'clasifications'));
 	}
 
-	public function getHigherDetails($id, $from, $to)
-	{
+	public function getHigherDetails($id, $from, $to) {
+
 		$account = DB::table('catalogues')
 		->where('id', $id)
 		->first();
+
+		$business_id = request()->session()->get('user.business_id');
 
 		$ledgers = DB::table('accounting_entries_details as detail')
 		->join('accounting_entries as entrie', 'detail.entrie_id', '=', 'entrie.id')
 		->join('catalogues as catalogue', 'detail.account_id', '=', 'catalogue.id')
 		->select(DB::raw('DATE_FORMAT(date, "%d/%m/%Y") as date, SUM(detail.debit) debit, SUM(detail.credit) credit, entrie.correlative'), 'entrie.description')
+		->where('entrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$account->code.'%')
 		->whereBetween('entrie.date', [$from, $to])
 		->where('entrie.status', 1)
@@ -843,20 +903,27 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'detail.entrie_id', '=', 'entrie.id')
 		->join('catalogues as catalogue', 'detail.account_id', '=', 'catalogue.id')
 		->select(DB::raw('SUM(detail.debit) debit, SUM(detail.credit) credit'))
+		->where('entrie.business_id', $business_id)
 		->where('entrie.status', 1)
 		->where('catalogue.code', 'like', ''.$account->code.'%')
 		->where('entrie.date', '<', $from)
 		->first();
+
 		if ($account->type == 'debtor') {
+			
 			$balance = $initial_balance_q->debit - $initial_balance_q->credit;
-		}
-		else {
+		
+		} else {
+
 			$balance = $initial_balance_q->credit - $initial_balance_q->debit;
-		}		
+		
+		}
+
 		$lines = array();
 		$cont = 1;
-		$item_init = array
-		(
+		
+		$item_init = array(
+
 			'cont' => $cont,
 			'date' => '',
 			'description' => ' '.$account->code.' '.$account->name.'...... '.__('accounting.initial_balance').'',
@@ -865,19 +932,25 @@ class ReporterController extends Controller
 			'credit' => ' ',
 			'balance' => number_format($balance, 2),
 		);
+		
 		array_push($lines, $item_init);
-		foreach ($ledgers as $ledger)
-		{
+
+		foreach ($ledgers as $ledger) {
+
 			if($account->type == 'debtor') {
+
 				$balance = $balance + $ledger->debit - $ledger->credit;
-			}
-			else {
+			
+			} else {
+
 				$balance = $balance + $ledger->credit - $ledger->debit;
+			
 			}
+
 			$cont = $cont + 1;
 
-			$item = array
-			(
+			$item = array(
+
 				'cont' => $cont,
 				'date' => $ledger->date,
 				'description' => mb_strtoupper(__('accounting.movements_day')),
@@ -886,8 +959,10 @@ class ReporterController extends Controller
 				'credit' => number_format($ledger->credit, 2),
 				'balance' => number_format($balance, 2),
 			);
+
 			array_push($lines, $item);
 		}
+
 		return DataTables::of($lines)->toJson();
 	}
 
@@ -931,17 +1006,19 @@ class ReporterController extends Controller
 
 		$accounts = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->whereIn('id', $ids)			
 		->orderBy('code', 'asc')
 		->get();
 
-		$accounts_q = collect(DB::select('CALL getLedgerAccounts(?, ?)', [$date_from, $date_to]));
+		$accounts_q = collect(DB::select('CALL getLedgerAccounts(?, ?, ?)', [$date_from, $date_to, $business_id]));
 		$accounts = $accounts_q->whereIn('id', $ids);
 
 		$details = DB::table('accounting_entries_details as detail')
 		->join('accounting_entries as entrie', 'detail.entrie_id', '=', 'entrie.id')
 		->join('catalogues as catalogue', 'detail.account_id', '=', 'catalogue.id')
 		->select(DB::raw('DATE_FORMAT(entrie.date, "%d/%m/%Y") as date, SUM(detail.debit) debit, SUM(detail.credit) credit, entrie.correlative'), 'entrie.description', 'catalogue.code', 'detail.entrie_id', 'entrie.date as date_raw', DB::raw("SUBSTR(catalogue.code, 1, ". $digits .") as parent"))
+		->where('entrie.business_id', $business_id)
 		->whereBetween('entrie.date', [$date_from, $date_to])
 		->where('entrie.status', 1)
 		->groupBy('detail.id')
@@ -950,6 +1027,7 @@ class ReporterController extends Controller
 		
 		$entries = DB::table('accounting_entries')
 		->select('date')
+		->where('business_id', $business_id)
 		->whereBetween('date', [$date_from, $date_to])
 		->orderBy('date', 'asc')
 		->distinct()
@@ -1008,6 +1086,7 @@ class ReporterController extends Controller
 		$digits = $business->ledger_digits;
 
 		$accounts = DB::table('catalogues')
+		->where('business_id', $business_id)
 		->select('id', 'code', 'name')
 		->where('status', 1)
 		->whereRaw('LENGTH(code) = '.$digits.'')
@@ -1016,8 +1095,8 @@ class ReporterController extends Controller
 		return response()->json($accounts);
 	}
 
-	public function getBalances()
-	{
+	public function getBalances() {
+
 		if(!auth()->user()->can('balances')) {
 			return redirect('home');
 		}
@@ -1026,6 +1105,7 @@ class ReporterController extends Controller
 
 		$clasifications = DB::table('catalogues')
 		->select('id', 'code', 'name')
+		->where('business_id', $business_id)
 		->where('status', 1)
 		->where('parent', 0)
 		->orderBy('code', 'asc')
@@ -1047,8 +1127,7 @@ class ReporterController extends Controller
 		return view('iva_books.index', compact('business_locations'));
 	}
 
-	public function getBalanceReport(Request $request)
-	{
+	public function getBalanceReport(Request $request) {
 
 		$date = Carbon::parse($request->input('to'));
 		$size = $request->input('size_general');
@@ -1063,183 +1142,23 @@ class ReporterController extends Controller
 
 		$date_to = $date->format('d') . ' '.__('accounting.of').' ' . $month . ' '.__('accounting.of').' ' . $date->format('Y');
 
-
 		$header = " ".__('accounting.balance_report')." ".__('accounting.to_date')." ".$date_to."";
-
-
-		/*if (($business->accounting_utility_id != null) && ($business->accounting_deficit_id != null) && ($business->accounting_debtor_result_id != null) && ($business->accounting_creditor_result_id != null))
-		{
-			$utility_account = Catalogue::where('id', $business->accounting_utility_id)->first();
-			$utility = DB::table('accounting_entries_details as detail')
-			->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
-			->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
-			->select(DB::raw('(SUM(credit) - SUM(debit)) as balance'))
-			->where('catalogue.code', 'like', ''.$utility_account->code.'%')
-			->where('entrie.date', '<=', $date)
-			->where('entrie.status', 1)
-			->first();
-
-			$deficit_account = Catalogue::where('id', $business->accounting_deficit_id)->first();
-			$deficit = DB::table('accounting_entries_details as detail')
-			->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
-			->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
-			->select(DB::raw('(SUM(credit) - SUM(debit)) as balance'))
-			->where('catalogue.code', 'like', ''.$deficit_account->code.'%')
-			->where('entrie.date', '<=', $date)
-			->where('entrie.status', 1)
-			->first();
-			
-			$accounts_debtor = Catalogue::where('id', $business->accounting_debtor_result_id)->first();
-			$accounts_debtor = DB::table('accounting_entries_details as detail')
-			->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
-			->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
-			->select(DB::raw('(SUM(debit) - SUM(credit)) as debit'))
-			->where('catalogue.code', 'like', ''.$accounts_debtor->code.'%')
-			->where('entrie.date', '<=', $date)
-			->where('entrie.status', 1)
-			->first();
-
-			$accounts_creditor = Catalogue::where('id', $business->accounting_creditor_result_id)->first();
-			$accounts_creditor = DB::table('accounting_entries_details as detail')
-			->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
-			->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
-			->select(DB::raw('(SUM(credit) - SUM(debit)) as credit'))
-			->where('catalogue.code', 'like', ''.$accounts_creditor->code.'%')
-			->where('entrie.date', '<=', $date)
-			->where('entrie.status', 1)
-			->first();
-
-			$result = $accounts_creditor->credit - $accounts_debtor->debit;
-			if ((number_format($result, 2) > 0.00)) {
-				DB::beginTransaction();
-
-				$entrie = new AccountingEntrie;
-				$entrie->date = $date;
-				$entrie->description = 'temporal';
-				$entrie->status = 1;
-				$entrie->save();
-				$cont = 0;                
-
-				$detail = new AccountingEntriesDetail;
-				$detail->entrie_id = $entrie->id;
-				$detail->account_id = $business->accounting_utility_id;
-				$detail->debit = 0.00;
-				$detail->credit = $result;
-				$detail->description = 'temporal';
-				$detail->save();
-
-				$accounts_debit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'debtor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-
-				$accounts_credit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'creditor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 5)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-
-				$entrie->forceDelete();
-				DB::commit();
-			}
-			if (number_format($result, 2) < 0.00) {
-				DB::beginTransaction();
-
-				$entrie = new AccountingEntrie;
-				$entrie->date = $date;
-				$entrie->description = 'temporal';
-				$entrie->status = 1;
-				$entrie->save();
-				$cont = 0;                
-
-				$detail = new AccountingEntriesDetail;
-				$detail->entrie_id = $entrie->id;
-				$detail->account_id = $business->accounting_deficit_id;
-				$detail->debit = 0.00;
-				$detail->credit = $result;
-				$detail->description = 'temporal';
-				$detail->save();
-
-				$accounts_debit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'debtor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-
-
-				$accounts_credit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'creditor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 5)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-
-				$entrie->forceDelete();
-				DB::commit();
-			}
-
-			if (number_format($result, 2) == 0.00) {
-
-				$accounts_debit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'debtor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-
-
-				$accounts_credit = DB::table('catalogues as account')
-				->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-				->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
-				->where('account.type', 'creditor')
-				->where('account.level', '<=', 4)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 5)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 6)
-				->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 7)
-				->orderBy('account.code', 'asc')
-				->groupBy('account.id')
-				->get();
-			}
-			
-			
-		}
-		else
-		{
-			
-		}*/
 
 		$accounts_debit = DB::table('catalogues as account')
 		->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-		->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
+		->select(
+			
+			DB::raw("CONCAT(account.code, '%') AS code_query"),
+			'account.id',
+			'account.name',
+			'account.code',
+			'account.level',
+			DB::raw(
+
+				"(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = ".$business_id." and accounting_entries.date <= '".$date."') as balance"
+			)
+		)
+		->where('account.business_id', $business_id)
 		->where('account.type', 'debtor')
 		->where('account.level', '<=', 4)
 		->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 4)
@@ -1252,7 +1171,18 @@ class ReporterController extends Controller
 
 		$accounts_credit = DB::table('catalogues as account')
 		->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'account.id')
-		->select(DB::raw("CONCAT(account.code, '%') AS code_query"), 'account.id', 'account.name', 'account.code', 'account.level', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
+		->select(
+			DB::raw("CONCAT(account.code, '%') AS code_query"),
+			'account.id',
+			'account.name',
+			'account.code',
+			'account.level',
+			DB::raw(
+
+				"(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = ".$business_id." and accounting_entries.date <= '".$date."') as balance"
+			)
+		)
+		->where('account.business_id', $business_id)
 		->where('account.type', 'creditor')
 		->where('account.level', '<=', 4)
 		->where(DB::raw('substr(account.code, 1, 1)'), '!=' , 5)
@@ -1316,8 +1246,8 @@ class ReporterController extends Controller
 			$date_range = __('accounting.from_date') . "  " . $date_from->format('d') . " " . __('accounting.of') . " " . $month_from . " " . __('accounting.of') . " " . $date_from->format('Y') . " " . __('accounting.to_date') . " " . $date_to->format('d') . " " . __('accounting.of') . " " . $month_to . " " . __('accounting.of') . " " . $date_to->format('Y');
 		}
 
-		$accounts_debit = collect(DB::select('CALL getDebitAccounts(?, ?, ?)', [$date_from, $date_to, $level]));
-		$accounts_credit = collect(DB::select('CALL getCreditAccounts(?, ?, ?)', [$date_from, $date_to, $level]));
+		$accounts_debit = collect(DB::select('CALL getDebitAccounts(?, ?, ?, ?)', [$date_from, $date_to, $level, $business_id]));
+		$accounts_credit = collect(DB::select('CALL getCreditAccounts(?, ?, ?, ?)', [$date_from, $date_to, $level, $business_id]));
 		$report_type = $request->input('report-type');
 
 		if ($report_type == 'pdf') {
@@ -1596,8 +1526,8 @@ class ReporterController extends Controller
 		}
 	}
 
-	public function getBankTransactions(Request $request)
-	{
+	public function getBankTransactions(Request $request) {
+
 		$business_id = request()->session()->get('user.business_id');
 		$business = Business::where('id', $business_id)->first();
 		$business_name = mb_strtoupper($business->name);
@@ -1625,15 +1555,20 @@ class ReporterController extends Controller
 		$header2 = "".__('accounting.from_date')." ".$from_date." ".__('accounting.to_date')." ".$to_date;
 
 		if($report_type != 0) {
+
 			$type_transaction_q = TypeBankTransaction::findOrFail($report_type);
+
 			if ($type_transaction_q->type == 'debit') {
+
 				$type_transaction = 'inflow';
-			}
-			else {
+
+			} else {
+				
 				$type_transaction = 'outflow';
 			}
-		}
-		else {
+
+		} else {
+
 			$type_transaction = 'all';
 		}
 
@@ -1642,6 +1577,7 @@ class ReporterController extends Controller
 		->join('bank_accounts as bank_account', 'bank_account.id', '=', 'transaction.bank_account_id')
 		->join('type_bank_transactions as type', 'type.id', '=', 'transaction.type_bank_transaction_id')
 		->select(DB::raw('DATE_FORMAT(transaction.date, "%d/%m/%Y") as date_transaction'), 'transaction.*', 'bank_account.name as bank', 'bank_account.number as number_account', 'type.name as type_transaction')
+		->where('transaction.business_id', $business_id)
 		->where('transaction.date', '>=', $date_from)
 		->where('transaction.date', '<=', $date_to)
 		->where('type.type', 'debit')
@@ -1653,6 +1589,7 @@ class ReporterController extends Controller
 		->join('bank_accounts as bank_account', 'bank_account.id', '=', 'transaction.bank_account_id')
 		->join('type_bank_transactions as type', 'type.id', '=', 'transaction.type_bank_transaction_id')
 		->select(DB::raw('DATE_FORMAT(transaction.date, "%d/%m/%Y") as date_transaction'), 'transaction.*', 'bank_account.name as bank', 'bank_account.number as number_account', 'type.name as type_transaction')
+		->where('transaction.business_id', $business_id)
 		->where('transaction.date', '>=', $date_from)
 		->where('transaction.date', '<=', $date_to)
 		->where('type.type', 'credit')
@@ -1731,6 +1668,7 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
 		->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
 		->select(DB::raw('(SUM(credit) - SUM(debit)) as balance'))
+		->where('enntrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_ordinary_incomes_id->code.'%')
 		->where('entrie.status', 1)
 		->where('entrie.date', '>=', $date_initial_year)
@@ -1738,7 +1676,16 @@ class ReporterController extends Controller
 		->first();
 
 		$return_sells_q = DB::table('catalogues as catalogue')
-		->select('catalogue.id', 'catalogue.name', 'catalogue.code as code_query', DB::raw('(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'))
+		->select(
+			'catalogue.id',
+			'catalogue.name',
+			'catalogue.code as code_query',
+			DB::raw(
+
+				'(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = '.$business_id.' and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'
+			)
+		)
+		->where('catalogue.business_id', $business_id)
 		->where('catalogue.id', $accounting_return_sells_id->id)
 		->first();
 
@@ -1746,7 +1693,16 @@ class ReporterController extends Controller
 		$return_sells = $return_sells_q->balance;
 
 		$ordinary_income_accounts = DB::table('catalogues as catalogue')
-		->select('catalogue.id', 'catalogue.name', DB::raw('CONCAT(catalogue.code, "%") AS code_query'), DB::raw('(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'))
+		->select(
+			'catalogue.id',
+			'catalogue.name',
+			DB::raw('CONCAT(catalogue.code, "%") AS code_query'),
+			DB::raw(
+				
+				'(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = '.$business_id.' and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'
+			)
+		)
+		->where('catalogue.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_ordinary_incomes_id->code.'%')
 		->where('catalogue.level', $level_childrens_ordynary_incomes)
 		->get();
@@ -1755,6 +1711,7 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
 		->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
 		->select(DB::raw('(SUM(debit) - SUM(credit)) as balance'))
+		->where('entrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_sells_cost_id->code.'%')
 		->where('entrie.status', 1)
 		->where('entrie.date', '>=', $date_initial_year)
@@ -1765,6 +1722,7 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
 		->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
 		->select(DB::raw('(SUM(debit) - SUM(credit)) as balance'))
+		->where('entrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_ordinary_expenses_id->code.'%')
 		->where('entrie.status', 1)
 		->where('entrie.date', '>=', $date_initial_year)
@@ -1774,7 +1732,15 @@ class ReporterController extends Controller
 		$ordinary_expense = $ordinary_expense_q->balance;
 
 		$ordinary_expense_accounts = DB::table('catalogues as catalogue')
-		->select('catalogue.id', 'catalogue.name', DB::raw('CONCAT(catalogue.code, "%") AS code_query'), DB::raw('(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'))
+		->select(
+			'catalogue.id',
+			'catalogue.name',
+			DB::raw('CONCAT(catalogue.code, "%") AS code_query'),
+			DB::raw(
+				'(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = '.$business_id.' and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'
+			)
+		)
+		->where('catalogue.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_ordinary_expenses_id->code.'%')
 		->where('catalogue.level', $level_childrens_ordynary_expenses)
 		->where('catalogue.id', '<>', $accounting_sells_cost_id->id)
@@ -1784,6 +1750,7 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
 		->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
 		->select(DB::raw('(SUM(debit) - SUM(credit)) as balance'))
+		->where('entrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_extra_incomes_id->code.'%')
 		->where('entrie.status', 1)
 		->where('entrie.date', '>=', $date_initial_year)
@@ -1793,7 +1760,16 @@ class ReporterController extends Controller
 		$extra_income = $extra_income_q->balance;
 
 		$extra_income_accounts = DB::table('catalogues as catalogue')
-		->select('catalogue.id', 'catalogue.name', DB::raw('CONCAT(catalogue.code, "%") AS code_query'), DB::raw('(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'))
+		->select(
+			'catalogue.id',
+			'catalogue.name',
+			DB::raw('CONCAT(catalogue.code, "%") AS code_query'),
+			DB::raw(
+				
+				'(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = '.$business_id.' and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'
+			)
+		)
+		->where('catalogue.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_extra_incomes_id ->code.'%')
 		->where('catalogue.level', $level_childrens_extra_incomes)
 		->get();
@@ -1802,6 +1778,7 @@ class ReporterController extends Controller
 		->join('accounting_entries as entrie', 'entrie.id', '=', 'detail.entrie_id')
 		->join('catalogues as catalogue', 'catalogue.id', '=', 'detail.account_id')
 		->select(DB::raw('(SUM(debit) - SUM(credit)) as balance'))
+		->where('entrie.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_extra_expenses_id->code.'%')
 		->where('entrie.status', 1)
 		->where('entrie.date', '>=', $date_initial_year)
@@ -1811,7 +1788,16 @@ class ReporterController extends Controller
 		$extra_expense = $extra_expense_q->balance;
 
 		$extra_expense_accounts = DB::table('catalogues as catalogue')
-		->select('catalogue.id', 'catalogue.name', DB::raw('CONCAT(catalogue.code, "%") AS code_query'), DB::raw('(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'))
+		->select(
+			'catalogue.id',
+			'catalogue.name',
+			DB::raw('CONCAT(catalogue.code, "%") AS code_query'),
+			DB::raw(
+
+				'(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code like code_query and accounting_entries.status = 1 and accounting_entries.business_id = '.$business_id.' and accounting_entries.date between "'.$date_initial_year.'" and "'.$date_to.'") as balance'
+			)
+		)
+		->where('catalogue.business_id', $business_id)
 		->where('catalogue.code', 'like', ''.$accounting_extra_expenses_id->code.'%')
 		->where('catalogue.level', $level_childrens_extra_expenses)
 		->get();
@@ -1855,22 +1841,6 @@ class ReporterController extends Controller
 			];
 		}
 		return $output;
-
-
-
-		/*$printerName = "smb://R177/EPSON_L375";
-		$connector = new WindowsPrintConnector($printerName);
-		$printer = new Printer($connector);
-		$printer->setJustification(Printer::JUSTIFY_CENTER);
-		$printer->setTextSize(2, 2);
-		$printer->text("Imprimiendo\n");
-		$printer->text("ticket\n");
-		$printer->text("desde\n");
-		$printer->text("Laravel\n");
-		$printer->setTextSize(1, 1);
-		$printer->text("https://parzibyte.me");
-		$printer->feed(100);
-		$printer->close();*/
 	}
 
 	public function getKardex() {

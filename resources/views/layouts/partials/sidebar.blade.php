@@ -1020,15 +1020,15 @@
         @endcan
         @endif
 
-        {{-- Add Product --}}
-      {{-- @can('product.create')
-      <li class="{{ $request->segment(1) == 'products' && $request->segment(2) == 'create' ? 'active' : '' }}">
-        <a href="{{ action('ProductController@createProduct') }}">
-          <i class="fa fa-plus-circle"></i>
-          @lang('product.add_product')
+      {{-- Print Labels --}}
+      @can('product.view')
+      <li class="{{ $request->segment(1) == 'labels' && $request->segment(2) == 'show' ? 'active' : '' }}">
+        <a href="{{ action('LabelsController@show') }}">
+          <i class="fa fa-barcode"></i>
+          @lang('barcode.print_labels')
         </a>
       </li>
-      @endcan --}}
+      @endcan
 
       {{-- Stock Transfers --}}
       @can('stock_transfer.view')
@@ -1040,32 +1040,12 @@
       </li>
       @endcan
 
-      {{-- Print Labels --}}
-      @can('product.view')
-      <li class="{{ $request->segment(1) == 'labels' && $request->segment(2) == 'show' ? 'active' : '' }}">
-        <a href="{{ action('LabelsController@show') }}">
-          <i class="fa fa-barcode"></i>
-          @lang('barcode.print_labels')
-        </a>
-      </li>
-      @endcan
-
-      {{-- List Stock Adjustments --}}
+      {{-- Stock Adjustments --}}
       @can('stock_adjustment.view')
       <li class="{{ $request->segment(1) == 'stock-adjustments' && $request->segment(2) == null ? 'active' : '' }}">
         <a href="{{ action('StockAdjustmentController@index') }}">
           <i class="fa fa-database" aria-hidden="true"></i>
-          @lang('stock_adjustment.list')
-        </a>
-      </li>
-      @endcan
-
-      {{-- Add Stock Adjustment --}}
-      @can('stock_adjustment.create')
-      <li class="{{ $request->segment(1) == 'stock-adjustments' && $request->segment(2) == 'create' ? 'active' : '' }}">
-        <a href="{{ action('StockAdjustmentController@create') }}">
-          <i class="fa fa-plus-circle"></i>
-          @lang('stock_adjustment.add')
+          @lang('stock_adjustment.stock_adjustments')
         </a>
       </li>
       @endcan

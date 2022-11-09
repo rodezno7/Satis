@@ -69,12 +69,14 @@
                         <div class="col-sm-3">
                             <div class="form-group" style="margin-top: 25px;">
                                 <div class="input-group">
-                                    <button type="button" class="btn btn-primary" id="daterange-btn">
+                                    <button type="button" class="btn btn-primary" id="purchase_daterange">
                                         <span>
                                             <i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}
                                         </span>
                                         <i class="fa fa-caret-down"></i>
                                     </button>
+                                    {!! Form::hidden("start_date", date('Y-m-d', strtotime('- 29 days')), ['id' => 'start_date']) !!}
+                                    {!! Form::hidden("end_date", date('Y-m-d'), ['id' => 'end_date']) !!}
                                 </div>
                             </div>
                         </div>
@@ -140,22 +142,4 @@
 @section('javascript')
     <script src="{{ asset('js/purchase.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-    <script>
-        //Date range as a button
-        $('#daterange-btn').daterangepicker(
-            dateRangeSettings,
-            function(start, end) {
-                $('#daterange-btn span').html(start.format(moment_date_format) + ' ~ ' + end.format(
-                    moment_date_format));
-                purchase_table.ajax.url('/purchases?start_date=' + start.format('YYYY-MM-DD') +
-                    '&end_date=' + end.format('YYYY-MM-DD')).load();
-            }
-        );
-        $('#daterange-btn').on('cancel.daterangepicker', function(ev, picker) {
-            purchase_table.ajax.url('/purchases').load();
-            $('#daterange-btn span').html('<i class="fa fa-calendar"></i> {{ __('messages.filter_by_date') }}');
-        });
-
-    </script>
-
 @endsection

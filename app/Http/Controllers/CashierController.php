@@ -30,9 +30,20 @@ class CashierController extends Controller
         }
 
         if (request()->ajax()) {
-            $cashier = Cashier::join('business_locations as bl', 'cashiers.business_location_id', 'bl.id')
-                    ->select(['cashiers.code', 'cashiers.name', 'bl.name as blname', 'cashiers.status', 'cashiers.is_active', 'cashiers.id']);
-            return Datatables::of($cashier)
+            $business_id = auth()->user()->business_id;
+
+            $cashiers = Cashier::join('business_locations as bl', 'cashiers.business_location_id', 'bl.id')
+                ->where('cashiers.business_id', $business_id)
+                ->select(
+                    'cashiers.code',
+                    'cashiers.name',
+                    'bl.name as blname',
+                    'cashiers.status',
+                    'cashiers.is_active',
+                    'cashiers.id'
+                );
+
+            return Datatables::of($cashiers)
                 ->addColumn(
                     'action',
                     '@can("cashier.update")

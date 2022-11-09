@@ -4,7 +4,7 @@ price_precision = $('#price_precision').length > 0 ? $('#price_precision').val()
 // Number of decimal places to show
 inventory_precision = $('#inventory_precision').length > 0 ? $('#inventory_precision').val() : 2;
 
-$(document).ready( function () {
+$(function () {
 
 	$("select#warehouse_id").attr('disabled', true);
 	//Add products
@@ -14,11 +14,11 @@ $(document).ready( function () {
 			source: function(request, response) {
 	    		$.getJSON("/products/list", {
 					location_id: $('#location_id').val(),
-					warehouse_id:  $('#warehouse_id').val(),
+					warehouse_id: $("select#adjustment_type").val() == 'normal' ? 0 : $('#warehouse_id').val(),
 					check_qty: $("select#adjustment_type").val() == 'normal' ? 0 : 1,
 					term: request.term
 				}, response);
-	  			},
+			},
 			minLength: 2,
 			response: function(event,ui) {
 				if (ui.content.length == 1)
@@ -153,11 +153,7 @@ $(document).ready( function () {
 				targets: 6,
 				orderable: false,
 				searchable: false
-			},
-			{
-                targets: 0,
-                render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY')
-            }
+			}
 		],
 		columns: [
             { data: 'transaction_date', name: 'transaction_date'  },

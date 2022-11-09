@@ -8,11 +8,24 @@ use App\UnitGroupLines;
 use App\Product;
 use App\Business;
 
-use Yajra\DataTables\Facades\DataTables;
+use DB;
+use App\Utils\ProductUtil;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class UnitController extends Controller
 {
+    private $productUtil;
+    private $clone_product;
+
+    public function __construct(ProductUtil $productUtil)
+    {
+        $this->productUtil = $productUtil;
+
+        /** clone product config */
+        $this->clone_product = config('app.clone_product');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -97,18 +110,31 @@ class UnitController extends Controller
             $input = $request->only(['actual_name', 'short_name', 'allow_decimal']);
             $input['business_id'] = $request->session()->get('user.business_id');
             $input['created_by'] = $request->session()->get('user.id');
-            $unit = Unit::create($input);
-            $output = ['success' => true,
-            'data' => $unit,
-            'msg' => __("unit.added_success")
-        ];
-    } catch (\Exception $e) {
-        \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
 
-        $output = ['success' => false,
-        'msg' => __("messages.something_went_wrong")
-    ];
-}
+            DB::beginTransaction();
+
+            $unit = Unit::create($input);
+
+            /** Sync unit */
+            if ($this->clone_product) {
+                $this->productUtil->syncUnit($unit->id, $unit->actual_name);
+            }
+
+            DB::commit();
+
+            $output = [
+                'success' => true,
+                'data' => $unit,
+                'msg' => __("unit.added_success")
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+
+            $output = ['success' => false,
+            'msg' => __("messages.something_went_wrong")
+        ];
+    }
 
 return $output;
 }
@@ -164,26 +190,40 @@ return $output;
                 $input = $request->only(['actual_name', 'short_name', 'allow_decimal']);
                 $business_id = $request->session()->get('user.business_id');
 
+                DB::beginTransaction();
+
                 $unit = Unit::where('business_id', $business_id)->findOrFail($id);
+                $name = $unit->actual_name;
+
                 $unit->actual_name = $input['actual_name'];
                 $unit->short_name = $input['short_name'];
                 $unit->allow_decimal = $input['allow_decimal'];
                 $unit->save();
 
-                $output = ['success' => true,
-                'msg' => __("unit.updated_success")
-            ];
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-            
-            $output = ['success' => false,
-            'msg' => __("messages.something_went_wrong")
-        ];
-    }
+                /** Sync unit */
+                if ($this->clone_product) {
+                    $this->productUtil->syncUnit($unit->id, $name);
+                }
 
-    return $output;
-}
-}
+                DB::commit();
+
+                $output = [
+                    'success' => true,
+                    'msg' => __("unit.updated_success")
+                ];
+            } catch (\Exception $e) {
+                DB::rollback();
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
+                $output = [
+                    'success' => false,
+                    'msg' => __("messages.something_went_wrong")
+                ];
+            }
+
+            return $output;
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -205,16 +245,23 @@ return $output;
 
                 $groups = UnitGroup::where('unit_id', $id)->count();
                 $groupLines = UnitGroupLines::where('unit_id', $id)->count();
-                $products = Product::where('unit_id_single', $id)->count();
 
-                if(($groups > 0) || ($groupLines > 0) || ($products > 0)){
+                if(($groups > 0) || ($groupLines > 0)){
                     $output = [
                         'success' => false,
                         'msg' => __("unit.has_children")
                     ];
                 }
                 else{
+                    $old_unit = clone $unit;
+
                     $unit->delete();
+                    
+                    /** Sync unit */
+                    if ($this->clone_product) {
+                        $this->productUtil->syncUnit($unit->id, "", $old_unit);
+                    }
+
                     $output = [
                         'success' => true,
                         'msg' => __("unit.deleted_success")
@@ -225,7 +272,7 @@ return $output;
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => '__("messages.something_went_wrong")'
+                    'msg' => __("messages.something_went_wrong")
                 ];
             }
             return $output;

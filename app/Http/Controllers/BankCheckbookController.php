@@ -15,8 +15,8 @@ class BankCheckbookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
+
         return view('banks.index');
     }
 
@@ -25,8 +25,8 @@ class BankCheckbookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
+
         return view('banks.index');
     }
 
@@ -36,11 +36,11 @@ class BankCheckbookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+
         $validateData = $request->validate(
             [
-                'name' => 'required|unique:bank_checkbooks',
+                'name' => 'required',
                 'serie' => 'required',
                 'initial_correlative' => 'required|integer',
                 'final_correlative' => 'required|integer',
@@ -49,7 +49,6 @@ class BankCheckbookController extends Controller
             ],
             [
                 'name.required' => __('accounting.name_required'),
-                'name.unique' => __('accounting.name_unique'),
                 'serie.required' => __('accounting.serie_required'),
 
                 'initial_correlative.required' => __('accounting.initial_correlative_required'),
@@ -66,22 +65,31 @@ class BankCheckbookController extends Controller
         );
 
         if ($request->ajax()) {
+
             try {
-                $checkbook = BankCheckbook::create($request->all());
+
+                $business_id = request()->session()->get('user.business_id');
+
+                $data = $request->all();
+                $data['business_id'] = $business_id;
+                $checkbook = BankCheckbook::create($data);
 
                 $output = [
                     'success' => true,
                     'msg' => __('accounting.added_successfully')
                 ];
 
-            } catch(\Exception $e){
+            } catch(\Exception $e) {
+
                 \Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage());
                 
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
+            
             }
+            
             return $output;
         }
     }
@@ -92,9 +100,10 @@ class BankCheckbookController extends Controller
      * @param  \App\BankCheckbook  $bankCheckbook
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
+
         $bankCheckbook = BankCheckbook::findOrFail($id);
+        
         return response()->json($bankCheckbook);
     }
 
@@ -104,14 +113,15 @@ class BankCheckbookController extends Controller
      * @param  \App\BankCheckbook  $bankCheckbook
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
+
         $bankCheckbook = DB::table('bank_checkbooks as checkbook')
         ->join('bank_accounts as account', 'account.id', '=', 'checkbook.bank_account_id')
         ->join('banks as bank', 'bank.id', '=', 'account.bank_id')
         ->select('checkbook.*', 'bank.id as bank')
         ->where('checkbook.id', $id)
         ->first();
+
         return response()->json($bankCheckbook);
     }
 
@@ -122,12 +132,13 @@ class BankCheckbookController extends Controller
      * @param  \App\BankCheckbook  $bankCheckbook
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
+
         $bankCheckbook = BankCheckbook::findOrFail($id);
+        
         $validateData = $request->validate(
             [
-                'name' => 'required|unique:bank_checkbooks,name,'.$bankCheckbook->id,
+                'name' => 'required',
                 'description' => 'required',
                 'serie' => 'required',
                 'initial_correlative' => 'required|integer',
@@ -137,7 +148,6 @@ class BankCheckbookController extends Controller
             ],
             [
                 'name.required' => __('accounting.name_required'),
-                'name.unique' => __('accounting.name_unique'),
                 'description.required' => __('accounting.description_required'),
                 'serie.required' => __('accounting.serie_required'),
                 'initial_correlative.required' => __('accounting.initial_correlative_required'),
@@ -153,7 +163,9 @@ class BankCheckbookController extends Controller
         );
 
         if ($request->ajax()) {
+
             try {
+
                 $bankCheckbook->update($request->all());
 
                 $output = [
@@ -161,14 +173,17 @@ class BankCheckbookController extends Controller
                     'msg' => __('accounting.updated_successfully')
                 ];
 
-            } catch(\Exception $e){
+            } catch(\Exception $e) {
+
                 \Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage());
 
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
+            
             }
+            
             return $output;
         }
     }
@@ -179,100 +194,131 @@ class BankCheckbookController extends Controller
      * @param  \App\BankCheckbook  $bankCheckbook
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
+
         $bankCheckbook = BankCheckbook::findOrFail($id);
+
         if (request()->ajax()) {
-            try{
+
+            try {
 
                 $bankTransactions = BankTransaction::where('bank_checkbook_id', $bankCheckbook->id)->count();
 
-                if($bankTransactions > 0){
+                if($bankTransactions > 0) {
+
                     $output = [
                         'success' => false,
                         'msg' =>  __('accounting.checkbook_has_transactions')
                     ];
-                }
-                else{
+                
+                } else {
+
                     $bankCheckbook->forceDelete();
+
                     $output = [
                         'success' => true,
                         'msg' => __('accounting.deleted_successfully')
                     ];
                 }
-            }
-            catch (\Exception $e){
+            
+            } catch (\Exception $e) {
+
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+                
                 $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
+
             }
+
             return $output;
         }
     }
 
-    public function getBankCheckbooksData()
-    {
+    public function getBankCheckbooksData() {
+
+        $business_id = request()->session()->get('user.business_id');
+
         $checkbooks = DB::table('bank_checkbooks as checkbook')
         ->join('bank_accounts as account', 'account.id', '=', 'checkbook.bank_account_id')
+        ->where('checkbook.business_id', $business_id)
         ->select('checkbook.*', 'account.name as account_name');
         
         return DataTables::of($checkbooks)->toJson();
     }
 
-    public function getBankCheckbooks($id)
-    {
+    public function getBankCheckbooks($id) {
+
+        $business_id = request()->session()->get('user.business_id');
+
         $checkbooks = DB::table('bank_checkbooks as checkbook')
         ->select('id', 'name')
+        ->where('checkbook.business_id', $business_id)
         ->where('bank_account_id', $id)
         ->where('status', 1)
         ->get();
+
         return response()->json($checkbooks);
     }
 
-    public function validateNumber($id, $number)
-    {
+    public function validateNumber($id, $number) {
 
         $count = BankTransaction::where('bank_checkbook_id', $id)
-        ->where('check_number', $number)->count();
+        ->where('bank_transactions.business_id', $business_id)
+        ->where('check_number', $number)
+        ->count();
 
         if ($count > 0) {
+
             $result = false;
-        }
-        else
-        {
+        
+        } else {
+            
             $result = true;
+        
         }
+        
         $output = [
             'success' => $result
         ];
+        
         return $output;
     }
 
-    public function validateRange($id, $number)
-    {
-        $checkbook = BankCheckbook::where('id', $id)->first();
+    public function validateRange($id, $number) {
+
+        $checkbook = BankCheckbook::where('id', $id)
+        ->first();
+
         if ($checkbook != null) {
+
             $checkbook_initial = $checkbook->initial_correlative;
             $checkbook_final = $checkbook->final_correlative;
-        }
-        else {
+        
+        } else {
+
             $checkbook_initial = 0;
             $checkbook_final = 0;
+        
         }
-        if(($number < $checkbook_initial) || ($number > $checkbook_final)){
+        
+        if(($number < $checkbook_initial) || ($number > $checkbook_final)) {
+
             $output = [
                 'success' => false,
                 'msg' => __("accounting.check_number_invalid")
             ];
-        }
-        else {
+        
+        } else {
+
             $output = [
                 'success' => true,
                 'msg' => 'OK'
             ];
+        
         }
+        
         return $output;
     }
 }

@@ -162,4 +162,5 @@ return [
     'decimals_in_inventories' => 'Decimals in inventories',
     'no_note_full_payment' => 'Don\'t create credit note when making full payment',
     'default_products_tax' => 'Default products tax',
+    'hide_location_column' => 'Hide location column',
 ];

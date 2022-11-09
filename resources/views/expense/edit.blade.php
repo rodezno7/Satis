@@ -145,7 +145,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-hashtag"></i>
                             </span>
-                            {!! Form::text('serie',$expense->serie, ['class' => 'form-control', 'required']) !!}
+                            {!! Form::text('serie',$expense->serie, ['class' => 'form-control']) !!}
                         </div>
                     </div>
                 </div>

@@ -55,11 +55,11 @@ class DispatchedProducts implements WithEvents, WithTitle
     	return [            
     		AfterSheet::class => function(AfterSheet $event) {
                 $column = [
-                    1 => 'C', 2 => 'D', 3 => 'E', 4 => 'F', 5 => 'G',
-                    6 => 'H', 7 => 'I', 8 => 'J', 9 => 'K', 10 => 'L',
-                    11 => 'M', 12 => 'N', 13 => 'O', 14 => 'P', 15 => 'Q',
-                    16 => 'R', 17 => 'S', 18 => 'T', 19 => 'U', 20 => 'V',
-                    21 => 'W', 22 => 'X', 23 => 'Y', 24 => 'Z' ];
+                    1 => 'D', 2 => 'E', 3 => 'F', 4 => 'G', 5 => 'H',
+                    6 => 'I', 7 => 'J', 8 => 'K', 9 => 'L', 10 => 'M',
+                    11 => 'N', 12 => 'O', 13 => 'P', 14 => 'Q', 15 => 'R',
+                    16 => 'S', 17 => 'T', 18 => 'U', 19 => 'V', 20 => 'W',
+                    21 => 'X', 22 => 'Y', 23 => 'Z' ];
                 
                 $tp = $this->products->count(); // products total
                 $lp = $column[$tp]; // last product column
@@ -97,6 +97,7 @@ class DispatchedProducts implements WithEvents, WithTitle
                 $event->sheet->verticalAlign('A3:'. $lc .'3', 'center');
                 $event->sheet->setCellValue('A3', mb_strtoupper(__('customer.customer')));
                 $event->sheet->setCellValue('B3', mb_strtoupper(__('customer.seller')));
+                $event->sheet->setCellValue('C3', mb_strtoupper(__('document_type.doc')));
 
                 for ($i = 0; $i < $this->products->count(); $i ++) { 
                     $event->sheet->setCellValue($column[$i +1] .'3', mb_strtoupper($this->products[$i]['product_name']));
@@ -120,9 +121,13 @@ class DispatchedProducts implements WithEvents, WithTitle
                 foreach($this->dispatched_products as $dp) {
                     $event->sheet->setCellValue('A'. $row, $dp->customer_name);
                     $event->sheet->setCellValue('B'. $row, $dp->seller_name);
+                    $event->sheet->setCellValue('C'. $row, $dp->doc);
                     
                     for ($i = 0; $i < $this->products->count(); $i ++) {
-                        $qty = $this->dispatched_products->where('customer_id', $dp->customer_id)->sum('product_'. $this->products[$i]['variation_id']);
+                        $qty = $this->dispatched_products->where('customer_id', $dp->customer_id)
+                            ->where('transaction_id', $dp->transaction_id)
+                            ->sum('product_'. $this->products[$i]['variation_id']);
+                            
                         $total['product_'. $this->products[$i]['variation_id']] += $qty;
                         $event->sheet->setCellValue($column[$i +1]. $row, $qty);
                     }
@@ -155,8 +160,8 @@ class DispatchedProducts implements WithEvents, WithTitle
 
                 /** set font size and family, set borders */
     			$event->sheet->setFontSize('A3:'. $lc . $row, 10);
-                $event->sheet->setFormat('A3:A'. $row, '@'); // text format
-                $event->sheet->setFormat('C3:'. $column[$tp +1] . $row, '#,##0.0'); // number format one decimal
+                $event->sheet->setFormat('A3:C'. $row, '@'); // text format
+                $event->sheet->setFormat('D3:'. $column[$tp +1] . $row, '#,##0.0'); // number format one decimal
                 $event->sheet->setFormat($column[$tp +2]. '3:'. $column[$tp +2] . $row, '$ #,##0.00_-'); // currency format two decimals
                 $event->sheet->setAllBorders('A3:'. $lc . $row, 'thin');
                 $event->sheet->setFontFamily('A1:'. $lc . $row, 'Calibri');

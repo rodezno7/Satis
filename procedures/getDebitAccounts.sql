@@ -1,8 +1,10 @@
-DROP PROCEDURE IF EXISTS getDebitAccounts
-
 DELIMITER $$
 
-CREATE PROCEDURE getDebitAccounts(IN start_date DATE, IN end_date DATE, IN _level INT)
+USE `envex-erp-nuves`$$
+
+DROP PROCEDURE IF EXISTS `getDebitAccounts`$$
+
+CREATE PROCEDURE `getDebitAccounts`(IN start_date DATE, IN end_date DATE, IN _level INT, IN _business_id INT)
 BEGIN
 	## JANUARY 1ST OF CURRENT YEAR
 	SET @initial_date := (SELECT CAST(DATE_FORMAT(start_date, '%Y-01-01') AS DATE));
@@ -17,6 +19,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= @initial_date
 			AND ae.`date` < start_date
+			AND c.business_id = _business_id
 			AND (aed.debit <> 0)
 		GROUP BY c.code;
 		
@@ -31,6 +34,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= @initial_date
 			AND ae.`date` < start_date
+			AND c.business_id = _business_id
 			AND (aed.credit <> 0)
 		GROUP BY c.code;
 		
@@ -45,6 +49,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= @initial_date
 			AND ae.`date` <= end_date
+			AND c.business_id = _business_id
 			AND (aed.debit <> 0)
 		GROUP BY c.code;
 		
@@ -59,6 +64,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= @initial_date
 			AND ae.`date` <= end_date
+			AND c.business_id = _business_id
 			AND (aed.credit <> 0)
 		GROUP BY c.code;
 		
@@ -73,6 +79,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= start_date
 			AND ae.`date` <= end_date
+			AND c.business_id = _business_id
 			AND (aed.debit <> 0)
 		GROUP BY c.code;
 		
@@ -87,6 +94,7 @@ BEGIN
 		WHERE 	ae.status = 1
 			AND ae.`date` >= start_date
 			AND ae.`date` <= end_date
+			AND c.business_id = _business_id
 			AND (aed.credit <> 0)
 		GROUP BY c.code;
 	
@@ -128,6 +136,7 @@ BEGIN
 		
 	FROM catalogues AS c
 	WHERE c.level <= _level
+	AND c.business_id = _business_id
 	AND c.type = 'debtor'
 	GROUP BY c.code
 	ORDER BY c.code ASC;
@@ -138,6 +147,6 @@ BEGIN
 	DROP TEMPORARY TABLE IF EXISTS debit_range;
 	DROP TEMPORARY TABLE IF EXISTS credit_range;
 	
-END; $$
+END$$
 
 DELIMITER ;

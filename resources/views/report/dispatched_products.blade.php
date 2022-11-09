@@ -97,6 +97,7 @@
                                     <tr>
                                         <th style="text-align: center;">@lang('customer.customer')</th>
                                         <th style="text-align: center;">@lang('customer.seller')</th>
+                                        <th style="text-align: center;">@lang('document_type.doc')</th>
                                         <th style="width: 15%; text-align: center;">@lang('lang_v1.quantity')</th>
                                         <th style="width: 15%; text-align: center;">@lang('lang_v1.weight')</th>
                                         <th style="width: 15%; text-align: center;">@lang('sale.total')</th>
@@ -107,7 +108,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr class="bg-gray font-14 footer-total text-center">
-                                        <td colspan="2"><strong>@lang('report.grand_total')</strong></td>
+                                        <td colspan="3"><strong>@lang('report.grand_total')</strong></td>
                                         <td><span class="display_currency" id="footer_total_qty" data-currency_symbol ="false" data-precision="1"></span></td>
                                         <td><span class="display_currency" id="footer_total_weight" data-currency_symbol ="false" data-precision="1"></span></td>
                                         <td><span class="display_currency" id="footer_total_final" data-currency_symbol ="true"></span></td>
