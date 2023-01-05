@@ -1,6 +1,8 @@
 $(document).ready(function(){
 	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
+	$('#carouselHacked').carousel();
+
 	// Select2
 	$('.choose_month_modal').on('shown.bs.modal', function() {
 		$(this).find('.select2').select2();
@@ -8,11 +10,12 @@ $(document).ready(function(){
 
 	var start = $('input[name="date-filter"]:checked').data('start');
 	var end = $('input[name="date-filter"]:checked').data('end');
-	update_statistics(start, end, 0);
+	var location_id = $('select#business_location_id').val() == 0 ? 1 : $('select#business_location_id').val();;
+	update_statistics(start, end, location_id);
 	$(document).on('change', 'input[name="date-filter"]', function(){
 		var start = $('input[name="date-filter"]:checked').data('start');
 		var end = $('input[name="date-filter"]:checked').data('end');
-		var location_id = $('#business_location_id').val();		
+		var location_id = $('select#business_location_id').val() == 0 ? 1 : $('select#business_location_id').val();	
 
 		update_statistics(start, end, location_id);
 	});
@@ -63,6 +66,9 @@ function update_statistics( start, end, location_id){
 	$('.total_sell').html(loader);
 	$('.invoice_due').html(loader);
 	$('.total_stock').html(loader);
+	$('.gross_profit').html(loader);
+	$('.net_earnings').html(loader);
+	$('.average_sales').html(loader);
 	$.ajax({
 		method: "POST",
 		url: '/home/get-purchase-details',
@@ -88,9 +94,11 @@ function update_statistics( start, end, location_id){
 			if (data.box_exc_tax) {
 				$('.total_sell').html(__currency_trans_from_en(data.total_sell_exc_tax, true ));
 				$('.invoice_due').html( __currency_trans_from_en(data.invoice_due, true));
+				$('.average_sales').html(__currency_trans_from_en(data.average_exc_tax, true ));
 			} else {
 				$('.total_sell').html(__currency_trans_from_en(data.total_sell_inc_tax, true ));
 				$('.invoice_due').html( __currency_trans_from_en(data.invoice_due, true));
+				$('.average_sales').html(__currency_trans_from_en(data.average_inc_tax, true ));
 			}
 		}
 	});
@@ -139,6 +147,16 @@ function update_statistics( start, end, location_id){
 		data: data,
 		success: function (data) {
 			$('.total_stock').html(__currency_trans_from_en(data, true));
+		}
+	});
+
+	$.ajax({
+		method: 'get',
+		url: '/home/get-profits',
+		data: data,
+		success: function (data) {
+			$('.gross_profit').html(__currency_trans_from_en(data.gross_profit, true));
+			$('.net_earnings').html(__currency_trans_from_en(data.net_earnings, true));
 		}
 	});
 }

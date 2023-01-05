@@ -3,18 +3,136 @@
 
 @section('css')
     {!! Charts::styles(['highcharts']) !!}
+	<style>
+		/* Slider */
+.carousel-fade .carousel-inner .item {
+    opacity: 0;
+    transition-property: opacity;
+  }
+  
+  .carousel-fade .carousel-inner .active {
+    opacity: 1;
+  }
+  
+  .carousel-fade .carousel-inner .active.left,
+  .carousel-fade .carousel-inner .active.right {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+  }
+  
+  .carousel-fade .carousel-inner .next.left,
+  .carousel-fade .carousel-inner .prev.right {
+    opacity: 1;
+  }
+  
+  .carousel-fade .carousel-control {
+    z-index: 2;
+  }
+  
+  /*
+  WHAT IS NEW IN 3.3: "Added transforms to improve carousel performance in modern browsers."
+  now override the 3.3 new styles for modern browsers & apply opacity
+  */
+  @media all and (transform-3d), (-webkit-transform-3d) {
+      .carousel-fade .carousel-inner > .item.next,
+      .carousel-fade .carousel-inner > .item.active.right {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+      }
+      .carousel-fade .carousel-inner > .item.prev,
+      .carousel-fade .carousel-inner > .item.active.left {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+      }
+      .carousel-fade .carousel-inner > .item.next.left,
+      .carousel-fade .carousel-inner > .item.prev.right,
+      .carousel-fade .carousel-inner > .item.active {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+      }
+  }
+  
+  /* just for demo purpose */
+      html,
+      body,
+      .carousel,
+      .carousel-inner,
+      .carousel-inner .item {
+        height: 100%;
+      }
+  
+      .item:nth-child(1) {
+        background: blue;
+      }
+  
+      .item:nth-child(2) {
+        background: red;
+      }
+  
+      .item:nth-child(3) {
+        background: orange;
+      }
+	</style>
+	  <!-- <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"> -->
+
 @endsection
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header" style="margin-top: -20px;">
-	<div class="row">
+	<!-- <div class="row">
 		<div class="col-md-12 col-md-offset-0 ">
 			<img src="{{asset('img/envex-erp-banner.png')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="height: 100%; width: 100%;">
 		</div>
+	</div> -->
+
+	<div class="row">
+		<div class="col-md-12">
+		<div id="carousel1" class="carousel slide" data-ride="carousel">
+  <!-- <!– Indicatodores –> -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel1" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel1" data-slide-to="1"></li>
+    <li data-target="#carousel1" data-slide-to="2"></li>
+  </ol>
+
+  <!-- <!– Contenedor de las imagenes –> -->
+  <div class="carousel-inner" role="listbox">
+
+    <div class="item active">
+	<img src="{{asset('img/default/cover1.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+    </div>
+
+    <div class="item">
+	<img src="{{asset('img/default/cover2.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+    </div>
+
+    <div class="item">
+	<img src="{{asset('img/default/cover3.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+    </div>
+  </div>
+
+  <!-- <!– Controls –> -->
+  <a class="left carousel-control" href="#carousel1" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Anterior</span>
+  </a>
+  <a class="right carousel-control" href="#carousel1" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Siguiente</span>
+  </a>
+		</div>
+</div>
 	</div>
-</section>
+
+</section> 
+
+
 
 @if(auth()->user()->can('dashboard.data'))
 <!-- Main content -->
@@ -82,80 +200,82 @@
 	<br>
 
 	<div class="row">
+		
+	{{-- Total sales --}}
+	    <div class="col-md-3 col-sm-6 col-xs-12">
+
+		<div class="small-box bg-green">
+					<div class="inner">
+						<h3 class="info-box-number total_sell"><sup style="font-size: 20px"></sup></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.total_sell') }}</p><br>
+					</div>
+					<div class="icon">
+						<i class="ion ion-ios-cart-outline"></i>
+					</div>
+					<a href="{{action('SellController@index')}}" class="small-box-footer">
+						@lang('home.more_information') <i class="fa fa-arrow-circle-right"></i>
+					</a>
+				</div>
+	    </div>
+	    <!-- /.col -->
+
+
 		{{-- Total purchase --}}
 		<div class="col-md-3 col-sm-6 col-xs-12">
 			<!-- info box -->
-			<a href="{{action('PurchaseController@index')}}" class="small-box-footer" style="color: white" title="{{ __('lang_v1.more_information') }}">
-				<div class="info-box bg-aqua">
-					<div class="info-box-icon" style="width: 65px;">
+			<div class="small-box bg-aqua">
+					<div class="inner">
+						<h3 class="total_purchase"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.total_purchase') }}</p><br>
+					</div>
+					<div class="icon">
 						<i class="ion ion-bag"></i>
 					</div>
-
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number total_purchase"></span>
-						<span class="info-box-text">
-							<h5>{{ __('home.total_purchase') }} <i class="fa fa-arrow-circle-right"></i></h5>
-						</span>										
-					</div>
+					<a href="{{action('SellController@index')}}" class="small-box-footer">
+						@lang('home.more_information') <i class="fa fa-arrow-circle-right"></i>
+					</a>
 				</div>
-			</a>
 		</div>
 	    <!-- /.col -->
 
-		{{-- Total sales --}}
+		{{-- Invoice due --}}
 	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<a href="{{action('SellController@index')}}" class="small-box-footer" style="color: white" title="{{ __('lang_v1.more_information') }}">
-				<div class="info-box bg-green">
-					<div class="info-box-icon" style="width: 65px;">
-					<i class="ion ion-ios-cart-outline"></i>
+		<div class="small-box bg-red">
+					<div class="inner">
+						<h3 class="info-box-number invoice_due"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.invoice_due') }}</p><br>
 					</div>
-
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number total_sell"></span>
-						<span class="info-box-text">
-							<h5>{{ __('home.total_sell') }} <i class="fa fa-arrow-circle-right"></i></h5>
-						</span>										
+					<div class="icon">
+						<i class="fa fa-dollar"></i>
 					</div>
+					<a href="{{action('CustomerController@indexBalancesCustomer')}}" class="small-box-footer">
+						@lang('home.more_information') <i class="fa fa-arrow-circle-right"></i>
+					</a>
 				</div>
-			</a>
+			
+	      <!-- /.info-box -->
 	    </div>
 	    <!-- /.col -->
 
 		{{-- Purchase due --}}
 	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<div class="info-box bg-yellow">
-				<div class="info-box-icon" style="width: 65px;">
-				  <i class="fa fa-dollar"></i>
+		<div class="small-box bg-yellow">
+					<div class="inner">
+						<h3 class="info-box-number purchase_due"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.purchase_due') }}</p><br>
+					</div>
+					<div class="icon">
+					<i class="ion ion-ios-paper-outline"></i>
+						<i class="fa fa-exclamation"></i>
+					</div>
+					<a href="{{action('PurchaseController@debtsToPayReport')}}" class="small-box-footer">
+						@lang('home.more_information') <i class="fa fa-arrow-circle-right"></i>
+					</a>
 				</div>
-
-				<div class="info-box-content" style="margin-left: 60px;">
-					<span class="info-box-number purchase_due"></span>
-					<span class="info-box-text">
-						<h5>{{ __('home.purchase_due') }}</h5>	
-						<i class="fa fa-arrow-circle-right"></i>					
-					</span>										
-				</div>				
-			</div>
+			
 	    </div>
 
-		{{-- Invoice due --}}
-	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<div class="info-box bg-red">
-				<div class="info-box-icon" style="width: 65px;">
-				  	<i class="ion ion-ios-paper-outline"></i>
-				</div>
-
-				<div class="info-box-content" style="margin-left: 60px;">
-					<span class="info-box-number invoice_due"></span>
-					<span class="info-box-text">
-						<h5>{{ __('home.invoice_due') }}</h5>
-						<i class="fa fa-arrow-circle-right"></i>
-					</span>										
-				</div>			
-			</div>
-	      <!-- /.info-box -->
-	    </div>
-	    <!-- /.col -->
+		
   	</div>
   	<br>
 	
@@ -185,86 +305,58 @@
 		  @endif
     	<!-- /.col -->
 
-		{{-- Stock alerts --}}
-	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<a href="{{ config('app.business') == 'optics' ? action('Optics\ProductController@index') : action('ProductController@index') }}"
-				class="small-box-footer"
-				style="color: white"
-				title="{{ __('lang_v1.more_information') }}">
-				<div class="info-box bg-blue">
-					<div class="info-box-icon" style="width: 65px;">
-						<i class="fa fa-dropbox"></i>					
+		{{-- Total stock --}}
+	    <div class="col-md-3 col-sm-6 col-xs-12"> 
+		<div class="small-box bg-blue">
+					<div class="inner">
+						<h3 class="info-box-number total_stock"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.total_stock') }}</p><br>
 					</div>
-					
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number low_stock_products"></span>
-						<span class="info-box-text">
-							<h5>{{ __('home.stock_products') }} <i class="fa fa-arrow-circle-right"></i></h5>							
-						</span>										
+					<div class="icon">
+						<i class="fa fa-cube"></i>
 					</div>
 				</div>
-			</a>
+		
 	    </div>
 	    <!-- /.col -->
 
-		{{-- Total stock --}}
-		<div class="col-md-3 col-sm-6 col-xs-12">	
-			<a href="{{ config('app.business') == 'optics' ? action('Optics\ProductController@index') : action('ProductController@index') }}"
-				class="small-box-footer"
-				style="color: white"
-				title="{{ __('lang_v1.more_information') }}">
-				<div class="info-box bg-olive">
-					<div class="info-box-icon" style="width: 65px;">
-						<i class="fa fa-cube"></i>
+		{{-- Gross Profit --}}
+		<div class="col-md-3 col-sm-6 col-xs-12">
+		<div class="small-box bg-olive">
+					<div class="inner">
+						<h3 class="info-box-number gross_profit"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.gross_profit') }}</p><br>
 					</div>
-
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number total_stock"></span>
-						<span class="info-box-text">
-							<h5>{{ __('home.total_stock') }} <i class="fa fa-arrow-circle-right"></i></h5>
-						</span>
+					<div class="icon">
+						<i class="fa fa-money"></i>
 					</div>
 				</div>
-			</a>
 		</div>
 
-		{{-- Accounts receivable --}}
+		{{-- Net Earning--}}
 	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<a href="{{action('CustomerController@indexBalancesCustomer')}}" class="small-box-footer" style="color: white" title="{{ __('lang_v1.more_information') }}">	
-				<div class="info-box bg-orange">
-
-					<div class="info-box-icon" style="width: 65px; height: 95px;">
-						<i class="fa fa-money"></i>
+		<div class="small-box bg-orange">
+					<div class="inner">
+						<h3 class="info-box-number net_earnings"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.net_earnings') }}</p><br>
 					</div>
-					
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number sales_payment_dues"></span>
-						<span class="info-box-text">
-							<h6>{{ __('lang_v1.accounts_receivable') }}</h6>
-							<h6>{{ __('lang_v1.close_to_expire') }} <i class="fa fa-arrow-circle-right"></i></h6>																							
-						</span>																
+					<div class="icon">
+						<i class="fa fa-money"></i>
 					</div>
 				</div>
-			</a>
 	    </div>
 
-		{{-- Accounts payable --}}
+		{{-- Average sales --}}
 	    <div class="col-md-3 col-sm-6 col-xs-12">
-			<a href="{{action('CustomerController@indexBalancesCustomer')}}" class="small-box-footer" style="color: white" title="{{ __('lang_v1.more_information') }}">
-				<div class="info-box bg-maroon">
-					<div class="info-box-icon" style="width: 65px; height: 95px;">
-						<i class="fa fa-money"></i>
+		<div class="small-box bg-maroon">
+					<div class="inner">
+						<h3 class="info-box-number average_sales"></h3>
+						<p class="info-box-text" style="color: white">{{ __('home.average_sales') }}</p><br>
 					</div>
-					
-					<div class="info-box-content" style="margin-left: 60px;">
-						<span class="info-box-number purchase_payment_dues"></span>
-						<span class="info-box-text">
-							<h6>{{ __('lang_v1.debs_to_pay') }}</h6>
-							<h6>{{ __('lang_v1.close_to_expire') }} <i class="fa fa-arrow-circle-right"></i></h6>
-						</span>																																																	
+					<div class="icon">
+						<i class="ion ion-ios-cart-outline"></i>
 					</div>
-				</div>	
-			</a>						
+				</div>						
 	    </div>
 	</div>
 
@@ -468,6 +560,8 @@
 	@if (isset($dashboard_settings['stock_year']) && $dashboard_settings['stock_year'] == 1)
 		{!! $stocks_chart_2->script() !!}
 	@endif
+	<!-- <script src="jquery.min.js"></script> -->
+<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
 	<script>
 		$(document).ready(function() {
 			$('#location').change(function() {

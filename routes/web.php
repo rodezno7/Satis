@@ -74,6 +74,9 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/balances_customer', 'CustomerController@indexBalancesCustomer');
     Route::get('/balances_customer/get-data', 'CustomerController@getBalancesCustomersData');
 
+    // Ganancias
+    Route::get('/home/get-profits', 'HomeController@getProfitsDetails');
+
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/home/get-purchase-details', 'HomeController@getPurchaseDetails');
     Route::post('/home/get-sell-details', 'HomeController@getSellDetails');

@@ -4,9 +4,9 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/png" href="/img/envex-erp-icon.png"/>
-        <title>{{ config('app.name', 'Envex ERP') }}</title>
-
+        <link rel="icon" type="image/png" href="/img/default/iso-satis.png"/>
+        <title>{{ config('app.name', 'SATIS ERP') }}</title>
+        @include('layouts.partials.css')
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="{{ asset('bootstrap/css/custumize.css') }}">
@@ -14,13 +14,16 @@
         <style>
             html, body {
                 background-color: #fff;
-                color: #636b6f;
+                color: #fff;
                 font-family: 'Raleway', sans-serif;
                 font-weight: 100;
                 height: 100vh;
                 margin: 0;
-                background-color: #1b1c32;
-                /*background-image: url("img/Transparent-background-with-dots.png");*/
+                background-color: #fff;
+                background-image: url("img/default/satis_background.jpg");
+                background-position: center; /* Center the image */
+                background-repeat: no-repeat; /* Do not repeat the image */
+                background-size: cover; /* Resize the background image to cover the entire container */
                 overflow-y:hidden;
             }
 
@@ -53,7 +56,7 @@
             }
 
             .links > a {
-                color: #636b6f;
+                color: ##0057E1;
                 padding: 0 25px;
                 font-size: 12px;
                 font-weight: 600;
@@ -90,30 +93,19 @@
 
                 @if (Route::has('login'))
                     @if (Auth::check())
-                        <a href="{{ action('HomeController@index') }}" style="color: #f9fbfc">@lang('home.home')</a>
+                        <a href="{{ action('HomeController@index') }}" style="color: #0057E1; font-weight: bold; text-decoration: underline;">@lang('home.home')</a>
                     @else
-                        <a href="{{ action('Auth\LoginController@login') }}" style="color: #f9fbfc">@lang('home.login')</a>
-                        {{-- @if(env('ALLOW_REGISTRATION', true))
-                            <a href="{{ route('business.getRegister') }}">@lang('home.register')</a>
-                        @endif --}}
+                        <a href="{{ action('Auth\LoginController@login') }}" style="color: #0057E1; font-weight: bold; text-decoration: underline;">@lang('home.login')</a>
                     @endif
-                @endif
-
-                @if(Route::has('pricing') && config('app.env') != 'demo')
-                    <a href="{{ action('\Modules\Superadmin\Http\Controllers\PricingController@index') }}">@lang('superadmin::lang.pricing')</a>
                 @endif
             </div>
 
             <div class="content">
                 <div class="row">
                      <div  >
-                        <img class="portada" src="{{ asset('/img/envex-erp-logo-no-background.png') }}">
+                        <img class="portada" src="{{ asset('/img/default/satis.png') }}">
                      </div>
                 </div>
-               
-                {{-- <p class="tagline">
-                   Desarrollado por: <a href="http://blsolutionsv.com/" target="_blank">BL Solutions S.A de C.V</a>
-                </p> --}}
             </div>
         </div>
     </body>

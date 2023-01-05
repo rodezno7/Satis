@@ -30,7 +30,9 @@
           </button>
         @endif
 
-
+        <a href="#" title="{{ __('home.conected_business') }}" data-toggle="tooltip" data-placement="bottom" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
+            <strong><i class="fa fa-briefcase"></i>&nbsp; {{ Session::get('business.name') }}</strong>
+          </a>
 
         @can('sell.create')
           <a href="{{action('SellPosController@create')}}" title="POS" data-toggle="tooltip" data-placement="bottom" class="btn btn-success btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
@@ -53,7 +55,7 @@
               <!-- The user image in the navbar-->
               <!-- <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image"> -->
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span>{{__('home.hi', ['name' =>  Auth::User()->first_name])}}</span>
+              <span>{{ Auth::User()->first_name }} {{ Auth::User()->last_name }}</span>
               <span></span>
             </a>
             <ul class="dropdown-menu">
@@ -61,6 +63,8 @@
               <li class="user-header">
                 @if(!empty(Session::get('business.logo')))
                   <img src="{{ url( '/uploads/business_logos/' . Session::get('business.logo') ) }}" alt="Logo"></span>
+                @else
+                  <img src="{{ url( '/img/default/satis_white.png' ) }}" alt="SATIS ERP"></span>
                 @endif
                 <p>
                   {{ Auth::User()->first_name }} {{ Auth::User()->last_name }}

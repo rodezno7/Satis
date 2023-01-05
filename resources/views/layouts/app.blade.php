@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{in_array(session()->get('user.language', config('app.locale')), config('constants.langs_rtl')) ? 'rtl' : 'ltr'}}">
     <head>
-        <link rel="icon" type="image/png" href="/img/envex-erp-icon.png"/>
+        <link rel="icon" type="image/png" href="/img/default/iso-satis.png"/>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <!-- Tell the browser to be responsive to screen width -->

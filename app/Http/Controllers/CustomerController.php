@@ -115,9 +115,11 @@ class CustomerController extends Controller
     {
         if (request()->ajax()) {
 
+            $business_id = request()->session()->get('user.business_id');
+
             //verifica si hay registtos en la base de datos
             if ($type == 'dni') {
-                if (Customer::where('dni', $value)->exists()) {
+                if (Customer::where('dni', $value)->where('business_id', $business_id)->exists()) {
                     $output = [
                         'success' => true,
                         'msg' => trans('customer.DNI_invalid')
@@ -131,7 +133,7 @@ class CustomerController extends Controller
                     return  $output;
                 }
             } else if ($type == 'reg_number') {
-                if (Customer::where('reg_number', $value)->exists()) {
+                if (Customer::where('reg_number', $value)->where('business_id', $business_id)->exists()) {
                     $output2 = [
                         'success' => true,
                         'msg' => trans('customer.num_reg_invalid')
@@ -153,10 +155,12 @@ class CustomerController extends Controller
     {
         if (request()->ajax()) {
 
+            $business_id = request()->session()->get('user.business_id');
+
             //verifica si hay registtos en la base de datos
             //omite el id del clienre que se manda por parametro, es opcional y sirve para la vista edir
             if ($type == 'dni' && $id != '') {
-                if (Customer::where('id', '<>', $id)->where('dni', $value)->exists()) {
+                if (Customer::where('id', '<>', $id)->where('dni', $value)->where('business_id', $business_id)->exists()) {
                     $output = [
                         'success' => true,
                         'msg' => trans('customer.DNI_invalid')
@@ -170,7 +174,7 @@ class CustomerController extends Controller
                     return  $output;
                 }
             } else if ($type == 'reg_number' && $id != null) {
-                if (Customer::where('id', '<>', $id)->where('reg_number', $value)->exists()) {
+                if (Customer::where('id', '<>', $id)->where('reg_number', $value)->where('business_id', $business_id)->exists()) {
                     $output2 = [
                         'success' => true,
                         'msg' => trans('customer.num_reg_invalid')
@@ -186,6 +190,7 @@ class CustomerController extends Controller
             }
         }
     }
+
     public function verifiedIfExistsTaxNumber()
     {
         if (request()->ajax()) {

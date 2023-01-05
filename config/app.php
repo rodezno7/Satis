@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'Envex ERP'),
+    'name' => env('APP_NAME', 'SATIS ERP'),
 
     /**
      * 
@@ -262,5 +262,8 @@ return [
     'price_precision' => env('PRICE_PRECISION', 6),
 
     // Precision of purchase and sale prices
-    'clone_product' => env('CLONE_PRODUCT', false)
+    'clone_product' => env('CLONE_PRODUCT', false),
+
+    // App Version
+    'app_version' => env('APP_VERSION', 11.22)
 ];
