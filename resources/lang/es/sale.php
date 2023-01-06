@@ -89,4 +89,9 @@
     'total_balance_due' => 'Saldo total adeudado',
     'correlative_exists' => 'El correlative ya existe',
     'parent_doc' => 'Doc. padre',
+    'type_discount' => 'Tipo de descuento',
+    'percentage' => 'Porcentaje',
+    'permanent' => 'Fijo',
+    'limit_discount' => 'Límite de descuento',
+    'limit_error' => 'El límite no puede ser menor al descuento',
 ];

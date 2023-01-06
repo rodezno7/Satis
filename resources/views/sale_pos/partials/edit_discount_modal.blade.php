@@ -29,9 +29,9 @@
 				                    <i class="fa fa-info"></i>
 				                </span>
 								@if(auth()->user()->can('sell.unlimited_discount'))
-								{!! Form::hidden('max_sale_discount', 100, ['id' => 'max_sale_discount']) !!}
+								{!! Form::hidden('max_sale_discount', $max_discount, ['id' => 'max_sale_discount']) !!}
 								@else
-								{!! Form::hidden('max_sale_discount', $max_sale_discount, ['id' => 'max_sale_discount']) !!}
+								{!! Form::hidden('max_sale_discount', $max_discount, ['id' => 'max_sale_discount']) !!}
 								@endif
 
 								{!! Form::text('discount_amount_modal', @num_format($sales_discount),

@@ -97,4 +97,9 @@ return [
     'total_balance_due' => 'Total balance due',
     'correlative_exists' => 'Correlative exists',
     'parent_doc' => 'Parent doc.',
+    'type_discount' => 'Type discount',
+    'percentage' => 'Percentage',
+    'permanent' => 'Permanent',
+    'limit_discount' => 'Limit discount',
+    'limit_error' => 'Limit error',
 ];

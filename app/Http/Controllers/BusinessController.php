@@ -592,6 +592,8 @@ class BusinessController extends Controller
                 'default_profit_percent',
                 'default_sales_tax',
                 'default_sales_discount',
+                'type_discount',
+                'limit_discount',
                 'sell_price_tax',
                 'sku_prefix',
                 'portfolio_prefix',

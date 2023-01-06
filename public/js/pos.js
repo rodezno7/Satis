@@ -2319,13 +2319,9 @@ $(document).ready(function () {
 		var amount = parseFloat($('#discount_amount_modal').val());
 		var discount_type = $('#discount_type_modal').val();
 		var total = calculate_total();
-		var msg_error = __translate('msg_max_discount_percent', {'number': max_discount});
+		var msg_error = __translate('msg_max_discount_fixed', {'number': max_discount});
 
-		if (discount_type == 'fixed') {
-			max_discount = total['subtotal'] * (max_discount / 100);
-			max_discount = max_discount.toFixed(2);
-			msg_error = __translate('msg_max_discount_fixed', {'number': max_discount});
-		}
+		
 
 		if (amount > max_discount) {
 			// Update values

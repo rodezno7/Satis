@@ -50,7 +50,13 @@
 
 										@php
 										if (empty($edit)) {
-											$discount_type = 'percentage';
+											if ($type_discount == 'percentage') {
+												$discount_type = 'percentage';
+											} else {
+												$discount_type = 'fixed';
+
+											}
+											
 										} else {
 											$discount_type = $transaction->discount_type;
 										}
@@ -61,7 +67,7 @@
 											name="discount_type"
 											id="discount_type"
 											value="{{ $discount_type }}"
-											data-default="percentage">
+											data-default="{{ $discount_type }}">
 
 										<input
 											type="hidden"
@@ -411,13 +417,13 @@
 	@include('sale_pos.partials.edit_discount_modal', [
 		'sales_discount' => $transaction->discount_amount,
 		'discount_type' => $transaction->discount_type,
-		'max_sale_discount' => $business_details->max_sale_discount
+		'max_sale_discount' => $max_discount
 	])
 @else
 	@include('sale_pos.partials.edit_discount_modal', [
 		'sales_discount' => $business_details->default_sales_discount,
-		'discount_type' => 'percentage',
-		'max_sale_discount' => $business_details->max_sale_discount
+		'discount_type' => $discount_type,
+		'max_sale_discount' => $max_discount
 	])
 @endif
 

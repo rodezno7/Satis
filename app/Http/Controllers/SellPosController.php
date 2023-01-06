@@ -252,21 +252,21 @@ class SellPosController extends Controller
         $categories = Category::catAndSubCategories($business_id);
 
         $brands = Brands::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
         $brands->prepend(__('lang_v1.all_brands'), 'all');
 
         // Creando el select para tipo documentos
         $documents =  DocumentType::where('business_id',$business_id)
-            ->where('is_active', 1)
-            ->where('is_document_sale', 1)
-            ->select('short_name', 'tax_inc', 'tax_exempt', 'id', 'is_default')
-            ->get();
+        ->where('is_active', 1)
+        ->where('is_document_sale', 1)
+        ->select('short_name', 'tax_inc', 'tax_exempt', 'id', 'is_default')
+        ->get();
 
         $default =  DocumentType::where('business_id',$business_id)
-            ->where('is_active', 1)
-            ->where('is_default', 1)
-            ->select('id')
-            ->first();
+        ->where('is_active', 1)
+        ->where('is_default', 1)
+        ->select('id')
+        ->first();
         
         $change_return = $this->dummyPaymentLine;
 
@@ -312,7 +312,7 @@ class SellPosController extends Controller
         
         /** Banks */
         $banks = Bank::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
 
         /** Bank account */
         $bank_accounts = BankAccount::pluck('name', 'id');
@@ -354,126 +354,136 @@ class SellPosController extends Controller
         $user = User::find(request()->user()->id);
         $is_admin = $user->hasRole('Super Admin#' . $business_id);
 
+        $business_q = Business::findOrFail($business_id);
+        $type_discount = $business_q->type_discount;
+        $max_discount = $business_q->limit_discount;
+
         if (config('app.business') == 'optics') {
             // Patients
             $patients = Patient::where('business_id', $business_id)
-                ->pluck('full_name', 'id');
+            ->pluck('full_name', 'id');
 
             // Status lab orders
             $status_lab_orders = StatusLabOrder::where('business_id', $business_id)
-                ->where('status', 'active')
-                ->orderBy('name')
-                ->get();
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
 
             // External labs
             $external_labs = ExternalLab::where('business_id', $business_id)
-                ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
             // Products
             $products = Product::where('business_id', $business_id)
-                ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
             // Lab order code
             $code = $this->util->generateLabOrderCode();
 
             // Payment note document
             $payment_note_id = DocumentType::where('business_id', $business_id)
-                ->where('short_name', $this->note_name)
-                ->first()
-                ->id;
+            ->where('short_name', $this->note_name)
+            ->first()
+            ->id;
 
             // Show note field
             $show_note = true;
             $show_multiple_notes = false;
 
+            
+
             return view('sale_pos.create')
-                ->with(compact(
-                    'business_details',
-                    'taxes',
-                    'payment_types',
-                    'walk_in_customer',
-                    'cashier_closure_id',
-                    'payment_lines',
-                    'business_locations',
-                    'bl_attributes',
-                    'default_location',
-                    'shortcuts',
-                    'commission_agent',
-                    'categories',
-                    'brands',
-                    'pos_settings',
-                    'change_return',
-                    'types',
-                    'customer_groups',
-                    'employees_sales',
-                    'accounts',
-                    'price_groups',
-                    'documents',
-                    'tax_groups',
-                    'business_type',
-                    'payment_conditions',
-                    'warehouses',
-                    'cashiers',
-                    'banks',
-                    'bank_accounts',
-                    'pos',
-                    'default',
-                    'fcf_document',
-                    'ccf_document',
-                    'patients',
-                    'status_lab_orders',
-                    'external_labs',
-                    'products',
-                    'code',
-                    'default_cashier',
-                    'payment_note_id',
-                    'show_note',
-                    'show_multiple_notes',
-                    'is_admin',
-                    'default_warehouse',
-                    'decimals_in_sales'
-                ));
+            ->with(compact(
+                'type_discount',
+                'max_discount',
+                'business_details',
+                'taxes',
+                'payment_types',
+                'walk_in_customer',
+                'cashier_closure_id',
+                'payment_lines',
+                'business_locations',
+                'bl_attributes',
+                'default_location',
+                'shortcuts',
+                'commission_agent',
+                'categories',
+                'brands',
+                'pos_settings',
+                'change_return',
+                'types',
+                'customer_groups',
+                'employees_sales',
+                'accounts',
+                'price_groups',
+                'documents',
+                'tax_groups',
+                'business_type',
+                'payment_conditions',
+                'warehouses',
+                'cashiers',
+                'banks',
+                'bank_accounts',
+                'pos',
+                'default',
+                'fcf_document',
+                'ccf_document',
+                'patients',
+                'status_lab_orders',
+                'external_labs',
+                'products',
+                'code',
+                'default_cashier',
+                'payment_note_id',
+                'show_note',
+                'show_multiple_notes',
+                'is_admin',
+                'default_warehouse',
+                'decimals_in_sales'
+            ));
 
         } else {
             return view('sale_pos.create')
-                ->with(compact(
-                    'business_details',
-                    'taxes',
-                    'payment_types',
-                    'walk_in_customer',
-                    'cashier_closure_id',
-                    'payment_lines',
-                    'business_locations',
-                    'bl_attributes',
-                    'default_location',
-                    'shortcuts',
-                    'commission_agent',
-                    'categories',
-                    'brands',
-                    'pos_settings',
-                    'change_return',
-                    'types',
-                    'customer_groups',
-                    'employees_sales',
-                    'accounts',
-                    'price_groups',
-                    'documents',
-                    'tax_groups',
-                    'business_type',
-                    'payment_conditions',
-                    'warehouses',
-                    'cashiers',
-                    'banks',
-                    'bank_accounts',
-                    'pos',
-                    'default',
-                    'is_admin',
-                    'fcf_document',
-                    'ccf_document',
-                    'default_warehouse',
-                    'default_cashier',
-                    'decimals_in_sales'
-                ));
+            ->with(compact(
+                'type_discount',
+                'max_discount',
+                'business_details',
+                'taxes',
+                'payment_types',
+                'walk_in_customer',
+                'cashier_closure_id',
+                'payment_lines',
+                'business_locations',
+                'bl_attributes',
+                'default_location',
+                'shortcuts',
+                'commission_agent',
+                'categories',
+                'brands',
+                'pos_settings',
+                'change_return',
+                'types',
+                'customer_groups',
+                'employees_sales',
+                'accounts',
+                'price_groups',
+                'documents',
+                'tax_groups',
+                'business_type',
+                'payment_conditions',
+                'warehouses',
+                'cashiers',
+                'banks',
+                'bank_accounts',
+                'pos',
+                'default',
+                'is_admin',
+                'fcf_document',
+                'ccf_document',
+                'default_warehouse',
+                'default_cashier',
+                'decimals_in_sales'
+            ));
         }
     }
 
@@ -483,12 +493,12 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
         
         $correlatives = DocumentCorrelative::where('document_type_id', $document_type)
-            ->where('location_id', $location_id)
-            ->where('status', 'active')
-            ->whereRaw('initial <= final')
-            ->where('business_id', $business_id)
-            ->select('actual')
-            ->first();
+        ->where('location_id', $location_id)
+        ->where('status', 'active')
+        ->whereRaw('initial <= final')
+        ->where('business_id', $business_id)
+        ->select('actual')
+        ->first();
 
         if(!empty($correlatives->actual)){
             return $correlatives->actual;
@@ -621,11 +631,11 @@ class SellPosController extends Controller
                 $input['payment_condition'] = $is_credit == '1' || $is_credit == '2' ? 'credit' : 'cash';
 
                 $document_correlative = DocumentCorrelative::where('document_correlatives.business_id', $business_id)
-                    ->where('document_correlatives.location_id', $input['location_id'])
-                    ->whereRaw('document_correlatives.initial <= document_correlatives.final')
-                    ->where('document_correlatives.document_type_id', $input['document_types_id'])
-                    ->where('document_correlatives.status', 'active')
-                    ->first();
+                ->where('document_correlatives.location_id', $input['location_id'])
+                ->whereRaw('document_correlatives.initial <= document_correlatives.final')
+                ->where('document_correlatives.document_type_id', $input['document_types_id'])
+                ->where('document_correlatives.status', 'active')
+                ->first();
 
                 // To check that the correlative is unique
                 $input['serie'] = $document_correlative ? $document_correlative->serie : 0;
@@ -724,12 +734,12 @@ class SellPosController extends Controller
 
                         if ($payment_total != $transaction->final_total || $no_note_full_payment == 0) {
                             $payment_note_correlative = DocumentCorrelative::where('business_id', $business_id)
-                                ->where('location_id', $input['location_id'])
-                                ->whereRaw('initial <= final')
-                                ->where('document_type_id', $input['payment_note_id'])
-                                ->where('status', 'active')
-                                ->first();
-        
+                            ->where('location_id', $input['location_id'])
+                            ->whereRaw('initial <= final')
+                            ->where('document_type_id', $input['payment_note_id'])
+                            ->where('status', 'active')
+                            ->first();
+
                             if (! empty($payment_note_correlative)) {
                                 if ($payment_note_correlative->actual < $payment_note_correlative->final) {
                                     $payment_note_correlative->actual += 1;
@@ -783,9 +793,9 @@ class SellPosController extends Controller
                 // Check for final and do some processing.
                 if ($transaction->status == 'final') {
                     $trans =
-                        Transaction::where("id", $transaction->id)
-                            ->with("sell_lines")
-                            ->first();
+                    Transaction::where("id", $transaction->id)
+                    ->with("sell_lines")
+                    ->first();
 
                     // Update product stock
                     foreach ($trans->sell_lines as $tsl) {
@@ -846,9 +856,9 @@ class SellPosController extends Controller
                     $sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)->get();
 
                     $movement_type = MovementType::where('name', 'sell')
-                        ->where('type', 'output')
-                        ->where('business_id', $business_id)
-                        ->first();
+                    ->where('type', 'output')
+                    ->where('business_id', $business_id)
+                    ->first();
 
                     // Check if movement type is set else create it
                     if (empty($movement_type)) {
@@ -904,142 +914,142 @@ class SellPosController extends Controller
                     }
 
                     // Update payment status
-                    $status = $this->transactionUtil->updatePaymentStatus($transaction->id/*, $transaction->final_total*/);
-                    
-                    $sale_accounting_entry = Business::find($business_id)->value('sale_accounting_entry_mode');
-                    if ($sale_accounting_entry == 'transaction') {
-                        /** generate sale accounting entry */
-                        $this->createTransAccountingEntry($transaction->id);
-                    }
+                $status = $this->transactionUtil->updatePaymentStatus($transaction->id/*, $transaction->final_total*/);
+
+                $sale_accounting_entry = Business::find($business_id)->value('sale_accounting_entry_mode');
+                if ($sale_accounting_entry == 'transaction') {
+                    /** generate sale accounting entry */
+                    $this->createTransAccountingEntry($transaction->id);
+                }
 
                     // Add payments to cash register
-                    if (config('app.business') == 'optics') {
-                        if (! $is_direct_sale && ! $transaction->is_suspend && empty($request->input('reservation_id'))) {
-                            $payment_lines = $this->transactionUtil->getPaymentDetails($transaction->id);
-        
+                if (config('app.business') == 'optics') {
+                    if (! $is_direct_sale && ! $transaction->is_suspend && empty($request->input('reservation_id'))) {
+                        $payment_lines = $this->transactionUtil->getPaymentDetails($transaction->id);
+
                             // If some payment exists
-                            if (!empty($payment_lines)) {
-                                $this->cashRegisterUtil->addSellPayments($transaction, $payment_lines);
-                            }
-        
+                        if (!empty($payment_lines)) {
+                            $this->cashRegisterUtil->addSellPayments($transaction, $payment_lines);
+                        }
+
                             // Add credit sell to cash register
-                            if ($status != 'paid') {
-                                $total_paid = $this->transactionUtil->getTotalPaid($transaction->id);
-        
-                                $this->cashRegisterUtil->addCreditSellPayment($transaction, $total_paid, $transaction->final_total);
-                            }
+                        if ($status != 'paid') {
+                            $total_paid = $this->transactionUtil->getTotalPaid($transaction->id);
+
+                            $this->cashRegisterUtil->addCreditSellPayment($transaction, $total_paid, $transaction->final_total);
                         }
                     }
+                }
 
                     //Allocate the quantity from purchase and add mapping of
                     //purchase & sell lines in
                     //transaction_sell_lines_purchase_lines table
-                    $business = [
-                        'id' => $business_id,
-                        'accounting_method' => $request->session()->get('business.accounting_method'),
-                        'location_id' => $input['location_id']
-                    ];
-                    
-                    $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
+                $business = [
+                    'id' => $business_id,
+                    'accounting_method' => $request->session()->get('business.accounting_method'),
+                    'location_id' => $input['location_id']
+                ];
+
+                $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
 
                     // Auto send notification
-                    $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
-                }
+                $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
+            }
 
-                DB::commit();
+            DB::commit();
 
-                $msg = '';
-                $receipt = '';
+            $msg = '';
+            $receipt = '';
 
-                if ($input['status'] == 'draft' && $input['is_quotation'] == 0) {
-                    $msg = trans("sale.draft_added");
+            if ($input['status'] == 'draft' && $input['is_quotation'] == 0) {
+                $msg = trans("sale.draft_added");
 
-                } elseif ($input['status'] == 'draft' && $input['is_quotation'] == 1) {
-                    $msg = trans("lang_v1.quotation_added");
+            } elseif ($input['status'] == 'draft' && $input['is_quotation'] == 1) {
+                $msg = trans("lang_v1.quotation_added");
 
-                    if (!$is_direct_sale) {
-                        $receipt = $this->receiptContent($transaction->type, $business_id, $input['location_id'], $transaction->id);
-
-                    } else {
-                        $receipt = '';
-                    }
-
-                } elseif ($input['status'] == 'final') {
-                    $msg = trans("sale.pos_sale_added");
-
-                    if (!$is_direct_sale && !$transaction->is_suspend) {
-                        $receipt = $this->receiptContent($transaction->type, $business_id, $input['location_id'], $transaction->id);
-
-                    } else {
-                        $receipt = '';
-                    }
-                }
-
-                if (config('app.business') == 'optics') {
-                    $show_modal = true;
-
-                    $output = [
-                        'success' => 1,
-                        'msg' => $msg,
-                        // 'receipt' => $receipt,
-                        'transaction_id' => $transaction->id,
-                        'show_modal' => $show_modal
-                    ];
+                if (!$is_direct_sale) {
+                    $receipt = $this->receiptContent($transaction->type, $business_id, $input['location_id'], $transaction->id);
 
                 } else {
-                    $output = [
-                        'success' => 1,
-                        'msg' => $msg,
-                        'receipt' => $receipt
-                    ];
+                    $receipt = '';
                 }
+
+            } elseif ($input['status'] == 'final') {
+                $msg = trans("sale.pos_sale_added");
+
+                if (!$is_direct_sale && !$transaction->is_suspend) {
+                    $receipt = $this->receiptContent($transaction->type, $business_id, $input['location_id'], $transaction->id);
+
+                } else {
+                    $receipt = '';
+                }
+            }
+
+            if (config('app.business') == 'optics') {
+                $show_modal = true;
+
+                $output = [
+                    'success' => 1,
+                    'msg' => $msg,
+                        // 'receipt' => $receipt,
+                    'transaction_id' => $transaction->id,
+                    'show_modal' => $show_modal
+                ];
 
             } else {
                 $output = [
-                    'success' => 0,
-                    'msg' => trans("messages.something_went_wrong")
+                    'success' => 1,
+                    'msg' => $msg,
+                    'receipt' => $receipt
                 ];
             }
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
-                $msg = $e->getMessage();
-
-            } else {
-                \Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage());
-
-                $msg = trans("messages.something_went_wrong");
-            }
-
+        } else {
             $output = [
                 'success' => 0,
-                'msg' => "File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage()
+                'msg' => trans("messages.something_went_wrong")
             ];
         }
 
-        if (!$is_direct_sale) {
-            return $output;
-            
-        } else {
-            if ($input['status'] == 'draft') {
-                if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
-                    return redirect()
-                        ->action('SellController@getQuotations')
-                        ->with('status', $output);
+    } catch (\Exception $e) {
+        DB::rollBack();
 
-                } else {
-                    return redirect()
-                        ->action('SellController@getDrafts')
-                        ->with('status', $output);
-                }
+        if (get_class($e) == \App\Exceptions\PurchaseSellMismatch::class) {
+            $msg = $e->getMessage();
+
+        } else {
+            \Log::emergency("File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage());
+
+            $msg = trans("messages.something_went_wrong");
+        }
+
+        $output = [
+            'success' => 0,
+            'msg' => "File: " . $e->getFile() . " Line: " . $e->getLine() . " Message: " . $e->getMessage()
+        ];
+    }
+
+    if (!$is_direct_sale) {
+        return $output;
+
+    } else {
+        if ($input['status'] == 'draft') {
+            if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
+                return redirect()
+                ->action('SellController@getQuotations')
+                ->with('status', $output);
 
             } else {
-                return redirect('sells')->with('status', $output);
+                return redirect()
+                ->action('SellController@getDrafts')
+                ->with('status', $output);
             }
+
+        } else {
+            return redirect('sells')->with('status', $output);
         }
     }
+}
 
     /**
      * Returns the content for the receipt
@@ -1168,57 +1178,57 @@ class SellPosController extends Controller
         $payment_types = $this->productUtil->payment_types();
 
         $transaction = Transaction::join('document_types', 'document_types.id', '=', 'transactions.document_types_id')
-            ->where('transactions.business_id', $business_id)
-            ->where('type', 'sell')
-            ->select(
-                'transactions.*',
-                'document_types.document_name as doc_name',
-                'document_types.tax_inc',
-                'document_types.tax_exempt'
-            )
-            ->findOrFail($id);
+        ->where('transactions.business_id', $business_id)
+        ->where('type', 'sell')
+        ->select(
+            'transactions.*',
+            'document_types.document_name as doc_name',
+            'document_types.tax_inc',
+            'document_types.tax_exempt'
+        )
+        ->findOrFail($id);
 
         $location_id = $transaction->location_id;
         $location_printer_type = BusinessLocation::find($location_id)->receipt_printer_type;
 
         $sell_details = TransactionSellLine::join('products AS p', 'transaction_sell_lines.product_id', 'p.id')
-            ->join('variations AS variations', 'transaction_sell_lines.variation_id', 'variations.id')
-            ->join('product_variations AS pv', 'variations.product_variation_id', 'pv.id')
-            ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
-                $join->on('variations.id', '=', 'vld.variation_id')
-                    ->where('vld.location_id', '=', $location_id);
-            })
-            ->leftjoin('units', 'units.id', 'p.unit_id')
-            ->where('transaction_sell_lines.transaction_id', $id)
-            ->select(
-                DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
-                'p.id as product_id',
-                'p.enable_stock',
-                'p.name as product_actual_name',
-                'pv.name as product_variation_name',
-                'pv.is_dummy as is_dummy',
-                'variations.name as variation_name',
-                'variations.sub_sku',
-                'p.barcode_type',
-                'p.enable_sr_no',
-                'variations.id as variation_id',
-                'units.short_name as unit',
-                'units.allow_decimal as unit_allow_decimal',
-                'transaction_sell_lines.tax_id as tax_id',
-                'transaction_sell_lines.unit_price_before_discount as default_sell_price',
-                'transaction_sell_lines.unit_price_before_discount as unit_price_before_discount',
-                'transaction_sell_lines.unit_price as sell_price_inc_tax',
-                'transaction_sell_lines.id as transaction_sell_lines_id',
-                'transaction_sell_lines.quantity as quantity_ordered',
-                'transaction_sell_lines.sell_line_note as sell_line_note',
-                'transaction_sell_lines.parent_sell_line_id',
-                'transaction_sell_lines.lot_no_line_id',
-                'transaction_sell_lines.line_discount_type',
-                'transaction_sell_lines.line_discount_amount',
-                DB::raw('vld.qty_available + transaction_sell_lines.quantity AS qty_available'),
-                'p.tax as tax_id'
-            )
-            ->get();
+        ->join('variations AS variations', 'transaction_sell_lines.variation_id', 'variations.id')
+        ->join('product_variations AS pv', 'variations.product_variation_id', 'pv.id')
+        ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
+            $join->on('variations.id', '=', 'vld.variation_id')
+            ->where('vld.location_id', '=', $location_id);
+        })
+        ->leftjoin('units', 'units.id', 'p.unit_id')
+        ->where('transaction_sell_lines.transaction_id', $id)
+        ->select(
+            DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
+            'p.id as product_id',
+            'p.enable_stock',
+            'p.name as product_actual_name',
+            'pv.name as product_variation_name',
+            'pv.is_dummy as is_dummy',
+            'variations.name as variation_name',
+            'variations.sub_sku',
+            'p.barcode_type',
+            'p.enable_sr_no',
+            'variations.id as variation_id',
+            'units.short_name as unit',
+            'units.allow_decimal as unit_allow_decimal',
+            'transaction_sell_lines.tax_id as tax_id',
+            'transaction_sell_lines.unit_price_before_discount as default_sell_price',
+            'transaction_sell_lines.unit_price_before_discount as unit_price_before_discount',
+            'transaction_sell_lines.unit_price as sell_price_inc_tax',
+            'transaction_sell_lines.id as transaction_sell_lines_id',
+            'transaction_sell_lines.quantity as quantity_ordered',
+            'transaction_sell_lines.sell_line_note as sell_line_note',
+            'transaction_sell_lines.parent_sell_line_id',
+            'transaction_sell_lines.lot_no_line_id',
+            'transaction_sell_lines.line_discount_type',
+            'transaction_sell_lines.line_discount_amount',
+            DB::raw('vld.qty_available + transaction_sell_lines.quantity AS qty_available'),
+            'p.tax as tax_id'
+        )
+        ->get();
 
         if (!empty($sell_details)) {
             foreach ($sell_details as $key => $value) {
@@ -1305,7 +1315,7 @@ class SellPosController extends Controller
         $categories = Category::catAndSubCategories($business_id);
 
         $brands = Brands::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
         $brands->prepend(__('lang_v1.all_brands'), 'all');
 
         $change_return = $this->dummyPaymentLine;
@@ -1348,10 +1358,10 @@ class SellPosController extends Controller
         $employees_sales = Employees::forDropdown(($business_id));
         
         $pos = Pos::where('business_id', $business_id)->where('id', $id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
         
         $banks = Bank::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
 
         // Document data
         $doc_tax_inc = $transaction->tax_inc;
@@ -1368,19 +1378,19 @@ class SellPosController extends Controller
         if (config('app.business') == 'optics') {
             // Document types
             $documents =  DocumentType::where('business_id',$business_id)
-                ->where('is_active', 1)
-                ->select('short_name', 'tax_inc', 'id')
-                ->get();
+            ->where('is_active', 1)
+            ->select('short_name', 'tax_inc', 'id')
+            ->get();
 
             // Customer
             $customer = Customer::find($transaction->customer_id);
 
             // Patient
             $patient = Patient::join('lab_orders as lo', 'lo.patient_id', 'patients.id')
-                ->join('transactions as t', 't.id', 'lo.transaction_id')
-                ->where('lo.transaction_id', $transaction->id)
-                ->select('patients.*')
-                ->first();
+            ->join('transactions as t', 't.id', 'lo.transaction_id')
+            ->where('lo.transaction_id', $transaction->id)
+            ->select('patients.*')
+            ->first();
 
             // Check if it's editing
             $is_edit = true;
@@ -1389,74 +1399,74 @@ class SellPosController extends Controller
             $is_quote = false;
 
             return view('sale_pos.edit')
-                ->with(compact(
-                    'business_details',
-                    'business_type',
-                    'payment_conditions',
-                    'taxes',
-                    'tax_groups',
-                    'employees_sales',
-                    'payment_types',
-                    'walk_in_customer',
-                    'sell_details',
-                    'transaction',
-                    'payment_lines',
-                    'location_printer_type',
-                    'shortcuts',
-                    'commission_agent',
-                    'categories',
-                    'pos_settings',
-                    'change_return',
-                    'types',
-                    'customer_groups',
-                    'brands',
-                    'accounts',
-                    'price_groups',
-                    'pos',
-                    'banks',
-                    'doc_tax_inc',
-                    'doc_tax_exempt',
-                    'documents',
-                    'customer',
-                    'patient',
-                    'is_edit',
-                    'is_quote',
-                    'is_admin',
-                    'decimals_in_sales'
-                ));
+            ->with(compact(
+                'business_details',
+                'business_type',
+                'payment_conditions',
+                'taxes',
+                'tax_groups',
+                'employees_sales',
+                'payment_types',
+                'walk_in_customer',
+                'sell_details',
+                'transaction',
+                'payment_lines',
+                'location_printer_type',
+                'shortcuts',
+                'commission_agent',
+                'categories',
+                'pos_settings',
+                'change_return',
+                'types',
+                'customer_groups',
+                'brands',
+                'accounts',
+                'price_groups',
+                'pos',
+                'banks',
+                'doc_tax_inc',
+                'doc_tax_exempt',
+                'documents',
+                'customer',
+                'patient',
+                'is_edit',
+                'is_quote',
+                'is_admin',
+                'decimals_in_sales'
+            ));
 
         } else {
             return view('sale_pos.edit')
-                ->with(compact(
-                    'business_details',
-                    'business_type',
-                    'payment_conditions',
-                    'taxes',
-                    'tax_groups',
-                    'employees_sales',
-                    'payment_types',
-                    'walk_in_customer',
-                    'sell_details',
-                    'transaction',
-                    'payment_lines',
-                    'location_printer_type',
-                    'shortcuts',
-                    'commission_agent',
-                    'categories',
-                    'pos_settings',
-                    'change_return',
-                    'types',
-                    'customer_groups',
-                    'brands',
-                    'accounts',
-                    'price_groups',
-                    'pos',
-                    'banks',
-                    'is_admin',
-                    'doc_tax_inc',
-                    'doc_tax_exempt',
-                    'decimals_in_sales'
-                ));
+            ->with(compact(
+                'business_details',
+                'business_type',
+                'payment_conditions',
+                'taxes',
+                'tax_groups',
+                'employees_sales',
+                'payment_types',
+                'walk_in_customer',
+                'sell_details',
+                'transaction',
+                'payment_lines',
+                'location_printer_type',
+                'shortcuts',
+                'commission_agent',
+                'categories',
+                'pos_settings',
+                'change_return',
+                'types',
+                'customer_groups',
+                'brands',
+                'accounts',
+                'price_groups',
+                'pos',
+                'banks',
+                'is_admin',
+                'doc_tax_inc',
+                'doc_tax_exempt',
+                'decimals_in_sales'
+            ));
         }
     }
 
@@ -1502,15 +1512,15 @@ class SellPosController extends Controller
                 if ($pos_settings['partial_payment_any_customer'] == 0) {
                     // Check Customer credit limit
                     $is_credit_limit_exeeded = $this->transactionUtil->isCustomerCreditLimitExeeded($input, $id);
-    
+
                     if ($is_credit_limit_exeeded !== false) {
                         $credit_limit_amount = $this->transactionUtil->num_f($is_credit_limit_exeeded, true);
-    
+
                         $output = [
                             'success' => 0,
                             'msg' => __('lang_v1.cutomer_credit_limit_exeeded', ['credit_limit' => $credit_limit_amount])
                         ];
-    
+
                         if (!$is_direct_sale) {
                             return $output;
                         } else {
@@ -1573,12 +1583,12 @@ class SellPosController extends Controller
 
                 if (config('app.business') != 'optics') {
                     $document_correlative = DocumentCorrelative::where('document_correlatives.business_id', $business_id)
-                        ->where('document_correlatives.location_id', $input['location_id'])
-                        ->whereRaw('document_correlatives.initial <= document_correlatives.final')
-                        ->where('document_correlatives.document_type_id', $input['documents'])
-                        ->where('document_correlatives.status', 'active')
-                        ->first();
-    
+                    ->where('document_correlatives.location_id', $input['location_id'])
+                    ->whereRaw('document_correlatives.initial <= document_correlatives.final')
+                    ->where('document_correlatives.document_type_id', $input['documents'])
+                    ->where('document_correlatives.status', 'active')
+                    ->first();
+
                     $input['serie'] = $document_correlative ? $document_correlative->serie : 0;
                     $input['resolution'] = $document_correlative ? $document_correlative->resolution : 0;
                     $input['document_correlative_id'] = ! empty($document_correlative) ? $document_correlative->id : null;
@@ -1595,14 +1605,14 @@ class SellPosController extends Controller
                 $transaction_old = clone $transaction_before;
 
                 $transaction = $this->transactionUtil
-                    ->updateSellTransaction(
-                        $id,
-                        $business_id,
-                        $input,
-                        null,
+                ->updateSellTransaction(
+                    $id,
+                    $business_id,
+                    $input,
+                    null,
                         // $invoice_total,
-                        $user_id
-                    );
+                    $user_id
+                );
 
                 // Store binnacle
                 $reference = ! empty($transaction->document_type) ? $transaction->document_type->short_name . ' ' . $transaction->correlative : $transaction->correlative;
@@ -1653,32 +1663,32 @@ class SellPosController extends Controller
                     if (! $is_direct_sale && ! $transaction->is_suspend) {
                         // Get Cash register ID
                         $cash_register = CashRegisterTransaction::where('transaction_id', $transaction->id)->first();
-    
+
                         if (empty($cash_register)) {
                             $quote = Quote::where('transaction_id', $transaction->id)->first();
-    
+
                             if (! empty($quote)) {
                                 $cash_register = CashRegisterTransaction::where('quote_id', $quote->id)->first();
                             }
                         }
-    
+
                         $cash_register_id = ! empty($cash_register->cash_register_id) ? $cash_register->cash_register_id : null;
-    
+
                         // Delete cash register transactions
                         DB::table('cash_register_transactions')->where('transaction_id', $transaction->id)->delete();
-    
+
                         // Add payments to cash register
                         $payment_lines = $this->transactionUtil->getPaymentDetails($transaction->id);
-    
+
                         // If some payment exists
                         if (! empty($payment_lines)) {
                             $this->cashRegisterUtil->addSellPayments($transaction, $payment_lines, $cash_register_id);
                         }
-    
+
                         // Add credit sell to cash register
                         if ($status != 'paid') {
                             $total_paid = $this->transactionUtil->getTotalPaid($transaction->id);
-    
+
                             $this->cashRegisterUtil->addCreditSellPayment($transaction, $total_paid, $transaction->final_total);
                         }
                     }
@@ -1691,9 +1701,9 @@ class SellPosController extends Controller
                 $sell_lines = TransactionSellLine::where('transaction_id', $transaction->id)->get();
 
                 $movement_type = MovementType::where('name', 'sell')
-                    ->where('type', 'output')
-                    ->where('business_id', $business_id)
-                    ->first();
+                ->where('type', 'output')
+                ->where('business_id', $business_id)
+                ->first();
 
                 // Check if movement type is set else create it
                 if (empty($movement_type)) {
@@ -1781,7 +1791,7 @@ class SellPosController extends Controller
                 }
 
             } else {
-                    $output = [
+                $output = [
                     'success' => 0,
                     'msg' => trans("messages.something_went_wrong")
                 ];
@@ -1805,13 +1815,13 @@ class SellPosController extends Controller
             if ($input['status'] == 'draft') {
                 if (isset($input['is_quotation']) && $input['is_quotation'] == 1) {
                     return redirect()
-                        ->action('SellController@getQuotations')
-                        ->with('status', $output);
+                    ->action('SellController@getQuotations')
+                    ->with('status', $output);
 
                 } else {
                     return redirect()
-                        ->action('SellController@getDrafts')
-                        ->with('status', $output);
+                    ->action('SellController@getDrafts')
+                    ->with('status', $output);
                 }
 
             } else {
@@ -1847,10 +1857,10 @@ class SellPosController extends Controller
                 $business_id = request()->session()->get('user.business_id');
 
                 $transaction = Transaction::where('id', $id)
-                    ->where('business_id', $business_id)
-                    ->where('type', 'sell')
-                    ->with(['sell_lines'])
-                    ->first();
+                ->where('business_id', $business_id)
+                ->where('type', 'sell')
+                ->with(['sell_lines'])
+                ->first();
 
                 // Clone record before action
                 $transaction_old = clone $transaction;
@@ -1896,9 +1906,9 @@ class SellPosController extends Controller
 
                                 foreach ($lod as $item) {
                                     $stock = VariationLocationDetails::where('variation_id', $item->variation_id)
-                                        ->where('location_id', $item->location_id)
-                                        ->where('warehouse_id', $item->warehouse_id)
-                                        ->first();
+                                    ->where('location_id', $item->location_id)
+                                    ->where('warehouse_id', $item->warehouse_id)
+                                    ->first();
 
                                     $stock->qty_available = $stock->qty_available + $item->quantity;
 
@@ -1985,24 +1995,24 @@ class SellPosController extends Controller
                 $business_id = request()->session()->get('user.business_id');
 
                 $transaction = Transaction::where('id', $id)
-                    ->where('business_id', $business_id)
-                    ->where('type', 'sell')
-                    ->with(['sell_lines'])
-                    ->first();
+                ->where('business_id', $business_id)
+                ->where('type', 'sell')
+                ->with(['sell_lines'])
+                ->first();
 
                 // Check if the cash register is open
                 if (config('app.business') == 'optics') {
                     if ($transaction->type == 'sell') {
                         $register =  CashRegister::where('cashier_id', $transaction->cashier_id)
-                            ->where('status', 'open')
-                            ->first();
-            
+                        ->where('status', 'open')
+                        ->first();
+
                         if (empty($register)) {
                             $output = [
                                 'success' => false,
                                 'msg' => __('cash_register.cash_register_not_opened')
                             ];
-            
+
                             return $output;
                         }
                     }
@@ -2010,7 +2020,7 @@ class SellPosController extends Controller
 
                 /** Check if transaction come from order, if so, change invoiced column status */
                 $order = Quote::where('transaction_id', $id)
-                    ->first();
+                ->first();
 
                 if (!empty($order)) {
                     $order->transaction_id = null;
@@ -2136,15 +2146,15 @@ class SellPosController extends Controller
      */
     public function createTransAccountingEntry($transaction_id) {
         $transaction = Transaction::join('customers as c', 'transactions.customer_id', 'c.id')
-            ->join('document_types as dt', 'transactions.document_types_id', 'dt.id')
-            ->where('transactions.id', $transaction_id)
-            ->select(
-                'transactions.transaction_date as date',
-                'transactions.location_id',
-                DB::raw('IFNULL(c.business_name, c.name) as customer_name'),
-                'dt.short_name as doc_type',
-                'transactions.correlative'
-            )->first();
+        ->join('document_types as dt', 'transactions.document_types_id', 'dt.id')
+        ->where('transactions.id', $transaction_id)
+        ->select(
+            'transactions.transaction_date as date',
+            'transactions.location_id',
+            DB::raw('IFNULL(c.business_name, c.name) as customer_name'),
+            'dt.short_name as doc_type',
+            'transactions.correlative'
+        )->first();
 
         try {
             $date = $this->accountingUtil->format_date($transaction->date);
@@ -2159,9 +2169,9 @@ class SellPosController extends Controller
             ];
 
             $entry['type_entrie_id'] = 
-                TypeEntrie::where('name', 'Diarios')
-                    ->orWhere('name', 'Diario')
-                    ->first()->id;
+            TypeEntrie::where('name', 'Diarios')
+            ->orWhere('name', 'Diario')
+            ->first()->id;
 
             $entry_lines = $this->createTransAccountingEntryLines($transaction_id);
 
@@ -2189,39 +2199,39 @@ class SellPosController extends Controller
         $entry_lines = [];
         
         $transaction = Transaction::join('document_types as dt', 'transactions.document_types_id', 'dt.id')
-            ->where('transactions.id', $transaction_id)
-            ->select(
-                'transactions.business_id',
-                'transactions.location_id',
-                'transactions.customer_id',
-                'dt.short_name as doc_type',
-                'tax_amount as withheld_amount'
-                )->first();
+        ->where('transactions.id', $transaction_id)
+        ->select(
+            'transactions.business_id',
+            'transactions.location_id',
+            'transactions.customer_id',
+            'dt.short_name as doc_type',
+            'tax_amount as withheld_amount'
+        )->first();
 
         $is_exempt = Customer::where('id', $transaction->customer_id)
-            ->where('is_exempt', 1)
-            ->count();
+        ->where('is_exempt', 1)
+        ->count();
 
         /** payments */
         $payments = TransactionPayment::where('transaction_id', $transaction_id)
-            ->select(
-                DB::raw('IF(method IN ("cash", "check"), "cash", method) as method'),
-                'card_pos',
-                'transfer_receiving_bank',
-                DB::raw('SUM(IF(method IN ("cash", "check"), IF(is_return = 0, amount, amount * -1), 0)) as cash'),
-                DB::raw('SUM(IF(method = "card", IF(is_return = 0, amount, amount * -1), 0)) as card'),
-                DB::raw('SUM(IF(method = "bank_transfer", IF(is_return = 0, amount, amount * -1), 0)) as bank_transfer')
-            )->groupBy('card_pos', 'transfer_receiving_bank')
-            ->get();
+        ->select(
+            DB::raw('IF(method IN ("cash", "check"), "cash", method) as method'),
+            'card_pos',
+            'transfer_receiving_bank',
+            DB::raw('SUM(IF(method IN ("cash", "check"), IF(is_return = 0, amount, amount * -1), 0)) as cash'),
+            DB::raw('SUM(IF(method = "card", IF(is_return = 0, amount, amount * -1), 0)) as card'),
+            DB::raw('SUM(IF(method = "bank_transfer", IF(is_return = 0, amount, amount * -1), 0)) as bank_transfer')
+        )->groupBy('card_pos', 'transfer_receiving_bank')
+        ->get();
 
         $location_accounts =
-            AccountBusinessLocation::where('location_id', $transaction->location_id)
-                ->select(
-                    'general_cash_id',
-                    'vat_final_customer_id',
-                    'vat_taxpayer_id'
-                    )->first();
-                
+        AccountBusinessLocation::where('location_id', $transaction->location_id)
+        ->select(
+            'general_cash_id',
+            'vat_final_customer_id',
+            'vat_taxpayer_id'
+        )->first();
+
         $entry_lines = [];
         /** sale */
         foreach($payments as $p) {
@@ -2234,8 +2244,8 @@ class SellPosController extends Controller
 
             } else if($p->method == 'card') {
                 $pos = Pos::join('bank_accounts as ba', 'pos.bank_account_id', 'ba.id')
-                    ->select('ba.catalogue_id')
-                    ->first();
+                ->select('ba.catalogue_id')
+                ->first();
 
                 $entry_lines[] = [
                     'catalogue_id' => $pos->catalogue_id,
@@ -2245,7 +2255,7 @@ class SellPosController extends Controller
 
             } else if($p->method == 'bank_transfer') {
                 $bank_account = BankAccount::where('id', $p->transfer_receiving_bank)
-                    ->value('catalogue_id');
+                ->value('catalogue_id');
 
                 $entry_lines[] = [
                     'catalogue_id' => $bank_account,
@@ -2269,10 +2279,10 @@ class SellPosController extends Controller
         /** taxes */
         if($is_exempt == 0) {
             $sell_lines =
-                TransactionSellLine::where('transaction_id', $transaction_id)
-                    ->select(
-                        DB::raw('SUM(tax_amount) as tax_amount')
-                    )->first();
+            TransactionSellLine::where('transaction_id', $transaction_id)
+            ->select(
+                DB::raw('SUM(tax_amount) as tax_amount')
+            )->first();
 
             if($transaction->doc_type == 'FCF' || $transaction->doc_type == 'Ticket') {
                 $entry_lines[] = [
@@ -2316,15 +2326,15 @@ class SellPosController extends Controller
      */
     private function getTransactionInputs($transaction_id, $location_id) {
         $sell_lines =
-            TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
-                ->where('transaction_sell_lines.transaction_id', $transaction_id)
-                ->where('pal.location_id', $location_id)
-                ->where('pal.type', 'input')
-                ->select(
-                    'pal.catalogue_id',
-                    DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
-                )->groupBy('pal.catalogue_id')
-                ->get();
+        TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
+        ->where('transaction_sell_lines.transaction_id', $transaction_id)
+        ->where('pal.location_id', $location_id)
+        ->where('pal.type', 'input')
+        ->select(
+            'pal.catalogue_id',
+            DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
+        )->groupBy('pal.catalogue_id')
+        ->get();
         
         $lines = [];
         foreach($sell_lines as $sl) {
@@ -2348,21 +2358,21 @@ class SellPosController extends Controller
      */
     private function getTransactionCosts($transaction_id, $location_id) {
         $products = TransactionSellLine::join('products as p', 'transaction_sell_lines.product_id', 'p.id')
-            ->where('p.clasification', 'product')
-            ->count();
+        ->where('p.clasification', 'product')
+        ->count();
 
         $lines = [];
         if($products > 0) {
             $cost_lines =
-                TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
-                    ->where('transaction_sell_lines.transaction_id', $transaction_id)
-                    ->where('pal.location_id', $location_id)
-                    ->where('pal.type', 'cost')
-                    ->select(
-                        'pal.catalogue_id',
-                        DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
-                    )->groupBy('pal.catalogue_id')
-                    ->get();
+            TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
+            ->where('transaction_sell_lines.transaction_id', $transaction_id)
+            ->where('pal.location_id', $location_id)
+            ->where('pal.type', 'cost')
+            ->select(
+                'pal.catalogue_id',
+                DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
+            )->groupBy('pal.catalogue_id')
+            ->get();
 
             foreach($cost_lines as $cl) {
                 $lines[] = [
@@ -2373,15 +2383,15 @@ class SellPosController extends Controller
             }
 
             $inventory_lines =
-                TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
-                    ->where('transaction_sell_lines.transaction_id', $transaction_id)
-                    ->where('pal.location_id', $location_id)
-                    ->where('pal.type', 'inventory')
-                    ->select(
-                        'pal.catalogue_id',
-                        DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
-                    )->groupBy('pal.catalogue_id')
-                    ->get();
+            TransactionSellLine::join('product_accounts_locations as pal', 'transaction_sell_lines.product_id', 'pal.product_id')
+            ->where('transaction_sell_lines.transaction_id', $transaction_id)
+            ->where('pal.location_id', $location_id)
+            ->where('pal.type', 'inventory')
+            ->select(
+                'pal.catalogue_id',
+                DB::raw('SUM(transaction_sell_lines.unit_price_exc_tax) as amount')
+            )->groupBy('pal.catalogue_id')
+            ->get();
 
             foreach($inventory_lines as $il) {
                 $lines[] = [
@@ -2428,27 +2438,27 @@ class SellPosController extends Controller
 
                 $childrens = KitHasProduct::where('parent_id', $product->product_id)->get();
 
-                    foreach ($childrens as $item) {
-                        $prod = Variation::join('products as p', 'variations.product_id', 'p.id')
-                            ->where('variations.id', $item->children_id)
-                            ->select('p.clasification', 'p.enable_stock')
-                            ->first();
+                foreach ($childrens as $item) {
+                    $prod = Variation::join('products as p', 'variations.product_id', 'p.id')
+                    ->where('variations.id', $item->children_id)
+                    ->select('p.clasification', 'p.enable_stock')
+                    ->first();
 
-                        if ($prod->clasification == 'product' && $prod->enable_stock == 1) {
-                            $vld = VariationLocationDetails::where('variation_id', $item->children_id)
-                                ->where('location_id', $location_id)
-                                ->where('warehouse_id', $warehouse_id)
-                                ->first();
+                    if ($prod->clasification == 'product' && $prod->enable_stock == 1) {
+                        $vld = VariationLocationDetails::where('variation_id', $item->children_id)
+                        ->where('location_id', $location_id)
+                        ->where('warehouse_id', $warehouse_id)
+                        ->first();
 
-                            $qty_available_reserved = floor(($vld->qty_available - $vld->qty_reserved) / $item->quantity);
+                        $qty_available_reserved = floor(($vld->qty_available - $vld->qty_reserved) / $item->quantity);
 
-                            if (is_null($formatted_qty_available) || $qty_available_reserved < $formatted_qty_available) {
-                                $formatted_qty_available = $qty_available_reserved;
-                                $qty_available = floor($vld->qty_available / $item->quantity);
-                                $qty_reserved = floor($vld->qty_reserved / $item->quantity);
-                            }
+                        if (is_null($formatted_qty_available) || $qty_available_reserved < $formatted_qty_available) {
+                            $formatted_qty_available = $qty_available_reserved;
+                            $qty_available = floor($vld->qty_available / $item->quantity);
+                            $qty_reserved = floor($vld->qty_reserved / $item->quantity);
                         }
                     }
+                }
 
                 $product->formatted_qty_available = $formatted_qty_available;
                 $product->qty_available = $qty_available;
@@ -2525,42 +2535,42 @@ class SellPosController extends Controller
 
             if (request()->get('type') == 'sell-return') {
                 $output['html_content'] =  view('sell_return.partials.product_row')
-                    ->with(compact(
-                        'product',
-                        'row_count',
-                        'tax_dropdown',
-                        'enabled_modules',
-                        'is_admin'
-                    ))
-                    ->render();
+                ->with(compact(
+                    'product',
+                    'row_count',
+                    'tax_dropdown',
+                    'enabled_modules',
+                    'is_admin'
+                ))
+                ->render();
 
             } else {
                 $output['html_content'] =  view('sale_pos.product_row')
-                    ->with(compact(
-                        'product',
-                        'row_count',
-                        'tax_dropdown',
-                        'enabled_modules',
-                        'pos_settings',
-                        'reservation_id',
-                        'is_admin',
-                        'decimals_in_sales'
-                    ))
-                    ->render();
+                ->with(compact(
+                    'product',
+                    'row_count',
+                    'tax_dropdown',
+                    'enabled_modules',
+                    'pos_settings',
+                    'reservation_id',
+                    'is_admin',
+                    'decimals_in_sales'
+                ))
+                ->render();
             }
             
             $output['enable_sr_no'] = $product->enable_sr_no;
 
             if ($this->transactionUtil->isModuleEnabled('modifiers')  && !$is_direct_sell) {
                 $this_product = Product::where('business_id', $business_id)
-                    ->find($product->product_id);
+                ->find($product->product_id);
 
                 if (count($this_product->modifier_sets) > 0) {
                     $product_ms = $this_product->modifier_sets;
 
                     $output['html_modifier'] = view('restaurant.product_modifier_set.modifier_for_product')
-                        ->with(compact('product_ms', 'row_count'))
-                        ->render();
+                    ->with(compact('product_ms', 'row_count'))
+                    ->render();
                 }
             }
 
@@ -2594,13 +2604,13 @@ class SellPosController extends Controller
         $accounts = $this->moduleUtil->accountsDropdown($business_id, true);
         /** Banks */
         $banks = Bank::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
         /** Pos */
         $pos = Pos::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
         /** Payment terms */
         $payment_terms = PaymentTerm::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
 
         /** Bank account */
         $bank_accounts = BankAccount::pluck('name', 'id');
@@ -2786,15 +2796,15 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $document_correlative = DocumentCorrelative::where('document_type_id', $document)
-            ->where('business_id', $business_id)
-            ->where('status', 'active')
-            ->where('location_id', $location)
-            ->first();
+        ->where('business_id', $business_id)
+        ->where('status', 'active')
+        ->where('location_id', $location)
+        ->first();
 
         $transaction = Transaction::where('business_id', $business_id)
-            ->where('id', '!=', $transaction_id)
-            ->where('correlative', $correlative)
-            ->where('document_types_id', $document);
+        ->where('id', '!=', $transaction_id)
+        ->where('correlative', $correlative)
+        ->where('document_types_id', $document);
 
         if (! empty($document_correlative)) {
             $transaction = $transaction->where('serie', $document_correlative->serie);
@@ -2804,15 +2814,15 @@ class SellPosController extends Controller
 
         /** validate cashier closure open and close correlative */
         $cashier_closure = CashierClosure::join('cashiers as c', 'cashier_closures.cashier_id', 'c.id')
-            ->where('c.business_location_id', $location)
-            ->where(function($query) use ($correlative) {
-                $query->where('cashier_closures.open_correlative', $correlative)
-                    ->orWhere('cashier_closures.close_correlative', $correlative);
-            })->count();
+        ->where('c.business_location_id', $location)
+        ->where(function($query) use ($correlative) {
+            $query->where('cashier_closures.open_correlative', $correlative)
+            ->orWhere('cashier_closures.close_correlative', $correlative);
+        })->count();
         
         $doc_type = DocumentType::where('id', $document)
-            ->where('short_name', 'Ticket')
-            ->count();
+        ->where('short_name', 'Ticket')
+        ->count();
 
         if (config('app.business') == 'optics') {
             $output = ! empty($transaction) ? ['flag' => true] : ['flag' => false];
@@ -2837,8 +2847,8 @@ class SellPosController extends Controller
     {
         try {
             $transactions = Transaction::where('type', 'sell')
-                ->where('status', 'final')
-                ->get();
+            ->where('status', 'final')
+            ->get();
 
             \Log::info('--- START ---');
 
@@ -2871,9 +2881,9 @@ class SellPosController extends Controller
         $document_id = request()->get('document_id');
 
         $document_correlative = DocumentCorrelative::where('location_id', $location_id)
-            ->where('document_type_id', $document_id)
-            ->where('status', 'active')
-            ->first();
+        ->where('document_type_id', $document_id)
+        ->where('status', 'active')
+        ->first();
 
         if (! empty($document_correlative)) {
             $output = [
@@ -2904,21 +2914,21 @@ class SellPosController extends Controller
             $business_id = request()->session()->get("user.business_id");
 
             $transaction = Transaction::join("customers as c", "transactions.customer_id", "c.id")
-                ->where("transactions.business_id", $business_id)
-                ->where("transactions.id", $transaction_id)
-                ->select(
-                    "transactions.contact_id",
-                    "transactions.location_id",
-                    "transactions.customer_id"
-                )
-                ->first();
+            ->where("transactions.business_id", $business_id)
+            ->where("transactions.id", $transaction_id)
+            ->select(
+                "transactions.contact_id",
+                "transactions.location_id",
+                "transactions.customer_id"
+            )
+            ->first();
 
             $has_hoop = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                ->join("products as p", "v.product_id", "p.id")
-                ->join("categories as c", "p.category_id", "c.id")
-                ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                ->where("c.name", "AROS")
-                ->pluck('p.name', 'v.id');
+            ->join("products as p", "v.product_id", "p.id")
+            ->join("categories as c", "p.category_id", "c.id")
+            ->where("transaction_sell_lines.transaction_id", $transaction_id)
+            ->where("c.name", "AROS")
+            ->pluck('p.name', 'v.id');
 
             $hoop_values = null;
             
@@ -2929,18 +2939,18 @@ class SellPosController extends Controller
 
             } elseif ($has_hoop->count() == 1) {
                 $hoop_values = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                    ->join("products as p", "v.product_id", "p.id")
-                    ->join("categories as c", "p.category_id", "c.id")
-                    ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                    ->where("v.id", array_key_first($has_hoop->toArray()))
-                    ->where("c.name", "AROS")
-                    ->select(
-                        "v.id as id",
-                        "p.name as name",
-                        "p.measurement as size",
-                        DB::raw("(SELECT name FROM `variation_value_templates` WHERE code = (SUBSTRING(p.sku, (COUNT(p.sku)) - 4, 3))) as color")
-                    )
-                    ->first();
+                ->join("products as p", "v.product_id", "p.id")
+                ->join("categories as c", "p.category_id", "c.id")
+                ->where("transaction_sell_lines.transaction_id", $transaction_id)
+                ->where("v.id", array_key_first($has_hoop->toArray()))
+                ->where("c.name", "AROS")
+                ->select(
+                    "v.id as id",
+                    "p.name as name",
+                    "p.measurement as size",
+                    DB::raw("(SELECT name FROM `variation_value_templates` WHERE code = (SUBSTRING(p.sku, (COUNT(p.sku)) - 4, 3))) as color")
+                )
+                ->first();
             } else {
                 if ($has_hoop->count() > 1) {
                     $own_hoop_aux = 2;
@@ -2949,12 +2959,12 @@ class SellPosController extends Controller
 
             // V.S. glasses
             $has_glass = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                ->join("products as p", "v.product_id", "p.id")
-                ->join("categories as c", "p.category_id", "c.id")
-                ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                ->where("c.name", "LENTES")
-                ->where("p.name", "not like", "%IZQUIERDO%")
-                ->where("p.name", "not like", "%DERECHO%");
+            ->join("products as p", "v.product_id", "p.id")
+            ->join("categories as c", "p.category_id", "c.id")
+            ->where("transaction_sell_lines.transaction_id", $transaction_id)
+            ->where("c.name", "LENTES")
+            ->where("p.name", "not like", "%IZQUIERDO%")
+            ->where("p.name", "not like", "%DERECHO%");
             
             $has_glass->where(function ($query) {
                 $query->where("p.name", "like", '%V.S.%');
@@ -2966,43 +2976,43 @@ class SellPosController extends Controller
             });
 
             $has_glass = $has_glass->select(
-                    "v.id as id",
-                    "p.name as name"
-                )
-                ->pluck('p.name', 'v.id');
+                "v.id as id",
+                "p.name as name"
+            )
+            ->pluck('p.name', 'v.id');
             
             // Right glass
             $has_glass_od = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                ->join("products as p", "v.product_id", "p.id")
-                ->join("categories as c", "p.category_id", "c.id")
-                ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                ->where("c.name", "LENTES")
-                ->where("p.name", "like", "%DERECHO%")
-                ->select(
-                    "v.id as id",
-                    "p.name as name"
-                )
-                ->pluck('p.name', 'v.id');
+            ->join("products as p", "v.product_id", "p.id")
+            ->join("categories as c", "p.category_id", "c.id")
+            ->where("transaction_sell_lines.transaction_id", $transaction_id)
+            ->where("c.name", "LENTES")
+            ->where("p.name", "like", "%DERECHO%")
+            ->select(
+                "v.id as id",
+                "p.name as name"
+            )
+            ->pluck('p.name', 'v.id');
 
             // Left glass
             $has_glass_os = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                ->join("products as p", "v.product_id", "p.id")
-                ->join("categories as c", "p.category_id", "c.id")
-                ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                ->where("c.name", "LENTES")
-                ->where("p.name", "like", "%IZQUIERDO%")
-                ->select(
-                    "v.id as id",
-                    "p.name as name"
-                )
-                ->pluck('p.name', 'v.id');
+            ->join("products as p", "v.product_id", "p.id")
+            ->join("categories as c", "p.category_id", "c.id")
+            ->where("transaction_sell_lines.transaction_id", $transaction_id)
+            ->where("c.name", "LENTES")
+            ->where("p.name", "like", "%IZQUIERDO%")
+            ->select(
+                "v.id as id",
+                "p.name as name"
+            )
+            ->pluck('p.name', 'v.id');
             
             $has_ar = TransactionSellLine::join("variations as v", "transaction_sell_lines.variation_id", "v.id")
-                ->join("products as p", "v.product_id", "p.id")
-                ->where("transaction_sell_lines.transaction_id", $transaction_id)
-                ->where("p.clasification", "service")
-                ->whereIn("p.ar", ["green", "blue", "premium"])
-                ->select("p.ar", "p.name");
+            ->join("products as p", "v.product_id", "p.id")
+            ->where("transaction_sell_lines.transaction_id", $transaction_id)
+            ->where("p.clasification", "service")
+            ->whereIn("p.ar", ["green", "blue", "premium"])
+            ->select("p.ar", "p.name");
             
             $ar_aux = 0;
 
@@ -3026,7 +3036,7 @@ class SellPosController extends Controller
             $business_locations = BusinessLocation::forDropdown($business_id, false, true);
             $bl_attributes = $business_locations['attributes'];
             $business_locations = $business_locations['locations'];
-    
+
             $default_location = null;
 
             if (count($business_locations) == 1) {
@@ -3041,32 +3051,32 @@ class SellPosController extends Controller
             $date_delivery = \Carbon::now()->addDay(3)->format('d/m/Y H:i');
 
             $customers = Customer::where('id', $transaction->customer_id)
-                ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
             $patients = Patient::where('id', $patient_id)
-                ->pluck('full_name', 'id');
+            ->pluck('full_name', 'id');
 
             return view("sale_pos.partials.lab_order")
-                ->with(compact(
-                    "transaction",
-                    "customers",
-                    "patients",
-                    "code",
-                    "business_locations",
-                    "bl_attributes",
-                    "default_location",
-                    "has_hoop",
-                    "has_glass",
-                    "has_ar",
-                    "date_delivery",
-                    "transaction_id",
-                    "own_hoop_aux",
-                    "hoop_values",
-                    "has_glass_od",
-                    "has_glass_os",
-                    "ar_aux",
-                    "patient_id"
-                ));
+            ->with(compact(
+                "transaction",
+                "customers",
+                "patients",
+                "code",
+                "business_locations",
+                "bl_attributes",
+                "default_location",
+                "has_hoop",
+                "has_glass",
+                "has_ar",
+                "date_delivery",
+                "transaction_id",
+                "own_hoop_aux",
+                "hoop_values",
+                "has_glass_od",
+                "has_glass_os",
+                "ar_aux",
+                "patient_id"
+            ));
         }
     }
 
@@ -3091,8 +3101,8 @@ class SellPosController extends Controller
 
                 if ($is_customer) {
                     $customers = Customer::where('business_id', $business_id)
-                        ->whereRaw("UPPER(name) LIKE '%" . $term . "%'")
-                        ->get();
+                    ->whereRaw("UPPER(name) LIKE '%" . $term . "%'")
+                    ->get();
 
                     if (count($customers) > 0) {
                         $output = [
@@ -3106,8 +3116,8 @@ class SellPosController extends Controller
                 
                 if ($is_patient === 1 && $flag_customer === 0) {
                     $patients = Patient::where('business_id', $business_id)
-                        ->whereRaw("UPPER(full_name) LIKE '%" . $term . "%'")
-                        ->get();
+                    ->whereRaw("UPPER(full_name) LIKE '%" . $term . "%'")
+                    ->get();
 
                     if (count($patients) > 0) {
                         $output = [
@@ -3135,17 +3145,17 @@ class SellPosController extends Controller
             \Log::info("--- START ---");
 
             $sales = Transaction::where('type', 'sell')
-                ->whereNotNull('document_types_id')
-                ->get();
+            ->whereNotNull('document_types_id')
+            ->get();
 
             if (! empty($sales)) {
                 foreach ($sales as $sale) {
                     $document_correlative = DocumentCorrelative::where('business_id', $sale->business_id)
-                        ->where('location_id', $sale->location_id)
-                        ->where('document_type_id', $sale->document_types_id)
-                        ->whereRaw('CONVERT(initial, UNSIGNED INTEGER) <= ?', [$sale->correlative])
-                        ->whereRaw('CONVERT(final, UNSIGNED INTEGER) >= ?', [$sale->correlative])
-                        ->first();
+                    ->where('location_id', $sale->location_id)
+                    ->where('document_type_id', $sale->document_types_id)
+                    ->whereRaw('CONVERT(initial, UNSIGNED INTEGER) <= ?', [$sale->correlative])
+                    ->whereRaw('CONVERT(final, UNSIGNED INTEGER) >= ?', [$sale->correlative])
+                    ->first();
 
                     if (! empty($document_correlative)) {
                         $sale->serie = is_null($sale->serie) || empty($sale->serie) ? $document_correlative->serie : $sale->serie;
@@ -3186,8 +3196,8 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $pos = Pos::where('business_id', $business_id)
-            ->where('status', 'active')
-            ->get();
+        ->where('status', 'active')
+        ->get();
 
         $route = action('PosController@index');
 
