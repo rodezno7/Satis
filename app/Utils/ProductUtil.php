@@ -24,6 +24,8 @@ use App\VariationGroupPrice;
 use App\TransactionSellLine;
 use App\VariationValueTemplate;
 use App\VariationLocationDetails;
+use App\ApportionmentHasTransaction;
+use App\Apportionment;
 
 use DB;
 
