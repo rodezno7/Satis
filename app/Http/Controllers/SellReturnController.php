@@ -279,7 +279,7 @@ class SellReturnController extends Controller
                 DocumentType::where('is_active', 1)
                     ->where('is_return_document', 1)
                     ->where('is_document_sale', 1)
-                    ->where('print_format', 'fiscal_credit')
+                    ->where('print_format', 'fiscal_credit_return')
                     ->get()
                     ->pluck('document_name', 'id');
 
@@ -478,7 +478,7 @@ class SellReturnController extends Controller
                 # Store kardex lines
                 $this->transactionUtil->createOrUpdateInputLines($movement_type, $sell_return, $sell_return->invoice_no, $lines);
 
-                $receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
+                //$receipt = $this->receiptContent($business_id, $sell_return->location_id, $sell_return->id);
 
                 // Edit avarage cost
                 // $enable_editing_avg_cost = $request->session()->get('business.enable_editing_avg_cost_from_purchase');
@@ -494,7 +494,7 @@ class SellReturnController extends Controller
                 $output = [
                     'success' => 1,
                     'msg' => __('lang_v1.success'),
-                    'receipt' => $receipt
+                    //'receipt' => $receipt
                 ];
             }
 
