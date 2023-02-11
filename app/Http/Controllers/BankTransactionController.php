@@ -828,10 +828,25 @@ class BankTransactionController extends Controller {
             try {
 
                 $entrie = AccountingEntrie::findOrFail($bankTransaction->accounting_entrie_id);
+
+                $payments = DB::table('transaction_payments as tp')
+                ->where('tp.bank_transaction_id', $bankTransaction->id)
+                ->count();
+
+                if ($payments > 0) {
+
+                    $output = [
+                        'success' => false,
+                        'msg' => __("accounting.transaction_has_dependencies")
+                    ];
+                    
+                    return $output;
+                }
+
                 $entrie->forceDelete();
                 $bankTransaction->forceDelete();
 
-                $outpout = [
+                $output = [
                     'success' => true,
                     'msg' => __("accounting.transaction_deleted")
                 ];
@@ -840,14 +855,14 @@ class BankTransactionController extends Controller {
 
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 
-                $outpout = [
+                $output = [
                     'success' => false,
                     'msg' => __("messages.something_went_wrong")
                 ];
 
             }
             
-            return $outpout;
+            return $output;
         }
         
     }
@@ -1022,7 +1037,7 @@ class BankTransactionController extends Controller {
             'type.type as type',
             'entrie.status as entrie_status',
             DB::raw('transaction.id as bank_transaction_query'),
-            DB::raw('(select COUNT(id) from transactions where bank_transaction_id = bank_transaction_query) as expenses')
+            DB::raw('(select COUNT(id) from transaction_payments where bank_transaction_id = bank_transaction_query) as expenses')
         )
         ->where('transaction.business_id', $business_id);
 
@@ -1154,6 +1169,20 @@ class BankTransactionController extends Controller {
     public function cancelCheck($id) {
 
         try {
+
+            $payments = DB::table('transaction_payments as tp')
+            ->where('tp.bank_transaction_id', $id)
+            ->count();
+
+            if ($payments > 0) {
+
+                $output = [
+                    'success' => false,
+                    'msg' => __("accounting.transaction_has_dependencies")
+                ];
+
+                return $output;
+            }
 
             $business_id = request()->session()->get('user.business_id');
             $business_numeration_entries = Business::select('entries_numeration_mode')->where('id', $business_id)->first();

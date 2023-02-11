@@ -243,6 +243,8 @@ function add_single_expense_row_from_due(expense_id) {
             showed_tr += "<td><span>$ " + parseFloat(expense.total_before_tax).toFixed(2) + "</span>";
             showed_tr += "<td><span>$ " + parseFloat(expense.tax_amount).toFixed(2) + "</span>";
             showed_tr += "<td><span>$ " + parseFloat(expense.final_total).toFixed(2) + "</span>";
+            showed_tr += "<td><input type='hidden' id='pending_amount' value='" + parseFloat(expense.final_total - expense.payment_balance).toFixed(6) + "'><span>$ " + parseFloat(expense.final_total - expense.payment_balance).toFixed(6) + "</span>";
+            showed_tr += "<td><span><input type='number' class='form-control' id='payment_amount' required></span>";
             showed_tr += "<td><button type='button' id='rm_item' class='btn btn-danger btn-xs'><i class='fa fa-times'></i></button></td>"
             showed_tr += "</tr>";
 

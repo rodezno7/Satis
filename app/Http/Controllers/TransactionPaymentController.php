@@ -619,7 +619,7 @@ class TransactionPaymentController extends Controller
 
                 $transaction = Transaction::where('id', $payment->transaction_id)
                     ->where('business_id', $business_id)
-                    ->where('type', 'sell')
+                    //->where('type', 'sell')
                     ->first();
 
                 // Update payment balance

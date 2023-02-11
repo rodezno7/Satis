@@ -56,26 +56,26 @@ class ExpenseController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $expenses = Transaction::leftJoin('expense_categories AS ec', 'transactions.expense_category_id', '=', 'ec.id')
-                ->join('business_locations AS bl', 'transactions.location_id', 'bl.id')
-                ->leftJoin('users AS U', 'transactions.expense_for', '=', 'U.id')
-                ->leftJoin('transaction_payments AS TP', 'transactions.id', 'TP.transaction_id')
-                ->join('document_types', 'document_types.id', '=', 'transactions.document_types_id')
-                ->leftJoin('contacts', 'contacts.id', 'transactions.contact_id')
-                ->where('transactions.business_id', $business_id)
-                ->where('transactions.type', 'expense')
-                ->select(
-                    'transactions.id',
-                    'bl.name as location_name',
-                    'ec.name as category',
-                    'document_types.short_name',
-                    'transactions.document',
-                    'transaction_date',
-                    'ref_no',
-                    'payment_status',
-                    'final_total',
-                    'contacts.name as supplier'
-                )
-                ->groupBy('transactions.id');
+            ->join('business_locations AS bl', 'transactions.location_id', 'bl.id')
+            ->leftJoin('users AS U', 'transactions.expense_for', '=', 'U.id')
+            ->leftJoin('transaction_payments AS TP', 'transactions.id', 'TP.transaction_id')
+            ->join('document_types', 'document_types.id', '=', 'transactions.document_types_id')
+            ->leftJoin('contacts', 'contacts.id', 'transactions.contact_id')
+            ->where('transactions.business_id', $business_id)
+            ->where('transactions.type', 'expense')
+            ->select(
+                'transactions.id',
+                'bl.name as location_name',
+                'ec.name as category',
+                'document_types.short_name',
+                'transactions.document',
+                'transaction_date',
+                'ref_no',
+                'payment_status',
+                'final_total',
+                'contacts.name as supplier'
+            )
+            ->groupBy('transactions.id');
 
             //Add condition for expense for,used in sales representative expense report
             if (request()->has('expense_for')) {
@@ -98,7 +98,7 @@ class ExpenseController extends Controller
                 $start = request()->start_date;
                 $end =  request()->end_date;
                 $expenses->whereDate('transaction_date', '>=', $start)
-                    ->whereDate('transaction_date', '<=', $end);
+                ->whereDate('transaction_date', '<=', $end);
             }
 
             //Add condition for expense category, used in list of expense,
@@ -115,48 +115,48 @@ class ExpenseController extends Controller
             }
 
             return Datatables::of($expenses)
-                ->addColumn(
-                    'action',
-                    '<div class="btn-group">
-                        <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
-                            data-toggle="dropdown" aria-expanded="false"> @lang("messages.actions")<span class="caret"></span><span class="sr-only">Toggle Dropdown
-                                </span>
-                        </button>
-                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a style="cursor: pointer" data-href="{{action(\'ExpenseController@edit\', [$id])}}" class="edit_expense_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
-                    @if($document)
-                        <li><a href="{{ url(\'uploads/documents/\' . $document)}}" 
-                        download=""><i class="fa fa-download" aria-hidden="true"></i> @lang("purchase.download_document")</a></li>
-                    @endif
-                    <li>
-                        <a style="cursor: pointer" data-href="{{action(\'ExpenseController@destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
-                    <li class="divider"></li> 
-                    @if($payment_status != "paid")
-                        <li><a href="{{action("TransactionPaymentController@addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
-                    @endif
-                    <li><a href="{{action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal"><i class="fa fa-money" aria-hidden="true" ></i> @lang("purchase.view_payments")</a></li>
-                    </ul></div>'
-                )
-                ->removeColumn('id')
-                ->editColumn(
-                    'final_total',
-                    '<span class="display_currency final-total" data-currency_symbol="true" data-orig-value="{{$final_total}}">{{$final_total}}</span>'
-                )
-                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+            ->addColumn(
+                'action',
+                '<div class="btn-group">
+                <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
+                data-toggle="dropdown" aria-expanded="false"> @lang("messages.actions")<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                </span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li><a style="cursor: pointer" data-href="{{action(\'ExpenseController@edit\', [$id])}}" class="edit_expense_button"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
+                @if($document)
+                <li><a href="{{ url(\'uploads/documents/\' . $document)}}" 
+                download=""><i class="fa fa-download" aria-hidden="true"></i> @lang("purchase.download_document")</a></li>
+                @endif
+                <li>
+                <a style="cursor: pointer" data-href="{{action(\'ExpenseController@destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                <li class="divider"></li> 
+                @if($payment_status != "paid")
+                <li><a href="{{action("TransactionPaymentController@addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
+                @endif
+                <li><a href="{{action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal"><i class="fa fa-money" aria-hidden="true" ></i> @lang("purchase.view_payments")</a></li>
+                </ul></div>'
+            )
+            ->removeColumn('id')
+            ->editColumn(
+                'final_total',
+                '<span class="display_currency final-total" data-currency_symbol="true" data-orig-value="{{$final_total}}">{{$final_total}}</span>'
+            )
+            ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
                 // ->editColumn('dci', '{{$dci->document_type[\' id\'}}')   
-                ->editColumn(
-                    'payment_status',
-                    '<a href="{{ action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal payment-status" data-orig-value="{{$payment_status}}" data-status-name="{{__(\'lang_v1.\' . $payment_status)}}"><span class="label @payment_status($payment_status)">{{__(\'lang_v1.\' . $payment_status)}}
-                        </span></a>'
-                )
-                ->rawColumns(['final_total', 'payment_status', 'action'])
-                ->toJson();
+            ->editColumn(
+                'payment_status',
+                '<a href="{{ action("TransactionPaymentController@show", [$id])}}" class="view_payment_modal payment-status" data-orig-value="{{$payment_status}}" data-status-name="{{__(\'lang_v1.\' . $payment_status)}}"><span class="label @payment_status($payment_status)">{{__(\'lang_v1.\' . $payment_status)}}
+                </span></a>'
+            )
+            ->rawColumns(['final_total', 'payment_status', 'action'])
+            ->toJson();
         }
 
         $business_id = request()->session()->get('user.business_id');
 
         $categories = ExpenseCategory::where('business_id', $business_id)
-            ->pluck('name', 'id');
+        ->pluck('name', 'id');
 
         $users = User::forDropdown($business_id, false, true, true);
 
@@ -169,7 +169,7 @@ class ExpenseController extends Controller
         $hide_location_column = isset($expense_settings['hide_location_column']) ? $expense_settings['hide_location_column'] : 0;
 
         return view('expense.index')
-            ->with(compact('categories', 'business_locations', 'users', 'hide_location_column'));
+        ->with(compact('categories', 'business_locations', 'users', 'hide_location_column'));
     }
 
     /**
@@ -188,7 +188,7 @@ class ExpenseController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id, false);
 
         $document = DocumentType::where('is_document_purchase', 1)
-            ->pluck('document_name', 'id');
+        ->pluck('document_name', 'id');
         $payment_term = PaymentTerm::where('business_id', $business_id)->pluck('name', 'id');
         $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'products', true);
         
@@ -221,20 +221,20 @@ class ExpenseController extends Controller
             $query = Contact::where('business_id', $business_id);
 
             $suppliers = $query->where(function ($query) use ($term) {
-                    $query->where('name', 'like', '%' . $term . '%')
-                        ->orWhere('supplier_business_name', 'like', '%' . $term . '%')
-                        ->orWhere('contacts.contact_id', 'like', '%' . $term . '%');
-                })
-                ->select(
-                    'contacts.id',
-                    'name as text',
-                    'supplier_business_name as business_name',
-                    'contacts.contact_id',
-                    'contacts.is_exempt',
-                    'contacts.tax_group_id'
-                )
-                ->onlySuppliers()
-                ->get();
+                $query->where('name', 'like', '%' . $term . '%')
+                ->orWhere('supplier_business_name', 'like', '%' . $term . '%')
+                ->orWhere('contacts.contact_id', 'like', '%' . $term . '%');
+            })
+            ->select(
+                'contacts.id',
+                'name as text',
+                'supplier_business_name as business_name',
+                'contacts.contact_id',
+                'contacts.is_exempt',
+                'contacts.tax_group_id'
+            )
+            ->onlySuppliers()
+            ->get();
 
             foreach ($suppliers as $supplier) {
                 $supplier->tax_percent = $this->taxUtil->getTaxPercent($supplier->tax_group_id);
@@ -258,21 +258,21 @@ class ExpenseController extends Controller
         $user_id = request()->session()->get('user.id');
 
         $query = ExpenseCategory::where('business_id', $business_id)
-            ->join('catalogues', 'catalogues.id', '=', 'expense_categories.account_id');
+        ->join('catalogues', 'catalogues.id', '=', 'expense_categories.account_id');
 
         $account = $query->where(function ($query) use ($term) {
             $query->where('expense_categories.name', 'like', '%' . $term . '%');
         })
-            ->select(
-                [
-                    'expense_categories.id',
-                    'expense_categories.name as text',
-                    'catalogues.name as business_name', 
-                    'expense_categories.id as ide',
-                    'catalogues.code as coc'
-                ]
-            )
-            ->get();
+        ->select(
+            [
+                'expense_categories.id',
+                'expense_categories.name as text',
+                'catalogues.name as business_name', 
+                'expense_categories.id as ide',
+                'catalogues.code as coc'
+            ]
+        )
+        ->get();
         return json_encode($account);
         // }
     }
@@ -286,7 +286,7 @@ class ExpenseController extends Controller
 
         if(!auth()->user()->can('is_close_book') &&
             $this->transactionUtil->isClosed($request->input('transaction_date')) > 0){
-            
+
             return $output = [
                 'success' => 0,
                 'msg' => __('purchase.month_closed')
@@ -521,8 +521,8 @@ class ExpenseController extends Controller
             $transaction_data['document_date'] = $this->transactionUtil->uf_date($transaction_data['document_date']);
 
             Transaction::where('business_id', $business_id)
-                ->where('id', $id)
-                ->update($transaction_data);
+            ->where('id', $id)
+            ->update($transaction_data);
 
             $output = [
                 'success' => 1,
@@ -557,9 +557,9 @@ class ExpenseController extends Controller
                 $business_id = request()->session()->get('user.business_id');
 
                 $expense = Transaction::where('business_id', $business_id)
-                    ->where('type', 'expense')
-                    ->where('id', $id)
-                    ->first();
+                ->where('type', 'expense')
+                ->where('id', $id)
+                ->first();
                 $expense->delete();
 
                 $output = [
@@ -594,7 +594,7 @@ class ExpenseController extends Controller
 
 
         return view("expense.partials.expenses")
-            ->with(compact("bank_transaction_id"));
+        ->with(compact("bank_transaction_id"));
     }
 
     /**
@@ -614,16 +614,17 @@ class ExpenseController extends Controller
         $check_amount = $transaction->amount;
 
         $expenses = $request->input("expenses");
+        $payments = $request->input("payments");
 
         $bank_account = BankAccount::find($transaction->bank_account_id);
 
         // Validation to allow the check amount not to match expenses total
-        if ($this->transactionUtil->validateMatchCheckAndExpense($check_amount, $expenses, 'update')) {
+        /*if ($this->transactionUtil->validateMatchCheckAndExpense($check_amount, $expenses, 'update')) {
             return [
                 'success' => false,
                 'msg' => __('accounting.match_check_n_expense_error')
             ];
-        }
+        }*/
 
         $type_bank_transaction = TypeBankTransaction::find($transaction->type_bank_transaction_id);
 
@@ -633,17 +634,29 @@ class ExpenseController extends Controller
             $payment_method = 'check';
         }
 
-        foreach ($expenses as $e) {
-            // Update expense
-            $expense = Transaction::where("id", $e)
-                ->first();
+        $cont = 0;                
 
-            $expense->bank_transaction_id = $bank_transaction_id;
-            $expense->payment_status = "paid";
+        while($cont < count($expenses)) {
+
+            // Update expense
+            $expense = Transaction::where("id", $expenses[$cont])
+            ->first();
+
+            //$expense->bank_transaction_id = $bank_transaction_id;
+            $expense->payment_balance += $payments[$cont];
+
+            if (number_format($expense->final_total, 2) == number_format($expense->payment_balance, 2)) {
+                $expense->payment_balance = $expense->final_total;
+                $expense->payment_status = "paid";
+            } else {
+
+                $expense->payment_status = "partial";
+
+            }
 
             // Save payment
             $payment = new TransactionPayment();
-            $payment->amount = $expense->final_total;
+            $payment->amount = $payments[$cont];
             $payment->method = $payment_method;
             $payment->paid_on = $transaction->date;
 
@@ -668,10 +681,15 @@ class ExpenseController extends Controller
             $payment->transaction_id = $expense->id;
             $payment->created_by = $request->session()->get('user.id');
             $payment->business_id = $request->session()->get("user.business_id");
+            $payment->bank_transaction_id = $transaction->id;
 
             $payment->save();
 
             $expense->save();
+
+            $cont = $cont + 1;
+
+            
         }
 
         return [
@@ -690,17 +708,17 @@ class ExpenseController extends Controller
             $q = request()->input('q', '');
 
             $query = Transaction::where("transactions.business_id", $business_id)
-                ->join("contacts as c", "transactions.contact_id", "c.id")
-                ->join("document_types as dt", "transactions.document_types_id", "dt.id")
-                ->whereIn("transactions.type", ["expense", "purchase"])
-                ->where("transactions.payment_status", "due");
+            ->join("contacts as c", "transactions.contact_id", "c.id")
+            ->join("document_types as dt", "transactions.document_types_id", "dt.id")
+            ->whereIn("transactions.type", ["expense", "purchase"])
+            ->whereIn("transactions.payment_status", ["due", 'partial']);
 
             $transctions = [];
             if(!empty($q)){
                 $transactions = $query->where(function ($query) use ($q){
                     $query->where('transactions.ref_no', 'like', '%'. $q .'%')
-                        ->orWhere('c.name', 'like', '%'. $q. '%')
-                        ->orWhere('c.supplier_business_name', 'like', '%'. $q .'%');
+                    ->orWhere('c.name', 'like', '%'. $q. '%')
+                    ->orWhere('c.supplier_business_name', 'like', '%'. $q .'%');
                 });
             }
 
@@ -734,7 +752,7 @@ class ExpenseController extends Controller
         $payment_terms = PaymentTerm::forDropdown($business_id);
 
         return view("expense.partials.add_expense")
-            ->with(compact('document', 'business_locations', 'payment_term', 'tax_groups', 'payment_condition', 'payment_terms'));
+        ->with(compact('document', 'business_locations', 'payment_term', 'tax_groups', 'payment_condition', 'payment_terms'));
     }
 
     /**
@@ -747,27 +765,28 @@ class ExpenseController extends Controller
         $business_id = request()->session()->get("user.business_id");
 
         $expense = Transaction::where('transactions.business_id', $business_id)
-            ->join("contacts as c", "transactions.contact_id", "c.id")
-            ->whereIn('transactions.type', ['expense', 'purchase'])
-            ->where('transactions.id', $expense_id)
-            ->select(
-                "c.id as contact_id",
-                "transactions.id",
-                "transactions.expense_category_id",
-                "transactions.transaction_date",
-                "transactions.document_types_id",
-                "transactions.ref_no",
-                "transactions.payment_condition",
-                "transactions.payment_term_id",
-                "transactions.total_before_tax",
-                "transactions.tax_id",
-                "transactions.tax_amount",
-                "transactions.final_total",
-                "transactions.additional_notes",
-                "transactions.document",
-                "c.supplier_business_name as supplier_name"
-            )
-            ->first();
+        ->join("contacts as c", "transactions.contact_id", "c.id")
+        ->whereIn('transactions.type', ['expense', 'purchase'])
+        ->where('transactions.id', $expense_id)
+        ->select(
+            "c.id as contact_id",
+            "transactions.id",
+            "transactions.expense_category_id",
+            "transactions.transaction_date",
+            "transactions.document_types_id",
+            "transactions.ref_no",
+            "transactions.payment_condition",
+            "transactions.payment_term_id",
+            "transactions.total_before_tax",
+            "transactions.tax_id",
+            "transactions.tax_amount",
+            "transactions.final_total",
+            "transactions.payment_balance",
+            "transactions.additional_notes",
+            "transactions.document",
+            "c.supplier_business_name as supplier_name"
+        )
+        ->first();
 
         $expense->transaction_date = $this->transactionUtil->format_date($expense->transaction_date);
 
@@ -829,8 +848,8 @@ class ExpenseController extends Controller
             \Log::info('--- START ---');
 
             $expenses = Transaction::where('type', 'expense')
-                ->where('final_total', 0)
-                ->get();
+            ->where('final_total', 0)
+            ->get();
 
             foreach ($expenses as $expense) {
                 if ($expense->contact_id) {

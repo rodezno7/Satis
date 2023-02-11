@@ -553,4 +553,5 @@ return[
 	'add_period' => 'Create period',
 	'define_cost_account' => 'Define cost account',
 	'account_auxiliar' => 'Account is auxiliar',
+	'transaction_has_dependencies' => 'Transaction have payments',
 ];

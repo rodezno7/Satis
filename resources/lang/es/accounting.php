@@ -553,4 +553,5 @@ return[
 	'add_period' => 'Desea habilitar el período de la fecha actual',
 	'define_cost_account' => 'Defina el rubro de agrupación de costos en la pestaña cuentas',
 	'account_auxiliar' => 'La cuenta ya fue utilizada como auxiliar',
+	'transaction_has_dependencies' => 'Tiene pagos realizados con esta transacción, debe eliminarlos',
 ];

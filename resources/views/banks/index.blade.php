@@ -682,682 +682,682 @@
                         </div>
                         <div class="box-body">
                             {!! Form::open(['url' => action('BankTransactionController@getBankReconciliation'), 'method' => 'post', 'enctype' => 'multipart/form-data', 'target' => '_blank']) !!}
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                {!! Form::label('bank', __('accounting.bank')) !!}
-                                                <select name="bank" class="form-control select2" style="width: 100%;" id="bank-reconc-bank" required>
-                                                    <option value="" selected>@lang('accounting.select_bank')</option>
-                                                    @foreach ($banks_ddl as $b)
-                                                        <option value="{{ $b->id }}">{{ $b->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                {!! Form::label('bank_account', __('accounting.bank_account_')) !!}
-                                                {!! Form::select("bank_account", [], null, ['class' => 'form-control select2', 'id' => 'bank-reconc-bank-accounts',
-                                                    'style' => 'width: 100%;', 'placeholder' => __('accounting.select_bank_account'), 'required']) !!}
-                                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {!! Form::label('bank', __('accounting.bank')) !!}
+                                            <select name="bank" class="form-control select2" style="width: 100%;" id="bank-reconc-bank" required>
+                                                <option value="" selected>@lang('accounting.select_bank')</option>
+                                                @foreach ($banks_ddl as $b)
+                                                <option value="{{ $b->id }}">{{ $b->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                {!! Form::label('start_date', __('accounting.from')) !!}
-                                                {!! Form::text('start_date', @format_date('now'), ['class' => 'form-control', 'id' => 'format_date', 'readonly']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                {!! Form::label('end_date', __('accounting.to')) !!}
-                                                {!! Form::text('end_date', @format_date('now'), ['class' => 'form-control', 'id' => 'format_date', 'readonly']) !!}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                {!! Form::label("transaction_type", __('accounting.transaction_type')) !!}
-                                                <select name="transaction_type" class="form-control select2" style="width: 100%;">
-                                                    <option value="all">@lang('messages.all')</option>
-                                                    @foreach ($bank_transaction_types_ddl as $btt)
-                                                        <option value="{{ $btt->id }}">{{ $btt->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            {!! Form::label("attach_file", __('lang_v1.attach_file')) !!}
-                                            <input type="file" name="bank_reconciliation_xlsx" id="bank_reconciliation_xlsx" accept=".xlsx" required>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <a href="{{ asset('uploads/files/bank_reconciliation_xlsx_template.xlsx') }}"
-                                                class="btn btn-success" download><i class="fa fa-download"></i>
-                                                @lang('accounting.download_template')</a>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                                                @lang('accounting.generate_reconciliation')
-                                            </button>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {!! Form::label('bank_account', __('accounting.bank_account_')) !!}
+                                            {!! Form::select("bank_account", [], null, ['class' => 'form-control select2', 'id' => 'bank-reconc-bank-accounts',
+                                            'style' => 'width: 100%;', 'placeholder' => __('accounting.select_bank_account'), 'required']) !!}
                                         </div>
                                     </div>
                                 </div>
-                            {!! Form::close() !!}
-                            <div class="col-md-6">
-                                <div class="col-ms-6">
-                                    <strong>@lang('lang_v1.instructions'):</strong>
-                                    @lang('lang_v1.bank_reconciliation_instructions')
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>@lang('lang_v1.column')</th>
-                                                <th>@lang('lang_v1.name')</th>
-                                                <th>@lang('lang_v1.instruction')</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>@lang('lang_v1.date')<small class="text-muted">(@lang('lang_v1.required'))</small>
-                                                </td>
-                                                <td>@lang('lang_v1.date_instruction')</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>@lang('lang_v1.reference')<small class="text-muted">(@lang('lang_v1.required'))
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {!! Form::label('start_date', __('accounting.from')) !!}
+                                            {!! Form::text('start_date', @format_date('now'), ['class' => 'form-control', 'id' => 'format_date', 'readonly']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {!! Form::label('end_date', __('accounting.to')) !!}
+                                            {!! Form::text('end_date', @format_date('now'), ['class' => 'form-control', 'id' => 'format_date', 'readonly']) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            {!! Form::label("transaction_type", __('accounting.transaction_type')) !!}
+                                            <select name="transaction_type" class="form-control select2" style="width: 100%;">
+                                                <option value="all">@lang('messages.all')</option>
+                                                @foreach ($bank_transaction_types_ddl as $btt)
+                                                <option value="{{ $btt->id }}">{{ $btt->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        {!! Form::label("attach_file", __('lang_v1.attach_file')) !!}
+                                        <input type="file" name="bank_reconciliation_xlsx" id="bank_reconciliation_xlsx" accept=".xlsx" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a href="{{ asset('uploads/files/bank_reconciliation_xlsx_template.xlsx') }}"
+                                        class="btn btn-success" download><i class="fa fa-download"></i>
+                                    @lang('accounting.download_template')</a>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                        @lang('accounting.generate_reconciliation')
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {!! Form::close() !!}
+                        <div class="col-md-6">
+                            <div class="col-ms-6">
+                                <strong>@lang('lang_v1.instructions'):</strong>
+                                @lang('lang_v1.bank_reconciliation_instructions')
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>@lang('lang_v1.column')</th>
+                                            <th>@lang('lang_v1.name')</th>
+                                            <th>@lang('lang_v1.instruction')</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>@lang('lang_v1.date')<small class="text-muted">(@lang('lang_v1.required'))</small>
+                                            </td>
+                                            <td>@lang('lang_v1.date_instruction')</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>@lang('lang_v1.reference')<small class="text-muted">(@lang('lang_v1.required'))
                                                 <td>@lang('lang_v1.reference_instruction')</td>
                                             </tr>
                                             <tr>
                                                 <td>3</td>
                                                 <td>@lang('accounting.description')<small class="text-muted">(@lang('lang_v1.optional'))
-                                                <td>@lang('lang_v1.description_instruction')</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>@lang('lang_v1.amount')<small class="text-muted">(@lang('lang_v1.required'))
-                                                <td>@lang('lang_v1.amount_instruction')</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                    <td>@lang('lang_v1.description_instruction')</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td>@lang('lang_v1.amount')<small class="text-muted">(@lang('lang_v1.required'))
+                                                        <td>@lang('lang_v1.amount_instruction')</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-add-bank" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.add_bank')</h3>
-                            <form id="form-add-bank">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-                                <div class="form-group">
-                                    <label for="txt-name-bank">@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-bank" name="txt-name-bank" class="form-control" placeholder="@lang('accounting.name')...">
-                                </div>
+            <div class="modal fade" id="modal-add-bank" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                    <div class="modal-content" style="border-radius: 20px;">
+                        <div class="modal-body">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <h3>@lang('accounting.add_bank')</h3>
+                                    <form id="form-add-bank">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+                                        <div class="form-group">
+                                            <label for="txt-name-bank">@lang('accounting.name')</label>
+                                            <input type="text" id="txt-name-bank" name="txt-name-bank" class="form-control" placeholder="@lang('accounting.name')...">
+                                        </div>
 
-                                <div class="form-group">
-                                    {!! Form::label('print_format', __( 'document_type.print_format' ) . ':') !!}
-                                    @show_tooltip(__('document_type.tooltip_print_format'))
-                                    {!! Form::select('print_format', $checkbook_formats, null, [
-                                        'id' => 'print_format',
-                                        'class' => 'select2',
-                                        'placeholder' => __( 'document_type.print_format'),
-                                        'style' => 'width: 100%;'
-                                    ]) !!}
+                                        <div class="form-group">
+                                            {!! Form::label('print_format', __( 'document_type.print_format' ) . ':') !!}
+                                            @show_tooltip(__('document_type.tooltip_print_format'))
+                                            {!! Form::select('print_format', $checkbook_formats, null, [
+                                                'id' => 'print_format',
+                                                'class' => 'select2',
+                                                'placeholder' => __( 'document_type.print_format'),
+                                                'style' => 'width: 100%;'
+                                                ]) !!}
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                            </form>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank">@lang('messages.close')</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
-    <div class="modal fade" id="modal-edit-bank" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.edit_bank')</h3>
-                            <form id="form-edit-bank">
-                                <div class="form-group">
-                                    <label for="txt-name-ebank">@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-ebank" name="txt-name-ebank" class="form-control" placeholder="@lang('accounting.name')...">
-                                    <input type="hidden" name="bank_id" id="bank_id">
-                                </div>
-                            </form>
-                        </div>
+                <div class="modal fade" id="modal-edit-bank" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                        <div class="modal-content" style="border-radius: 20px;">
+                            <div class="modal-body">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <h3>@lang('accounting.edit_bank')</h3>
+                                        <form id="form-edit-bank">
+                                            <div class="form-group">
+                                                <label for="txt-name-ebank">@lang('accounting.name')</label>
+                                                <input type="text" id="txt-name-ebank" name="txt-name-ebank" class="form-control" placeholder="@lang('accounting.name')...">
+                                                <input type="hidden" name="bank_id" id="bank_id">
+                                            </div>
+                                        </form>
+                                    </div>
 
-                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            {!! Form::label('print_format', __( 'document_type.print_format' ) . ':') !!}
-                            @show_tooltip(__('document_type.tooltip_print_format'))
-                            {!! Form::select('eprint_format', $checkbook_formats, null, [
-                                'id' => 'eprint_format',
-                                'class' => 'select2',
-                                'placeholder' => __( 'document_type.print_format'),
-                                'style' => 'width: 100%;']
-                            ) !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-add-bank-account" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.add_bank_account')</h3>
-                            <form id="form-add-bank-account">
-                                <div class="form-group">
-                                    <label for="select-bank-id-bank-account">@lang('accounting.bank')</label>
-                                    <select name="select-bank-id-bank-account" id="select-bank-id-bank-account" class="form-control select2" style="width: 100%;">
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        @foreach($banks_ddl as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        {!! Form::label('print_format', __( 'document_type.print_format' ) . ':') !!}
+                                        @show_tooltip(__('document_type.tooltip_print_format'))
+                                        {!! Form::select('eprint_format', $checkbook_formats, null, [
+                                            'id' => 'eprint_format',
+                                            'class' => 'select2',
+                                            'placeholder' => __( 'document_type.print_format'),
+                                            'style' => 'width: 100%;']
+                                            ) !!}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="select-catalogue-id-bank-account">@lang('accounting.catalogue_account')</label>
-                                    {!! Form::select('select-catalogue-id-bank-account', $banks, null, ['id' => 'select-catalogue-id-bank-account', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank">@lang('messages.close')</button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="select-type-bank-account">@lang('accounting.type_account')</label>
-                                    <select name="select-type-bank-account" id="select-type-bank-account" class="form-control select2" style="width: 100%;">
-                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
-                                        <option value="@lang('accounting.savings')">@lang('accounting.savings')</option>
-                                        <option value="@lang('accounting.checking')">@lang('accounting.checking')</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-number-bank-account">@lang('accounting.number')</label>
-                                    <input type="text" id="txt-number-bank-account" name="txt-number-bank-account" class="form-control" placeholder="@lang('accounting.number')...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-name-bank-account">@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-bank-account" name="txt-name-bank-account" class="form-control" placeholder="@lang('accounting.name')...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-description-bank-account">@lang('accounting.description')</label>
-                                    <input type="text" id="txt-description-bank-account" name="txt-description-bank-account" class="form-control" placeholder="@lang('accounting.description')...">
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank-account">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank-account">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="verPartida" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <table class="table table-striped" id="tablaPartida">
-                                <tr>
-                                    <td colspan="6">
-                                        <h4>
-                                            Partida Número:
-                                            <span id="numeroPartida">
-                                            </span>
-                                        </h4>
-                                        <h4>
-                                            Fecha:
-                                            <span id="fecha">                                   
-                                            </span>
-                                        </h4>
-                                        <h4>
-                                            Descripción:
-                                            <span id="descripcion">
-                                            </span>
-                                        </h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th style="width: 20%">Código</th>
-                                    <th style="width: 50%">Cuenta</th>
-                                    <th style="width: 1%"></th>
-                                    <th style="width: 14%">Debe</th>
-                                    <th style="width: 1%"></th>
-                                    <th style="width: 14%">Haber</th>
-                                </tr>
-                                <tbody id="detallePartida">
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="2" class="text-right">
-                                            Totales
-                                        </th>
-                                        <th>
-                                            $
-                                        </th>
-                                        <th>
-                                            <span id="tdebe">                   
-                                            </span>
-                                        </th>
-                                        <th>
-                                            $
-                                        </th>
-                                        <th>
-                                            <span id="thaber">                  
-                                            </span>
-                                        </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                    <div class="modal fade" id="modal-add-bank-account" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.add_bank_account')</h3>
+                                            <form id="form-add-bank-account">
+                                                <div class="form-group">
+                                                    <label for="select-bank-id-bank-account">@lang('accounting.bank')</label>
+                                                    <select name="select-bank-id-bank-account" id="select-bank-id-bank-account" class="form-control select2" style="width: 100%;">
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        @foreach($banks_ddl as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="select-catalogue-id-bank-account">@lang('accounting.catalogue_account')</label>
+                                                    {!! Form::select('select-catalogue-id-bank-account', $banks, null, ['id' => 'select-catalogue-id-bank-account', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="select-type-bank-account">@lang('accounting.type_account')</label>
+                                                    <select name="select-type-bank-account" id="select-type-bank-account" class="form-control select2" style="width: 100%;">
+                                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
+                                                        <option value="@lang('accounting.savings')">@lang('accounting.savings')</option>
+                                                        <option value="@lang('accounting.checking')">@lang('accounting.checking')</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-number-bank-account">@lang('accounting.number')</label>
+                                                    <input type="text" id="txt-number-bank-account" name="txt-number-bank-account" class="form-control" placeholder="@lang('accounting.number')...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-name-bank-account">@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-name-bank-account" name="txt-name-bank-account" class="form-control" placeholder="@lang('accounting.name')...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-description-bank-account">@lang('accounting.description')</label>
+                                                    <input type="text" id="txt-description-bank-account" name="txt-description-bank-account" class="form-control" placeholder="@lang('accounting.description')...">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank-account">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank-account">@lang('messages.close')</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-show">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-add-transaction-type" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.add_bank_transaction_type')</h3>
-                            <form id="form-add-bank-transaction-type">
-                                <div class="form-group">
-                                    <label>@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-bank-transacion-type" name="txt-name-bank-transacion-type" class="form-control" placeholder="@lang('accounting.name')...">
+                    <div class="modal fade" id="verPartida" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <table class="table table-striped" id="tablaPartida">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <h4>
+                                                            Partida Número:
+                                                            <span id="numeroPartida">
+                                                            </span>
+                                                        </h4>
+                                                        <h4>
+                                                            Fecha:
+                                                            <span id="fecha">                                   
+                                                            </span>
+                                                        </h4>
+                                                        <h4>
+                                                            Descripción:
+                                                            <span id="descripcion">
+                                                            </span>
+                                                        </h4>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width: 20%">Código</th>
+                                                    <th style="width: 50%">Cuenta</th>
+                                                    <th style="width: 1%"></th>
+                                                    <th style="width: 14%">Debe</th>
+                                                    <th style="width: 1%"></th>
+                                                    <th style="width: 14%">Haber</th>
+                                                </tr>
+                                                <tbody id="detallePartida">
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th colspan="2" class="text-right">
+                                                            Totales
+                                                        </th>
+                                                        <th>
+                                                            $
+                                                        </th>
+                                                        <th>
+                                                            <span id="tdebe">                   
+                                                            </span>
+                                                        </th>
+                                                        <th>
+                                                            $
+                                                        </th>
+                                                        <th>
+                                                            <span id="thaber">                  
+                                                            </span>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>@lang('accounting.type_bank_transaction')</label>
-                                    <select name="select-bank-transaction-type" id="select-bank-transaction-type" class="form-control select2" style = 'width: 100%;'>
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        <option value='debit'>@lang('accounting.inflow')</option>
-                                        <option value='credit'>@lang('accounting.outflow')</option>
-                                    </select>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-show">Cerrar</button>
                                 </div>
-
-                                <div class="form-group">
-                                    <label>@lang('accounting.entrie_type')</label>
-                                    {!! Form::select('select-type-entrie-transaction-type', $types, null, ['id' => 'select-type-entrie-transaction-type', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="enable_checkbook" id="enable_checkbook" value="1" class="input-icheck">
-                                        <strong>@lang('accounting.enable_checkbook')</strong>
-                                    </label>
-                                    <label>
-                                        <input type="checkbox" name="enable_headline" id="enable_headline" value="1" class="input-icheck">
-                                        <strong>@lang('accounting.enable_headline')</strong>
-                                    </label>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="enable_date_constraint" id="enable_date_constraint" value="0" class="input-icheck">
-                                        <strong>@lang('accounting.enable_date_constraint')</strong>
-                                    </label>
-                                </div>
-
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank-transaction-type">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank-transaction-type">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-edit-transaction-type" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.edit_bank_transaction_type')</h3>
-                            <form id="form-add-edit-transaction-type">
-                                <div class="form-group">
-                                    <label>@lang('accounting.name')</label>
-                                    <input type="text" id="txt-ename-bank-transacion-type" name="txt-ename-bank-transacion-type" class="form-control" placeholder="@lang('accounting.name')...">
-                                    <input type="hidden" name='bank-transaction-type-id' id='bank-transaction-type-id'>
-                                </div>
-                                <div class="form-group">
-                                    <label>@lang('accounting.type_bank_transaction')</label>
-                                    <select name="eselect-bank-transaction-type" id="eselect-bank-transaction-type" class="form-control select2" disabled style = 'width: 100%;'>
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        <option value='debit'>@lang('accounting.inflow')</option>
-                                        <option value='credit'>@lang('accounting.outflow')</option>
-                                    </select>
-                                </div>
+                    <div class="modal fade" id="modal-add-transaction-type" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.add_bank_transaction_type')</h3>
+                                            <form id="form-add-bank-transaction-type">
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-name-bank-transacion-type" name="txt-name-bank-transacion-type" class="form-control" placeholder="@lang('accounting.name')...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.type_bank_transaction')</label>
+                                                    <select name="select-bank-transaction-type" id="select-bank-transaction-type" class="form-control select2" style = 'width: 100%;'>
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        <option value='debit'>@lang('accounting.inflow')</option>
+                                                        <option value='credit'>@lang('accounting.outflow')</option>
+                                                    </select>
+                                                </div>
 
-                                <div class="form-group">
-                                    <label>@lang('accounting.entrie_type')</label>
-                                    {!! Form::select('eselect-type-entrie-transaction-type', $types, null, ['id' => 'eselect-type-entrie-transaction-type', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="eenable_checkbook" id="eenable_checkbook" value="1" class="input-icheck">
-                                        <strong>@lang('accounting.enable_checkbook')</strong>
-                                    </label>
-                                    <label>
-                                        <input type="checkbox" name="eenable_headline" id="eenable_headline" value="1" class="input-icheck">
-                                        <strong>@lang('accounting.enable_headline')</strong>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="eenable_date_constraint" id="eenable_date_constraint" value="0" class="input-icheck">
-                                        <strong>@lang('accounting.enable_date_constraint')</strong>
-                                    </label>
-                                </div>
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.entrie_type')</label>
+                                                    {!! Form::select('select-type-entrie-transaction-type', $types, null, ['id' => 'select-type-entrie-transaction-type', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="enable_checkbook" id="enable_checkbook" value="1" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_checkbook')</strong>
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" name="enable_headline" id="enable_headline" value="1" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_headline')</strong>
+                                                    </label>
+                                                </div>
 
-                            </form>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="enable_date_constraint" id="enable_date_constraint" value="0" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_date_constraint')</strong>
+                                                    </label>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-bank-transaction-type">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-bank-transaction-type">@lang('messages.close')</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank-transaction-type">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank-transaction-type">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-add-checkbook" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 60%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.add_checkbook')</h3>
-                            <form id="form-add-checkbook">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-checkbook" name="txt-name-checkbook" class="form-control" placeholder="@lang('accounting.name')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.description')</label>
-                                    <input type="text" id="txt-description-checkbook" name="txt-description-checkbook" class="form-control" placeholder="@lang('accounting.description')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.serie')</label>
-                                    <input type="text" id="txt-serie-checkbook" name="txt-serie-checkbook" class="form-control" placeholder="@lang('accounting.serie')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.initial_correlative')</label>
-                                    <input type="text" id="txt-initial-correlative-checkbook" name="txt-initial-correlative-checkbook" class="form-control" placeholder="@lang('accounting.initial_correlative')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.final_correlative')</label>
-                                    <input type="text" id="txt-final-correlative-checkbook" name="txt-final-correlative-checkbook" class="form-control" placeholder="@lang('accounting.final_correlative')...">
-                                </div>
+                    <div class="modal fade" id="modal-edit-transaction-type" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.edit_bank_transaction_type')</h3>
+                                            <form id="form-add-edit-transaction-type">
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-ename-bank-transacion-type" name="txt-ename-bank-transacion-type" class="form-control" placeholder="@lang('accounting.name')...">
+                                                    <input type="hidden" name='bank-transaction-type-id' id='bank-transaction-type-id'>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.type_bank_transaction')</label>
+                                                    <select name="eselect-bank-transaction-type" id="eselect-bank-transaction-type" class="form-control select2" disabled style = 'width: 100%;'>
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        <option value='debit'>@lang('accounting.inflow')</option>
+                                                        <option value='credit'>@lang('accounting.outflow')</option>
+                                                    </select>
+                                                </div>
 
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.actual_correlative')</label>
-                                    <input type="text" id="txt-actual-correlative-checkbook" name="txt-actual-correlative-checkbook" class="form-control" placeholder="@lang('accounting.actual_correlative')...">
+                                                <div class="form-group">
+                                                    <label>@lang('accounting.entrie_type')</label>
+                                                    {!! Form::select('eselect-type-entrie-transaction-type', $types, null, ['id' => 'eselect-type-entrie-transaction-type', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]); !!}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="eenable_checkbook" id="eenable_checkbook" value="1" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_checkbook')</strong>
+                                                    </label>
+                                                    <label>
+                                                        <input type="checkbox" name="eenable_headline" id="eenable_headline" value="1" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_headline')</strong>
+                                                    </label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <input type="checkbox" name="eenable_date_constraint" id="eenable_date_constraint" value="0" class="input-icheck">
+                                                        <strong>@lang('accounting.enable_date_constraint')</strong>
+                                                    </label>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.bank')</label>
-                                    <select name="select-bank-id-checkbook" id="select-bank-id-checkbook" class="form-control select2" style="width: 100%;">
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        @foreach($banks_ddl as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank-transaction-type">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank-transaction-type">@lang('messages.close')</button>
                                 </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.bank_account')</label>
-                                    <select name="select-bank-account-id-checkbook" id="select-bank-account-id-checkbook" class="form-control select2" style="width: 100%;">
-                                    </select>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-checkbook">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-checkbook">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-edit-checkbook" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 60%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.edit_checkbook')</h3>
-                            <form id="form-add-checkbook">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.name')</label>
-                                    <input type="text" id="txt-ename-checkbook" name="txt-ename-checkbook" class="form-control" placeholder="@lang('accounting.name')...">
-                                    <input type="hidden" name="checkbook_id" id="checkbook_id">
+                    <div class="modal fade" id="modal-add-checkbook" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 60%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.add_checkbook')</h3>
+                                            <form id="form-add-checkbook">
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-name-checkbook" name="txt-name-checkbook" class="form-control" placeholder="@lang('accounting.name')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.description')</label>
+                                                    <input type="text" id="txt-description-checkbook" name="txt-description-checkbook" class="form-control" placeholder="@lang('accounting.description')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.serie')</label>
+                                                    <input type="text" id="txt-serie-checkbook" name="txt-serie-checkbook" class="form-control" placeholder="@lang('accounting.serie')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.initial_correlative')</label>
+                                                    <input type="text" id="txt-initial-correlative-checkbook" name="txt-initial-correlative-checkbook" class="form-control" placeholder="@lang('accounting.initial_correlative')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.final_correlative')</label>
+                                                    <input type="text" id="txt-final-correlative-checkbook" name="txt-final-correlative-checkbook" class="form-control" placeholder="@lang('accounting.final_correlative')...">
+                                                </div>
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.actual_correlative')</label>
+                                                    <input type="text" id="txt-actual-correlative-checkbook" name="txt-actual-correlative-checkbook" class="form-control" placeholder="@lang('accounting.actual_correlative')...">
+                                                </div>
+
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.bank')</label>
+                                                    <select name="select-bank-id-checkbook" id="select-bank-id-checkbook" class="form-control select2" style="width: 100%;">
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        @foreach($banks_ddl as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.bank_account')</label>
+                                                    <select name="select-bank-account-id-checkbook" id="select-bank-account-id-checkbook" class="form-control select2" style="width: 100%;">
+                                                    </select>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.description')</label>
-                                    <input type="text" id="txt-edescription-checkbook" name="txt-edescription-checkbook" class="form-control" placeholder="@lang('accounting.description')...">
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-add-checkbook">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-add-checkbook">@lang('messages.close')</button>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.serie')</label>
-                                    <input type="text" id="txt-eserie-checkbook" name="txt-eserie-checkbook" class="form-control" placeholder="@lang('accounting.serie')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.initial_correlative')</label>
-                                    <input type="text" id="txt-einitial-correlative-checkbook" name="txt-einitial-correlative-checkbook" class="form-control" placeholder="@lang('accounting.initial_correlative')...">
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.final_correlative')</label>
-                                    <input type="text" id="txt-efinal-correlative-checkbook" name="txt-efinal-correlative-checkbook" class="form-control" placeholder="@lang('accounting.final_correlative')...">
-                                </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.actual_correlative')</label>
-                                    <input type="text" id="txt-eactual-correlative-checkbook" name="txt-eactual-correlative-checkbook" class="form-control" placeholder="@lang('accounting.actual_correlative')...">
-                                </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.bank')</label>
-                                    <select name="eselect-bank-id-checkbook" id="eselect-bank-id-checkbook" class="form-control select2" style="width: 100%;" disabled>
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        @foreach($banks_ddl as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.bank_account')</label>
-                                    <select name="eselect-bank-account-id-checkbook" id="eselect-bank-account-id-checkbook" class="form-control select2" style="width: 100%;" disabled>
-
-                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
-                                        @foreach($bank_accounts_ddl as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-
-
-
-                                    </select>
-                                </div>
-
-
-                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label>@lang('accounting.status')</label>
-                                    <select name="select-status-checkbook" id="select-status-checkbook" class="form-control select2" style="width: 100%">
-                                        <option value="1">@lang('accounting.open')</option>
-                                        <option value="0">@lang('accounting.closed')</option>
-                                    </select>
-
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-checkbook">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-checkbook">@lang('messages.close')</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="modal-edit-bank-account" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
-            <div class="modal-content" style="border-radius: 20px;">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h3>@lang('accounting.edit_bank_account')</h3>
-                            <form id="form-edit-bank-account">
-                                <div class="form-group">
-                                    <label for="select-bank-id-bank-eaccount">@lang('accounting.bank')</label>
-                                    <select name="select-bank-id-bank-eaccount" id="select-bank-id-bank-eaccount" class="form-control select2" style="width: 100%;">
-                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
-                                        @foreach($banks_ddl as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="bank-account-id" id="bank-account-id">
-                                </div>
-                                <div class="form-group">
-                                    <label for="select-catalogue-id-bank-eaccount">@lang('accounting.catalogue_account')</label>
-                                    {!! Form::select('select-catalogue-id-bank-eaccount', $banks, null, ['id' => 'select-catalogue-id-bank-eaccount', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select'), 'disabled']); !!}
-                                </div>
-                                <div class="form-group">
-                                    <label for="select-type-bank-eaccount">@lang('accounting.type_account')</label>
-                                    <select name="select-type-bank-eaccount" id="select-type-bank-eaccount" class="form-control select2" style="width: 100%;">
-                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
-                                        <option value="@lang('accounting.savings')">@lang('accounting.savings')</option>
-                                        <option value="@lang('accounting.checking')">@lang('accounting.checking')</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-number-bank-eaccount">@lang('accounting.number')</label>
-                                    <input type="text" id="txt-number-bank-eaccount" name="txt-number-bank-eaccount" class="form-control" placeholder="@lang('accounting.number')...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-name-bank-eaccount">@lang('accounting.name')</label>
-                                    <input type="text" id="txt-name-bank-eaccount" name="txt-name-bank-eaccount" class="form-control" placeholder="@lang('accounting.name')...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="txt-description-bank-eaccount">@lang('accounting.description')</label>
-                                    <input type="text" id="txt-description-bank-eaccount" name="txt-description-bank-eaccount" class="form-control" placeholder="@lang('accounting.description')...">
-                                </div>
-                            </form>
+                    <div class="modal fade" id="modal-edit-checkbook" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 60%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.edit_checkbook')</h3>
+                                            <form id="form-add-checkbook">
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-ename-checkbook" name="txt-ename-checkbook" class="form-control" placeholder="@lang('accounting.name')...">
+                                                    <input type="hidden" name="checkbook_id" id="checkbook_id">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.description')</label>
+                                                    <input type="text" id="txt-edescription-checkbook" name="txt-edescription-checkbook" class="form-control" placeholder="@lang('accounting.description')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.serie')</label>
+                                                    <input type="text" id="txt-eserie-checkbook" name="txt-eserie-checkbook" class="form-control" placeholder="@lang('accounting.serie')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.initial_correlative')</label>
+                                                    <input type="text" id="txt-einitial-correlative-checkbook" name="txt-einitial-correlative-checkbook" class="form-control" placeholder="@lang('accounting.initial_correlative')...">
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.final_correlative')</label>
+                                                    <input type="text" id="txt-efinal-correlative-checkbook" name="txt-efinal-correlative-checkbook" class="form-control" placeholder="@lang('accounting.final_correlative')...">
+                                                </div>
 
 
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.actual_correlative')</label>
+                                                    <input type="text" id="txt-eactual-correlative-checkbook" name="txt-eactual-correlative-checkbook" class="form-control" placeholder="@lang('accounting.actual_correlative')...">
+                                                </div>
 
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank-account">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank-account">@lang('messages.close')</button>
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.bank')</label>
+                                                    <select name="eselect-bank-id-checkbook" id="eselect-bank-id-checkbook" class="form-control select2" style="width: 100%;" disabled>
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        @foreach($banks_ddl as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.bank_account')</label>
+                                                    <select name="eselect-bank-account-id-checkbook" id="eselect-bank-account-id-checkbook" class="form-control select2" style="width: 100%;" disabled>
+
+                                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
+                                                        @foreach($bank_accounts_ddl as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+
+
+
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label>@lang('accounting.status')</label>
+                                                    <select name="select-status-checkbook" id="select-status-checkbook" class="form-control select2" style="width: 100%">
+                                                        <option value="1">@lang('accounting.open')</option>
+                                                        <option value="0">@lang('accounting.closed')</option>
+                                                    </select>
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-checkbook">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-checkbook">@lang('messages.close')</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- Expenses modal --}}
-    <div class="modal fade add_expenses_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="gridSystemModalLabel"></div>
+                    <div class="modal fade" id="modal-edit-bank-account" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 30%">
+                            <div class="modal-content" style="border-radius: 20px;">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
 
-</section>
-<!-- /.content -->
-@endsection
-@section('javascript')
-<script src="{{ asset('js/banks.js?v=' . $asset_v ) }}"></script>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <h3>@lang('accounting.edit_bank_account')</h3>
+                                            <form id="form-edit-bank-account">
+                                                <div class="form-group">
+                                                    <label for="select-bank-id-bank-eaccount">@lang('accounting.bank')</label>
+                                                    <select name="select-bank-id-bank-eaccount" id="select-bank-id-bank-eaccount" class="form-control select2" style="width: 100%;">
+                                                        <option value="0" selected disabled>@lang('messages.please_select')</option>
+                                                        @foreach($banks_ddl as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <input type="hidden" name="bank-account-id" id="bank-account-id">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="select-catalogue-id-bank-eaccount">@lang('accounting.catalogue_account')</label>
+                                                    {!! Form::select('select-catalogue-id-bank-eaccount', $banks, null, ['id' => 'select-catalogue-id-bank-eaccount', 'class' => 'form-control select2', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select'), 'disabled']); !!}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="select-type-bank-eaccount">@lang('accounting.type_account')</label>
+                                                    <select name="select-type-bank-eaccount" id="select-type-bank-eaccount" class="form-control select2" style="width: 100%;">
+                                                        <option value="0" disabled selected>@lang('messages.please_select')</option>
+                                                        <option value="@lang('accounting.savings')">@lang('accounting.savings')</option>
+                                                        <option value="@lang('accounting.checking')">@lang('accounting.checking')</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-number-bank-eaccount">@lang('accounting.number')</label>
+                                                    <input type="text" id="txt-number-bank-eaccount" name="txt-number-bank-eaccount" class="form-control" placeholder="@lang('accounting.number')...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-name-bank-eaccount">@lang('accounting.name')</label>
+                                                    <input type="text" id="txt-name-bank-eaccount" name="txt-name-bank-eaccount" class="form-control" placeholder="@lang('accounting.name')...">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="txt-description-bank-eaccount">@lang('accounting.description')</label>
+                                                    <input type="text" id="txt-description-bank-eaccount" name="txt-description-bank-eaccount" class="form-control" placeholder="@lang('accounting.description')...">
+                                                </div>
+                                            </form>
 
-<script type="text/javascript">
-    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-    
-    var cont=0;
-    total=0;
-    id_a=[];
-    valor=[];
 
-    var cont2=0;
-    total2=0;
-    id_a2=[];
-    valor2=[];
 
-    $(document).ready(function() {
-        loadBankAccountsData();
-        loadBanksData();
-        loadTransactionsData();
-        loadTransactionTypesData();
-        loadCheckBooksData();
-        showSelectCheckbook();
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn btn-primary" value="@lang('messages.save')" id="btn-edit-bank-account">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" id="btn-close-modal-edit-bank-account">@lang('messages.close')</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Expenses modal --}}
+                    <div class="modal fade add_expenses_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="gridSystemModalLabel"></div>
+
+                </section>
+                <!-- /.content -->
+                @endsection
+                @section('javascript')
+                <script src="{{ asset('js/banks.js?v=' . $asset_v ) }}"></script>
+
+                <script type="text/javascript">
+                    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+
+                    var cont=0;
+                    total=0;
+                    id_a=[];
+                    valor=[];
+
+                    var cont2=0;
+                    total2=0;
+                    id_a2=[];
+                    valor2=[];
+
+                    $(document).ready(function() {
+                        loadBankAccountsData();
+                        loadBanksData();
+                        loadTransactionsData();
+                        loadTransactionTypesData();
+                        loadCheckBooksData();
+                        showSelectCheckbook();
         /*updateSelectsBanks();
         updateSelectsBankAccounts()
         updateSelectsBankTypeTransactions()
@@ -1365,133 +1365,151 @@
 
         //changeType();
         //echangeType();
-        $.fn.dataTable.ext.errMode = 'none';
+                        $.fn.dataTable.ext.errMode = 'none';
 
         /** START JS FOR EXPENSES **/
-        $(document).on("change", "select#select-type-transaction", function() {
-            $.ajax({
-                type: "GET",
-                url: "/type-bank-transactions/get_if_enable_checkbook/" + $(this).val(),
-                dataType: "text",
-                success: function(data) {
-                    $("input#is_enable_checkbook").val(data).change();
-                }
-            });
-        });
+                        $(document).on("change", "select#select-type-transaction", function() {
+                            $.ajax({
+                                type: "GET",
+                                url: "/type-bank-transactions/get_if_enable_checkbook/" + $(this).val(),
+                                dataType: "text",
+                                success: function(data) {
+                                    $("input#is_enable_checkbook").val(data).change();
+                                }
+                            });
+                        });
 
-        $(document).on("change", "input#is_enable_checkbook", function() {
-            var btn_add_expenses = $("button#add_expenses");
-            
+                        $(document).on("change", "input#is_enable_checkbook", function() {
+                            var btn_add_expenses = $("button#add_expenses");
+
             /*if ($(this).val() == "1") {
                 btn_add_expenses.show();
             } else{
                 btn_add_expenses.hide();
             }*/
-        });
+                        });
 
-        $(document).on("click", "button#add_expenses", function() {
-            var expenses_modal = $("div.list_expenses_modal");
+                        $(document).on("click", "button#add_expenses", function() {
+                            var expenses_modal = $("div.list_expenses_modal");
 
-            $.ajax({
-                url: "/expenses/get_add_expenses",
-                dataType: "html",
-                success: function(result) {
-                    expenses_modal.html(result).modal('show');
-                }
-            });
-        });
+                            $.ajax({
+                                url: "/expenses/get_add_expenses",
+                                dataType: "html",
+                                success: function(result) {
+                                    expenses_modal.html(result).modal('show');
+                                }
+                            });
+                        });
 
-        $('div.add_expenses_modal').on('shown.bs.modal', function(e) {
-            var modal = $(this);
+                        $('div.add_expenses_modal').on('shown.bs.modal', function(e) {
+                            var modal = $(this);
 
-            modal.find('select#purchase_and_expenses_due').select2({
-                ajax: {
-                    type: "get",
-                    url: "/expenses/get-purchases-expenses",
-                    dataType: "json",
-                    data: function(params){
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data
-                        };
-                    }
-                },
-                minimumInputLength: 1,
-                escapeMarkup: function (markup) {
-                    return markup;
-                }
-            });
-            
-            $(this).find("select#purchase_and_expenses_due").on("change", function() {
-                if($(this).val() > 0){
-                    add_single_expense_row_from_due($(this).val());
-                }
-            });
+                            modal.find('select#purchase_and_expenses_due').select2({
+                                ajax: {
+                                    type: "get",
+                                    url: "/expenses/get-purchases-expenses",
+                                    dataType: "json",
+                                    data: function(params){
+                                        return {
+                                            q: params.term
+                                        };
+                                    },
+                                    processResults: function(data) {
+                                        return {
+                                            results: data
+                                        };
+                                    }
+                                },
+                                minimumInputLength: 1,
+                                escapeMarkup: function (markup) {
+                                    return markup;
+                                }
+                            });
 
-            var bank_transaction_id = $("input#bank_transaction_id").val();
+                            $(this).find("select#purchase_and_expenses_due").on("change", function() {
+                                if($(this).val() > 0){
+                                    add_single_expense_row_from_due($(this).val());
+                                }
+                            });
 
-            if (bank_transaction_id) {
-                $("button#save_expenses").on("click", function() {
-                    var expenses = get_expenses_due();
+                            var bank_transaction_id = $("input#bank_transaction_id").val();
 
-                    $.ajax({
-                        type: "POST",
-                        url: "/expenses/post_add_expenses",
-                        dataType: "json",
-                        data: { expenses: expenses, bank_transaction_id: bank_transaction_id },
-                        success: function(data) {
-                            if (data.success) {
-                                Swal.fire({
-                                    title: data.msg,
-                                    icon: "success",
+                            if (bank_transaction_id) {
+                                $("button#save_expenses").on("click", function() {
+                                    var expenses = get_expenses_due();
+                                    var payments = get_expenses_payment();
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/expenses/post_add_expenses",
+                                        dataType: "json",
+                                        data: {
+                                            expenses: expenses,
+                                            bank_transaction_id: bank_transaction_id,
+                                            payments: payments
+                                        },
+                                        success: function(data) {
+                                            if (data.success) {
+                                                Swal.fire({
+                                                    title: data.msg,
+                                                    icon: "success",
+                                                });
+                                                $('table#bank-transactions-table').DataTable().ajax.reload(null, false);
+                                            } else {
+                                                Swal.fire({
+                                                    title: data.msg,
+                                                    icon: "error",
+                                                });
+                                            }
+                                        }
+                                    });
                                 });
-                                $('table#bank-transactions-table').DataTable().ajax.reload(null, false);
+
                             } else {
-                                Swal.fire({
-                                    title: data.msg,
-                                    icon: "error",
-                                });
+                                $("button#save_expenses").off("click");
                             }
-                        }
-                    });
-                });
-                
-            } else {
-                $("button#save_expenses").off("click");
-            }
-        });
+                        });
         /** END JS FOR EXPENSES **/
+                    });
+
+function get_expenses_due() {
+    var modal = $("div.add_expenses_modal");
+    var expenses = modal.find("table#hidden_table tbody tr");
+    var expense_ids = [];
+
+    expenses.each(function(i, e){
+        var id = $(this).find("input#_expense_id").val();
+        expense_ids.push(id);
     });
 
-    function get_expenses_due() {
-        var modal = $("div.add_expenses_modal");
-        var expenses = modal.find("table#hidden_table tbody tr");
-        var expense_ids = [];
+    return expense_ids;
+}
 
-        expenses.each(function(i, e){
-            var id = $(this).find("input#_expense_id").val();
-            expense_ids.push(id);
-        });
+function get_expenses_payment() {
+    var modal = $("div.add_expenses_modal");
+    var payments = modal.find("table#showed_table tbody tr");
+    var payment_values = [];
 
-        return expense_ids;
-    }
+    payments.each(function(i, e){
+        var amount = $(this).find("input#payment_amount").val();
+        payment_values.push(amount);
+    });
 
-    function loadBanksData()
+    return payment_values;
+}
+
+function loadBanksData()
+{
+    var table = $("#banks-table").DataTable();
+    table.destroy();
+    var table = $("#banks-table").DataTable(
     {
-        var table = $("#banks-table").DataTable();
-        table.destroy();
-        var table = $("#banks-table").DataTable(
-        {
-            pageLength: 25,
-            deferRender: true,
-            processing: true,
-            serverSide: true,
-            ajax: "/banks/getBanksData",
-            columns: [
+        pageLength: 25,
+        deferRender: true,
+        processing: true,
+        serverSide: true,
+        ajax: "/banks/getBanksData",
+        columns: [
             {data: 'name', name: 'bank.name'},
             {data: null, render: function(data){
                 edit_button = '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
@@ -1499,173 +1517,173 @@
                 return edit_button + delete_button;
             } , orderable: false, searchable: false}
             ]
-        });
-    }
+    });
+}
 
-    $("#btn-new-bank").click(function(){
-        $('#txt-name-bank').val('');
-        $('#print_format').val('').change();
-        setTimeout(function()
-        {               
-            $('#txt-name-bank').focus();
+$("#btn-new-bank").click(function(){
+    $('#txt-name-bank').val('');
+    $('#print_format').val('').change();
+    setTimeout(function()
+    {               
+        $('#txt-name-bank').focus();
+    },
+    800);
+});
+
+$("#btn-add-bank").click(function(){
+    $("#btn-add-bank").prop("disabled", true);
+    $("#btn-close-modal-add-bank").prop("disabled", true);  
+    name = $("#txt-name-bank").val();
+    print_format = $("#print_format").val();
+    route = "/banks";
+    token = $("#token").val();
+    $.ajax({
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            name: name,
+            print_format: print_format
         },
-        800);
+        success:function(){
+            updateSelectsBanks();
+            $("#btn-add-bank").prop("disabled", false);
+            $("#btn-close-modal-add-bank").prop("disabled", false); 
+            $("#banks-table").DataTable().ajax.reload(null, false);
+            Swal.fire
+            ({
+                title: "{{__('accounting.bank_added')}}",
+                icon: "success",
+            });
+            $("#modal-add-bank").modal('hide');
+        },
+        error:function(msj){
+            $("#btn-add-bank").prop("disabled", false);
+            $("#btn-close-modal-add-bank").prop("disabled", false);
+            var errormessages = "";
+            $.each(msj.responseJSON.errors, function(i, field){
+                errormessages+="<li>"+field+"</li>";
+            });
+            Swal.fire
+            ({
+                title: "{{__('accounting.errors')}}",
+                icon: "error",
+                html: "<ul>"+ errormessages+ "</ul>",
+            });
+        }
     });
+});
 
-    $("#btn-add-bank").click(function(){
-        $("#btn-add-bank").prop("disabled", true);
-        $("#btn-close-modal-add-bank").prop("disabled", true);  
-        name = $("#txt-name-bank").val();
-        print_format = $("#print_format").val();
-        route = "/banks";
-        token = $("#token").val();
-        $.ajax({
-            url: route,
-            headers: {'X-CSRF-TOKEN': token},
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                name: name,
-                print_format: print_format
-            },
-            success:function(){
-                updateSelectsBanks();
-                $("#btn-add-bank").prop("disabled", false);
-                $("#btn-close-modal-add-bank").prop("disabled", false); 
-                $("#banks-table").DataTable().ajax.reload(null, false);
-                Swal.fire
-                ({
-                    title: "{{__('accounting.bank_added')}}",
-                    icon: "success",
-                });
-                $("#modal-add-bank").modal('hide');
-            },
-            error:function(msj){
-                $("#btn-add-bank").prop("disabled", false);
-                $("#btn-close-modal-add-bank").prop("disabled", false);
-                var errormessages = "";
-                $.each(msj.responseJSON.errors, function(i, field){
-                    errormessages+="<li>"+field+"</li>";
-                });
-                Swal.fire
-                ({
-                    title: "{{__('accounting.errors')}}",
-                    icon: "error",
-                    html: "<ul>"+ errormessages+ "</ul>",
-                });
-            }
-        });
+function editBank(id)
+{
+    $('#bank_id').val('');
+    $('#txt-name-ebank').val('');
+    var route = "/banks/"+id+"/edit";
+    $.get(route, function(res){
+        $('#bank_id').val(res.id);
+        $('#txt-name-ebank').val(res.name);
+        $('#eprint_format').val(res.print_format).change();
     });
+    $('#modal-edit-bank').modal({backdrop: 'static', keyboard: false});
+}
 
-    function editBank(id)
-    {
-        $('#bank_id').val('');
-        $('#txt-name-ebank').val('');
-        var route = "/banks/"+id+"/edit";
-        $.get(route, function(res){
-            $('#bank_id').val(res.id);
-            $('#txt-name-ebank').val(res.name);
-            $('#eprint_format').val(res.print_format).change();
-        });
-        $('#modal-edit-bank').modal({backdrop: 'static', keyboard: false});
-    }
-
-    $("#btn-edit-bank").click(function(){
-        $("#btn-edit-bank").prop("disabled", true);
-        $("#btn-close-modal-edit-bank").prop("disabled", true);
-        id = $("#bank_id").val();
-        name = $("#txt-name-ebank").val();
-        print_format = $("#eprint_format").val();
-        route = "/banks/"+id;
-        token = $("#token").val();
-        $.ajax({
-            url: route,
-            headers: {'X-CSRF-TOKEN': token},
-            type: 'PUT',
-            dataType: 'json',
-            data: {
-                name: name,
-                print_format: print_format
-            },
-            success:function(){
-                updateSelectsBanks();
-                $("#btn-edit-bank").prop("disabled", false);
-                $("#btn-close-modal-edit-bank").prop("disabled", false);
-                $("#banks-table").DataTable().ajax.reload(null, false);
-                Swal.fire
-                ({
-                    title: "{{__('accounting.bank_updated')}}",
-                    icon: "success",
-                });
-                $('#modal-edit-bank').modal('hide');
-            },
-            error:function(msj){
-                $("#btn-edit-bank").prop("disabled", false);
-                $("#btn-close-modal-edit-bank").prop("disabled", false);
-                var errormessages = "";
-                $.each(msj.responseJSON.errors, function(i, field){
-                    errormessages+="<li>"+field+"</li>";
-                });
-                Swal.fire
-                ({
-                    title: "{{__('accounting.errors')}}",
-                    icon: "error",
-                    html: "<ul>"+ errormessages+ "</ul>",
-                });
-            }
-        });
+$("#btn-edit-bank").click(function(){
+    $("#btn-edit-bank").prop("disabled", true);
+    $("#btn-close-modal-edit-bank").prop("disabled", true);
+    id = $("#bank_id").val();
+    name = $("#txt-name-ebank").val();
+    print_format = $("#eprint_format").val();
+    route = "/banks/"+id;
+    token = $("#token").val();
+    $.ajax({
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'PUT',
+        dataType: 'json',
+        data: {
+            name: name,
+            print_format: print_format
+        },
+        success:function(){
+            updateSelectsBanks();
+            $("#btn-edit-bank").prop("disabled", false);
+            $("#btn-close-modal-edit-bank").prop("disabled", false);
+            $("#banks-table").DataTable().ajax.reload(null, false);
+            Swal.fire
+            ({
+                title: "{{__('accounting.bank_updated')}}",
+                icon: "success",
+            });
+            $('#modal-edit-bank').modal('hide');
+        },
+        error:function(msj){
+            $("#btn-edit-bank").prop("disabled", false);
+            $("#btn-close-modal-edit-bank").prop("disabled", false);
+            var errormessages = "";
+            $.each(msj.responseJSON.errors, function(i, field){
+                errormessages+="<li>"+field+"</li>";
+            });
+            Swal.fire
+            ({
+                title: "{{__('accounting.errors')}}",
+                icon: "error",
+                html: "<ul>"+ errormessages+ "</ul>",
+            });
+        }
     });
+});
 
-    function deleteBank(id)
-    {
-        swal({
-            title: LANG.sure,
-            text: '{{__('messages.delete_content')}}',
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete){
-                route = '/banks/'+id;
-                token = $("#token").val();
-                $.ajax({                    
-                    url: route,
-                    headers: {'X-CSRF-TOKEN': token},
-                    type: 'DELETE',
-                    dataType: 'json',                       
-                    success:function(result){
-                        updateSelectsBanks();
-                        if(result.success == true){
-                            Swal.fire
-                            ({
-                                title: result.msg,
-                                icon: "success",
-                            });
-                            $("#banks-table").DataTable().ajax.reload(null, false);
-                        } else {
-                            Swal.fire
-                            ({
-                                title: result.msg,
-                                icon: "error",
-                            });
-                        }
+function deleteBank(id)
+{
+    swal({
+        title: LANG.sure,
+        text: '{{__('messages.delete_content')}}',
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete){
+            route = '/banks/'+id;
+            token = $("#token").val();
+            $.ajax({                    
+                url: route,
+                headers: {'X-CSRF-TOKEN': token},
+                type: 'DELETE',
+                dataType: 'json',                       
+                success:function(result){
+                    updateSelectsBanks();
+                    if(result.success == true){
+                        Swal.fire
+                        ({
+                            title: result.msg,
+                            icon: "success",
+                        });
+                        $("#banks-table").DataTable().ajax.reload(null, false);
+                    } else {
+                        Swal.fire
+                        ({
+                            title: result.msg,
+                            icon: "error",
+                        });
                     }
-                });
-            }
-        });
-    }
+                }
+            });
+        }
+    });
+}
 
-    function loadBankAccountsData()
+function loadBankAccountsData()
+{
+    var table = $("#bank-accounts-table").DataTable();
+    table.destroy();
+    var table = $("#bank-accounts-table").DataTable(
     {
-        var table = $("#bank-accounts-table").DataTable();
-        table.destroy();
-        var table = $("#bank-accounts-table").DataTable(
-        {
-            deferRender: true,
-            processing: true,
-            serverSide: true,
-            ajax: "/bank-accounts/getBankAccountsData",
-            columns: [
+        deferRender: true,
+        processing: true,
+        serverSide: true,
+        ajax: "/bank-accounts/getBankAccountsData",
+        columns: [
             {data: 'bank_name', name: 'bank.name'},
             {data: 'catalogue_code', name: 'catalogue.code'},
             {data: 'type', name: 'account.type'},
@@ -1678,202 +1696,202 @@
                 return edit_button + delete_button;
             } , orderable: false, searchable: false}
             ]
-        });
-    }
-
-    $("#btn-new-bank-account").click(function(){
-        $('#txt-name-bank-account').val('');
-        $('#txt-description-bank-account').val('');
-        $('#txt-number-bank-account').val('');
     });
+}
 
-    $("#btn-add-bank-account").click(function(){
-        $("#btn-add-bank-account").prop("disabled", true);
-        $("#btn-close-modal-add-bank-account").prop("disabled", true);  
-        name = $("#txt-name-bank-account").val();
-        description = $("#txt-description-bank-account").val();
-        bank_id = $("#select-bank-id-bank-account").val();
-        catalogue_id = $("#select-catalogue-id-bank-account").val();
-        type = $("#select-type-bank-account").val();
-        number = $("#txt-number-bank-account").val();
-        route = "/bank-accounts";
-        token = $("#token").val();
-        $.ajax({
-            url: route,
-            headers: {'X-CSRF-TOKEN': token},
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                bank_id: bank_id,
-                catalogue_id: catalogue_id,
-                name: name,
-                description: description,
-                type: type,
-                number: number
-            },
-            success:function(){
-                updateSelectsBankAccounts();
-                $("#btn-add-bank-account").prop("disabled", false);
-                $("#btn-close-modal-add-bank-account").prop("disabled", false); 
-                $("#bank-accounts-table").DataTable().ajax.reload(null, false);
-                Swal.fire
-                ({
-                    title: "{{__('accounting.bank_account_added')}}",
-                    icon: "success",
-                });
-                $("#modal-add-bank-account").modal('hide');
-            },
-            error:function(msj){
-                $("#btn-add-bank-account").prop("disabled", false);
-                $("#btn-close-modal-add-bank-account").prop("disabled", false);
-                var errormessages = "";
-                $.each(msj.responseJSON.errors, function(i, field){
-                    errormessages+="<li>"+field+"</li>";
-                });
-                Swal.fire
-                ({
-                    title: "{{__('accounting.errors')}}",
-                    icon: "error",
-                    html: "<ul>"+ errormessages+ "</ul>",
-                });
-            }
-        });
+$("#btn-new-bank-account").click(function(){
+    $('#txt-name-bank-account').val('');
+    $('#txt-description-bank-account').val('');
+    $('#txt-number-bank-account').val('');
+});
+
+$("#btn-add-bank-account").click(function(){
+    $("#btn-add-bank-account").prop("disabled", true);
+    $("#btn-close-modal-add-bank-account").prop("disabled", true);  
+    name = $("#txt-name-bank-account").val();
+    description = $("#txt-description-bank-account").val();
+    bank_id = $("#select-bank-id-bank-account").val();
+    catalogue_id = $("#select-catalogue-id-bank-account").val();
+    type = $("#select-type-bank-account").val();
+    number = $("#txt-number-bank-account").val();
+    route = "/bank-accounts";
+    token = $("#token").val();
+    $.ajax({
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            bank_id: bank_id,
+            catalogue_id: catalogue_id,
+            name: name,
+            description: description,
+            type: type,
+            number: number
+        },
+        success:function(){
+            updateSelectsBankAccounts();
+            $("#btn-add-bank-account").prop("disabled", false);
+            $("#btn-close-modal-add-bank-account").prop("disabled", false); 
+            $("#bank-accounts-table").DataTable().ajax.reload(null, false);
+            Swal.fire
+            ({
+                title: "{{__('accounting.bank_account_added')}}",
+                icon: "success",
+            });
+            $("#modal-add-bank-account").modal('hide');
+        },
+        error:function(msj){
+            $("#btn-add-bank-account").prop("disabled", false);
+            $("#btn-close-modal-add-bank-account").prop("disabled", false);
+            var errormessages = "";
+            $.each(msj.responseJSON.errors, function(i, field){
+                errormessages+="<li>"+field+"</li>";
+            });
+            Swal.fire
+            ({
+                title: "{{__('accounting.errors')}}",
+                icon: "error",
+                html: "<ul>"+ errormessages+ "</ul>",
+            });
+        }
     });
+});
 
-    function editBankAccount(id)
-    {
-        $('#bank-account-id').val('');
-        $('#txt-name-bank-eaccount').val('');
-        $('#txt-description-bank-eaccount').val('');
-        var route = "/bank-accounts/"+id+"/edit";
-        $.get(route, function(res){
-            $("#select-bank-id-bank-eaccount").val(res.bank_id).change();
-            $("#select-catalogue-id-bank-eaccount").val(res.catalogue_id).change();
-            $("#select-type-bank-eaccount").val(res.type).change();
-            $('#bank-account-id').val(res.id);
-            $('#txt-name-bank-eaccount').val(res.name);
-            $('#txt-number-bank-eaccount').val(res.number);
-            $('#txt-description-bank-eaccount').val(res.description);
-            $('#modal-edit-bank-account').modal({backdrop: 'static', keyboard: false});
-        });
-    }
-
-    $("#btn-edit-bank-account").click(function(){
-        $("#btn-edit-bank-account").prop("disabled", true);
-        $("#btn-close-modal-edit-bank-account").prop("disabled", true);
-        id = $("#bank-account-id").val();
-        bank_id = $("#select-bank-id-bank-eaccount").val();
-        catalogue_id = $("#select-catalogue-id-bank-eaccount").val();
-        name = $("#txt-name-bank-eaccount").val();
-        description = $("#txt-description-bank-eaccount").val();
-        type = $("#select-type-bank-eaccount").val();
-        number = $("#txt-number-bank-eaccount").val();
-        route = "/bank-accounts/"+id;
-        token = $("#token").val();
-        $.ajax({
-            url: route,
-            headers: {'X-CSRF-TOKEN': token},
-            type: 'PUT',
-            dataType: 'json',
-            data: {
-                bank_id: bank_id,
-                catalogue_id: catalogue_id,
-                name: name,
-                description: description,
-                type: type,
-                number: number
-            },
-            success:function(){
-                updateSelectsBankAccounts();
-                $("#btn-edit-bank-account").prop("disabled", false);
-                $("#btn-close-modal-edit-bank-account").prop("disabled", false);
-                $("#bank-accounts-table").DataTable().ajax.reload(null, false);
-                Swal.fire
-                ({
-                    title: "{{__('accounting.bank_account_updated')}}",
-                    icon: "success",
-                });
-                $('#modal-edit-bank-account').modal('hide');
-            },
-            error:function(msj){
-                $("#btn-edit-bank-account").prop("disabled", false);
-                $("#btn-close-modal-edit-bank-account").prop("disabled", false);
-                var errormessages = "";
-                $.each(msj.responseJSON.errors, function(i, field){
-                    errormessages+="<li>"+field+"</li>";
-                });
-                Swal.fire
-                ({
-                    title: "{{__('accounting.errors')}}",
-                    icon: "error",
-                    html: "<ul>"+ errormessages+ "</ul>",
-                });
-            }
-        });
+function editBankAccount(id)
+{
+    $('#bank-account-id').val('');
+    $('#txt-name-bank-eaccount').val('');
+    $('#txt-description-bank-eaccount').val('');
+    var route = "/bank-accounts/"+id+"/edit";
+    $.get(route, function(res){
+        $("#select-bank-id-bank-eaccount").val(res.bank_id).change();
+        $("#select-catalogue-id-bank-eaccount").val(res.catalogue_id).change();
+        $("#select-type-bank-eaccount").val(res.type).change();
+        $('#bank-account-id').val(res.id);
+        $('#txt-name-bank-eaccount').val(res.name);
+        $('#txt-number-bank-eaccount').val(res.number);
+        $('#txt-description-bank-eaccount').val(res.description);
+        $('#modal-edit-bank-account').modal({backdrop: 'static', keyboard: false});
     });
+}
 
-    function deleteBankAccount(id)
-    {
-        swal({
-            title: LANG.sure,
-            text: '{{__('messages.delete_content')}}',
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete){
-                route = '/bank-accounts/'+id;
-                token = $("#token").val();
-                $.ajax({
-                    url: route,
-                    headers: {'X-CSRF-TOKEN': token},
-                    type: 'DELETE',
-                    dataType: 'json',                       
-                    success:function(result){
-                        if(result.success == true){
-                            updateSelectsBankAccounts();
-                            Swal.fire
-                            ({
-                                title: result.msg,
-                                icon: "success",
-                            });
-                            $("#bank-accounts-table").DataTable().ajax.reload(null, false);
-                        } else {
-                            Swal.fire
-                            ({
-                                title: result.msg,
-                                icon: "error",
-                            });
-                        }
+$("#btn-edit-bank-account").click(function(){
+    $("#btn-edit-bank-account").prop("disabled", true);
+    $("#btn-close-modal-edit-bank-account").prop("disabled", true);
+    id = $("#bank-account-id").val();
+    bank_id = $("#select-bank-id-bank-eaccount").val();
+    catalogue_id = $("#select-catalogue-id-bank-eaccount").val();
+    name = $("#txt-name-bank-eaccount").val();
+    description = $("#txt-description-bank-eaccount").val();
+    type = $("#select-type-bank-eaccount").val();
+    number = $("#txt-number-bank-eaccount").val();
+    route = "/bank-accounts/"+id;
+    token = $("#token").val();
+    $.ajax({
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'PUT',
+        dataType: 'json',
+        data: {
+            bank_id: bank_id,
+            catalogue_id: catalogue_id,
+            name: name,
+            description: description,
+            type: type,
+            number: number
+        },
+        success:function(){
+            updateSelectsBankAccounts();
+            $("#btn-edit-bank-account").prop("disabled", false);
+            $("#btn-close-modal-edit-bank-account").prop("disabled", false);
+            $("#bank-accounts-table").DataTable().ajax.reload(null, false);
+            Swal.fire
+            ({
+                title: "{{__('accounting.bank_account_updated')}}",
+                icon: "success",
+            });
+            $('#modal-edit-bank-account').modal('hide');
+        },
+        error:function(msj){
+            $("#btn-edit-bank-account").prop("disabled", false);
+            $("#btn-close-modal-edit-bank-account").prop("disabled", false);
+            var errormessages = "";
+            $.each(msj.responseJSON.errors, function(i, field){
+                errormessages+="<li>"+field+"</li>";
+            });
+            Swal.fire
+            ({
+                title: "{{__('accounting.errors')}}",
+                icon: "error",
+                html: "<ul>"+ errormessages+ "</ul>",
+            });
+        }
+    });
+});
+
+function deleteBankAccount(id)
+{
+    swal({
+        title: LANG.sure,
+        text: '{{__('messages.delete_content')}}',
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete){
+            route = '/bank-accounts/'+id;
+            token = $("#token").val();
+            $.ajax({
+                url: route,
+                headers: {'X-CSRF-TOKEN': token},
+                type: 'DELETE',
+                dataType: 'json',                       
+                success:function(result){
+                    if(result.success == true){
+                        updateSelectsBankAccounts();
+                        Swal.fire
+                        ({
+                            title: result.msg,
+                            icon: "success",
+                        });
+                        $("#bank-accounts-table").DataTable().ajax.reload(null, false);
+                    } else {
+                        Swal.fire
+                        ({
+                            title: result.msg,
+                            icon: "error",
+                        });
                     }
-                });
-            }
-        });
-    }
+                }
+            });
+        }
+    });
+}
 
-    $("#filter-period").change(function(){
-        loadTransactionsData();
-    });
-    $("#filter-type").change(function(){
-        loadTransactionsData();
-    });
-    $("#filter-bank").change(function(){
-        loadTransactionsData();
-    });
-    
-    function loadTransactionsData()
+$("#filter-period").change(function(){
+    loadTransactionsData();
+});
+$("#filter-type").change(function(){
+    loadTransactionsData();
+});
+$("#filter-bank").change(function(){
+    loadTransactionsData();
+});
+
+function loadTransactionsData()
+{
+    var table = $("#bank-transactions-table").DataTable();
+    table.destroy();
+    var table = $("#bank-transactions-table").DataTable(
     {
-        var table = $("#bank-transactions-table").DataTable();
-        table.destroy();
-        var table = $("#bank-transactions-table").DataTable(
-        {
-            columnDefs: [{ "visible": false, "targets": [0, 7] }],
-            pageLength: 25,
-            deferRender: true,
-            processing: true,
-            serverSide: true,
-            ajax: "/bank-transactions/getBankTransactionsData/"+$("#filter-period").val()+"/"+$("#filter-type").val()+"/"+$("#filter-bank").val()+"",
-            columns: [
+        columnDefs: [{ "visible": false, "targets": [0, 7] }],
+        pageLength: 25,
+        deferRender: true,
+        processing: true,
+        serverSide: true,
+        ajax: "/bank-transactions/getBankTransactionsData/"+$("#filter-period").val()+"/"+$("#filter-type").val()+"/"+$("#filter-bank").val()+"",
+        columns: [
             {data: 'bank', name:'bank_accounts.name'},
             {data: 'entrie', name: 'entrie.short_name'},
             {data: 'type_transaction', name: 'type.name'},
@@ -1905,7 +1923,7 @@
                             expenses = parseInt(data.expenses);
 
                             if (expenses > 0) {
-                                
+
                                 html_expense = "";
                                 
                             } else {
@@ -2010,7 +2028,7 @@
                 return actions;
             } , orderable: false, searchable: false}
             ]
-        });
+});
 
 /*$('#bank-transactions-table').on( 'dblclick', 'tr', function () {
     var data = table.row(this).data();
@@ -2563,46 +2581,46 @@ function loadTransactionTypesData()
         serverSide: true,
         ajax: "/type-bank-transactions/getTypeBankTransactionsData",
         columns: [
-        {data: 'name', name: 'type.name'},
-        {data: null, render: function(data){
-            if(data.type == 'debit') {
-                return '@lang('accounting.inflow')';
-            }
-            else {
-                return '@lang('accounting.outflow')';
-            }
-        } , orderable: false, searchable: false},
-        {data: 'entrie_type', name: 'entrie.name'},
-        {data: null, render: function(data){
-            if(data.enable_checkbook == 1) {
-                return '@lang('accounting.yes')';
-            }
-            else {
-                return '@lang('accounting.not')';
-            }
-        } , orderable: false, searchable: false},
-        {data: null, render: function(data){
-            if(data.enable_headline == 1) {
-                return '@lang('accounting.yes')';
-            }
-            else {
-                return '@lang('accounting.not')';
-            }
-        } , orderable: false, searchable: false},
-        {data: null, render: function(data){
-            if(data.enable_date_constraint == 1) {
-                return '@lang('accounting.yes')';
-            }
-            else {
-                return '@lang('accounting.not')';
-            }
-        } , orderable: false, searchable: false},
-        {data: null, render: function(data){
-            edit_button = '<a class="btn btn-xs btn-primary" onClick="editBankTransactionType('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
-            delete_button = ' <a class="btn btn-xs btn-danger" onClick="deleteBankTransactionType('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
-            return edit_button + delete_button;
-        } , orderable: false, searchable: false}
-        ]
+            {data: 'name', name: 'type.name'},
+            {data: null, render: function(data){
+                if(data.type == 'debit') {
+                    return '@lang('accounting.inflow')';
+                }
+                else {
+                    return '@lang('accounting.outflow')';
+                }
+            } , orderable: false, searchable: false},
+            {data: 'entrie_type', name: 'entrie.name'},
+            {data: null, render: function(data){
+                if(data.enable_checkbook == 1) {
+                    return '@lang('accounting.yes')';
+                }
+                else {
+                    return '@lang('accounting.not')';
+                }
+            } , orderable: false, searchable: false},
+            {data: null, render: function(data){
+                if(data.enable_headline == 1) {
+                    return '@lang('accounting.yes')';
+                }
+                else {
+                    return '@lang('accounting.not')';
+                }
+            } , orderable: false, searchable: false},
+            {data: null, render: function(data){
+                if(data.enable_date_constraint == 1) {
+                    return '@lang('accounting.yes')';
+                }
+                else {
+                    return '@lang('accounting.not')';
+                }
+            } , orderable: false, searchable: false},
+            {data: null, render: function(data){
+                edit_button = '<a class="btn btn-xs btn-primary" onClick="editBankTransactionType('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                delete_button = ' <a class="btn btn-xs btn-danger" onClick="deleteBankTransactionType('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                return edit_button + delete_button;
+            } , orderable: false, searchable: false}
+            ]
     });
 }
 
@@ -2874,27 +2892,27 @@ function loadCheckBooksData()
         serverSide: true,
         ajax: "/bank-checkbooks/getBankCheckbooksData",
         columns: [
-        {data: 'name', name: 'checkbook.name'},
-        {data: 'description', name: 'checkbook.description'},
-        {data: 'serie', name: 'checkbook.serie'},
-        {data: 'initial_correlative', name: 'checkbook.initial_correlative'},
-        {data: 'final_correlative', name: 'checkbook.final_correlative'},
-        {data: 'actual_correlative', name: 'checkbook.actual_correlative'},
-        {data: 'account_name', name: 'account.name'},
-        {data: null, render: function(data){
-            if(data.status == 1) {
-                return '@lang("accounting.open")';
-            }
-            else {
-                return '@lang("accounting.closed")';
-            }
-        } , orderable: false, searchable: false},
-        {data: null, render: function(data){
-            edit_button = '<a class="btn btn-xs btn-primary" onClick="editCheckbook('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
-            delete_button = ' <a class="btn btn-xs btn-danger" onClick="deleteCheckbook('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
-            return edit_button + delete_button;
-        } , orderable: false, searchable: false}
-        ]
+            {data: 'name', name: 'checkbook.name'},
+            {data: 'description', name: 'checkbook.description'},
+            {data: 'serie', name: 'checkbook.serie'},
+            {data: 'initial_correlative', name: 'checkbook.initial_correlative'},
+            {data: 'final_correlative', name: 'checkbook.final_correlative'},
+            {data: 'actual_correlative', name: 'checkbook.actual_correlative'},
+            {data: 'account_name', name: 'account.name'},
+            {data: null, render: function(data){
+                if(data.status == 1) {
+                    return '@lang("accounting.open")';
+                }
+                else {
+                    return '@lang("accounting.closed")';
+                }
+            } , orderable: false, searchable: false},
+            {data: null, render: function(data){
+                edit_button = '<a class="btn btn-xs btn-primary" onClick="editCheckbook('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                delete_button = ' <a class="btn btn-xs btn-danger" onClick="deleteCheckbook('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                return edit_button + delete_button;
+            } , orderable: false, searchable: false}
+            ]
     });
 }
 

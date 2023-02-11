@@ -25,12 +25,14 @@
         <table class="table" id="showed_table">
           <thead>
             <tr>
-              <th style="width: 25%;">@lang('purchase.supplier')</th>
-              <th style="width: 15%;">@lang('expense.ref_no')</th>
-              <th style="width: 15%;">@lang('messages.date')</th>
-              <th>@lang('accounting.subtotal')</th>
+              <th style="width: 15%;">@lang('purchase.supplier')</th>
+              <th style="width: 10%;">@lang('expense.ref_no')</th>
+              <th style="width: 10%;">@lang('messages.date')</th>
+              <th style="width: 10%;">@lang('accounting.subtotal')</th>
               <th style="width: 10%;">@lang('tax_rate.taxes')</th>
-              <th style="width: 15%;">@lang('expense.total')</th>
+              <th style="width: 10%;">@lang('expense.total')</th>
+              <th style="width: 10%;">@lang('expense.pending')</th>
+              <th style="width: 10%;">@lang('expense.amount')</th>
               <th>@lang('messages.action')</th>
             </tr>
           </thead>

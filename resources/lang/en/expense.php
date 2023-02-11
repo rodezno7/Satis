@@ -41,4 +41,6 @@ return [
     "purchases_and_expenses_due" => "Puchases and expenses due",
     "transaction_paid_success" => "Transactions paid success",
     "pay_transaction" => "Pay transaction",
+    'pending' => 'Pending',
+    'amount' => 'Amount',
 ];
