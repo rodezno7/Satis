@@ -973,4 +973,6 @@ return [
 	"view_opening_stock" => "Ver stock de apertura",
 	"malformed_file" => "Archivo con formato inválido",
 	"instruction_line7" => "Utilizar la plantilla provista.",
+	"enable_sell_delete" => "Habilitar borrado de ventas",
+
 ];

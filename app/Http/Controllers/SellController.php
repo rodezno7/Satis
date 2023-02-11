@@ -1114,7 +1114,9 @@ class SellController extends Controller
             $status = $transaction->status;
             $transaction_date = $transaction->transaction_date;
             $business_id = request()->session()->get('user.business_id');
-            $business = Business::where('id', $business_id)->select('annull_sale_expiry')->first();
+            $business = Business::where('id', $business_id)->select('annull_sale_expiry', 'enable_sell_delete')->first();
+            $enable_sell_delete = $business->enable_sell_delete;
+
 
             $parent_doc = null;
             if (!empty($transaction->parent_correlative)) {
@@ -1125,7 +1127,7 @@ class SellController extends Controller
             }
 
             return view('sale_pos.partials.toggle_dropdown')
-                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business'))
+                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'enable_sell_delete'))
                 ->render();
             
         } catch (\Exception $e) {

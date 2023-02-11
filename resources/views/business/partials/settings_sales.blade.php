@@ -228,31 +228,42 @@
     <div class="col-sm-4">
         <div class="form-group">
             <div class="checkbox" style="margin-top: 24px;">
-              <label>
-                {!! Form::checkbox('show_expenses_on_sales_report', 1, $business->show_expenses_on_sales_report , 
-                [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.show_expenses_on_sales_report' ) }}
-            </label>
-        </div>
-    </div>
-</div>
-
-{{-- sale_settings[no_note_full_payment] --}}
-@if (config('app.business') == 'optics')
-<div class="col-sm-4">
-    <div class="form-group">
-        <div class="checkbox">
-            <label>
-                {!! Form::checkbox(
-                    'sale_settings[no_note_full_payment]',
-                    1,
-                    $sale_settings['no_note_full_payment'],
-                    ['class' => 'input-icheck']
-                    ) !!}
-                    {{ __('business.no_note_full_payment') }}
+                <label>
+                    {!! Form::checkbox('show_expenses_on_sales_report', 1, $business->show_expenses_on_sales_report , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.show_expenses_on_sales_report' ) }}
                 </label>
             </div>
         </div>
     </div>
-    @endif
-</div>
+
+    <div class="col-sm-4">
+        <div class="form-group">
+            <div class="checkbox" style="margin-top: 24px;">
+                <label>
+                    {!! Form::checkbox('enable_sell_delete', 1, $business->enable_sell_delete , 
+                    [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.enable_sell_delete' ) }}
+                </label>
+            </div>
+        </div>
+    </div>
+
+    {{-- sale_settings[no_note_full_payment] --}}
+    @if (config('app.business') == 'optics')
+    <div class="col-sm-4">
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    {!! Form::checkbox(
+                        'sale_settings[no_note_full_payment]',
+                        1,
+                        $sale_settings['no_note_full_payment'],
+                        ['class' => 'input-icheck']
+                        ) !!}
+                        {{ __('business.no_note_full_payment') }}
+                    </label>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
 </div>

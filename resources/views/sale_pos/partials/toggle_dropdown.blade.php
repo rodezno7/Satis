@@ -35,13 +35,22 @@
             </li>
         @endif
     @endif
-    {{--@if (auth()->user()->can("sell.delete"))
+
+
+    @if($enable_sell_delete == 1)
+
+
+    @if (auth()->user()->can("sell.delete"))
         <li>
             <a href="{{ action('SellPosController@destroy', [$id]) }}" class="delete-sale">
                 <i class="fa fa-trash"></i> @lang("messages.delete")
             </a>
         </li>
-    @endif--}}
+    @endif
+
+    @endif
+
+
     @if (auth()->user()->can("sell.annul"))
         @if ($status == 'final')
             @php

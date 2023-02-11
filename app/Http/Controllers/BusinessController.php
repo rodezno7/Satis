@@ -652,6 +652,8 @@ class BusinessController extends Controller
 
             $business_details['show_expenses_on_sales_report'] = $request->input('show_expenses_on_sales_report') ? 1 : 0;
 
+            $business_details['enable_sell_delete'] = $request->input('enable_sell_delete') ? 1 : 0;
+
             $business_details['enable_product_expiry'] = !empty($request->input('enable_product_expiry')) &&  $request->input('enable_product_expiry') == 1 ? 1 : 0;
             if ($business_details['on_product_expiry'] == 'keep_selling') {
                 $business_details['stop_selling_before'] = null;
