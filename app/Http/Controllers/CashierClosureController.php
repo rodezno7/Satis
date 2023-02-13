@@ -308,7 +308,9 @@ class CashierClosureController extends Controller
      * Create sale accounting entry
      * @param int $cashier_closure_id
      */
-    public function createSaleAccountingEntry($cashier_closure_id){
+    public function createSaleAccountingEntry($cashier_closure_id) {
+
+        $business_id = auth()->user()->business_id;
         $cashier_closure = CashierClosure::find($cashier_closure_id);
         $location =
             BusinessLocation::join('cashiers as c', 'business_locations.id', 'c.business_location_id')
@@ -317,6 +319,7 @@ class CashierClosureController extends Controller
                 ->first();
 
         try{
+
             $date = $this->accountingUtil->format_date($cashier_closure->close_date);
             $description = "VENTAS DEL DÍA " . $date . " EN " . mb_strtoupper($location->name);
 
@@ -325,6 +328,7 @@ class CashierClosureController extends Controller
                 'description' => $description,
                 'short_name' => null,
                 'business_location_id' => $location->id,
+                'business_id' => $business_id,
                 'status_bank_transaction' => 1
             ];
 
