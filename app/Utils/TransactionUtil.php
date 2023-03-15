@@ -4225,7 +4225,7 @@ class TransactionUtil extends Util
 
         $print_format = PrintFormat::where('business_id', $transaction->business_id)
             ->where('location_id', $transaction->location_id)
-            ->where('document_type_id', $transaction)
+            ->where('document_type_id', $transaction->document_types_id)
             ->first();
 
         $format = '';
@@ -4243,7 +4243,8 @@ class TransactionUtil extends Util
                 $format = $doc_type->print_format;
             }
         }
-
+        
+        \Log::emergency("format ". $format);
         return $format; 
     }
 
