@@ -1031,7 +1031,7 @@ class KardexController extends Controller
      */
     public function generateProductKardex()
     {
-        if (! auth()->user()->can('kardex.generate-product-kardex')) {
+        if (! auth()->user()->can('kardex.generate_product_kardex')) {
 			abort(403, 'Unauthorized action.');
 		}
 
