@@ -1184,8 +1184,8 @@ class TransactionUtil extends Util
         $seller = Employees::where('id', $order_seller)
             ->select(DB::raw('CONCAT(first_name, " ", IFNULL(last_name, "")) as seller'))
             ->first();
-
-        return $seller->seller ?? "";
+            
+        return !empty($seller) ? $seller->seller : "";
     }
 
     public function getTicketDetails($transaction_id, $invoice_layout, $business_id = null, $location_details = null){
