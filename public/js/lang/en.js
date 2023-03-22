@@ -198,4 +198,6 @@ LANG = {
     'stock_report_by_location': 'Stock report by location',
     'stock_report_by_location_menu': 'Stock by location',
     'parent_correlative_required': 'Parent document is required for a sell return',
+    'search_supplier': 'Search supplier',
+    'search_customer': 'Search customer',
 };

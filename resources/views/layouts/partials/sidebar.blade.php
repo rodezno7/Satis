@@ -851,7 +851,8 @@
     'credit-documents',
     'business_types',
     'payment-terms',
-    'sdocs'
+    'sdocs',
+    'customers'
     ]) ? 'active active-sub' : ''}}">
     <a href="#">
       <i class="fa fa-usd"></i>
@@ -866,16 +867,11 @@
         href="{{action('CustomerController@indexBalancesCustomer')}}"><i class="fa fa-star"></i>
       @lang('customer.customer_balances')</a></li></a></li>
       @endcan
-      {{--@can('cxc.sdocs')
-      <li class="{{ $request->segment(1) == 'sdocs' ? 'active' : '' }}">
-        <a href="{{action('SupportDocumentsController@index')}}"><i class="fa fa-file-text-o"></i> @lang('cxc.sdocs')</a>
+      @can('cxc.access')
+      <li class="{{ $request->segment(1) == 'accounts-receivable' ? 'active' : '' }}">
+        <a href="{{action('CustomerController@accountsReceivable')}}"><i class="fa fa-money"></i> @lang('cxc.cxc')</a>
       </li>
       @endcan
-      @can('cxc.cdocs')
-      <li class="{{ $request->segment(1) == 'credit-documents' ? 'active' : '' }}">
-        <a href="{{action('CreditDocumentsController@index')}}"><i class="fa fa-history"></i> @lang('cxc.cdocs')</a>
-      </li>
-      @endcan--}}
 
       @can('crm_settings.view')
       <li class="{{ in_array($request->segment(1), [
