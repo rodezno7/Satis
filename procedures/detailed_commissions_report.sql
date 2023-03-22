@@ -33,6 +33,7 @@ BEGIN
         tsl.quantity,
         IF (dt.tax_exempt = 1, tsl.unit_price_before_discount * tsl.quantity, tsl.unit_price * tsl.quantity) AS price_inc,
         (tsl.unit_price_before_discount * tsl.quantity) AS price_exc,
+        IF (dt.tax_exempt = 1, tsl.unit_price_before_discount, tsl.unit_price) AS unit_price,
         CONCAT(e.first_name, ' ', e.last_name) AS seller_name,
         v.default_purchase_price AS unit_cost,
         (v.default_purchase_price * tsl.quantity) AS total_cost,
