@@ -54,6 +54,10 @@ Route::get('/customer-balances/{id}', 'CustomerController@showBalances');
 //Ver las facturas por cliente xD
 Route::get('/customer-balances/getData/{id}', 'CustomerController@getInvoicePerCustomer');
 
+/** Accounts receivable and report */
+Route::get('/accounts-receivable', 'CustomerController@accountsReceivable');
+Route::post('/accounts-receivable-report', 'CustomerController@accountsReceivableReport');
+
 Route::get('/customers/get_only_customers', 'CustomerController@getClients');
 Route::get('/products/get_only_products', 'ProductController@getProductsSelect');
 

@@ -4173,10 +4173,10 @@ class ReportController extends Controller
         if ($request->ajax()) {
             $commission_agent = $request->input('commission_agent');
 
-            if (! empty($commission_agent) && $commission_agent != 'all') {
+            /*if (! empty($commission_agent) && $commission_agent != 'all') {
                 $user_id = Employees::find($commission_agent)->user_id;
                 $commission_agent = User::find($user_id)->id;
-            }
+            }*/
 
             // Datatable parameters
             $start_record = $request->get('start');
@@ -4260,10 +4260,10 @@ class ReportController extends Controller
 
             $commission_agent = $request->input('commission_agent');
 
-            if (! empty($commission_agent) && $commission_agent != 'all') {
+            /*if (! empty($commission_agent) && $commission_agent != 'all') {
                 $user_id = Employees::find($commission_agent)->user_id;
                 $commission_agent = User::find($user_id)->id;
-            }
+            }*/
 
             $params = [
                 'location_id' => $request->input('location_id'),

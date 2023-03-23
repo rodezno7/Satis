@@ -204,4 +204,6 @@ LANG = {
     'stock_report_by_location': 'Reporte de existencias por sucursal',
     'stock_report_by_location_menu': 'Existencias por sucursal',
     'parent_correlative_required': 'El documento padre es requerido para una devolución',
+    'search_supplier': 'Buscar proveedor',
+    'search_customer': 'Buscar cliente',
 };

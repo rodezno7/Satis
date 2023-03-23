@@ -28,6 +28,7 @@ use App\CRMContactReason;
 use App\CustomerPortfolio;
 use App\CustomerVehicle;
 use App\Employees;
+use App\Exports\AccountsReceivableReportExport;
 use App\Optics\LabOrder;
 use App\Optics\Patient;
 use Illuminate\Http\Request;
@@ -1867,6 +1868,100 @@ class CustomerController extends Controller
         return json_encode($customer);
     }
 
+    /**
+     * Get accounts receivable
+     * 
+     */
+    public function accountsReceivable() {
+        if (!auth()->user()->can('cxc.access')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->user()->business_id;
+
+        if(request()->ajax()){
+            $customer_id = request()->input('customer_id') ? request()->input('customer_id') : 0;
+            $location_id = request()->input('location_id') ? request()->input('location_id') : 0;
+            $start_date = request()->input('start_date');
+            $end_date = request()->input('end_date');
+
+            $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?)',
+                [$business_id, $customer_id, $location_id, $start_date, $end_date]));
+
+            return DataTables::of($transactions)
+                ->editColumn('transaction_date', '{{ @format_date($transaction_date) }}')
+                ->editColumn('expire_date', '{{ empty($expire_date) ? "" : @format_date($expire_date) }}')
+                ->editColumn(
+                    'final_total',
+                    '<span class="display_currency final_total" data-currency_symbol="true" data-orig-value="{{ $final_total }}">{{ $final_total }}</span>'
+                )->editColumn(
+                    'payments',
+                    '<span class="display_currency payments" data-currency_symbol="true" data-orig-value="{{ $payments }}">{{ $payments }}</span>'
+                )->addColumn('receivable_amount', function($row){
+                    $receivable_amount = round($row->final_total, 2) - round($row->payments, 2);
+                    return '<span class="display_currency receivable_amount" data-currency_symbol="true" data-orig-value="'. $receivable_amount .'">'. $receivable_amount .'</span>';
+                })
+                ->removeColumn('days_30')
+                ->removeColumn('days_60')
+                ->removeColumn('days_90')
+                ->removeColumn('days_120')
+                ->removeColumn('more_than_120')
+                ->removeColumn('customer_id')
+                ->rawColumns(['transaction_date', 'expire_date', 'final_total', 'payments', 'receivable_amount'])
+                ->toJson();
+        }
+
+        # Locations
+		$locations = BusinessLocation::forDropdown($business_id, true);
+
+        return view('customer.partials.accounts_receivable')
+            ->with(compact('locations'));
+    }
+
+    /**
+     *  Generate accounts receivable reporte
+     * 
+     * @return PDF | Excel
+     */
+    public function accountsReceivableReport() {
+        if (!auth()->user()->can('cxc.access')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->user()->business_id;
+        $customer_id = request()->input('customer_id') ? request()->input('customer_id') : 0;
+        $location_id = request()->input('location_id') ? request()->input('location_id') : 0;
+        $start_date = request()->input('start_date');
+        $end_date = request()->input('end_date');
+        $report_type = request()->input('report_type');
+
+        $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?)',
+            [$business_id, $customer_id, $location_id, $start_date, $end_date]));
+
+        $business_name = Business::find($business_id)->business_full_name;
+        $report_name = __('cxc.cxc') ." ".  __("accounting.from_date") ." ". $this->transactionUtil->format_date($start_date) ." ". __("accounting.to_date") ." ". $this->transactionUtil->format_date($end_date);
+
+        $final_totals = [
+            'days_30' => $transactions->sum('days_30'),
+            'days_60' => $transactions->sum('days_60'),
+            'days_90' => $transactions->sum('days_90'),
+            'days_120' => $transactions->sum('days_120'),
+            'more_than_120_days' => $transactions->sum('more_than_120')
+        ];
+        $final_totals['totals'] = $final_totals['days_30'] + $final_totals['days_60'] + $final_totals['days_90'] + $final_totals['days_120'] + $final_totals['more_than_120_days'];
+
+        if($report_type == 'pdf'){
+            $accounts_receivable_report = \PDF::loadView('customer.partials.accounts_receivable_report_pdf',
+                compact('transactions', 'business_name', 'report_name', 'final_totals'));
+            $accounts_receivable_report->setPaper("A3", "landscape");
+
+		    return $accounts_receivable_report->stream(__('cxc.cxc') .'.pdf');
+
+        } else if($report_type == 'excel'){
+            return Excel::download(new AccountsReceivableReportExport($transactions, $business_name, $report_name, $final_totals, $this->transactionUtil), __('cxc.cxc'). '.xlsx');
+        }
+    }
+
     public function getClients()
     {
         if (request()->ajax()) {
@@ -1882,7 +1977,7 @@ class CustomerController extends Controller
                 $query->where('customers.name', 'like', '%' . $term . '%')
                     ->orWhere('customers.business_name', 'like', '%' . $term . '%');
                 })
-                ->select('customers.id', 'customers.name as text', 'customers.business_name as business_name')
+                ->select('customers.id', DB::raw('IFNULL(customers.business_name, customers.name) as text'), 'customers.business_name as business_name')
                 ->get();
             return json_encode($customers);
         }

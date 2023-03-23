@@ -17,6 +17,7 @@ use App\Currency;
 use App\Customer;
 use App\TaxGroup;
 use App\Variation;
+use App\PrintFormat;
 use App\Transaction;
 use App\DocumentType;
 use App\MovementType;
@@ -1183,8 +1184,8 @@ class TransactionUtil extends Util
         $seller = Employees::where('id', $order_seller)
             ->select(DB::raw('CONCAT(first_name, " ", IFNULL(last_name, "")) as seller'))
             ->first();
-
-        return $seller->seller ?? "";
+            
+        return !empty($seller) ? $seller->seller : "";
     }
 
     public function getTicketDetails($transaction_id, $invoice_layout, $business_id = null, $location_details = null){
@@ -4218,16 +4219,33 @@ class TransactionUtil extends Util
     public function getDocumentTypePrintFormat($transaction_id){
         if(empty($transaction_id)) return "";
 
-        $transaction = Transaction::find($transaction_id);
-        if(empty($transaction)) return "";
+        $transaction = Transaction::findOrFail($transaction_id);
 
-        $print_format = DocumentType::find($transaction->document_types_id);
-        
-        if(!empty($print_format)){
-            return $print_format->print_format;
-        } else{
-            return "";
+        $doc_type = DocumentType::findOrFail($transaction->document_types_id);
+
+        $print_format = PrintFormat::where('business_id', $transaction->business_id)
+            ->where('location_id', $transaction->location_id)
+            ->where('document_type_id', $transaction->document_types_id)
+            ->first();
+
+        $format = '';
+        /** Condition for tickets return only */
+        if ($doc_type->short_name == 'Ticket' && !is_null($transaction->return_parent_id)) {
+            if (!empty($print_format)) {
+                $format = $print_format->format ."_return";
+            } else {
+                $format = $doc_type->print_format ."_return";
+            }
+        } else {
+            if (!empty($print_format)) {
+                $format = $print_format->format;
+            } else {
+                $format = $doc_type->print_format;
+            }
         }
+        
+        \Log::emergency("format ". $format);
+        return $format; 
     }
 
     public function groupTaxDetails($tax, $amount)
