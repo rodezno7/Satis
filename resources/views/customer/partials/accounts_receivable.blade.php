@@ -24,14 +24,6 @@
                 <div class="box-body">
                     {!! Form::open(['id'=>'form_accounts_receivable_report', 'action' => 'CustomerController@accountsReceivableReport', 'method' => 'post', 'target' => '_blank']) !!}
                     <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                {!! Form::label("customer", __("contact.customer") . ":") !!}
-                                {!! Form::select('customer_id', [], null, ['class' => 'form-control',
-                                    'placeholder' => __('messages.please_select'), 'id' => 'customer']) !!}
-                            </div>
-                        </div>
-
                         {{-- location_id --}}
                         <div class="col-sm-3">
                             <div class="form-group">
@@ -39,7 +31,20 @@
                                 {!! Form::select("location_id", $locations, null, ["class" => "form-control", "id" => "location"]) !!}
                             </div>
                         </div>
-
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label("customer_seller", __("customer.seller")) !!}
+                                {!! Form::select("customer_seller", $sellers, null,
+                                    ['class' => 'form-control select2', 'id' => 'seller', 'placeholder' => __('customer.all_sellers')]) !!}
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                {!! Form::label("customer", __("contact.customer") . ":") !!}
+                                {!! Form::select('customer_id', [], null, ['class' => 'form-control',
+                                    'placeholder' => __('messages.please_select'), 'id' => 'customer']) !!}
+                            </div>
+                        </div>
                         {{-- range date --}}
                         <div class="col-sm-3">
                             <div class="form-group">
@@ -187,6 +192,7 @@
                         d.start_date = $('#date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
                         d.end_date = $('#date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
                         d.location_id = $("select#location").val();
+                        d.seller_id = $("select#seller").val();
                         d.customer_id = $("select#customer").val();
                     }
                 },
@@ -214,7 +220,7 @@
             });
 
             // Location filter
-            $('select#customer, select#location').on('change', function() {
+            $('select#customer, select#location, select#seller').on('change', function() {
                 accounts_receivable_report_table.ajax.reload();
             });
         });

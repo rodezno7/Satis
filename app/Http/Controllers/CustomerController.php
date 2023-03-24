@@ -1879,14 +1879,15 @@ class CustomerController extends Controller
 
         $business_id = request()->user()->business_id;
 
-        if(request()->ajax()){
+        if (request()->ajax()) {
             $customer_id = request()->input('customer_id') ? request()->input('customer_id') : 0;
             $location_id = request()->input('location_id') ? request()->input('location_id') : 0;
+            $seller_id = request()->input('seller_id') ? request()->input('seller_id') : 0;
             $start_date = request()->input('start_date');
             $end_date = request()->input('end_date');
 
-            $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?)',
-                [$business_id, $customer_id, $location_id, $start_date, $end_date]));
+            $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
+                [$business_id, $customer_id, $location_id, $start_date, $end_date, $seller_id]));
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{ @format_date($transaction_date) }}')
@@ -1911,11 +1912,12 @@ class CustomerController extends Controller
                 ->toJson();
         }
 
-        # Locations
+        # Locations and sellers
 		$locations = BusinessLocation::forDropdown($business_id, true);
+        $sellers = CustomerPortfolio::pluck('name', 'id');
 
         return view('customer.partials.accounts_receivable')
-            ->with(compact('locations'));
+            ->with(compact('locations', 'sellers'));
     }
 
     /**
@@ -1931,12 +1933,13 @@ class CustomerController extends Controller
         $business_id = request()->user()->business_id;
         $customer_id = request()->input('customer_id') ? request()->input('customer_id') : 0;
         $location_id = request()->input('location_id') ? request()->input('location_id') : 0;
+        $seller_id = request()->input('seller_id') ? request()->input('seller_id') : 0;
         $start_date = request()->input('start_date');
         $end_date = request()->input('end_date');
         $report_type = request()->input('report_type');
 
-        $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?)',
-            [$business_id, $customer_id, $location_id, $start_date, $end_date]));
+        $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
+            [$business_id, $customer_id, $location_id, $start_date, $end_date, $seller_id]));
 
         $business_name = Business::find($business_id)->business_full_name;
         $report_name = __('cxc.cxc') ." ".  __("accounting.from_date") ." ". $this->transactionUtil->format_date($start_date) ." ". __("accounting.to_date") ." ". $this->transactionUtil->format_date($end_date);

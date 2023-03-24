@@ -9,7 +9,8 @@ CREATE PROCEDURE get_accounts_receivable(
 	IN customer_id INT,
 	IN location_id INT,
 	IN start_date DATE,
-	IN end_date DATE
+	IN end_date DATE,
+	IN seller_id INT
 	)
 BEGIN
 	/** Get accounts receivable data */
@@ -28,8 +29,10 @@ BEGIN
 		INNER JOIN customers AS c ON t.customer_id = c.id
 		WHERE t.business_id = business_id
 			AND t.`type` IN ('sell', 'opening_balance')
+			AND t.status = 'final'
 			AND DATE(t.transaction_date) BETWEEN start_date AND end_date
 			AND (t.customer_id = customer_id OR customer_id = 0)
+			AND (c.customer_portfolio_id = seller_id OR seller_id = 0)
 			AND (t.location_id = location_id OR location_id = 0)
 			AND t.payment_condition = 'credit'
 		GROUP BY t.id;
