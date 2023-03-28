@@ -852,7 +852,7 @@
                         <td>
                             <input
                                 type="hidden"
-                                name="variation_id[]
+                                name="variation_id[]"
                                 value="${variation_id}">
                             <input
                                 type="hidden"
