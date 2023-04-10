@@ -17,18 +17,16 @@ class LedgerReportExport implements FromView, WithEvents, WithTitle
     */
     private $accounts;
     private $lines;
-    private $header;
-    private $header2;
-    private $header3;
+    private $report_name;
+    private $date_range;
     private $business_name;
 
-    public function __construct($accounts, $lines, $header, $header2, $header3, $business_name)
+    public function __construct($accounts, $lines, $report_name, $date_range, $business_name)
     {
     	$this->accounts = $accounts;
     	$this->lines = $lines;
-    	$this->header = $header;
-    	$this->header2 = $header2;
-        $this->header3 = $header3;
+    	$this->report_name = $report_name;
+        $this->date_range = $date_range;
         $this->business_name = $business_name;
     }
 
@@ -42,12 +40,14 @@ class LedgerReportExport implements FromView, WithEvents, WithTitle
     	return [            
     		AfterSheet::class    => function(AfterSheet $event) {
     			$event->sheet->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+                $event->sheet->setShowGridlines(false);
     			$event->sheet->setFontFamily('A1:F1500', 'Calibri');
     			$event->sheet->setFontSize('A1:F1500' , 10);
 
     			$event->sheet->mergeCells('A1:E1');
     			$event->sheet->mergeCells('A2:E2');
     			$event->sheet->mergeCells('A3:E3');
+    			$event->sheet->mergeCells('A4:E4');
     			$event->sheet->horizontalAlign('A1:E2' , \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->horizontalAlign('A4:E4' , \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
@@ -66,9 +66,8 @@ class LedgerReportExport implements FromView, WithEvents, WithTitle
     	return view('reports.ledgers_excel', [
     		'accounts' => $this->accounts,
     		'lines' => $this->lines,
-    		'header' => $this->header,
-    		'header2' => $this->header2,
-            'header3' => $this->header3,
+    		'report_name' => $this->report_name,
+            'date_range' => $this->date_range,
             'business_name' => $this->business_name,
         ]);
     }

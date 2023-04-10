@@ -285,7 +285,7 @@ return[
 	'total_pasive_report' => 'Total pasivos y productos',
 	'owner' => 'Administrador único propietario',
 	'accountant' => 'Contador',
-	'accountant_report_values' => 'Valores expresados en US dólares',
+	'accountant_report_values' => 'Valores expresados en dólares de los Estados Unidos de América',
 	'clean' => 'Limpiar',
 	'ledger_report' => 'Libro Mayor',
 	'out_moves' => 'Sin movimientos',
