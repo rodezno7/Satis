@@ -84,7 +84,7 @@
     @endif
     <li class="divider"></li> 
     @if ($payment_status != 'paid')
-        @if (auth()->user()->can("sell.create") || auth()->user()->can("direct_sell.access"))
+        @if (auth()->user()->can("sell.create_payments") || auth()->user()->can("direct_sell.access"))
             <li>
                 <a href="{{ action('TransactionPaymentController@addPayment', [$id]) }}" class="add_payment_modal">
                     <i class="fa fa-money"></i> @lang("purchase.add_payment")

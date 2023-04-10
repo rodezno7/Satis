@@ -255,7 +255,7 @@ class SellController extends Controller
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
-                        if (auth()->user()->can('customer.update')) {
+                        if (auth()->user()->can('sell.payments')) {
                             $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_customer" style="cursor: p"><i class="fa fa-credit-card"></i> ' . __("messages.add_payment") . '</a></li>';
                         }
 
