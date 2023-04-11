@@ -91,6 +91,13 @@ $(document).ready( function(){
                         if(typeof expense_table != 'undefined'){
                             expense_table.ajax.reload();
                         }
+                        if ($('table#account-statement-table').length) {
+                            let customer_id = $('#customer_id').val();
+                            let start = $('#range-date-filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                            let end = $('#range-date-filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+
+                            loadSales(customer_id, start, end);
+                        }
                     } else {
                         toastr.error(result.msg);
                     }

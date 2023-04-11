@@ -100,6 +100,8 @@
 
         <div class="modal fade payment_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
         </div>
+        <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        </div>
     </section>
 @endsection
 
@@ -109,8 +111,6 @@
 
     {{-- Datetime JS --}}
     <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.13/dataRender/datetime.js"></script>
-
-    <script type="text/javascript" src="{{ asset('js/sweetalert2.js') }}"></script>
 
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 
