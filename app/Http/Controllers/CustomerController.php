@@ -1887,7 +1887,7 @@ class CustomerController extends Controller
             $end_date = request()->input('end_date');
 
             $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
-                [$business_id, $customer_id, $location_id, $start_date, $end_date, $seller_id]));
+                [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date]));
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{ @format_date($transaction_date) }}')
@@ -1939,7 +1939,7 @@ class CustomerController extends Controller
         $report_type = request()->input('report_type');
 
         $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
-            [$business_id, $customer_id, $location_id, $start_date, $end_date, $seller_id]));
+            [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date]));
 
         $business_name = Business::find($business_id)->business_full_name;
         $report_name = __('cxc.cxc') ." ".  __("accounting.from_date") ." ". $this->transactionUtil->format_date($start_date) ." ". __("accounting.to_date") ." ". $this->transactionUtil->format_date($end_date);
