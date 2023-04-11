@@ -170,8 +170,8 @@ $(document).ready( function(){
         	}
         ],
         aLengthMenu: [
-	        [5, 25, 50, 100, 200, -1],
-	        [5, 25, 50, 100, 200, LANG.all]
+	        [5, 25, 50, 100, 200, 500, 1000, -1],
+	        [5, 25, 50, 100, 200, 500, 1000, LANG.all]
 	    ],
 	    iDisplayLength: 25,
 	    language: {

@@ -2586,7 +2586,7 @@ class PurchaseController extends Controller
 
         return [
             [
-                'catalogue_id' => $account_location->sale_cost_id,
+                'catalogue_id' => $account_location->inventory_account_id,
                 'amount' => $inventory_amount,
                 'type' => 'debit',
                 'description' => 'ENTRADA POR COMPRA DE MERCADERÍA'

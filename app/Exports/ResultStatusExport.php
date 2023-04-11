@@ -258,44 +258,6 @@ class ResultStatusExport implements WithEvents, WithTitle
     				$cont = $cont + 1;
     			}
 
-
-    			if(number_format($extra_income, 2) != 0.00) {
-
-    				$cont = $cont + 1;
-
-                    $event->sheet->mergeCells('A'.$cont.':E'.$cont.'');
-    				$event->sheet->setCellValue("A".$cont."", __('accounting.result_more'));
-                    $event->sheet->setBold("A".$cont."");
-
-    				$cont = $cont + 1;
-
-                    $event->sheet->mergeCells('A'.$cont.':E'.$cont.'');
-    				$event->sheet->setCellValue("A".$cont."", mb_strtoupper(__('accounting.result_income_no_ordinary')));
-                    $event->sheet->setBold("A".$cont."");
-    				$event->sheet->setCellValue("H".$cont."", $extra_income);
-
-    				$sum_extra_income = 0.00;
-
-    				foreach($extra_income_accounts as $item) {
-
-    					if(number_format($item->balance, 2) != 0.00) {
-
-    						$sum_extra_income = $sum_extra_income + $item->balance;
-    						$cont = $cont + 1;
-                            $event->sheet->mergeCells('A'.$cont.':E'.$cont.'');
-    						$event->sheet->setCellValue("A".$cont."", $item->name);
-    						$event->sheet->setCellValue("F".$cont."", $item->balance);
-
-    						if(number_format($sum_extra_income, 2) == number_format($extra_income, 2)) {
-
-    							$event->sheet->setBorderBottom("F".$cont."", \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-    						}
-    					}
-    				}
-    				
-    				$cont = $cont + 1;
-    			}
-
                 if(number_format($extra_expense, 2) != 0.00) {
 
                     $cont = $cont + 1;
