@@ -37,6 +37,7 @@ Class AccountingUtil extends Util {
             
             if(!empty($period)){
                 $entry['accounting_period_id'] = $period->id;
+                $entry['business_id'] = $business_id;
                 $entry['number'] = $number;
 
                 if ($business->enable_validation_entries == 1) {
