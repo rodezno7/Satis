@@ -21,7 +21,7 @@
     }
 
     div.head {
-        height: 3.4cm;
+        height: 2.9cm;
         width: 100%;
     }
 
