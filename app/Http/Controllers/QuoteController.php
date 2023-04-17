@@ -150,23 +150,13 @@ class QuoteController extends Controller
         }
 
         $validateData = $request->validate([
-            //'customer_id' => 'required',
             'employee_id' => 'required',
             'document_type_id' => 'required',
             'quote_date' => 'required',
             'quote_ref_no' => 'required',
             'customer_name' => 'required',
-            'contact_name' => 'required',
-            //'email' => 'required',
-            //'mobile' => 'required',
-            'address' => 'required',
             'payment_condition' => 'required',
             'tax_detail' => 'required',
-            'validity' => 'required',
-            'delivery_time' => 'required',
-            'note' => 'required',
-            //'legend' => 'required',
-            'terms_conditions' => 'required',
             'discount_type' => 'required',
             'total_before_tax' => 'required',
             'tax_amount' => 'required',

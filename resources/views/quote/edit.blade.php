@@ -22,6 +22,7 @@
             <div class="col-md-4 col-sm-6">
                 <div class="form-group">
                     {!! Form::label(__("quote.search_customer")) !!}
+                    <span style="color: red;">*</span>
 
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -157,6 +158,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="form-group">
                     {!! Form::label(__("document_type.document")) !!}
+                    <span style="color: red;">*</span>
 
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -234,6 +236,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="form-group">
                     {!! Form::label(__("lang_v1.payment_condition")) !!}
+                    <span style="color: red;">*</span>
 
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -292,6 +295,7 @@
             <div class="col-md-3 col-sm-6">
                 <div class="form-group">
                     {!! Form::label(__("quote.tax_detail")) !!}
+                    <span style="color: red;">*</span>
 
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -646,7 +650,7 @@
             {{-- note --}}
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <label>@lang('quote.notes')</label>&nbsp;<span style="color: red"><small>*</small></span>
+                    <label>@lang('quote.notes')</label></span>
                     {!! Form::textarea('note', $quote->note, ['class' => 'form-control', 'rows' => 1, 'id' => 'note']) !!}
                 </div>
             </div>
@@ -654,7 +658,7 @@
             {{-- terms_conditions --}}
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <label>@lang('quote.terms_conditions')</label>&nbsp;<span style="color: red"><small>*</small></span>
+                    <label>@lang('quote.terms_conditions')</label></span>
                     {!! Form::textarea('terms_conditions', $quote->terms_conditions, [
                         'class' => 'form-control',
                         'rows' => 1,
