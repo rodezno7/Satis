@@ -1235,6 +1235,9 @@
                         $(res.service_blocks).each(function (i, v) {
                             fillServiceBlocks(res, i, v);
                         });
+
+                        /** Update service block index */
+                        $('#service-block-index').val((res.service_blocks).length);
                     }
                 });
                 
@@ -2180,9 +2183,6 @@ function fillServiceBlocks(data, i, v) {
                 __select2($(appended).find('.select2'));
 
                 blockCont.push(i);
-
-                // Update service block index
-                $('#service-block-index').val(i);
 
                 rowCont.push(parseInt($('#row-index').val()));
 
