@@ -45,7 +45,7 @@
 			<div style="height: 0.5cm; padding-left: 1.7cm; ">{{ $receipt_details->customer_tax_number }}</div>
 			<div style="height: 0.5cm; padding-left: 1cm;">{{ $receipt_details->customer_nit }}</div>
 			<div class="cutter" style="height: 0.5cm; padding-left: 1.1cm;">{{ $receipt_details->customer_business_activity }}</div>
-			<div class="cutter" style="height: 2.2cm; padding-left: 2cm;">{{ $receipt_details->customer_employee_name }}</div>
+			<div class="cutter" style="height: 2.2cm; padding-left: 2cm;">{{ $receipt_details->seller_name }}</div>
 			<div style="height: 0.5cm; padding-left: 4cm;">&nbsp;</div>
 		</div>
 	</div>
