@@ -122,6 +122,9 @@ class OrderController extends Controller
                         @can("order.view")
                             <li><a href="{{action(\'OrderController@show\', [$id])}}" class="show_order"><i class="fa fa-eye"></i> @lang("messages.view")</a></li>
                         @endcan
+                        @can("quotes.view")
+                            <li><a href="{{ action(\'QuoteController@viewQuoteWorkshop\', [$id]) }}" target="__blank"><i class="fa fa-file-pdf-o"></i>PDF</a></li>
+                        @endcan
                         @can("order.update")
                             <li><a href="{{action(\'OrderController@edit\', [$id])}}"><i class="glyphicon glyphicon-edit"></i> @lang("messages.edit")</a></li>
                         @endcan
