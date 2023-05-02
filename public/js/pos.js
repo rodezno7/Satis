@@ -2368,6 +2368,22 @@ $(document).ready(function () {
 		pos_total_row();
 	});
 
+    /** Export Expense */
+    $('div#posEditExportExpenseModal input.input_number').on('change', function () {
+        let form = $("div#posEditExportExpenseModal");
+
+        let fob_amount = __read_number(form.find('input#fob_amount'));
+        let freight_amount = __read_number(form.find('input#freight_amount'));
+        let insurance_amount = __read_number(form.find('input#insurance_amount'));
+
+        let export_expense_total = fob_amount + freight_amount + insurance_amount;
+
+        $("span#export_expense_total").text(__currency_trans_from_en(export_expense_total, true, false));
+        __write_number($("input#exp_exp_total"), export_expense_total, false, 6);
+
+        pos_total_row();
+    });
+
 	// On show of posShippingModal modal
 	$('#posShippingModal').on('shown.bs.modal', function () {
 		$('#posShippingModal').find('#shipping_details_modal').filter(':visible:first').focus().select();
@@ -3306,6 +3322,9 @@ function calculate_billing_details(subtotal, tax_percent) {
 	// Add shipping charges.
 	var shipping_charges = __read_number($('input#shipping_charges'));
 
+    // Add export expenses
+    let exp_exp_total = __read_number($("input#exp_exp_total"));
+
 	if ($('form#edit_pos_sell_form').length > 0) {
 		doc_tax_inc = parseInt($('input#doc_tax_inc').val());
 		doc_tax_exempt = parseInt($('input#doc_tax_exempt').val());
@@ -3318,7 +3337,7 @@ function calculate_billing_details(subtotal, tax_percent) {
 	__write_number($('input#original_tax_amount'), tax_amount, false, price_precision);
 	$('span#order_tax').text(__currency_trans_from_en(tax_amount, false, false, footer_precision));
 
-	var total_payable = subtotal - discount + tax_amount + shipping_charges;
+	var total_payable = subtotal - discount + tax_amount + shipping_charges + exp_exp_total;
 	
 	/**
 	 * Calculate global discount
@@ -3591,6 +3610,14 @@ function reset_pos_form() {
 	// Reset shipping
 	__write_number($('input#shipping_charges'), $('input#shipping_charges').data('default'));
 	$('input#shipping_details').val($('input#shipping_details').data('default'));
+
+    // Reset export expenses
+    let form = $("div#posEditExportExpenseModal");
+    __write_number(form.find('input#fob_amount'), 0.00, false, 2);
+    __write_number(form.find('input#freight_amount'), 0.00, false, 2);
+    __write_number(form.find('input#insurance_amount'), 0.00, false, 2);
+    $("span#export_expense_total").text(__currency_trans_from_en(0, true, false));
+    __write_number($("input#exp_exp_total"), 0, false, 6);
 
 	$('#check_foreign').prop('checked', false);
 

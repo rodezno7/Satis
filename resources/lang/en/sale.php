@@ -102,4 +102,8 @@ return [
     'permanent' => 'Permanent',
     'limit_discount' => 'Limit discount',
     'limit_error' => 'Limit error',
+    'edit_export_expenses' => 'Edit export expenses',
+    'fob' => 'FOB',
+    'freight' => 'Freight',
+    'insurance' => 'Inserance'
 ];

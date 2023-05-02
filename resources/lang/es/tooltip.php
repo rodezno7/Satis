@@ -69,4 +69,5 @@
     'decimals_in_inventories_tooltip' => 'Número de decimales que se pueden visualizar en pantallas de inventarios como traslados y ajustes de stock',
     'charts_dashboard' => 'Indicar los gráficos que se visualizan en el Dashboard',
     'parent_correlative_text' => '<b>Documento padre</b>. Solo para devoluciones con facturas consumidor final',
+    'export_expenses' => 'Gastos de exportación incluídos en las Factaras de Exportación',
 ];

@@ -29,10 +29,9 @@
 									<br/>
 									<input type="hidden" name="subtotal" id="subtotal" value="0">
 									<span class="price_total">0</span>
-								</div>
 
-								{{-- Discount --}}
-								<div class="col-sm-2 col-xs-6 d-inline-table">
+                                    <br>
+								    {{-- Discount --}}
 									<span class="@if($pos_settings['disable_discount'] != 0) hide @endif">
 										<b>
 											@lang('sale.discount')(-):
@@ -181,6 +180,17 @@
 												@endif"
 											data-default="0.00">
 									</span>
+                                    <br>
+                                    <b>Exportación (+)</b> @show_tooltip(__('tooltip.export_expenses'))
+                                    <br>
+                                    <i class="fa fa-pencil-square-o cursor-pointer"
+											title="@lang('sale.edit_export_expenses')"
+											aria-hidden="true"
+											data-toggle="modal"
+											data-target="#posEditExportExpenseModal">
+										</i>
+                                    <span id="export_expense_total">0</span>
+                                    <input type="hidden" id="exp_exp_total" value="0">
 								</div>
 
 								<div class="col-sm-3 col-xs-12 d-inline-table">
@@ -426,6 +436,8 @@
 		'max_sale_discount' => $max_discount
 	])
 @endif
+
+@include('sale_pos.partials.edit_export_expense_modal')
 
 @if (isset($transaction))
 	@include('sale_pos.partials.edit_order_tax_modal', ['selected_tax' => $transaction->tax_id])

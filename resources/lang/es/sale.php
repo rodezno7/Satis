@@ -94,4 +94,8 @@
     'permanent' => 'Fijo',
     'limit_discount' => 'Límite de descuento',
     'limit_error' => 'El límite no puede ser menor al descuento',
+    'edit_export_expenses' => 'Editar gastos de exportación',
+    'fob' => 'FOB',
+    'freight' => 'Flete',
+    'insurance' => 'Seguro'
 ];
