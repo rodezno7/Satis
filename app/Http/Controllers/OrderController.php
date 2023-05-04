@@ -589,7 +589,7 @@ class OrderController extends Controller
             $quote_line_ids = [];
 
             foreach ($quote_lines as $ql) {
-                if ($ql["quote_line_id"] > 0) {
+                if (isset($ql["quote_line_id"]) && $ql["quote_line_id"] > 0) {
                     $quote_line_ids[] = (int)$ql["quote_line_id"];
 
                     $quote_line = QuoteLine::find($ql["quote_line_id"]);
