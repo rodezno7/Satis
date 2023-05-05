@@ -71,6 +71,7 @@ BEGIN
 		IF(CAST(ar.days AS UNSIGNED) > 120, (ar.final_total - IFNULL((SUM(tp.amount)), 0)), 0) AS more_than_120
 	FROM accounts_receivable AS ar
 	LEFT JOIN transaction_payments AS tp ON ar.id = tp.transaction_id
+	WHERE (tp.paid_on IS NULL OR DATE(tp.paid_on) BETWEEN start_date AND end_date)
 	GROUP BY ar.id
 	ORDER BY ar.customer_id ASC, ar.transaction_date;
 		
