@@ -76,6 +76,17 @@
                 {{-- App business --}}
                 <input type="hidden" id="app-business" value="{{ config('app.business') }}">
             </div>
+            @if (count($sellers) > 0 && config('app.business') != "optics")
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        {!! Form::label(__("quote.seller_name")) !!}
+                        {!! Form::select("seller", $sellers, null, ["class" => "form-control select2",
+                            'id' => 'seller', 'placeholder' => __('sale.all_sellers')]) !!}
+                    </div>
+                </div>
+            </div>
+            @endif
             <div class="table-responsive">
                 <table class="table table-striped table-text-center" id="sell_table" width="100%">
                     <thead>
@@ -226,6 +237,7 @@
                     d.document_type_id = $("input#document_type").val();
                     d.is_direct_sale = 1;
                     d.payment_status = $("#payment_status").val();
+                    d.seller_id = $("select#seller").val() ?? 0;
                 }
             },
             columns: table_columns,
@@ -280,6 +292,11 @@
         // Document type filter
         $('select#select_document_type').on('change', function() {
             $("input#document_type").val($("select#select_document_type").val());
+            sell_table.ajax.reload();
+        });
+
+        // Seller filter
+        $('select#seller').on('change', function() {
             sell_table.ajax.reload();
         });
 

@@ -1,3 +1,6 @@
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 DROP PROCEDURE IF EXISTS count_all_sales;
 
 DELIMITER $$
@@ -8,6 +11,7 @@ CREATE PROCEDURE count_all_sales(
     v_document_type_id INT,
     v_created_by INT,
     v_customer_id INT,
+   	IN v_seller_id INT,
     v_start VARCHAR(10),
     v_end VARCHAR(10),
     v_is_direct_sale INT,
@@ -29,6 +33,7 @@ BEGIN
         ON t.id = tp.transaction_id
     INNER JOIN business_locations AS bl
         ON t.location_id = bl.id
+    LEFT JOIN quotes AS q ON q.transaction_id = t.id
     WHERE t.business_id = v_business_id
         AND t.type = 'sell'
         AND t.status IN ('final', 'annulled')
@@ -48,8 +53,11 @@ BEGIN
             t.payment_condition LIKE CONCAT('%', v_search, '%') OR
             tp.method LIKE CONCAT('%', v_search, '%')
         )
+        AND (v_seller_id = 0 OR q.employee_id = v_seller_id)
         LIMIT 1;
 
 END; $$
 
 DELIMITER ;
+
+CALL count_all_sales (3, 1, 0, 0, 0, 0, '2023-05-01', '2023-05-31', 0, 0, '', '')

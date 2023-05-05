@@ -107,6 +107,9 @@ class TransactionUtil extends Util
             'tax_id' => $input['tax_group_id'] > 0 ? $input['tax_group_id'] : null, //'tax_id' => $input['tax_rate_id'],
             'discount_type' => $input['discount_type'],
             'discount_amount' => $this->num_uf($input['discount_amount']),
+            'fob_amount' => (isset($input['fob_amount']) && $input['fob_amount'] > 0) ? $this->num_uf($input['fob_amount']) : null,
+            'freight_amount' => (isset($input['freight_amount']) && $input['freight_amount'] > 0) ? $this->num_uf($input['freight_amount']) : null,
+            'insurance_amount' => (isset($input['insurance_amount']) && $input['insurance_amount'] > 0) ? $this->num_uf($input['insurance_amount']) : null,
             'tax_amount' => $this->num_uf($input['withheld']), //Withheld amount //$invoice_total['tax'],
             'final_total' => $this->num_uf($input['final_total']),
             'additional_notes' => $input['sale_note'],
@@ -1092,6 +1095,9 @@ class TransactionUtil extends Util
         $output['total_before_tax'] = $transaction->total_before_tax;
         $output['discount_amount'] = $transaction->discount_amount > 0 ? $this->getDiscountValue($transaction->total_before_tax, $transaction->discount_type, $transaction->discount_amount) : 0;
         $output['discount_percent'] = '(' . $transaction->discount_amount . '%)';
+        $output['fob_amount'] = $transaction->fob_amount;
+        $output['freight_amount'] = $transaction->freight_amount;
+        $output['insurance_amount'] = $transaction->insurance_amount;
         $output['total'] = $transaction->final_total;
         $output['total_letters'] = $this->getAmountLetters($transaction->final_total);
         $output['invoice_date'] = \Carbon::createFromFormat('Y-m-d H:i:s', $transaction->transaction_date)->format('M d, Y H:i');

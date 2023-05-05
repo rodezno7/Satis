@@ -1,3 +1,7 @@
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+
 DROP PROCEDURE IF EXISTS get_all_sales;
 
 DELIMITER $$
@@ -6,6 +10,7 @@ CREATE PROCEDURE get_all_sales(
     v_business_id INT,
     v_location_id INT,
     v_document_type_id INT,
+    IN v_seller_id INT,
     v_created_by INT,
     v_customer_id INT,
     v_start VARCHAR(10),
@@ -59,6 +64,7 @@ BEGIN
         ON t.id = tp.transaction_id
     INNER JOIN business_locations AS bl
         ON t.location_id = bl.id
+    LEFT JOIN quotes AS q ON q.transaction_id = t.id
     WHERE t.business_id = v_business_id
         AND t.type = 'sell'
         AND t.status IN ('final', 'annulled')
@@ -78,6 +84,7 @@ BEGIN
             t.payment_condition LIKE CONCAT('%', v_search, '%') OR
             tp.method LIKE CONCAT('%', v_search, '%')
         )
+        AND (v_seller_id = 0 OR q.employee_id = v_seller_id)
     GROUP BY t.id
     ORDER BY
         CASE WHEN v_order_column = 0 AND v_order_dir = 'asc' THEN t.transaction_date END ASC,
@@ -104,3 +111,5 @@ BEGIN
 END; $$
 
 DELIMITER ;
+
+CALL get_all_sales(3, 1, 0, 4, 0, 0, '2023-05-01', '2023-05-31', 0, 0, '', '', 0, 25, 0, 'asc')

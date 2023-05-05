@@ -12,6 +12,7 @@ use App\DocumentType;
 use App\CustomerGroup;
 use App\Utils\TaxUtil;
 use App\BusinessLocation;
+use App\Employees;
 use App\Utils\ModuleUtil;
 use App\SellingPriceGroup;
 use App\Utils\ContactUtil;
@@ -106,6 +107,7 @@ class SellController extends Controller
                 'created_by' => request()->input('created_by'),
                 'location_id' => request()->input('location_id'),
                 'customer_id' => request()->customer_id,
+                'seller_id' => request()->get("seller_id", 0),
                 'start_date' => request()->start_date,
                 'end_date' => request()->end_date,
                 'is_direct_sale' => request()->is_direct_sale,
@@ -318,6 +320,9 @@ class SellController extends Controller
         $document_types = DocumentType::forDropdown($business_id, false, false);
         $document_types = $document_types->prepend(__("kardex.all"), 'all');
 
+        /***  */
+        $sellers = Employees::SellersDropdown($business_id, false);
+
         // Payment status
         $payment_status = $this->payment_status;
 
@@ -326,7 +331,8 @@ class SellController extends Controller
                 'locations',
                 'default_location',
                 'document_types',
-                'payment_status'
+                'payment_status',
+                'sellers'
             ));
     }
 
@@ -994,6 +1000,13 @@ class SellController extends Controller
             $customer_id = 0;
         }
 
+        // Seller filter
+        if (! empty($params['seller_id'])) {
+            $seller_id = $params['seller_id'];
+        } else {
+            $seller_id = 0;
+        }
+
         // Date filter
         if (! empty($params['start_date']) && ! empty($params['end_date'])) {
             $start = $params['start_date'];
@@ -1040,8 +1053,25 @@ class SellController extends Controller
 
         // Count sales
         $count = DB::select(
-            'CALL count_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'CALL count_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             array(
+                $business_id,
+                $location_id,
+                $document_type_id,
+                $created_by,
+                $customer_id,
+                $seller_id,
+                $start,
+                $end,
+                $is_direct_sale,
+                $commission_agent,
+                $payment_status,
+                $search
+            )
+        );
+
+        if (config('app.business') == 'optics') {
+            $parameters = [
                 $business_id,
                 $location_id,
                 $document_type_id,
@@ -1052,38 +1082,43 @@ class SellController extends Controller
                 $is_direct_sale,
                 $commission_agent,
                 $payment_status,
-                $search
-            )
-        );
+                $search,
+                $start_record,
+                $page_size,
+                $order[0]['column'],
+                $order[0]['dir']
+            ];
 
-        // Sales
-        $parameters = [
-            $business_id,
-            $location_id,
-            $document_type_id,
-            $created_by,
-            $customer_id,
-            $start,
-            $end,
-            $is_direct_sale,
-            $commission_agent,
-            $payment_status,
-            $search,
-            $start_record,
-            $page_size,
-            $order[0]['column'],
-            $order[0]['dir']
-        ];
-
-        if (config('app.business') == 'optics') {
             $sales = DB::select(
                 'CALL get_all_sales_optics(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 $parameters
             );
 
         } else {
+            // Sales
+            $parameters = [
+                $business_id,
+                $location_id,
+                $document_type_id,
+                $seller_id,
+                $created_by,
+                $customer_id,
+                $start,
+                $end,
+                $is_direct_sale,
+                $commission_agent,
+                $payment_status,
+                $search,
+                $start_record,
+                $page_size,
+                $order[0]['column'],
+                $order[0]['dir']
+            ];
+
+            \Log::emergency($parameters);
+
             $sales = DB::select(
-                'CALL get_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'CALL get_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 $parameters
             );
         }
