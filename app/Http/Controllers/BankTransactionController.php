@@ -1687,10 +1687,10 @@ class BankTransactionController extends Controller {
 
             $place_date = $place . $day . $of . $month . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $year;
             $place_date_x = 3.3;
-            $place_date_y = 2.65;
+            $place_date_y = 2.3;
 
-            $amount_x = 12.4;
-            $amount_y = 2.65;
+            $amount_x = 12.3;
+            $amount_y = 2.3;
 
             $person_x = 1.9;
             $person_y = 3.55;
@@ -1837,19 +1837,19 @@ class BankTransactionController extends Controller {
         if ($format == 'davivienda') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 3.3;
-            $place_date_y = 2.5;
+            $place_date_y = 2.8;
 
             $amount_x = 12.3;
-            $amount_y = 2.5;
+            $amount_y = 2.8;
 
             $person_x = 1.8;
-            $person_y = 3.2;
+            $person_y = 3.5;
 
             $value_letters_x = 1.8;
-            $value_letters_y = 4.0;
+            $value_letters_y = 4.3;
 
             $asterisks_x = 0.5;
-            $asterisks_y = 4.8;
+            $asterisks_y = 5.1;
 
             $person_check = str_pad('**' . $person, 68, '*', STR_PAD_RIGHT);
             $letters_check = str_pad('**' . $value_letters, 68, '*', STR_PAD_RIGHT);
