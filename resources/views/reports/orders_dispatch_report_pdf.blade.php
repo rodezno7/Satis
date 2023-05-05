@@ -27,7 +27,7 @@
             {{ strtoupper(__("lang_v1.from")) }}
             {{ $initial_month ==
                 $final_month ? date('j', strtotime($initial_date)) ." ". strtoupper(__("lang_v1.to")) ." ". date('j', strtotime($final_date)) ." ". strtoupper(__("lang_v1.of")) ." ". strtoupper($initial_month) :
-                date('j', strtotime($initial_date)) ." ". strtoupper(__("lang_v1.from")) ." ". strtoupper($initial_month) ." ". strttoupper(__("lang_v1.to")) ." ". date('j', strtotime($final_date)) ." ". strtoupper(__("lang_v1.of")) ." ". strtoupper($final_month) }}
+                date('j', strtotime($initial_date)) ." ". strtoupper(__("lang_v1.from")) ." ". strtoupper($initial_month) ." ". strtoupper(__("lang_v1.to")) ." ". date('j', strtotime($final_date)) ." ". strtoupper(__("lang_v1.of")) ." ". strtoupper($final_month) }}
             {{ strtoupper(__("lang_v1.of")) }}
             {{ $initial_year == $final_year ? $initial_year : $initial_year . ' - ' . $final_year }}
         </h4>
