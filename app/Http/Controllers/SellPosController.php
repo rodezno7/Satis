@@ -2266,13 +2266,13 @@ class SellPosController extends Controller
         }
 
         /** withheld */
-        if($transaction->withheld_amount > 0) {
+        if($transaction->tax_amount > 0) {
             $withheld_account = Business::find($transaction->business_id)->accounting_withheld_id;
 
             $entry_lines[] = [
                 'catalogue_id' => $withheld_account,
                 'type' => 'debit',
-                'amount' => $transaction->withheld_amount
+                'amount' => $transaction->tax_amount
             ];
         }
 

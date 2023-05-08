@@ -413,6 +413,10 @@ class CashierClosureController extends Controller
                 ->sum('return_amount') - $tax_final_customer_returns;
         /** end sell returns */
 
+        /** Withhelds */
+        $withheld_amount = $payments->sum('withheld_amount');
+        $withheld_account_id = Business::find(auth()->user()->business_id)->accounting_withheld_id;
+        
         return [
             [
                 'catalogue_id' => $accounts_location->general_cash_id,
@@ -425,6 +429,12 @@ class CashierClosureController extends Controller
                 'amount' => $credit_amount,
                 'type' => 'debit',
                 'description' => 'VENTAS AL CRÉDITOS'
+            ],
+            [
+                'catalogue_id' => $withheld_account_id,
+                'amount' => $withheld_amount,
+                'type' => 'debit',
+                'description' => 'RETENCION IVA 1%'
             ],
             [
                 'catalogue_id' => $accounts_location->vat_final_customer_id,
