@@ -234,8 +234,8 @@
 
         let current_time = new Date();
 
-        let initial_start_date = current_time.getFullYear() + '-01-01';
-        let initial_end_date = current_time.getFullYear() + '-12-31';
+        let initial_start_date = moment().startOf('month').format('YYYY-MM-DD');
+        let initial_end_date = moment().endOf('month').format('YYYY-MM-DD');
 
         $('#start_date').val(initial_start_date);
         $('#end_date').val(initial_end_date);
@@ -371,6 +371,19 @@
 
         var ws_data = data;
         var ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+        /** Set number format */
+        let data_length = data.length + 1;
+        for (let i = 5; i < data_length; i++) {
+            ws["H"+i].t = "n";
+            ws["H"+i].z = "0.0000";
+            ws["I"+i].t = "n";
+            ws["I"+i].z = "0.0000";
+            ws["J"+i].t = "n";
+            ws["J"+i].z = "0.0000";
+            ws["K"+i].t = "n";
+            ws["K"+i].z = "0.0000";
+        }
 
         wb.Sheets[LANG.all_sales_report] = ws;
 
