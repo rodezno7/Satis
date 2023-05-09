@@ -159,7 +159,7 @@
 					<td colspan="2" style="padding-left: 1.5cm;" class="cutter">{{ $receipt_details->customer_location }}</td>
 				</tr>
 				<tr>
-					<td style="padding-left: 2.5cm;" class="cutter">{{ $receipt_details->customer_employee_name }}</td>
+					<td style="padding-left: 2.5cm;" class="cutter">{{ $receipt_details->seller_name }}</td>
 					<td style="padding-left: 1.0cm;">{{ $receipt_details->customer_nit }}</td>
 				</tr>
 			</table>
