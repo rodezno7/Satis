@@ -2667,35 +2667,98 @@ class SellPosController extends Controller
         if (request()->ajax()) {
             try {
                 $output = ['success' => 0,
-                'msg' => trans("messages.something_went_wrong")
-            ];
+                    'msg' => trans("messages.something_went_wrong")
+                ];
 
-            $business_id = $request->session()->get('user.business_id');
-            
-            $transaction = Transaction::where('business_id', $business_id)
-            ->where('id', $transaction_id)
-            ->first();
+                $business_id = $request->session()->get('user.business_id');
+                
+                $transaction = Transaction::where('business_id', $business_id)
+                    ->where('id', $transaction_id)
+                    ->first();
 
-            if (empty($transaction)) {
-                return $output;
+                if (empty($transaction)) {
+                    return $output;
+                }
+
+                $receipt = $this->receiptContent($transaction->type, $business_id, $transaction->location_id, $transaction_id, 'browser');
+
+                if (!empty($receipt)) {
+                    $output = ['success' => 1, 'receipt' => $receipt];
+                }
+            } catch (\Exception $e) {
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+
+                $output = ['success' => 0,
+                    'msg' => trans("messages.something_went_wrong")
+                ];
             }
 
-            $receipt = $this->receiptContent($transaction->type, $business_id, $transaction->location_id, $transaction_id, 'browser');
-
-            if (!empty($receipt)) {
-                $output = ['success' => 1, 'receipt' => $receipt];
-            }
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-
-            $output = ['success' => 0,
-            'msg' => trans("messages.something_went_wrong")
-        ];
+            return $output;
+        }
     }
 
-    return $output;
-}
-}
+    /**
+     * Print CCF detail for sells
+     * 
+     * @param int $transaction_id
+     * @return \Illuminate\Http\Response
+     */
+    public function printCCF($transaction_id) {
+        if (request()->ajax()) {
+            try {
+                $transaction = Transaction::findOrFail($transaction_id);
+    
+                if (empty($transaction)) {
+                    return [ 'success' => 0,
+                        'msg' => trans("messages.something_went_wrong") ];
+                }
+    
+                $business_name = Business::find($transaction->business_id)->business_full_name;
+
+                $transaction = Transaction::join('customers as c', 'transactions.customer_id', 'c.id')
+                    ->leftJoin('quotes as q', 'transactions.id', 'q.transaction_id')
+                    ->leftJoin('employees as e', 'q.employee_id', 'e.id')
+                    ->where('transactions.id', $transaction_id)
+                    ->select(
+                        'transactions.transaction_date as date',
+                        'transactions.correlative',
+                        DB::raw('IF(c.business_name IS NOT NULL, c.business_name, c.name) AS customer_name'),
+                        DB::raw("CONCAT(COALESCE(e.first_name,''),' ',COALESCE(e.last_name,'')) as seller_name"),
+                        'transactions.total_before_tax as subtotal',
+                        'transactions.tax_group_amount as tax_amount',
+                        'transactions.final_total'
+                    )->first();
+
+                $transaction_sell_lines = Transaction::join('transaction_sell_lines as tsl', 'transactions.id', 'tsl.transaction_id')
+                    ->join('variations as v', 'tsl.variation_id', 'v.id')
+                    ->join('products as p', 'v.product_id', 'p.id')
+                    ->where('transactions.id', $transaction_id)
+                    ->select(
+                        'tsl.quantity',
+                        'v.sub_sku as sku',
+                        'p.name as product',
+                        'tsl.unit_price_before_discount as unit_exc_tax',
+                        'tsl.unit_price_exc_tax as line_total_exc_tax'
+                    )
+                    ->groupBy('tsl.id')
+                    ->get();
+
+                $receipt['content'] = view('sale_pos.receipts.fiscal_credit_details',
+                    compact('business_name', 'transaction', 'transaction_sell_lines'))->render();
+
+                if (!empty($receipt)) {
+                    return [ 'success' => 1,
+                        'receipt' => $receipt ];
+                }
+
+            } catch (\Exception $e) {
+                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+
+                return [ 'success' => 0,
+                    'msg' => trans("messages.something_went_wrong") ];
+            }
+        }
+    }
 
     /**
      * Gives suggetion for product based on category

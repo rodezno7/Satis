@@ -32,6 +32,7 @@
     "settings" => "Configuraciones",
     "business_location_settings" => "Configuración de ubicación comercial",
     "print" => "Impresión",
+    "print_ccf" => "Imprimir CCF",
     "submit" => "Enviar", 
     "purchase_sell_mismatch_exception" => "ERROR: NO PERMITIDO: desajuste entre la cantidad vendida y la compra. Producto: :product", 
     "purchase_stock_adjustment_mismatch_exception" => "ERROR: NO PERMITIDO: desajuste entre el ajuste de stock y la cantidad de compra. Producto: :product", 

@@ -1115,8 +1115,6 @@ class SellController extends Controller
                 $order[0]['dir']
             ];
 
-            \Log::emergency($parameters);
-
             $sales = DB::select(
                 'CALL get_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 $parameters
@@ -1152,6 +1150,8 @@ class SellController extends Controller
             $business = Business::where('id', $business_id)->select('annull_sale_expiry', 'enable_sell_delete')->first();
             $enable_sell_delete = $business->enable_sell_delete;
 
+            $doc_type = DocumentType::where('id', $transaction->document_types_id)
+                ->value('short_name');
 
             $parent_doc = null;
             if (!empty($transaction->parent_correlative)) {
@@ -1162,7 +1162,7 @@ class SellController extends Controller
             }
 
             return view('sale_pos.partials.toggle_dropdown')
-                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'enable_sell_delete'))
+                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'doc_type', 'enable_sell_delete'))
                 ->render();
             
         } catch (\Exception $e) {

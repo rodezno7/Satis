@@ -40,6 +40,7 @@ return [
     'settings' => 'Settings',
     'business_location_settings' => 'Business Location Settings',
     'print' => 'Print',
+    'print_ccf' => 'Print CCF',
     'submit' => 'Submit',
     'purchase_sell_mismatch_exception' => 'ERROR: NOT ALLOWED: Mismatch between sold and purchase quantity. Product: :product',
     'purchase_stock_adjustment_mismatch_exception' => 'ERROR: NOT ALLOWED: Mismatch between stock adjustment and purchase quantity. Product: :product',

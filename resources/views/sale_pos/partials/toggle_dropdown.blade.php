@@ -81,6 +81,13 @@
                 <i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print")
             </a>
         </li>
+        @if ($doc_type == "CCF")
+            <li>
+                <a href="#" class="print-ccf" data-href="{{ route('sell.print-ccf', [$id]) }}">
+                    <i class="fa fa-print" aria-hidden="true"></i> @lang("messages.print_ccf")
+                </a>
+            </li>
+        @endif
     @endif
     <li class="divider"></li> 
     @if ($payment_status != 'paid')
@@ -106,7 +113,7 @@
     @endif
     @if (auth()->user()->can('send_notification'))
         <li>
-            <a href="#" data-href="{{ action('NotificationController@getTemplate', ["transaction_id" => $id, "template_for" => "new_sale"]) }}" class="btn-modal" data-container=".view_modal">
+            <a href="#" data-href="{{ action('NotificationController@getTemplate', ['transaction_id' => $id, 'template_for' => 'new_sale']) }}" class="btn-modal" data-container=".view_modal">
                 <i class="fa fa-envelope" aria-hidden="true"></i> @lang("lang_v1.new_sale_notification")
             </a>
         </li>

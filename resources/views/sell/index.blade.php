@@ -397,6 +397,32 @@
             }
         });
     }
+
+    //Print CCF details.
+    $(document).on('click', 'a.print-ccf', function(e) {
+        e.preventDefault();
+        var href = $(this).data('href');
+
+        $.ajax({
+            method: "GET",
+            url: href,
+            dataType: "json",
+            success: function(result) {
+
+                if (result.success == 1 && result.receipt.content != '') {
+                    $('#receipt_section').html(result.receipt.content);
+                    __currency_convert_recursively($('#receipt_section'));
+                    setTimeout(function() { window.print(); }, 1000);
+                } else {
+                    Swal.fire
+                    ({
+                        title: ""+result.msg+"",
+                        icon: "error",
+                    });
+                }
+            }
+        });
+    });
 </script>
 
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>

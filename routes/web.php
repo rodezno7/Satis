@@ -224,6 +224,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('/sells/pos/get_payment_row', 'SellPosController@getPaymentRow');
     Route::get('/sells/pos/get-recent-transactions', 'SellPosController@getRecentTransactions');
     Route::get('/sells/{transaction_id}/print', 'SellPosController@printInvoice')->name('sell.printInvoice');
+    Route::get('/sells/{transaction_id}/print-ccf', 'SellPosController@printCCF')->name('sell.print-ccf');
     Route::get('/sells/pos/get-product-suggestion', 'SellPosController@getProductSuggestion');
     Route::post('/pos/getCorrelatives', 'SellPosController@getCorrelatives');
     Route::get('/pos/annul/{v}', 'SellPosController@annul');
