@@ -64,7 +64,6 @@ BEGIN
         ON t.id = tp.transaction_id
     INNER JOIN business_locations AS bl
         ON t.location_id = bl.id
-    LEFT JOIN quotes AS q ON q.transaction_id = t.id
     WHERE t.business_id = v_business_id
         AND t.type = 'sell'
         AND t.status IN ('final', 'annulled')
@@ -84,7 +83,7 @@ BEGIN
             t.payment_condition LIKE CONCAT('%', v_search, '%') OR
             tp.method LIKE CONCAT('%', v_search, '%')
         )
-        AND (v_seller_id = 0 OR q.employee_id = v_seller_id)
+        AND (v_seller_id = 0 OR c.customer_portfolio_id = v_seller_id)
     GROUP BY t.id
     ORDER BY
         CASE WHEN v_order_column = 0 AND v_order_dir = 'asc' THEN t.transaction_date END ASC,

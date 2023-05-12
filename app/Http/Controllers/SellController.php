@@ -12,6 +12,7 @@ use App\DocumentType;
 use App\CustomerGroup;
 use App\Utils\TaxUtil;
 use App\BusinessLocation;
+use App\CustomerPortfolio;
 use App\Employees;
 use App\Utils\ModuleUtil;
 use App\SellingPriceGroup;
@@ -321,7 +322,7 @@ class SellController extends Controller
         $document_types = $document_types->prepend(__("kardex.all"), 'all');
 
         /***  */
-        $sellers = Employees::SellersDropdown($business_id, false);
+        $sellers = CustomerPortfolio::pluck('name', 'id');
 
         // Payment status
         $payment_status = $this->payment_status;
