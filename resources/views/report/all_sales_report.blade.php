@@ -47,13 +47,13 @@
                                 {!! Form::select("select_location", $locations, null,
                                     ["class" => "form-control select2", "id" => "select_location"]) !!}
     
-                                {!! Form::hidden('location', 'all', ['id' => 'location']) !!}
+                                {!! Form::hidden('location_id', 'all', ['id' => 'location']) !!}
     
                                 @else
                                 {!! Form::select("select_location", $locations, null,
                                     ["class" => "form-control select2", "id" => "location", 'disabled']) !!}
     
-                                {!! Form::hidden('location', $default_location, ['id' => 'location']) !!}
+                                {!! Form::hidden('location_id', $default_location, ['id' => 'location']) !!}
                                 @endif
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                                 {!! Form::select("select_document_type", $document_types, null,
                                     ["class" => "form-control select2", "id" => "select_document_type"]) !!}
     
-                                {!! Form::hidden('document_type', 'all', ['id' => 'document_type']) !!}
+                                {!! Form::hidden('document_type_id', 'all', ['id' => 'document_type']) !!}
                             </div>
                         </div>
     
