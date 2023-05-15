@@ -48,6 +48,7 @@
                 <th>N° ORDEN</th>
                 <th>TIPO DOC.</th>
                 <th>MONTO</th>
+                <th>FACTURADO</th>
                 <th>FORMA PAGO</th>
                 <th>CAMBIO DE $$</th>
                 <th>TRANSFERENCIA COMO ANEXO</th>
@@ -72,7 +73,12 @@
                 <td>{{ mb_strtoupper(__('order.'.$qt->delivery_type)) }}</td>
                 <td>{{ $qt->order_number }}</td>
                 <td>{{ mb_strtoupper($qt->doc_type) }}</td>
-                <td style="text-align: right;">{{ "$ " . @num_format($qt->final_total) }}</td>
+                <td style="text-align: right;">{{ "$ " . @num_format($qt->order_total) }}</td>
+                <td style="text-align: right;">
+                    @if(!is_null($qt->final_total))
+                        {{ "$ " . @num_format($qt->final_total) }}
+                    @endif
+                </td>
                 <td>
                     @switch($qt->payment_counts)
                         @case(0)

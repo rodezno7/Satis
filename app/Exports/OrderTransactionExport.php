@@ -49,10 +49,11 @@ class OrderTransactionExport implements FromView, WithTitle, WithEvents
                 $event->sheet->columnWidth('K', 10);
                 $event->sheet->columnWidth('L', 25);
                 $event->sheet->columnWidth('M', 10);
-                $event->sheet->columnWidth('N', 15);
-                $event->sheet->columnWidth('O', 25);
+                $event->sheet->columnWidth('N', 12);
+                $event->sheet->columnWidth('O', 15);
                 $event->sheet->columnWidth('P', 25);
                 $event->sheet->columnWidth('Q', 25);
+                $event->sheet->columnWidth('R', 25);
             },
         ];
     }

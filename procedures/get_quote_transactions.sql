@@ -1,4 +1,5 @@
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
 DELIMITER //
 
@@ -23,6 +24,7 @@ BEGIN
 		q.delivery_type,
 		q.quote_ref_no AS order_number,
 		dt.document_name AS doc_type,
+		q.total_final AS order_total,
 		t.final_total,
 		(SELECT
 			COUNT(tp_temp.id)
@@ -32,14 +34,14 @@ BEGIN
 			AND DATE(tp_temp.paid_on) = DATE(t.transaction_date)) AS payment_counts,
 		tp.`method` AS pay_method
 	FROM quotes AS q
-	INNER JOIN transactions AS t ON t.id = q.transaction_id
+	LEFT JOIN transactions AS t ON t.id = q.transaction_id
 	LEFT JOIN transaction_payments AS tp ON t.id = tp.transaction_id
 	INNER JOIN employees AS e ON e.id = q.employee_id
-	INNER JOIN document_types dt ON t.document_types_id = dt.id
+	INNER JOIN document_types dt ON q.document_type_id = dt.id
 	LEFT JOIN states AS s ON q.state_id = s.id
 	LEFT JOIN cities AS c ON q.city_id = c.id
 	WHERE DATE(q.delivery_date) BETWEEN start_date  AND end_date
-		AND  q.business_id = business_id
+		AND q.business_id = business_id
 		AND q.`type` = 'order'
 	GROUP BY q.id
 	ORDER BY q.delivery_date DESC;
@@ -47,4 +49,4 @@ END;
 //
 DELIMITER ;
 
-CALL getQuotesTransactions('2021-04-01', '2021-04-28', 3);
+CALL getQuotesTransactions('2023-01-01', '2023-05-31', 3);

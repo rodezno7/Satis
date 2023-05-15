@@ -41,6 +41,7 @@
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>N° ORDEN</strong></th>
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>TIPO DOC.</strong></th>
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>MONTO</strong></th>
+                <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>FACTURADO</strong></th>
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>FORMA PAGO</strong></th>
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>CAMBIO DE $$</strong></th>
                 <th style="border: 1px solid black; text-align: center; font-size: 10pt;"><strong>TRANSFERENCIA COMO ANEXO</strong></th>
@@ -65,7 +66,12 @@
                 <td style="border: 1px solid black; font-size: 10;">{{ mb_strtoupper(__('order.'.$qt->delivery_type)) }}</td>
                 <td style="border: 1px solid black; font-size: 10;">{{ $qt->order_number }}</td>
                 <td style="border: 1px solid black; font-size: 10;">{{ mb_strtoupper($qt->doc_type) }}</td>
-                <td style="border: 1px solid black; font-size: 10; text-align: right;">{{ "$ " . @num_format($qt->final_total) }}</td>
+                <td style="border: 1px solid black; font-size: 10; text-align: right;">{{ "$ " . @num_format($qt->order_total) }}</td>
+                <td style="border: 1px solid black; font-size: 10; text-align: right;">
+                    @if(!is_null($qt->final_total))
+                        {{ "$ " . @num_format($qt->final_total) }}
+                    @endif
+                </td>
                 <td style="border: 1px solid black; font-size: 10;">
                     @switch($qt->payment_counts)
                         @case(0)
