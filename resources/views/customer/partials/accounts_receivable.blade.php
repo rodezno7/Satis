@@ -55,8 +55,8 @@
                                     </span>
                                     <i class="fa fa-caret-down"></i>
                                     </button>
-                                    {!! Form::hidden("start_date", date('Y-m-d', strtotime('- 30 days')), ['id' => 'start_date']) !!}
-                                    {!! Form::hidden("end_date", date('Y-m-d'), ['id' => 'end_date']) !!}
+                                    {!! Form::hidden("start_date", date('Y-m-d', strtotime('first day of this month')), ['id' => 'start_date']) !!}
+                                    {!! Form::hidden("end_date", date('Y-m-d', strtotime('last day of this month')), ['id' => 'end_date']) !!}
                                 </div>
                                 </div>
                         </div>
