@@ -11,6 +11,8 @@ return[
 	"auxiliars_menu" => "Libros Auxiliares",
 	"ledgers_menu" => "Libros Mayores",
 	"balances_menu" => "Balances",
+	"general_ledge" => "Libro Mayor General",
+	"general_journal_book" => "Libro Diario General",
 	"balances_er_menu" => "Balances y ER",
 	"banks_menu" => "Bancos",
 	'costs_menu' => "Centro de costos",

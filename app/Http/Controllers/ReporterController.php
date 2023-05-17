@@ -42,6 +42,7 @@ use App\Exports\BookFinalConsumerExport;
 use App\Exports\EntrieSingleReportExport;
 use App\Exports\ComprobationBalanceExport;
 use App\Exports\BankTransactionsReportExport;
+use App\Exports\JournalBookReport;
 use App\Exports\SalesBySeller;
 use Carbon\Carbon;
 use Mike42\Escpos\Printer;
@@ -1078,6 +1079,70 @@ class ReporterController extends Controller
 		}
 		
 	}
+
+    /**
+     * Get General Journal Book
+     * 
+     * @return Json
+     */
+    public function getGralJournalBook() {
+        if (request()->ajax()) {
+            $business_id = request()->user()->business_id;
+            $start_date = request()->input('start_date');
+            $end_date = request()->input('end_date');
+
+            $journay_book = collect(DB::select('CALL get_journal_book(?, ?, ?, ?)', [$start_date, $end_date, $business_id, 1]));
+
+            return DataTables::of($journay_book)
+                ->editColumn('date', '{{ @format_date($date) }}')
+                ->rawColumns(['date'])
+                ->toJson();
+        }
+
+        return view('journal_book.index');
+    }
+
+    /**
+     * Post General Journal Book
+     * 
+     * @param Illuminate\Http\Request $request
+     */
+    public function postGralJournalBook(Request $request) {
+        $business_id = request()->user()->business_id;
+        $start_date = request()->input('start_date');
+        $end_date = request()->input('end_date');
+		$format = $request->input('report_format');
+
+        $data = collect(DB::select('CALL get_journal_book(?, ?, ?, ?)', [$start_date, $end_date, $business_id, 0]));
+
+        /** Sort data */
+        $days = $data->unique('day')->pluck('day');
+
+        $journal_book = collect();
+        foreach ($days as $d) {
+            $jbs = $data->where('day', $d);
+
+            foreach ($jbs as $jb) {
+                $journal_book->push($jb);
+            }
+        }
+
+        $business_name = Business::find($business_id)->business_full_name;
+        $start_date = $this->transactionUtil->format_date($start_date);
+        $end_date = $this->transactionUtil->format_date($end_date);
+        
+        if ($format == 'pdf') {
+            $pdf = \PDF::loadView('reports.journal_book_report_pdf',
+                compact('business_name', 'start_date', 'end_date', 'journal_book'));
+
+            $pdf->setPaper('A3', 'portrait');
+            return $pdf->stream(__('accounting.general_journal_book') . '.pdf');
+
+        } else {
+            return Excel::download(new JournalBookReport($business_name, $start_date, $end_date, $journal_book, $this->transactionUtil),
+                __('accounting.general_journal_book') . '.xlsx');
+        }
+    }
 
 	public function getHigherAccounts() {
 

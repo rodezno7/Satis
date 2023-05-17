@@ -10,6 +10,8 @@ return[
 	"entries_menu" => "Entries",
 	"auxiliars_menu" => "Auxiliars",
 	"ledgers_menu" => "Ledgers",
+	"general_ledge" => "General Ledgers",
+	"general_journal_book" => "General Journal Book",
 	"balances_menu" => "Balances",
 	"balances_er_menu" => "Balances and result status",
 	"banks_menu" => "Banks",

@@ -137,6 +137,7 @@
         'entries',
         'auxiliars',
         'ledgers',
+        'journal-book',
         'balances',
         'banks',
         'result',
@@ -201,7 +202,15 @@
             <a href="{!!URL::to('/ledgers')!!}">
               <i class="fa fa-table"></i>
               <span class="title">
-                @lang('accounting.ledgers_menu')
+                @lang('accounting.general_ledge')
+              </span>
+            </a>
+          </li>
+          <li class="{{ $request->segment(1) == 'journal-book' ? 'active active-sub' : '' }}">
+            <a href="{{ action('ReporterController@getGralJournalBook') }}">
+              <i class="fa fa-table"></i>
+              <span class="title">
+                @lang('accounting.general_journal_book')
               </span>
             </a>
           </li>

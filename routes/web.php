@@ -551,6 +551,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('ledgers/getHigherReport', 'ReporterController@getHigherReport');
     Route::get('ledgers/getLedgerRange/{start}/{end}', 'ReporterController@getLedgerRange');
     Route::get('ledgers', 'ReporterController@getHighers');
+    Route::get('/journal-book', 'ReporterController@getGralJournalBook');
+    Route::post('/post-journal-book', 'ReporterController@postGralJournalBook');
 
     Route::post('balances/getBalances', 'ReporterController@getBalanceReport');
     Route::post('balances/getBalanceComprobation', 'ReporterController@getBalanceComprobation');
