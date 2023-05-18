@@ -4029,6 +4029,13 @@ class ReportController extends Controller
             $customer_id = 0;
         }
 
+        // Customer filter
+        if (isset($params['seller_id']) && !empty($params['seller_id'])) {
+            $seller_id = $params['seller_id'];
+        } else {
+            $seller_id = 0;
+        }
+
         // Date filter
         if (! empty($params['start_date']) && ! empty($params['end_date'])) {
             $start = $params['start_date'];
@@ -4099,8 +4106,26 @@ class ReportController extends Controller
     
             // Count sales
             $count = DB::select(
-                'CALL count_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'CALL count_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 array(
+                    $business_id,
+                    $location_id,
+                    $document_type_id,
+                    $created_by,
+                    $customer_id,
+                    $seller_id,
+                    $start,
+                    $end,
+                    $is_direct_sale,
+                    $commission_agent,
+                    $payment_status,
+                    $search
+                )
+            );
+    
+            if (config('app.business') == 'optics') {
+                // Sales
+                $parameters = [
                     $business_id,
                     $location_id,
                     $document_type_id,
@@ -4111,38 +4136,40 @@ class ReportController extends Controller
                     $is_direct_sale,
                     $commission_agent,
                     $payment_status,
-                    $search
-                )
-            );
-    
-            // Sales
-            $parameters = [
-                $business_id,
-                $location_id,
-                $document_type_id,
-                $created_by,
-                $customer_id,
-                $start,
-                $end,
-                $is_direct_sale,
-                $commission_agent,
-                $payment_status,
-                $search,
-                $start_record,
-                $page_size,
-                $order[0]['column'],
-                $order[0]['dir']
-            ];
-    
-            if (config('app.business') == 'optics') {
+                    $search,
+                    $start_record,
+                    $page_size,
+                    $order[0]['column'],
+                    $order[0]['dir']
+                ];
+
                 $sales = DB::select(
                     'CALL get_all_sales_optics(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     $parameters
                 );
     
             } else {
+                // Sales
+                $parameters = [
+                    $business_id,
+                    $location_id,
+                    $document_type_id,
+                    $seller_id,
+                    $created_by,
+                    $customer_id,
+                    $start,
+                    $end,
+                    $is_direct_sale,
+                    $commission_agent,
+                    $payment_status,
+                    $search,
+                    $start_record,
+                    $page_size,
+                    $order[0]['column'],
+                    $order[0]['dir']
+                ];
                 $sales = DB::select(
-                    'CALL get_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    'CALL get_all_sales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     $parameters
                 );
             }
