@@ -545,55 +545,55 @@ $(document).ready(function(){
 				}
 			}
 		}
-
-		// On click of btn-recalculate button
-        $(document).on('click', 'button#btn-recalculate', function () {
-            let icon = $(this).find('i');
-			let variation_id = $(this).data('variation-id');
-			let tr = $(this).closest('tr');
-
-            Swal.fire({
-                title: LANG.sure,
-                text: LANG.recalculate_cost_text,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelmButtonText: LANG.cancel,
-                confirmButtonText: LANG.yes
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    icon.removeClass('fa-refresh').addClass('fa-spinner fa-pulse');
-
-                    $.ajax({
-                        type: 'get',
-                        url: '/products/recalculate-product-cost/' + variation_id,
-                        dataType: 'json',
-                        success: function (res) {
-                            icon.removeClass('fa-spinner fa-pulse').addClass('fa-refresh');
-
-                            if (res.success === 1) {
-                                tr.find('span.default-purchase-price').text(__currency_trans_from_en(res.default_purchase_price, true, false, price_precision));
-								tr.find('span.dpp-inc-tax').text(__currency_trans_from_en(res.dpp_inc_tax, true, false, price_precision));
-								tr.find('span.profit-percent').text(__currency_trans_from_en(res.profit_percent, false, false, price_precision));
-
-                                Swal.fire({
-                                    title: res.msg,
-                                    icon: 'success',
-                                });
-
-                            } else {
-                                Swal.fire({
-                                    title: res.msg,
-                                    icon: 'error',
-                                });
-                            }
-                        }
-                    })
-                }
-            })
-        });
 	});
+
+    // On click of btn-recalculate button
+    $(document).on('click', 'button#btn-recalculate', function () {
+        let icon = $(this).find('i');
+        let variation_id = $(this).data('variation-id');
+        let tr = $(this).closest('tr');
+
+        Swal.fire({
+            title: LANG.sure,
+            text: LANG.recalculate_cost_text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelmButtonText: LANG.cancel,
+            confirmButtonText: LANG.yes
+        }).then((result) => {
+            if (result.isConfirmed) {
+                icon.removeClass('fa-refresh').addClass('fa-spinner fa-pulse');
+
+                $.ajax({
+                    type: 'get',
+                    url: '/products/recalculate-product-cost/' + variation_id,
+                    dataType: 'json',
+                    success: function (res) {
+                        icon.removeClass('fa-spinner fa-pulse').addClass('fa-refresh');
+
+                        if (res.success === 1) {
+                            tr.find('span.default-purchase-price').text(__currency_trans_from_en(res.default_purchase_price, true, false, price_precision));
+                            tr.find('span.dpp-inc-tax').text(__currency_trans_from_en(res.dpp_inc_tax, true, false, price_precision));
+                            tr.find('span.profit-percent').text(__currency_trans_from_en(res.profit_percent, false, false, price_precision));
+
+                            Swal.fire({
+                                title: res.msg,
+                                icon: 'success',
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: res.msg,
+                                icon: 'error',
+                            });
+                        }
+                    }
+                })
+            }
+        })
+    });
 
 	// On change of sku input
 	$(document).on('change', '#sku', function () {
