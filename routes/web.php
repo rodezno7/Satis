@@ -816,6 +816,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/reports/connect-report', 'ReportController@getConnectReport');
     Route::post('/reports/connect-report', 'ReportController@postConnectReport');
 
+    /** Price List report for Nuves/AGL */
+    Route::get('/reports/price-lists-report', 'ReportController@getPriceListsReport');
+    Route::post('/reports/post-price-lists-report', 'ReportController@postPriceListsReport');
+
     Route::get('/debs-pay', function(){
         return view('debs_to_pay.index');
     });

@@ -161,7 +161,7 @@ return [
         'haber'                 => 'credit',
         'type_entrie_id'        => 'entrie type',
         'business_location_id'  => 'location',
-
+        'location'              => 'Location',
         'description2'          => 'description',
         'debe2'                 => 'debit',
         'haber2'                => 'credit',

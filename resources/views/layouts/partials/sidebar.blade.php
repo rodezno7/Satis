@@ -1571,6 +1571,7 @@
               || auth()->user()->can('sales_by_seller_report.view')
               || auth()->user()->can('dispatched_products_report.view')
               || auth()->user()->can('connect_report.view')
+              || auth()->user()->can('price_lists_report.view')
               || auth()->user()->can('sell_n_adjustment_report.view')
               || auth()->user()->can('cost_of_sale_detail_report.view')
               || auth()->user()->can('all_sales_report.view')
@@ -1666,6 +1667,16 @@
                   <a href="{{ action('ReportController@getConnectReport') }}">
                     <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                     @lang('report.connect_report')
+                  </a>
+                </li>
+                @endcan
+
+                {{-- Price list report --}}
+                @can('price_lists_report.view')
+                <li class="{{ $request->segment(2) == 'price-lists-report' ? 'active' : '' }}">
+                  <a href="{{ action('ReportController@getPriceListsReport') }}">
+                    <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                    @lang('report.price_lists_report')
                   </a>
                 </li>
                 @endcan

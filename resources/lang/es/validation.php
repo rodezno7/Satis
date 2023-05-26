@@ -168,7 +168,7 @@ return [
         'haber'                 => 'haber',
         'type_entrie_id'        => 'tipo de partida',
         'business_location_id'  => 'sucursal',
-
+        'location'              => 'Sucursal',
         'description2'          => 'descripción',
         'debe2'                 => 'debe',
         'haber2'                => 'haber',

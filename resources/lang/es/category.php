@@ -3,6 +3,7 @@
     "categories" => "Categorías",
     "manage_your_categories" => "Administra tus categorías",
     "all_your_categories" => "Todas tus categorías", /* modified */
+    "all_categories" => "Todas la catagorías",
     "category" => "Categoría",
     "category_name" => "Nombre de la categoría",
     "code" => "Código de categoría",

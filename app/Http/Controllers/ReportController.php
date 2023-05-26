@@ -57,6 +57,7 @@ use App\Exports\LabOrdersReportExport;
 use App\Exports\ListPriceReport;
 use App\Exports\PaymentNoteReportExport;
 use App\Exports\PaymentReportExport;
+use App\Exports\PriceListsReport;
 use App\Exports\ProductsReportExport;
 use App\Exports\SalesPerSellerReportExport;
 use App\Exports\TransferSheetReportExport;
@@ -3544,7 +3545,7 @@ class ReportController extends Controller
      * @author Arquímides Martínez
      */
     public function getInputOutputReport(Request $request) {
-        if (! auth()->user()->can('input_ouput_report.view')) {
+        if (! auth()->user()->can('input_output_report.view')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -3591,7 +3592,7 @@ class ReportController extends Controller
      * @author Arquímides Martínez
      */
     public function postInputOutputReport(Request $request) {
-        if (! auth()->user()->can('input_ouput_report.view')) {
+        if (! auth()->user()->can('input_output_report.view')) {
             abort(403, 'Unauthorized action.');
         }
 		$format = $request->input('report_format');
@@ -3842,6 +3843,58 @@ class ReportController extends Controller
         
         return Excel::download(new ConnectReport($connect_report, $business_name, $start_date, $end_date),
             __('report.connect_report') . '.xlsx');
+    }
+
+    /**
+     * Get price lists report
+     * 
+     * @return Illuminate\Http\Response
+     */
+    public function getPriceListsReport() {
+        if (!auth()->user()->can('price_lists_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = auth()->user()->business_id;
+
+        $locations = BusinessLocation::forDropdown($business_id);
+        $categories = Category::where('parent_id', 0)
+            ->where('business_id', $business_id)
+            ->pluck('name', 'id');
+        $brands = Brands::brandsDropdown($business_id);
+
+        return view('report.price_lists_report', compact('locations', 'categories', 'brands'));
+    }
+
+    /**
+     * Post price lists report
+     * 
+     * @return Illuminate\Http\Request
+     * @return Excel
+     */
+    public function postPriceListsReport(Request $request) {
+        if (!auth()->user()->can('price_lists_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validator = \Validator::make($request->all(), [ 'location' => 'required' ]);
+
+        if ($validator->fails()) {
+            return $validator->getMessageBag();
+        }
+
+        $business_id = auth()->user()->business_id;
+        $location_id = $request->get('location');
+        $category_id = $request->get('category') ?? 0;
+        $brand_id = $request->get('brand') ?? 0;
+
+        $price_lists = collect(DB::select('CALL product_price_lists(?, ?, ?, ?)',
+            [$business_id, $location_id, $category_id, $brand_id]));
+
+        $business_name = Business::find($business_id)->business_full_name;
+
+        return Excel::download(new PriceListsReport($business_name, $price_lists),
+            __('report.price_lists_report') . '.xlsx');
     }
 
     /**
