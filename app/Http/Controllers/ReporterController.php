@@ -2285,7 +2285,10 @@ class ReporterController extends Controller
 			abort(403, "Unauthorized action.");
 		}
 
-		return view('purchases_book.index');
+        $business_id = auth()->user()->business_id;
+        $locations = BusinessLocation::forDropdown($business_id);
+
+		return view('purchases_book.index', compact('locations'));
 	}
 
 	/**
@@ -2304,13 +2307,14 @@ class ReporterController extends Controller
 		$business_id = request()->session()->get('user.business_id');
 		$initial_date = $this->transactionUtil->uf_date($request->input('initial_date'));
 		$final_date = $this->transactionUtil->uf_date($request->input('final_date'));
+        $location_id = $request->get('location') ?? 0;
 
 		$size = $request->input('size');
 
 		// Query
 		$lines = DB::select(
-			'CALL get_purchases_book(?, ?, ?)',
-			array($initial_date, $final_date, $business_id)
+			'CALL get_purchases_book(?, ?, ?, ?)',
+			array($initial_date, $final_date, $business_id, $location_id)
 		);
 
 		// Header info

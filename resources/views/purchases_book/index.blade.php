@@ -14,23 +14,13 @@
     <div class="panel with-nav-tabs panel-default boxform_u box-solid_u">
         <div class="panel-heading">
             <ul class="nav nav-tabs">
-                {{-- <li><a href="#tab-list" data-toggle="tab">@lang('accounting.list')</a></li> --}}
                 <li class="active"><a href="#tab-report" data-toggle="tab">@lang('accounting.report')</a></li>
             </ul>
         </div>
 
         <div class="panel-body">
             <div class="tab-content">
-                {{-- <div class="tab-pane fade" id="tab-list">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            
-                        </div>
-                    </div>
-                </div> --}}
-
                 <div class="tab-pane fade in active" id="tab-report">
-                    {{-- <h4>@lang('accounting.report')</h4> --}}
                     {!! Form::open(['id'=>'form_taxpayer', 'action' => 'ReporterController@getPurchasesBook', 'method' => 'post', 'target' => '_blank']) !!}
                     <div class="row">
                         <div class="col-xs-12">
@@ -39,9 +29,20 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">       
-                        <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
+                            <div class="form-group">
+                                {!! Form::label('location', __('business.location')) !!}
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-map-marker"></i>
+                                    </span>
+                                    {!! Form::select('location', $locations, null, ['class' => 'form-control select2',
+                                        'style' => 'width: 100%;', 'placeholder' => __('report.all_locations')]) !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
                             <div class="form-group">
                                 <label for="from">@lang('accounting.from')</label>
                                 <div class="input-group">
@@ -53,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
                             <div class="form-group">
                                 <label for="account">@lang('accounting.to')</label>
                                 <div class="input-group">
@@ -65,7 +66,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
                             <label>@lang('accounting.size_font')</label>
                             <select name="size" id="size" class="form-control select2" style="width: 100%;" required>
                                 <option value="7">7</option>
@@ -74,7 +77,7 @@
                                 <option value="10">10</option>
                             </select>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
                             <div class="form-group">
                                 <label>@lang('accounting.format')</label>
                                 <select name="report_type" id="report_type" class="form-control select2" style="width: 100%" required>
@@ -84,13 +87,14 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
-                        <div class="col-sm-12">
-                            <input type="submit" class="btn btn-success" value="@lang('accounting.generate')" id="button_report">
-                            @if (auth()->user()->can('accounting.close_vat_books'))
-                                <button type="button" class="btn btn-primary close_vat_book">@lang('report.close_purchase_book')</button>
-                            @endif
+                        <div class="col-lg-3 col-md-4 cold-sm-6">
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-success" value="@lang('accounting.generate')" id="button_report">
+                                @if (auth()->user()->can('accounting.close_vat_books'))
+                                    <button type="button" class="btn btn-primary close_vat_book">@lang('report.close_purchase_book')</button>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     {!! Form::close() !!}

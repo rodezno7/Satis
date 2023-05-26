@@ -1,8 +1,15 @@
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 DROP PROCEDURE IF EXISTS get_purchases_book;
 
 DELIMITER $$
 
-CREATE PROCEDURE get_purchases_book(initial_date DATE, final_date DATE, business INT)
+CREATE PROCEDURE get_purchases_book(
+	initial_date DATE,
+	final_date DATE,
+	business INT,
+	IN location_id INT)
 BEGIN
 	SELECT
 		t.id,
@@ -13,7 +20,7 @@ BEGIN
         REPLACE(c.dni, '-', '') AS dui,
         c.supplier_business_name AS supplier,
         IF (
-            t.type = 'expense',
+            t.`type` = 'expense',
             IF(
                 c.tax_number IS NOT NULL,
                 t.exempt_amount,
@@ -116,6 +123,7 @@ BEGIN
             )
         )
         AND t.status IN ('received', 'final')
+        AND (t.location_id = location_id OR location_id = 0)
         AND t.is_closed = 0
     ORDER BY DATE(transaction_date), t.id;
 
