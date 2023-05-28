@@ -44,4 +44,8 @@ return [
     'stock_current_fy' => 'Stock current fiscal year',
     'total_purchases' => 'Total purchases (:currency)',
     'total_stocks' => 'Total stocks (:currency)',
+    'more_information' => 'More information',
+    'gross_profit' => 'Gross profit',
+    'net_earnings' => 'Net earning',
+    'average_sales' => 'Average sales',
     ];

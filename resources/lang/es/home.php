@@ -34,4 +34,8 @@
     'stock_current_fy' => 'Stock de año fiscal actual',
     'total_purchases' => 'Compras totales (:currency)',
     'total_stocks' => 'Stock total (:currency)',
+    'more_information' => 'Más información',
+    'gross_profit' => 'Ganancia bruta',
+    'net_earnings' => 'Ganancia neta',
+    'average_sales' => 'Promedio de ventas',
 ];
