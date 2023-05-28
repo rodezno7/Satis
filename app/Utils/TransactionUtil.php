@@ -4250,7 +4250,6 @@ class TransactionUtil extends Util
             }
         }
         
-        \Log::emergency("format ". $format);
         return $format; 
     }
 
