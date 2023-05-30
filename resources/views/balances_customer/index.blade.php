@@ -37,18 +37,19 @@
 
     <section class="content">
         <input type="hidden" id="business-start-date" value="{{ $business->start_date }}">
+        <input type="hidden" id="sellers_count" value="{{ count($sellers) }}">
 
         <div class="boxform_u box-solid_u section-customer-balances">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-lg-3 col-sm-3">
                         <div class="form-group">
                             {!! Form::label("customer_seller", __("customer.seller")) !!}
                             {!! Form::select("customer_seller", $sellers, null,
                                 ['class' => 'form-control select2', 'id' => 'seller', 'placeholder' => __('customer.all_sellers')]) !!}
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-lg-2 col-sm-3">
                         <div class="form-group">
                             <div class="input-group">
                                 <button type="button" class="btn btn-primary" id="cb_date_filter" style="margin-top: 25px;">
@@ -62,6 +63,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-3 col-sm-3">
+                        <div class="form-group" style="margin-top: 31px; margin-bottom: 0;">
+                            <label>
+                                {!! Form::checkbox('due_only', 1, null, ['class' => 'input-icheck', 'id' => 'due_only']); !!}
+                                <strong>@lang('customer.due_transactions_only')</strong>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 @can('customer.view')
                     <div class="table-responsive">
@@ -70,6 +79,9 @@
                                 <tr>
                                     <th>@lang('customer.code')</th>
                                     <th>@lang('contact.customer')</th>
+                                    @if (count($sellers) > 0)
+                                        <th>@lang('customer.seller')</th>
+                                    @endif
                                     <th class="text-center">@lang('accounting.balance_to_date')</th>
                                     <th class="text-center">@lang('customer.final_total')</th>
                                     <th class="text-center">@lang('customer.remaining_credit')</th>
@@ -79,7 +91,7 @@
                             </thead>
                             <tfoot>
                                 <tr class="bg-gray footer-total text-center">
-                                    <td colspan="2"><strong>@lang('sale.total')</strong></td>
+                                    <td colspan="{{ count($sellers) > 0 ? '3' : '2' }}"><strong>@lang('sale.total')</strong></td>
                                     <td><span class="display_currency" id="footer_balance_to_date" data-currency_symbol="true"></span></td>
                                     <td><span class="display_currency" id="footer_payments" data-currency_symbol="true"></span></td>
                                     <td><span class="display_currency" id="footer_remaining_credit" data-currency_symbol="true"></span></td>
@@ -129,7 +141,7 @@
 
             dataTableBalancesC();
 
-            $(document).on('change', 'select#seller', function () {
+            $(document).on('change', 'select#seller, input#due_only', function () {
                 dataTableBalancesC();
             });
 
@@ -337,6 +349,29 @@
             let start_date = $('input#start_date_filter').val();
             let end_date = $('input#end_date_filter').val();
 
+            let columns = [
+                { data: 'id', className: 'text-center' },
+                { data: 'full_name', name: 'full_name' },
+                { data: 'final_total',name: 'final_total',searchable: false, className: 'text-center' },
+                { data: 'total_paid', name: 'total_paid', searchable: false, className: 'text-center' },
+                { data: 'total_remaining',name: 'total_remaining', searchable: false, className: 'text-center' },
+                { data: 'credit_limit', name: 'credit_limit', searchable:false, className: 'text-center' },
+                { data: 'limit_balance', name: 'limit_balance', searchable:false, className: 'text-center' }
+            ];
+
+            if ($('input#sellers_count').val() > 0) {
+                columns = [
+                    { data: 'id', className: 'text-center' },
+                    { data: 'full_name', name: 'full_name' },
+                    { data: 'seller_name', name: 'seller_name' },
+                    { data: 'final_total',name: 'final_total',searchable: false, className: 'text-center' },
+                    { data: 'total_paid', name: 'total_paid', searchable: false, className: 'text-center' },
+                    { data: 'total_remaining',name: 'total_remaining', searchable: false, className: 'text-center' },
+                    { data: 'credit_limit', name: 'credit_limit', searchable:false, className: 'text-center' },
+                    { data: 'limit_balance', name: 'limit_balance', searchable:false, className: 'text-center' }
+                ];
+            }
+
             var balances_customer = $("#balances_customer").DataTable({
                 pageLength: 25,
                 // deferRender: true,
@@ -351,17 +386,10 @@
                         d.seller = $('select#seller').val() ?? 0;
                         d.start_date = start_date.length ? start_date : moment().subtract(29, 'days').format('YYYY-MM-DD');
                         d.end_date = end_date.length ? end_date : moment().format('YYYY-MM-DD');
+                        d.due_only = $("input#due_only").is(":checked") ? 1 : 0;
                     }
                 },
-                columns: [
-                    { data: 'id', className: 'text-center' },
-                    { data: 'full_name', name: 'full_name' },
-                    { data: 'final_total',name: 'final_total',searchable: false, className: 'text-center' },
-                    { data: 'total_paid', name: 'total_paid', searchable: false, className: 'text-center' },
-                    { data: 'total_remaining',name: 'total_remaining', searchable: false, className: 'text-center' },
-                    { data: 'credit_limit', name: 'credit_limit', searchable:false, className: 'text-center' },
-                    { data: 'limit_balance', name: 'limit_balance', searchable:false, className: 'text-center' }
-                ],
+                columns: columns,
                 fnDrawCallback: function (oSettings) {
                     $('#footer_balance_to_date').text(sum_table_col($('#balances_customer'), 'balance_to_date'));
                     $('#footer_payments').text(sum_table_col($('#balances_customer'), 'payments'));

@@ -9,8 +9,8 @@ CREATE PROCEDURE customer_balance(
 	IN business_id INT,
 	IN start_date DATE,
 	IN end_date DATE,
-	IN seller INT
-	)
+	IN seller INT,
+	IN due_only INT)
 BEGIN
 	/** sum transaction payments */
 	DROP TEMPORARY TABLE IF EXISTS trans_pays;
@@ -52,10 +52,13 @@ BEGIN
     	c.id,
     	c.is_taxpayer,
     	IFNULL(c.business_name, c.name)AS full_name,
+    	cp.name AS seller_name,
     	c.credit_limit
 	FROM temp_trans AS tt
     INNER JOIN customers AS c ON tt.customer_id = c.id
+    LEFT JOIN customer_portfolios AS cp ON c.customer_portfolio_id = cp.id
     WHERE (c.customer_portfolio_id = seller OR seller = 0)
+   		AND ((tt.final_total - IFNULL(tt.total_paid, 0)) > 0.1 OR due_only = 0)
     GROUP BY c.id, c.is_taxpayer, c.name, c.business_name;
    
 	/** Drop temporary tables */
@@ -65,4 +68,4 @@ END; $$
 
 DELIMITER
 
-CALL customer_balance(3, '2022-10-12', '2022-10-18', 0)
+CALL customer_balance(3, '2023-05-01', '2023-05-31', 0, 1)

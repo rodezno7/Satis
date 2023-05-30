@@ -1748,8 +1748,9 @@ class CustomerController extends Controller
         $start_date = request()->input('start_date');
         $end_date = request()->input('end_date');
         $seller = request()->input('seller') ?? 0;
+        $due_only = request()->get('due_only') ?? 0;
 
-        $customers = DB::select('CALL customer_balance(?, ?, ?, ?)', [$business_id, $start_date, $end_date, $seller]);
+        $customers = DB::select('CALL customer_balance(?, ?, ?, ?, ?)', [$business_id, $start_date, $end_date, $seller, $due_only]);
 
         return DataTables::of($customers)
             ->addColumn(

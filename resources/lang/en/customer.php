@@ -172,4 +172,5 @@ return [
     'warning_patient_name' => 'There is another patient with a similar name',
     'validate_dni_error' => 'The DUI1 number has already been registered previously',
     'validate_dni_success' => 'Valid DUI number',
+    'due_transactions_only' => 'Due transactions only',
 ];
