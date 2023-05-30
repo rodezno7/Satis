@@ -1,7 +1,7 @@
 <style>
     div#main { width: 100%;  font-size: 8pt; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; margin: 0; }
 
-	div#head { height: 4.8cm; width: 100%; }
+	div#head { height: 5.8cm; width: 100%; }
 	
 	div#container { width: 19.3cm; margin: 0cm 1.1cm 0cm 1.1cm; }
 	div#container table { width: 100%; }
@@ -12,9 +12,21 @@
 	div#header div#header-right { width: 32.6%; height: inherit; display: inline-block; }
 	div#header div#header-left div, div#header div#header-right div { width: 100%; vertical-align: middle; padding-top: 0.1cm; }
 
-	@if (! empty($receipt_details->staff_note) || $receipt_details->discount_amount > 0)
+    @if ((!empty($receipt_details->staff_note) ||
+        $receipt_details->discount_amount > 0) &&
+        (!empty($receipt_details->fob_amount) ||
+        !empty($receipt_details->freight_amount) ||
+        !empty($receipt_details->insurance_amount)))
         div#details { font-size: 8pt; width: 100%; height: 11.5cm; }
-        div#extra-details { height: 3.0cm; position: relative; }
+        div#extra-details { height: 1cm; position: relative; }
+        div#extra-details #comment { position: absolute; left: 4.3cm; top: 0.2cm; width: 8.5cm; }
+        div#extra-details #discount-text { position: absolute; left: 12.9cm; top: 0.2cm; }
+        div#extra-details #discount-amount { position: absolute; left: 16.95cm; top: 0.2cm; width: 2.35cm; text-align: right; padding-right: 0.1cm; }
+        div#export_expenses_details { position: relative; height: 2cm; }
+
+	@elseif (!empty($receipt_details->staff_note) || $receipt_details->discount_amount > 0)
+        div#details { font-size: 8pt; width: 100%; height: 13cm; }
+        div#extra-details { height: 1.5cm; position: relative; }
         div#extra-details #comment { position: absolute; left: 4.3cm; top: 0.2cm; width: 8.5cm; }
         div#extra-details #discount-text { position: absolute; left: 12.9cm; top: 0.2cm; }
         div#extra-details #discount-amount { position: absolute; left: 16.95cm; top: 0.2cm; width: 2.35cm; text-align: right; padding-right: 0.1cm; }
@@ -174,12 +186,16 @@
 			<div id="comment">
 				{{ $receipt_details->staff_note }}
 			</div>
+            @if ($receipt_details->discount_amount > 0)
 			<div id="discount-text">
 				DESCUENTO {{ $receipt_details->discount_percent }}
 			</div>
+            @endif
+            @if ($receipt_details->discount_amount > 0)
 			<div id="discount-amount">
 				{{ $receipt_details->discount_amount }}
 			</div>
+            @endif
 		</div>
 		@endif
 
@@ -190,17 +206,17 @@
 			<div id="fob_amount">
                 <span style="text-align: right; display: inline-block; width: 39%;">FOB $</span>
                 <span style="text-align: right; display: inline-block; width: 59%;">
-                    {{ round($receipt_details->fob_amount, 2) }}</span>
+                    {{ number_format($receipt_details->fob_amount, 2) }}</span>
 			</div>
             <div id="freight_amount;">
                 <span style="text-align: right; display: inline-block; width: 39%;">Flete $</span>
                 <span style="text-align: right; display: inline-block; width: 59%;">
-				    {{ round($receipt_details->freight_amount, 2) }}</span>
+				    {{ number_format($receipt_details->freight_amount, 2) }}</span>
 			</div>
             <div id="insurance_amount">
                 <span style="text-align: right; display: inline-block; width: 39%;">Seguro $</span>
                 <span style="text-align: right; display: inline-block; width: 59%;">
-				    {{ round($receipt_details->insurance_amount, 2) }}</span>
+				    {{ number_format($receipt_details->insurance_amount, 2) }}</span>
 			</div>
 		</div>
 		@endif
@@ -227,7 +243,7 @@
 				{{-- SUMAS --}}
 				<div class="text-right" style="width: initial; height: 1.1cm; padding-right: 0.2cm; vertical-align: top; padding-top: 0.4cm;">
 					@if ($receipt_details->is_exempt == 0)
-					{{ $receipt_details->total_before_tax + ($receipt_details->fob_amount + $receipt_details->freight_amount + $receipt_details->insurance_amount) }}
+					{{ number_format(($receipt_details->total_before_tax + ($receipt_details->fob_amount + $receipt_details->freight_amount + $receipt_details->insurance_amount)), 2)  }}
 					@else
 					&nbsp;
 					@endif
@@ -244,7 +260,7 @@
 
 				{{-- VENTA TOTAL --}}
 				<div class="text-right" style="width: initial; height: 1.75cm; padding-right: 0.2cm; vertical-align: top; padding-top: 0.7cm;">
-					{{ $receipt_details->total }}
+					{{ number_format($receipt_details->total, 2) }}
 				</div>
 			</div>
 		</div>
