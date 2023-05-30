@@ -856,6 +856,7 @@
     'crm-settings',
     'customer-group',
     'balances_customer',
+    'accounts-receivable',
     'portfolios',
     'credit-documents',
     'business_types',
