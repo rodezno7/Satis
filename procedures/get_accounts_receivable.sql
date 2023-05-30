@@ -10,8 +10,8 @@ CREATE PROCEDURE get_accounts_receivable(
 	IN seller_id INT,
 	IN location_id INT,
 	IN start_date DATE,
-	IN end_date DATE
-	)
+	IN end_date DATE,
+	IN due_only INT)
 BEGIN
 	/** Get sell returns */
 	DROP TEMPORARY TABLE IF EXISTS sell_returns;
@@ -69,10 +69,11 @@ BEGIN
 		IF(ar.days > 60 AND ar.days <= 90, (ar.final_total - IFNULL((SUM(tp.amount)), 0)), 0) AS days_90,
 		IF(ar.days > 90 AND ar.days <= 120, (ar.final_total - IFNULL((SUM(tp.amount)), 0)), 0) AS days_120,
 		IF(CAST(ar.days AS UNSIGNED) > 120, (ar.final_total - IFNULL((SUM(tp.amount)), 0)), 0) AS more_than_120
-	FROM accounts_receivable AS ar
+	FROM accounts_receivable AS ar 
 	LEFT JOIN transaction_payments AS tp ON ar.id = tp.transaction_id
 	WHERE (tp.paid_on IS NULL OR DATE(tp.paid_on) BETWEEN start_date AND end_date)
 	GROUP BY ar.id
+	HAVING ((ar.final_total - IFNULL(payments, 0)) > 0.01 OR due_only = 0)
 	ORDER BY ar.customer_id ASC, ar.transaction_date;
 		
 	/** Drop temporary table */
@@ -81,4 +82,4 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL get_accounts_receivable(3, 0, 0, 0, '2023-01-01', DATE(NOW()));
+CALL get_accounts_receivable(3, 0, 0, 0, '2023-01-01', DATE(NOW()), 1);

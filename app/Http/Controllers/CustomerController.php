@@ -1886,9 +1886,10 @@ class CustomerController extends Controller
             $seller_id = request()->input('seller_id') ? request()->input('seller_id') : 0;
             $start_date = request()->input('start_date');
             $end_date = request()->input('end_date');
+            $due_only = request()->get('due_only') ?? 0;
 
-            $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
-                [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date]));
+            $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?, ?)',
+                [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date, $due_only]));
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{ @format_date($transaction_date) }}')
@@ -1938,9 +1939,10 @@ class CustomerController extends Controller
         $start_date = request()->input('start_date');
         $end_date = request()->input('end_date');
         $report_type = request()->input('report_type');
+        $due_only = request()->get('due_only') ?? 0;
 
-        $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?)',
-            [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date]));
+        $transactions = collect(DB::select('CALL get_accounts_receivable(?, ?, ?, ?, ?, ?, ?)',
+            [$business_id, $customer_id, $seller_id, $location_id, $start_date, $end_date, $due_only]));
 
         $business_name = Business::find($business_id)->business_full_name;
         $report_name = __('cxc.cxc') ." ".  __("accounting.from_date") ." ". $this->transactionUtil->format_date($start_date) ." ". __("accounting.to_date") ." ". $this->transactionUtil->format_date($end_date);

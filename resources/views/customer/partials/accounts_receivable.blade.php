@@ -25,20 +25,20 @@
                     {!! Form::open(['id'=>'form_accounts_receivable_report', 'action' => 'CustomerController@accountsReceivableReport', 'method' => 'post', 'target' => '_blank']) !!}
                     <div class="row">
                         {{-- location_id --}}
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="form-group">
                                 {!! Form::label("location", __("business.location") . ":") !!}
                                 {!! Form::select("location_id", $locations, null, ["class" => "form-control", "id" => "location"]) !!}
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="form-group">
                                 {!! Form::label("customer_seller", __("customer.seller")) !!}
                                 {!! Form::select("customer_seller", $sellers, null,
                                     ['class' => 'form-control select2', 'id' => 'seller', 'placeholder' => __('customer.all_sellers')]) !!}
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="form-group">
                                 {!! Form::label("customer", __("contact.customer") . ":") !!}
                                 {!! Form::select('customer_id', [], null, ['class' => 'form-control',
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         {{-- range date --}}
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-6">
                             <div class="form-group">
                                 <div class="input-group">
                                     <button type="button" class="btn btn-primary" id="date_filter" style="margin-top: 25px;">
@@ -58,13 +58,21 @@
                                     {!! Form::hidden("start_date", date('Y-m-d', strtotime('first day of this month')), ['id' => 'start_date']) !!}
                                     {!! Form::hidden("end_date", date('Y-m-d', strtotime('last day of this month')), ['id' => 'end_date']) !!}
                                 </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
+                        <div class="col-lg-3 col-sm-4">
+                            <div class="form-group" style="margin-top: 31px; margin-bottom: 0;">
+                                <label>
+                                    {!! Form::checkbox('due_only', 1, null, ['class' => 'input-icheck', 'id' => 'due_only']); !!}
+                                    <strong>@lang('customer.due_transactions_only')</strong>
+                                </label>
+                            </div>
+                        </div>
                         {{-- format --}}
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-4">
                             <div class="form-group">
                                 <label>@lang('accounting.format')</label>
                                 <select name="report_type" id="report_type" class="form-control" required>
@@ -75,7 +83,7 @@
                         </div>
 
                         {{-- button --}}
-                        <div class="col-sm-3" style="margin-top: 25px;">
+                        <div class="col-lg-3 col-sm-4" style="margin-top: 25px;">
                             <div class="form-group">
                                 <input type="submit" class="btn btn-success" value="@lang('accounting.generate')" id="button_report">
                             </div>
@@ -194,6 +202,7 @@
                         d.location_id = $("select#location").val();
                         d.seller_id = $("select#seller").val();
                         d.customer_id = $("select#customer").val();
+                        d.due_only = $('input#due_only').is(':checked') ? 1 : 0;
                     }
                 },
                 columnDefs: [
@@ -220,7 +229,7 @@
             });
 
             // Location filter
-            $('select#customer, select#location, select#seller').on('change', function() {
+            $('select#customer, select#location, select#seller, input#due_only').on('change', function() {
                 accounts_receivable_report_table.ajax.reload();
             });
         });

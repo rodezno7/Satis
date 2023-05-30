@@ -58,7 +58,7 @@ BEGIN
     INNER JOIN customers AS c ON tt.customer_id = c.id
     LEFT JOIN customer_portfolios AS cp ON c.customer_portfolio_id = cp.id
     WHERE (c.customer_portfolio_id = seller OR seller = 0)
-   		AND ((tt.final_total - IFNULL(tt.total_paid, 0)) > 0.1 OR due_only = 0)
+   		AND ((tt.final_total - IFNULL(tt.total_paid, 0)) > 0.01 OR due_only = 0)
     GROUP BY c.id, c.is_taxpayer, c.name, c.business_name;
    
 	/** Drop temporary tables */
