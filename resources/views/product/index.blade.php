@@ -339,16 +339,16 @@
 			confirmButtonText: LANG.yes,
 			cancelButtonText: LANG.not,
 		}).then((resul) => {
-			if (resul.isConfirmed) {
-				var id =  $("input#product_id").val();
-                var route = "/products/deleteSupplier/"+id+"/"+supplierId;
-                $.get(route, function(res){
+			// if (resul.isConfirmed) {
+			// 	var id =  $("input#product_id").val();
+            //     var route = "/products/deleteSupplier/"+id+"/"+supplierId;
+            //     $.get(route, function(res){
                     $("#fila" + index).remove();
                     supplier_ids.removeItem(supplierId);
-                });
-			} else {
-				return false;
-			}
+            //     });
+			// } else {
+			// 	return false;
+			// }
 		});
     }
 

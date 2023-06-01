@@ -470,7 +470,7 @@
 
     
     <div class="row">
-      <div class="col-sm-12 text-right">
+      <div class="col-sm-12 text-center">
         <input type="hidden" name="submit_type" id="submit_type">
         <div class="btn-group">
           <div class="btn-group dropleft" role="group">
@@ -479,7 +479,7 @@
             <i class="fa fa-sort-desc"></i>
             <span class="sr-only">Toggle Dropdown</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" >
               <li>
                 @if($selling_price_group_count)
                 <a href="#" id="submit_n_add_selling_prices" type="submit" value="submit_n_add_selling_prices"

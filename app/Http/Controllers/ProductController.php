@@ -827,6 +827,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request);
         if (!auth()->user()->can('product.update')) {
             abort(403, 'Unauthorized action.');
         }
@@ -834,12 +835,12 @@ class ProductController extends Controller
         try {
 
             //fields to product_has_suppliers table pivote
-            $supplier_ids = $request->input('supplier_ids');
-            $catalogue = $request->input('catalogue');
-            $uxc = $request->input('uxc');
-            $weight_product = $request->input('weight_product');
-            $dimensions = $request->input('dimensions');
-            $custom_fields = $request->input('custom_field');
+            //$supplier_ids = $request->input('supplier_ids');
+            // $catalogue = $request->input('catalogue');
+            // $uxc = $request->input('uxc');
+            // $weight_product = $request->input('weight_product');
+            // $dimensions = $request->input('dimensions');
+            // $custom_fields = $request->input('custom_field');
 
             //fields to kit_has_products table pivote
             $product_ids = $request->input('product_ids');
@@ -864,7 +865,7 @@ class ProductController extends Controller
                 'warranty',
                 'volume',
                 'download_time',
-                'drive_unit'
+                //'drive_unit'
             ]);
 
             $product_details['status'] = !empty($request->input('is_active')) ? 'active' : 'inactive';
@@ -914,7 +915,7 @@ class ProductController extends Controller
             $product->status = $product_details['status'];
             $product->volume = $product_details['volume'];
             $product->download_time = $product_details['download_time'];
-            $product->drive_unit = $product_details['drive_unit'];
+            //$product->drive_unit = $product_details['drive_unit'];
 
             if (!empty($request->input('sub_category_id'))) {
                 $product->sub_category_id = $request->input('sub_category_id');
@@ -1003,42 +1004,49 @@ class ProductController extends Controller
             if (!empty($product_racks_update)) {
                 $this->productUtil->updateRackDetails($business_id, $product->id, $product_racks_update);
             }
-            if ($product->clasification == "product") {
-                if (!empty($supplier_ids)) {
-                    ProductHasSuppliers::where('product_id', $id)->forceDelete();
-                    $cont = 0;
-                    while ($cont < count($supplier_ids)) {
-                        $detail = new ProductHasSuppliers;
-                        $detail->product_id = $product->id;
-                        $detail->contact_id = $supplier_ids[$cont];
+            // if ($product->clasification == "product") {
+            //     if (!empty($supplier_ids)) {
+            //         ProductHasSuppliers::where('product_id', $id)->forceDelete();
+            //         $cont = 0;
+            //         while ($cont < count($supplier_ids)) {
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
 
-                        $detail->catalogue = $catalogue[$cont];
-                        $detail->uxc = $uxc[$cont];
-                        $detail->weight = $weight_product[$cont];
-                        $detail->dimensions = $dimensions[$cont];
-                        $detail->custom_field = $custom_fields[$cont];
+            //             $detail->catalogue = $catalogue[$cont];
+            //             $detail->uxc = $uxc[$cont];
+            //             $detail->weight = $weight_product[$cont];
+            //             $detail->dimensions = $dimensions[$cont];
+            //             $detail->custom_field = $custom_fields[$cont];
 
-                        $detail->save();
-                        $cont = $cont + 1;
-                    }
-                } else {
-                    ProductHasSuppliers::where('product_id', $id)->forceDelete();
-                }
-            }
+            //             $detail->save();
+            //             $cont = $cont + 1;
+            //         }
+            //     } else {
+            //         ProductHasSuppliers::where('product_id', $id)->forceDelete();
+            //     }
+            // }
+            
+            
+            
+            
+            
+            
             if ($product->clasification == "kits") {
                 if (!empty($product_ids)) {
+                    //dd($quantity);
                     KitHasProduct::where('parent_id', $id)->forceDelete();
                     $cont = 0;
                     while ($cont < count($product_ids)) {
                         $detail = new KitHasProduct;
-                        $detail->parent_id = $product->id;
+                        $detail->parent_id = $id;
                         $detail->children_id = $product_ids[$cont];
-                        $detail->quantity = $quantity[$cont];
-                        if ($clas[$cont] == 'product') {
+                        $detail->quantity = $quantity[$product_ids[$cont]];
+                        if ($clas[$product_ids[$cont]] == 'product') {
                             if ($this->getUnitConf($business_id) == 1) {
-                                $detail->unit_group_id_line = $child[$cont];
+                                $detail->unit_group_id_line = $child[$product_ids[$cont]];
                             } else {
-                                $detail->unit_id = $child[$cont];
+                                $detail->unit_id = $child[$product_ids[$cont]];
                             }
                         }
                         $detail->save();
@@ -2206,23 +2214,43 @@ class ProductController extends Controller
         try{
             $product = Product::findOrFail($id);
             $supplier_ids = $request->input('supplier_ids');
+            // if (!empty($supplier_ids)) {
+            //     $cont = 0;
+            //     while ($cont < count($supplier_ids)) {
+            //         $detail = ProductHasSuppliers::where('product_id', $product->id)->where('contact_id', $supplier_ids[$cont])->first();
+            //         if($detail == null){
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
+            //             $detail->catalogue = '-';
+            //             $detail->uxc = 0;
+            //             $detail->weight = 0;
+            //             $detail->dimensions = 0;
+            //             $detail->custom_field = '-';
+            //             $detail->save();
+            //         }
+            //         $cont = $cont + 1;
+            //     }
+            // }
             if (!empty($supplier_ids)) {
+                ProductHasSuppliers::where('product_id', $product->id)->forceDelete();
                 $cont = 0;
                 while ($cont < count($supplier_ids)) {
-                    $detail = ProductHasSuppliers::where('product_id', $product->id)->where('contact_id', $supplier_ids[$cont])->first();
-                    if($detail == null){
-                        $detail = new ProductHasSuppliers;
-                        $detail->product_id = $product->id;
-                        $detail->contact_id = $supplier_ids[$cont];
-                        $detail->catalogue = '-';
-                        $detail->uxc = 0;
-                        $detail->weight = 0;
-                        $detail->dimensions = 0;
-                        $detail->custom_field = '-';
-                        $detail->save();
-                    }
+                    $detail = new ProductHasSuppliers;
+                    $detail->product_id = $product->id;
+                    $detail->contact_id = $supplier_ids[$cont];
+    
+                    $detail->catalogue = '-';
+                    $detail->uxc = 0;
+                    $detail->weight = 0;
+                    $detail->dimensions = 0;
+                    $detail->custom_field = '-';
+    
+                    $detail->save();
                     $cont = $cont + 1;
                 }
+            } else {
+                ProductHasSuppliers::where('product_id', $id)->forceDelete();
             }
             $output = [
                 'success' => 1,
