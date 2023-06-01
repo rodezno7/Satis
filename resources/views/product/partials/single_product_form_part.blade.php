@@ -43,7 +43,7 @@ $class = '';
         </td>
 
         <td>
-          <label><span class="dsp_label">@lang('product.exc_of_tax')</span></label>
+          <label><span class="dsp_label">@lang('product.exc_of_tax')</span>:*</label>
           {!! Form::text('single_dsp', $default, ['class' => 'form-control input-sm dsp input_number', 'placeholder' => 'Excluding tax', 'id' => 'single_dsp', 'required']); !!}
 
           {!! Form::text('single_dsp_inc_tax', $default, ['class' => 'form-control input-sm hide input_number', 'placeholder' => 'Including tax', 'id' => 'single_dsp_inc_tax', 'required']); !!}

@@ -42,7 +42,7 @@
                     </td>
 
                     <td>
-                        <br/>
+                      <label> @lang('product.margin') </label>
                         {!! Form::text('profit_percent', number_format($variation->profit_percent, $price_precision), ['class' => 'form-control input-sm input_number', 'id' => 'profit_percent', 'required']); !!}
                     </td>
 

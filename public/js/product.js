@@ -629,6 +629,28 @@ $(document).ready(function(){
 			$('button.submit_product_form').prop('disabled', false);
 		}
     });
+
+	// Cancel button
+	$(document).on('click', 'button#cancel_product', function(e) {
+		e.preventDefault();
+		Swal.fire({
+			title: LANG.sure,
+			text: LANG.cancel_transfer_msg,
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: LANG.yes,
+			cancelButtonText: LANG.not,
+		}).then((resul) => {
+			if (resul.isConfirmed) {
+				setTimeout(function() { window.location = '/products'; }, 1000);
+				
+			} else {
+				return false;
+			}
+		});
+	});
 });
 
 function toggle_dsp_input(){

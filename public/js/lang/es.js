@@ -151,6 +151,8 @@ LANG = {
     'cashier_closure_will_send_with_differences' : 'El cierre de caja se enviará con diferencias',
     "save_transfer_msg": "No se descargarán productos hasta que el traslado sea enviado",
     "send_transfer_msg": "Se descargarán los productos de su bodega origen",
+    "cancel_product_msg": "Se eliminará el producto de este listado",
+    "cancel_supplier_msg": "Se eliminará el proveedor de este listado",
     "cancel_transfer_msg": "No se guardarán los cambios",
     "receive_transfer_msg": "Se cargarán los productos a su bodega destino",
     "count_transfer_msg": "Se contabilizará el traslado",

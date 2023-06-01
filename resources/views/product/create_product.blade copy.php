@@ -22,18 +22,6 @@
 	var cont = 0;
 	var supplier_ids = [];
 	
-	$(document).on('change', '#has_warranty', function ()
-    {
-        if ($("#has_warranty").is(":checked")) {
-            $('#has_warranty').val('1');
-            $('#hasW').show();
-        } else {
-            $('#hasW').hide();
-            $("#warranty").val('');
-            $('#has_warranty').val('0');
-        }
-    });
-
 	function addSupplier()
 	{
 		var route = "/contacts/showSupplier/"+id;
@@ -59,7 +47,6 @@
 			}
 		});
 	}
-
 	$("#supplier_id").change(function(event){
 		id = $("#supplier_id").val();
 		if(id.length > 0)
@@ -67,12 +54,10 @@
 			addSupplier();
 		}
 	});
-
 	function deleteSupplier(index, id){ 
 		$("#fila" + index).remove();
 		supplier_ids.removeItem(id);
 	}
-
 	Array.prototype.removeItem = function (a) {
 		for (var i = 0; i < this.length; i++) {
 			if (this[i] == a) {
@@ -84,7 +69,6 @@
 			}
 		}
 	};
-
 	$("#clasification").change(function(event){
 		type = $("#clasification").val();
 		if(type == "service")
@@ -94,7 +78,7 @@
 			$("#unit_id").prop('required', false);
 			$('#divExcludeService').hide();
 			$('#divExcludeService2').hide();
-			//$('#divExcludeService3').hide();
+			$('#divExcludeService3').hide();
 			$('#divExcludeService4').hide();
 			$("#opening_stock_button").hide();
 			$("#submit_n_add_selling_prices").hide();
@@ -128,7 +112,7 @@
 			$("#div_unit").hide();
 
 			$('#divExcludeService2').hide();
-			//$('#divExcludeService3').hide();
+			$('#divExcludeService3').hide();
 			$('#divExcludeService4').show();
 			$("#opening_stock_button").hide();
 			$("#submit_n_add_selling_prices").hide();
@@ -161,7 +145,7 @@
 			$("#unit_id").prop('required', true);
 			$('#divExcludeService').show();
 			$('#divExcludeService2').show();
-			//$('#divExcludeService3').show();
+			$('#divExcludeService3').show();
 			$('#divExcludeService4').hide();
 			$("#opening_stock_button").show();
 			$("#submit_n_add_selling_prices").show();
@@ -169,12 +153,78 @@
 			$("#enable_stock").prop('checked', true);
 		}
 	});
-
 	$(document).on('submit', 'form#product_add_form', function(e) {
-		$(this).find('button[type="submit"]').attr('disabled', true);
-		$("#btnUndo").attr('disabled', true);
-	});
+    //e.preventDefault();
+    $(this).find('button[type="submit"]').attr('disabled', true);
+    $("#btnUndo").attr('disabled', true);
+   /* submit_type = $('#submit_type').val();
+    data = new FormData($(this)[0]);
+    data.append("product_descript", $('#product_description').val());
+    $.ajax({
+        url: $(this).attr("action"),
+        type: 'POST',
+        data: data,
+        processData: false,
+        contentType: false,
+        success: function(result) {
+            if (result.success == true){
 
+                if(submit_type == 'save_n_add_another'){
+                    cls();
+                    $("#product_add_form").find('button[type="submit"]').attr('disabled', false);
+                    $("#btnUndo").attr('disabled', false);
+                    $("#product_table").DataTable().ajax.reload();
+                    Swal.fire({
+                        title: ""+result.msg+"",
+                        icon: "success",});
+                }
+
+                if(submit_type == 'submit'){
+                    cls();
+                    $("#product_add_form").find('button[type="submit"]').attr('disabled', false);
+                    $("#btnUndo").attr('disabled', false);
+                    $("#product_table").DataTable().ajax.reload();
+                    $("#btn_cancel").hide();
+                    $("#btn_add").show();
+                    $('#div_add').hide();
+                    $('#div_index').show();
+                    $("#header_add").hide();
+                    $("#header_index").show();
+                    Swal.fire({
+                        title: ""+result.msg+"",
+                        icon: "success",});
+                }
+
+                if(submit_type == 'submit_n_add_opening_stock'){
+                    Swal.fire({
+                        title: ""+result.msg+"",
+                        icon: "success",});
+                    id = result.product_id;
+                    var url = '{!!URL::to('/opening-stock/add/:id')!!}';
+                    url = url.replace(':id', id);
+                    window.location.href = url;
+                }
+                
+                if(submit_type == 'submit_n_add_selling_prices'){
+                    Swal.fire({
+                        title: ""+result.msg+"",
+                        icon: "success",});
+                    id = result.product_id;
+                    var url = '{!!URL::to('/products/add-selling-prices/:id')!!}';
+                    url = url.replace(':id', id);
+                    window.location.href = url;
+                }
+            }
+            else{
+                $("#product_add_form").find('button[type="submit"]').attr('disabled', false);
+                $("#btnUndo").attr('disabled', false);
+                Swal.fire({
+                    title: ""+result.msg+"",
+                    icon: "error",});
+            }
+        }
+    });*/
+});
 	function cls(){
 		$("#lista").empty();
 		$("#listak").empty();
@@ -197,7 +247,7 @@
 		$("#unit_id").prop('required', true);
 		$('#divExcludeService').show();
 		$('#divExcludeService2').show();
-		//$('#divExcludeService3').show();
+		$('#divExcludeService3').show();
 		$("#opening_stock_button").show();
 		$("#div_type").show();
 
@@ -216,7 +266,9 @@
 				}
 			}
 		});
+
 	}
+
 
 	var contk = 0;
 	var kit_idsk = [];
@@ -269,7 +321,7 @@
 					unit = 'N/A'
 					kit_idsk.push(variation_id);
 					valor.push(contk);
-					var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="service">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+					var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="service">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min=1 value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 					$("#listak").append(fila);
 					contk++;
 					getTotalKit();
@@ -286,7 +338,7 @@
 								});
 								kit_idsk.push(variation_id);
 								valor.push(contk);
-								var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product"><select name="kit_child['+contk+']" id="kit_child['+contk+']" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+								var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product"><select name="kit_child['+contk+']" id="kit_child['+contk+']" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min=1 value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 								$("#listak").append(fila);
 								contk++;
 								getTotalKit();
@@ -297,7 +349,7 @@
 
 							kit_idsk.push(variation_id);
 							valor.push(contk);
-							var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+							var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min=1 value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 							$("#listak").append(fila);
 							contk++;
 							getTotalKit();
@@ -306,120 +358,103 @@
 				}
 			}
 		});
-	}
-
-	function deleteChildren(index, id){
-		Swal.fire({
-			title: LANG.sure,
-			text: LANG.cancel_product_msg,
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: LANG.yes,
-			cancelButtonText: LANG.not,
-		}).then((resul) => {
-			if (resul.isConfirmed) {
-				$("#filak" + index).remove();
-				kit_idsk.removeItem(id);
-				if(kit_idsk.length == 0)
-				{
-					total=0;
-					contk = 0;
-					kit_idsk=[];
-					valor=[];
-				}
-				getTotalKit();
-				
-			} else {
-				return false;
-			}
-		}); 
-	}
-
-	$(document).on( 'change', 'select#kit_children', function(event){
-		id = $("#kit_children").val();
-		if(id != 0){
-			addChildren();
-			$("#kit_children").val(0).change();
-		}
-	});
-
-	function getTotalKit()
+}
+function deleteChildren(index, id){ 
+	$("#filak" + index).remove();
+	kit_idsk.removeItem(id);
+	if(kit_idsk.length == 0)
 	{
-		// Number of decimal places to store and use in calculations
-		let price_precision = $('#price_precision').length > 0 ? $('#price_precision').val() : 6;
+		total=0;
+		contk = 0;
+		kit_idsk=[];
+		valor=[];
+	}
+	getTotalKit();
+}
 
-		quantity = 0.00;
-		price = 0.00;
-		total = 0.00;
-		$.each(valor, function(value){
-			quantityg = $("#quantity"+value+"").val();
-			priceg = $("#price"+value+"").val();
-			if(quantityg)
+$(document).on( 'change', 'select#kit_children', function(event){
+	id = $("#kit_children").val();
+	if(id != 0){
+		addChildren();
+		$("#kit_children").val(0).change();
+	}
+});
+
+function getTotalKit()
+{
+	// Number of decimal places to store and use in calculations
+	let price_precision = $('#price_precision').length > 0 ? $('#price_precision').val() : 6;
+
+	quantity = 0;
+	price = 0.00;
+	total = 0.00;
+	$.each(valor, function(value){
+		quantityg = $("#quantity"+value+"").val();
+		priceg = $("#price"+value+"").val();
+		if(quantityg)
+		{
+			if(isNaN(quantityg))
 			{
-				if(isNaN(quantityg))
-				{
-					quantity = parseFloat(0.00);
-				}
-				else
-				{
-					quantity = parseFloat($("#quantity"+value+"").val());
-				}
+				quantity = parseInt(0);
 			}
 			else
 			{
-				quantity = parseFloat(0.00);
+				quantity = parseInt($("#quantity"+value+"").val());
 			}
-			if(priceg)
-			{
-				if(isNaN(priceg))
-				{
-					price = 0.00;
-				}
-				else
-				{
-					price = parseFloat($("#price"+value+"").val());
-				}
-
-			}
-			else
+		}
+		else
+		{
+			quantity = parseInt(0);
+		}
+		if(priceg)
+		{
+			if(isNaN(priceg))
 			{
 				price = 0.00;
 			}
-			subtotal = quantity * price;
-			if(isNaN(subtotal))
+			else
 			{
-				subtotal = 0.00;
+				price = parseFloat($("#price"+value+"").val());
 			}
-			if(isInfinite(total))
-			{
-				subtotal = 0.00;
-			}
-			total = total + subtotal;
-		});
-		$("#single_dpp").val(total);
-		var purchase_exc_tax = __read_number($('input#single_dpp'));
-		purchase_exc_tax = (purchase_exc_tax == undefined) ? 0 : purchase_exc_tax;
 
-		var tax_rate = $('select#tax').find(':selected').data('rate');
-		tax_rate = (tax_rate == undefined) ? 0 : tax_rate;
+		}
+		else
+		{
+			price = 0.00;
+		}
+		subtotal = quantity * price;
+		if(isNaN(subtotal))
+		{
+			subtotal = 0.00;
+		}
+		if(isInfinite(total))
+		{
+			subtotal = 0.00;
+		}
+		total = total + subtotal;
+	});
+	$("#single_dpp").val(total);
+	var purchase_exc_tax = __read_number($('input#single_dpp'));
+	purchase_exc_tax = (purchase_exc_tax == undefined) ? 0 : purchase_exc_tax;
 
-		var purchase_inc_tax = __add_percent(purchase_exc_tax, tax_rate);
-		__write_number($('input#single_dpp_inc_tax'), purchase_inc_tax, false, price_precision);
+	var tax_rate = $('select#tax').find(':selected').data('rate');
+	tax_rate = (tax_rate == undefined) ? 0 : tax_rate;
 
-		var profit_percent = __read_number($('#profit_percent'));
-		var selling_price = __add_percent(purchase_exc_tax, profit_percent);
-		__write_number($('input#single_dsp'), selling_price, false, price_precision);
+	var purchase_inc_tax = __add_percent(purchase_exc_tax, tax_rate);
+	__write_number($('input#single_dpp_inc_tax'), purchase_inc_tax, false, price_precision);
 
-		var selling_price_inc_tax = __add_percent(selling_price, tax_rate);
-		__write_number($('input#single_dsp_inc_tax'), selling_price_inc_tax, false, price_precision);
-	}
+	var profit_percent = __read_number($('#profit_percent'));
+	var selling_price = __add_percent(purchase_exc_tax, profit_percent);
+	__write_number($('input#single_dsp'), selling_price, false, price_precision);
 
-	function isInfinite(n)
-	{
-		return n === n/0;
-	}
+	var selling_price_inc_tax = __add_percent(selling_price, tax_rate);
+	__write_number($('input#single_dsp_inc_tax'), selling_price_inc_tax, false, price_precision);
+}
+
+function isInfinite(n)
+{
+	return n === n/0;
+}
 
 </script>
 @endsection

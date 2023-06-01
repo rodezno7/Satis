@@ -33,6 +33,7 @@ return [
 	"use_template" => "Usar plantilla",
 	"add_variation" => "Agregar variación",
 	"product_added_success" => "Producto agregado con éxito",
+	'supplier_added_success'=> 'Proveedores agregados con éxito',
 	"product_updated_success" => "Producto actualizado con éxito",
 	"enable_product_expiry" => "Habilitar vencimiento del producto", 
 	"expiry_period" => "Período de caducidad", 

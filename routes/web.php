@@ -163,6 +163,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     Route::get('/products/view/{id}', 'ProductController@view');
     Route::get('/products/viewSupplier/{id}', 'ProductController@viewSupplier');
+    Route::post('/products/addSupplier/{id}', 'ProductController@addSupplier');
+    Route::get('/products/deleteSupplier/{id}/{supplierId}', 'ProductController@deleteSupplier');
     Route::get('/products/viewKit/{id}', 'ProductController@viewKit');
     Route::get('/products/productHasSuppliers/{id}', 'ProductController@productHasSuppliers');
     Route::get('/products/kitHasProduct/{id}', 'ProductController@kitHasProduct');
@@ -188,6 +190,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('/products/get-recalculate-cost', 'ProductController@postRecalculateCost');
 
     Route::resource('products', 'ProductController');
+    Route::get('/products/create', 'ProductController@create')->name('product.create');
 
     Route::get('/purchases/get_products', 'PurchaseController@getProducts');
     Route::get('/purchases/get_suppliers', 'PurchaseController@getSuppliers');
