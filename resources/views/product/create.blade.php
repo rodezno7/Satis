@@ -236,88 +236,36 @@
   </div>
 </div>
 
-
-    {{-- Proveedores --}}
-    {{-- <div id="divExcludeService3">
-      <div class="row">
-        <div class="col-lg-6 col-sm-12">
-          <div class="form-group">
-            {!! Form::label('supplier_id', __('purchase.supplier') . ':*') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-user"></i>
-              </span>
-              {!! Form::select('contact_id', [], null, ['style' => 'width: 100%', 'class' => 'form-control',
-              'placeholder' => __('messages.please_select'), 'id' => 'supplier_id']); !!}
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default bg-white btn-flat add_new_supplier" data-name=""><i
-                    class="fa fa-plus-circle text-primary fa-lg"></i></button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12 col-sm-12">
-          <table id="suppliersTable" class="table table-responsive" width="100%">
-            <thead>
-              <tr>
-                <th style="width: 10%">@lang('messages.actions')</th>
-                <th>@lang('business.business_name')</th>
-                <th>@lang('contact.name')</th>
-                <th>@lang('contact.contact')</th>
-                <th>@lang('contact.catalogue')</th>
-                <th>@lang('contact.uxc')</th>
-                <th>@lang('lang_v1.weight')</th>
-                <th>@lang('contact.dimensions')</th>
-                <th>@lang('contact.custom')</th>
-              </tr>
-            </thead>
-            <tbody id="lista">
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div> --}}
-
 <div class="boxform_u box-solid_u" id="divExcludeService4" style="display: none;">
   <div class="box-body">
       <div class="row">
         <div class="col-lg-4 col-sm-6">
           <div class="form-group">
             {!! Form::label('kit_children', __('product.clasification_product') . ':*') !!}
-            <select name="kit_children" id="kit_children" class="form-control select2" style="width: 100%;">
-              <option value="0">@lang('messages.please_select')</option>
-              @foreach($products as $product)
-              @if($product->sku != $product->sub_sku)
-              <option value="{{ $product->id }}">{{ $product->name_product }} {{ $product->name_variation }}</option>
-              @else
-              <option value="{{ $product->id }}">{{ $product->name_product }}</option>
-              @endif
-              @endforeach
-            </select>
+            {!! Form::select('kit_children', [], null, ['style' => 'width: 100%', 'class' => 'form-control',
+              'placeholder' => __('messages.please_select'), 'id' => 'kit_children']); !!}
           </div>
         </div>
-        {{-- <div class="col-sm-9">
-        </div> --}}
       </div>
       <div class="row">
         <div class="col-sm-12">
-          <table id="kitTable" class="table table-responsive" width="100%">
-            <thead>
-              <tr>
-                <th style="width: 15%;">@lang('sale.product')</th>
-                <th style="width: 15%;">@lang('product.sku')</th>
-                <th style="width: 15%;">@lang('product.brand')</th>
-                <th style="width: 15%;">@lang('product.unit')</th>
-                <th style="width: 15%;">@lang('product.price')</th>
-                <th style="width: 15%;">@lang('product.product_quantity')</th>
-                <th style="width: 10%;">@lang('messages.actions')</th>
-              </tr>
-            </thead>
-            <tbody id="listak">
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table id="kitTable" class="table" width="100%">
+              <thead>
+                <tr>
+                  <th style="width: 15%;">@lang('sale.product')</th>
+                  <th style="width: 15%;">@lang('product.sku')</th>
+                  <th style="width: 15%;">@lang('product.brand')</th>
+                  <th style="width: 15%;">@lang('product.unit')</th>
+                  <th style="width: 15%;">@lang('product.price')</th>
+                  <th style="width: 15%;">@lang('product.product_quantity')</th>
+                  <th style="width: 10%;">@lang('messages.actions')</th>
+                </tr>
+              </thead>
+              <tbody id="listak">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
   </div>
@@ -503,27 +451,6 @@
           </div>
         </div>
         <button type="button" id="cancel_product" class="btn btn-danger">@lang('messages.cancel')</button>
-
-        {{-- <div class="text-center">
-          <div class="btn-group">
-            @if($selling_price_group_count)
-            <button id="submit_n_add_selling_prices" type="submit" value="submit_n_add_selling_prices"
-              class="btn btn-warning submit_product_form">@lang('lang_v1.save_n_add_selling_price_group_prices')</button>
-            @endif
-
-            <button id="opening_stock_button" @if(!empty($duplicate_product) && $duplicate_product->enable_stock ==
-              0)
-              disabled @endif type="submit" value="submit_n_add_opening_stock" class="btn bg-purple
-              submit_product_form">@lang('lang_v1.save_n_add_opening_stock')</button>
-
-            <button type="submit" value="save_n_add_another"
-              class="btn bg-maroon submit_product_form">@lang('lang_v1.save_n_add_another')</button>
-
-            <button id="btnAdd" type="submit" value="submit"
-              class="btn btn-primary">@lang('messages.save')</button>
-            <button type="button" class="btn btn-danger">@lang('messages.cancel')</button>
-          </div>
-        </div> --}}
       </div>
     </div>
   </div>

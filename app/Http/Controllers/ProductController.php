@@ -488,17 +488,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request);
         if (!auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
         try {
             //fields to product_has_suppliers table pivote
-            $supplier_ids = $request->input('supplier_ids');
-            $catalogue = $request->input('catalogue');
-            $uxc = $request->input('uxc');
-            $weight_product = $request->input('weight_product');
-            $dimensions = $request->input('dimensions');
-            $custom_fields = $request->input('custom_field');
+            // $supplier_ids = $request->input('supplier_ids');
+            // $catalogue = $request->input('catalogue');
+            // $uxc = $request->input('uxc');
+            // $weight_product = $request->input('weight_product');
+            // $dimensions = $request->input('dimensions');
+            // $custom_fields = $request->input('custom_field');
 
             //fields to kit_has_products table pivote
             $product_ids = $request->input('product_ids');
@@ -589,23 +590,24 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             $product = Product::create($product_details);
-            if ($clasification == "product") {
-                if (!empty($supplier_ids)) {
-                    $cont = 0;
-                    while ($cont < count($supplier_ids)) {
-                        $detail = new ProductHasSuppliers;
-                        $detail->product_id = $product->id;
-                        $detail->contact_id = $supplier_ids[$cont];
-                        $detail->catalogue = $catalogue[$cont];
-                        $detail->uxc = $uxc[$cont];
-                        $detail->weight = $weight_product[$cont];
-                        $detail->dimensions = $dimensions[$cont];
-                        $detail->custom_field = $custom_fields[$cont];
-                        $detail->save();
-                        $cont = $cont + 1;
-                    }
-                }
-            }
+            // if ($clasification == "product") {
+            //     if (!empty($supplier_ids)) {
+            //         $cont = 0;
+            //         while ($cont < count($supplier_ids)) {
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
+            //             $detail->catalogue = $catalogue[$cont];
+            //             $detail->uxc = $uxc[$cont];
+            //             $detail->weight = $weight_product[$cont];
+            //             $detail->dimensions = $dimensions[$cont];
+            //             $detail->custom_field = $custom_fields[$cont];
+            //             $detail->save();
+            //             $cont = $cont + 1;
+            //         }
+            //     }
+            // }
+            
             if ($clasification == "kits") {
                 if (!empty($product_ids)) {
                     $cont = 0;
@@ -664,7 +666,7 @@ class ProductController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __("messages.something_went_wrong")
+                'msg' => $e->getMessage()
             ];
         }
 
@@ -1028,10 +1030,6 @@ class ProductController extends Controller
             // }
             
             
-            
-            
-            
-            
             if ($product->clasification == "kits") {
                 if (!empty($product_ids)) {
                     //dd($quantity);
@@ -1041,12 +1039,12 @@ class ProductController extends Controller
                         $detail = new KitHasProduct;
                         $detail->parent_id = $id;
                         $detail->children_id = $product_ids[$cont];
-                        $detail->quantity = $quantity[$product_ids[$cont]];
-                        if ($clas[$product_ids[$cont]] == 'product') {
+                        $detail->quantity = $quantity[$cont];
+                        if ($clas[$cont] == 'product') {
                             if ($this->getUnitConf($business_id) == 1) {
-                                $detail->unit_group_id_line = $child[$product_ids[$cont]];
+                                $detail->unit_group_id_line = $child[$cont];
                             } else {
-                                $detail->unit_id = $child[$product_ids[$cont]];
+                                $detail->unit_id = $child[$cont];
                             }
                         }
                         $detail->save();
@@ -2282,7 +2280,7 @@ class ProductController extends Controller
             ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
             //->leftJoin('variation_location_details as stock', 'variations.id', '=', 'stock.variation_id')
             ->select('products.clasification', 'variations.id as variation_id', 'products.id as product_id', 'products.name as name_product', 'variations.name as name_variation', 'products.sku', 'variations.sub_sku', 'brands.name as brand', 'products.unit_group_id', 'products.unit_id', 'variations.default_purchase_price')
-            ->where('variations.id', $id)
+            ->where('products.id', $id)
             ->first();
         return response()->json($products);
     }

@@ -257,7 +257,7 @@ $(document).ready(function(){
 		}
 	});
     //End for product type single
-	$(document).on( 'click', 'button.submit_product_edit_form', function(e){
+	$(document).on( 'click', '.submit_product_edit_form', function(e){
 		e.preventDefault();
 		var submit_type = $(this).attr('value');
 		$('#submit_type').val(submit_type);

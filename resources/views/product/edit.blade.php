@@ -5,16 +5,15 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>@lang('product.edit_product')</h1>
-  <!-- <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol> -->
+  <ol class="breadcrumb">
+    <li><a href="/products"><i class="fa fa-list"></i> Productos</a></li>
+    <li class="active">Editar</li>
+  </ol> 
 </section>
 
 <!-- Main content -->
 <section class="content">
-  {!! Form::open(['url' => action('ProductController@update' , [$product->id] ), 'method' => 'PUT', 'id' =>
-  'product_edit_form',
+  {!! Form::open(['url' => action('ProductController@update' , [$product->id] ), 'method' => 'PUT', 'id' => 'product_edit_form',
   'class' => 'product_form', 'files' => true ]) !!}
   <input type="hidden" id="product_id" value="{{ $product->id }}">
   <input type="hidden" id="product_clasification" value="{{ $product->clasification }}">
@@ -139,15 +138,6 @@
               'placeholder' => __('product.alert_quantity') , 'min' => '0']); !!}
             </div>
           </div>
-
-          {{-- <div class="col-sm-3">
-            <div class="form-group">
-              <label from="dai">@lang('product.dai')</label>
-              <input type="text" name="dai" value="{{$product->dai}}" id="dai" class="form-control"
-                placeholder="@lang('product.dai_label')">
-            </div>
-          </div> --}}
-
           <div class="col-lg-4 col-sm-6">
             <div class="form-group">
               <label>
@@ -159,21 +149,6 @@
               <small class="help-block"><i>@lang('product.check_dai_help')</i></small>
             </div>
           </div>
-
-          {{-- <div class="col-sm-3">
-            <div class="form-group">
-              <label from="provider_code">@lang('product.provider_code')</label>
-              <input type="text" name="provider_code" id="provider_code" value="{{ $product->provider_code }}"
-                class="form-control" placeholder="@lang('product.provider_code')">
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="form-group">
-              <label from="drive_unit ">@lang('product.drive_unit')</label>
-              <input type="text" name="drive_unit" id="drive_unit" value="{{ $product->drive_unit }}"
-                class="form-control input_number" placeholder="@lang('product.drive_unit')">
-            </div>
-          </div> --}}
         </div>
       </div>
 
@@ -217,57 +192,6 @@
       </div>
     </div>
   </div>
-  {{-- <div id="divExcludeService3">
-    <div class="boxform_u box-solid_u">
-      <div class="box-body">
-        <div class="row">
-          <div class="col-sm-3">
-            <div class="form-group">
-              {!! Form::label('supplier_id', __('purchase.supplier') . ':*') !!}
-              <div class="input-group">
-                <span class="input-group-addon">
-                  <i class="fa fa-user"></i>
-                </span>
-                {!! Form::select('contact_id', [], null, ['class' => 'form-control', 'placeholder' =>
-                __('messages.please_select'), 'id' => 'supplier_id']); !!}
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-default bg-white btn-flat add_new_supplier" data-name=""><i
-                      class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-9">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <table id="suppliersTable" class="table table-responsive" width="100%">
-            <thead>
-              <tr>
-                <th style="width: 10%">@lang('messages.actions')</th>
-                <th>@lang('business.business_name')</th>
-                <th>@lang('contact.name')</th>
-                <th>@lang('contact.contact')</th>
-                <th>@lang('contact.catalogue')</th>
-                <th>@lang('contact.uxc')</th>
-                <th>@lang('lang_v1.weight')</th>
-                <th>@lang('contact.dimensions')</th>
-                <th>@lang('contact.custom')</th>
-                <th>@lang('contact.last_purchase_date')</th>
-                <th>@lang('lang_v1.quantity')</th>
-                <th>@lang('purchase.unit_price')</th>
-                <th>@lang('purchase.purchase_total')</th>
-              </tr>
-            </thead>
-            <tbody id="lista">
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div> --}}
   <div id="divExcludeService4" @if(!auth()->user()->can('product.view_cost')) class='hide' @endif style="display:
     none;">
     <div class="boxform_u box-solid_u">
@@ -276,39 +200,31 @@
           <div class="col-lg-4 col-sm-6">
             <div class="form-group">
               {!! Form::label('kit_children', __('product.clasification_product') . ':*') !!}
-              <select name="kit_children" id="kit_children" class="form-control select2" style="width: 100%;">
-                <option value="0">@lang('messages.please_select')</option>
-                @foreach($products as $prod)
-                @if($prod->sku != $prod->sub_sku)
-                <option value="{{ $prod->id }}">{{ $prod->name_product }} {{ $prod->name_variation }}</option>
-                @else
-                <option value="{{ $prod->id }}">{{ $prod->name_product }}</option>
-                @endif
-                @endforeach
-              </select>
+              {!! Form::select('kit_children', [], null, ['style' => 'width: 100%', 'class' => 'form-control',
+              'placeholder' => __('messages.please_select'), 'id' => 'kit_children']); !!}
             </div>
           </div>
-          {{-- <div class="col-sm-9">
-          </div> --}}
         </div>
 
         <div class="row">
           <div class="col-sm-12">
-            <table id="kitTable" class="table table-responsive" width="100%">
-              <thead>
-                <tr>
-                  <th style="width: 15%;">@lang('sale.product')</th>
-                  <th style="width: 15%;">@lang('product.sku')</th>
-                  <th style="width: 15%;">@lang('product.brand')</th>
-                  <th style="width: 15%;">@lang('product.unit')</th>
-                  <th style="width: 15%;">@lang('product.price')</th>
-                  <th style="width: 15%;">@lang('product.product_quantity')</th>
-                  <th style="width: 10%;">@lang('messages.actions')</th>
-                </tr>
-              </thead>
-              <tbody id="listak">
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table id="kitTable" class="table" width="100%">
+                <thead>
+                  <tr>
+                    <th style="width: 15%;">@lang('sale.product')</th>
+                    <th style="width: 15%;">@lang('product.sku')</th>
+                    <th style="width: 15%;">@lang('product.brand')</th>
+                    <th style="width: 15%;">@lang('product.unit')</th>
+                    <th style="width: 15%;">@lang('product.price')</th>
+                    <th style="width: 15%;">@lang('product.product_quantity')</th>
+                    <th style="width: 10%;">@lang('messages.actions')</th>
+                  </tr>
+                </thead>
+                <tbody id="listak">
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -471,26 +387,29 @@
 
             <div class="btn-group">
               <div class="btn-group dropleft" role="group">
-                <button type="submit" value="submit" class="btn btn-primary submit_product_edit_form">@lang('messages.update')</button>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-sort-desc"></i>
-                <span class="sr-only">Toggle Dropdown</span>
+                <button type="submit" value="submit"
+                  class="btn btn-primary submit_product_edit_form">@lang('messages.update')</button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-sort-desc"></i>
+                  <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                   <li>
                     @if($selling_price_group_count)
-                    <a href="#" id="submit_n_add_selling_prices" type="submit" value="submit_n_add_selling_prices"
-                      class="submit_product_form">@lang('lang_v1.save_n_add_selling_price_group_prices')</a>
+                    <a href="#" type="submit" id="submit_n_add_selling_prices" value="submit_n_add_selling_prices"
+                      class="submit_product_edit_form">@lang('lang_v1.save_n_add_selling_price_group_prices')</a>
                     @endif
                   </li>
                   <li>
-                    <a href="#" id="update_n_edit_opening_stock" type="submit" @if(empty($product->enable_stock)) disabled="true"
-                      @endif id="opening_stock_button" value="update_n_edit_opening_stock" class="submit_product_form">
+                    <a href="#" type="submit" id="update_n_edit_opening_stock" @if(empty($product->enable_stock))
+                      disabled="true"
+                      @endif value="update_n_edit_opening_stock" class="submit_product_edit_form">
                       @lang('lang_v1.update_n_edit_opening_stock')
                     </a>
                   </li>
                   <li>
-                    <a  href="#" type="submit" value="save_n_add_another" class="submit_product_form">
+                    <a href="#" type="submit" value="save_n_add_another" class="submit_product_edit_form">
                       @lang('lang_v1.update_n_add_another')
                     </a>
                   </li>
@@ -519,6 +438,7 @@
 <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 <script type="text/javascript">
   var cont = 0;
+  var contk = $('#kitTable >tbody >tr').length;
   var supplier_ids = [];
 
   Array.prototype.removeItem = function (a) {
@@ -534,15 +454,15 @@
   };
 
   function showWarranty() {
-        if ($("#has_warranty").is(":checked")) {
-            $('#has_warranty').val('1');
-            $('#hasW').show();
-        } else {
-            $('#hasW').hide();
-            $("#warranty").val('');
-            $('#has_warranty').val('0');
-        }
+    if ($("#has_warranty").is(":checked")) {
+      $('#has_warranty').val('1');
+      $('#hasW').show();
+    } else {
+      $('#hasW').hide();
+      $("#warranty").val('');
+      $('#has_warranty').val('0');
     }
+  }
 
   
   function addSupplier()
@@ -588,17 +508,49 @@
   {
     showWarranty();
     product_id = $("#product_id").val();
-    var route = "/products/productHasSuppliers/"+product_id
-    $.get(route, function(res){
-      $(res).each(function(key,value){
-        supplier_id = value.id
-        supplier_ids.push(supplier_id);
-        var fila = '<tr class="selected" id="fila'+cont+'" style="height: 10px"><td><input type="hidden" name="supplier_ids[]" value="'+value.id+'">'+value.supplier_business_name+'</td><td>'+value.name+'</td><td>'+value.mobile+'</td><td><input type="text" id="catalogue'+cont+'" value="'+value.catalogue+'" name="catalogue['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.uxc+'" name="uxc['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.weight+'" name="weight_product['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.dimensions+'" name="dimensions['+cont+']" class="form-control form-control-sm" required></td><td><input type="text" value="'+value.custom_field+'" name="custom_field['+cont+']" class="form-control form-control-sm" required></td><td>'+value.last_purchase+'</td><td>'+value.quantity+'</td><td>'+value.price+'</td><td>'+value.total+'</td><td><button id="bitem'+cont+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteSupplier('+cont+', '+supplier_id+');"><i class="fa fa-times"></i></button></td></tr>'
-        $("#lista").append(fila);
-        cont++;
-      });
+  //   var route = "/products/productHasSuppliers/"+product_id
+  //   $.get(route, function(res){
+  //     $(res).each(function(key,value){
+  //       supplier_id = value.id
+  //       supplier_ids.push(supplier_id);
+  //       var fila = '<tr class="selected" id="fila'+cont+'" style="height: 10px"><td><input type="hidden" name="supplier_ids[]" value="'+value.id+'">'+value.supplier_business_name+'</td><td>'+value.name+'</td><td>'+value.mobile+'</td><td><input type="text" id="catalogue'+cont+'" value="'+value.catalogue+'" name="catalogue['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.uxc+'" name="uxc['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.weight+'" name="weight_product['+cont+']" class="form-control form-control-sm" required></td><td><input type="number" value="'+value.dimensions+'" name="dimensions['+cont+']" class="form-control form-control-sm" required></td><td><input type="text" value="'+value.custom_field+'" name="custom_field['+cont+']" class="form-control form-control-sm" required></td><td>'+value.last_purchase+'</td><td>'+value.quantity+'</td><td>'+value.price+'</td><td>'+value.total+'</td><td><button id="bitem'+cont+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteSupplier('+cont+', '+supplier_id+');"><i class="fa fa-times"></i></button></td></tr>'
+  //       $("#lista").append(fila);
+  //       cont++;
+  //     });
+  //   });
+
+  $('#kit_children').select2({
+			dropdownParent: $('#product_edit_form'),
+      ajax: {
+        url: "/products/get_only_products",
+        dataType: "json",
+        delay: 25,
+        data: function (params) {
+          return {
+              q: params.term, // search term
+              page: params.page,
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data,
+          };
+        },
+      },
+      minimumInputLength: 1,
+      escapeMarkup: function (m) {
+        return m;
+      },
+      templateResult: function (data) {
+      if (!data.id) {
+          return data.text;
+      }
+      let html = data.text;
+        return html;
+      },
     });
-    
+
+
     var route = "/products/kitHasProduct/"+product_id;
     $.get(route, function(res){
       $(res).each(function(key,value){
@@ -642,12 +594,12 @@
           });
         }
         else{
-          contk = variation_id;
+          //contk = variation_id;
           //contk = $('#kitTable >tbody >tr').length;
-          unit_label = '<input type="hidden" value="'+value.unit_kit+'" name="kit_child['+contk+']">'+value.unit+'';
+          unit_label = '<input type="hidden" value="'+value.unit_kit+'" name="kit_child[]">'+value.unit+'';
           kit_idsk.push(variation_id);
           valor.push(contk);
-          var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="'+value.clasification+'">'+unit_label+'</td><td><input type="hidden" name="price['+contk+']" id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="'+value.quantity+'" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+          var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="'+value.clasification+'">'+unit_label+'</td><td><input type="hidden" name="price[]" id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="'+value.quantity+'" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
           $("#listak").append(fila);
           contk++;
         }
@@ -698,242 +650,247 @@
     }    
   });
 
-$(document).on('submit', 'form#product_add_form', function(e){
-  $(this).find('button[type="submit"]').attr('disabled', true);
-  $("#btnBack").attr('disabled', true);
-});
+  // $(document).on('submit', 'form#product_edit_form', function(e){
+  //   $(this).find('button[type="submit"]').attr('disabled', true);
+  //   $("#btnBack").attr('disabled', true);
+  // });
 
 
-var contk = 0;
-var kit_idsk = [];
+  var contk = 0;
+  var kit_idsk = [];
 
-var valor=[];
-var total = 0;
-
-function addChildren()
-{
+  var valor=[];
+  var total = 0;
   
-  var route = "/products/showProduct/"+id;
-  $.get(route, function(res){
-    variation_id = res.variation_id;
-    product_id = res.product_id;
-    //contk = $('#kitTable >tbody >tr').length;
-    contk = variation_id;
-    if(res.sku == res.sub_sku){
-      name = res.name_product;
-    }
-    else{
-      name = ""+res.name_product+" "+res.name_variation+"";
-    }
-    if(res.brand != null){
-      brand = res.brand;
-    }
-    else{
-      brand = 'N/A';
-    }
-    if(res.default_purchase_price != null){
-      price = res.default_purchase_price;
-    }
-    else{
-      price = 'N/A';
-    }
-    if(res.sub_sku != null){
-      sku = res.sub_sku;
-    }
-    else{
-      sku = 'N/A';
-    }
-    count = $('input#product_id-'+variation_id);
-    //count = parseInt(jQuery.inArray(variation_id, kit_idsk));
-    if (count.length > 0)
-    {
-     Swal.fire
-     ({
-      title: "{{__('product.product_already_added')}}",
-      icon: "error",
-    });
-   }
-   else
-   {
-    if(res.clasification == 'service'){
-      
-      unit = 'N/A'
-      kit_idsk.push(variation_id);
-      valor.push(contk);
-      var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="service">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
-      $("#listak").append(fila);
-      contk++;
-      getTotalKit();
-    }
-    else{
+  function addChildren()
+  {
+    var route = "/products/showProduct/"+id;
+    $.get(route, function(res){
+      variation_id = res.variation_id;
+      product_id = res.product_id;
       //contk = $('#kitTable >tbody >tr').length;
-      var route = "/products/getUnitPlan/"+product_id;
-      $.get(route, function(res){
+      //contk = variation_id;
+      if(res.sku == res.sub_sku){
+        name = res.name_product;
+      }
+      else{
+        name = ""+res.name_product+" "+res.name_variation+"";
+      }
+      if(res.brand != null){
+        brand = res.brand;
+      }
+      else{
+        brand = 'N/A';
+      }
+      if(res.default_purchase_price != null){
+        price = res.default_purchase_price;
+      }
+      else{
+        price = 'N/A';
+      }
+      if(res.sub_sku != null){
+        sku = res.sub_sku;
+      }
+      else{
+        sku = 'N/A';
+      }
+      count = $('input#product_id-'+variation_id);
+      //count = parseInt(jQuery.inArray(variation_id, kit_idsk));
+      if (count.length > 0)
+      {
+      Swal.fire
+      ({
+        title: "{{__('product.product_already_added')}}",
+        icon: "error",
+      });
+    }
+    else
+    {
+      if(res.clasification == 'service'){
+        unit = 'N/A'
+        kit_idsk.push(variation_id);
+        valor.push(contk);
+        var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="service">'+unit+'</td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+        $("#listak").append(fila);
+        contk++;
+        getTotalKit();
+      }
+      else{
         //contk = $('#kitTable >tbody >tr').length;
-        contk = variation_id;
-        if(res.plan == 'group'){
-          var route = "/products/getUnitsFromGroup/"+res.unit_group_id;
-          $.get(route, function(res){
-            content = "";
-            $(res).each(function(key,value){
-              content = content + '<option value="'+value.id+'">'+value.actual_name+'</option>';
+        var route = "/products/getUnitPlan/"+product_id;
+        $.get(route, function(res){
+          //contk = $('#kitTable >tbody >tr').length;
+          //contk = variation_id;
+          if(res.plan == 'group'){
+            var route = "/products/getUnitsFromGroup/"+res.unit_group_id;
+            $.get(route, function(res){
+              content = "";
+              $(res).each(function(key,value){
+                content = content + '<option value="'+value.id+'">'+value.actual_name+'</option>';
+              });
+              kit_idsk.push(variation_id);
+              valor.push(contk);
+              var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="product"><select name="kit_child[]" id="kit_child[]" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+              $("#listak").append(fila);
+              contk++;
+              getTotalKit();
             });
+          }
+          else{
+            unit = '<input type="hidden" value="'+res.unit_id+'" name="kit_child[]">'+res.name+'';
+
             kit_idsk.push(variation_id);
             valor.push(contk);
-            var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product"><select name="kit_child['+contk+']" id="kit_child['+contk+']" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+            var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="product">'+unit+'</td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
             $("#listak").append(fila);
             contk++;
             getTotalKit();
-          });
+          }
+        });
+      }
+    }
+  });
+  }
+  function deleteChildren(index, id){ 
+    Swal.fire({
+        title: LANG.sure,
+        text: LANG.cancel_product_msg,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: LANG.yes,
+        cancelButtonText: LANG.not,
+      }).then((resul) => {
+        if (resul.isConfirmed) {
+            $("#filak" + index).remove();
+            kit_idsk.removeItem(id);
+            if(kit_idsk.length == 0)
+            {
+              total=0;
+              contk = 0;
+              kit_idsk=[];
+              valor=[];
+            }
+            getTotalKit();
+          
+        } else {
+          return false;
         }
-        else{
-          unit = '<input type="hidden" value="'+res.unit_id+'" name="kit_child['+contk+']">'+res.name+'';
+      }); 
+  }
 
-          kit_idsk.push(variation_id);
-          valor.push(contk);
-          var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
-          $("#listak").append(fila);
-          contk++;
-          getTotalKit();
+  // $(document).on( 'change', 'select#kit_children', function(event){
+  //   id = $("#kit_children").val();
+  //   if(id != 0){
+  //     addChildren();
+  //     $("#kit_children").val(0).change();
+  //   }
+  // });
+  $("#kit_children").change(function(event){
+        id = $("#kit_children").val();
+        if(id.length > 0)
+        {
+            addChildren();
+        }
+    });
+
+  $(document).on('click', 'button#btnBack', function(e) {
+      e.preventDefault();
+      Swal.fire({
+        title: LANG.sure,
+        text: LANG.cancel_transfer_msg,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: LANG.yes,
+        cancelButtonText: LANG.not,
+      }).then((resul) => {
+        if (resul.isConfirmed) {
+          setTimeout(function() { window.location = '/products'; }, 1000);
+          
+        } else {
+          return false;
         }
       });
-    }
-  }
-});
-}
-function deleteChildren(index, id){ 
-  Swal.fire({
-			title: LANG.sure,
-			text: LANG.cancel_product_msg,
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: LANG.yes,
-			cancelButtonText: LANG.not,
-		}).then((resul) => {
-			if (resul.isConfirmed) {
-          $("#filak" + index).remove();
-          kit_idsk.removeItem(id);
-          if(kit_idsk.length == 0)
-          {
-            total=0;
-            contk = 0;
-            kit_idsk=[];
-            valor=[];
-          }
-          getTotalKit();
-				
-			} else {
-				return false;
-			}
-		}); 
-}
+    });
 
-$(document).on( 'change', 'select#kit_children', function(event){
-  id = $("#kit_children").val();
-  if(id != 0){
-    addChildren();
-    $("#kit_children").val(0).change();
-  }
-});
-
-$(document).on('click', 'button#btnBack', function(e) {
-		e.preventDefault();
-		Swal.fire({
-			title: LANG.sure,
-			text: LANG.cancel_transfer_msg,
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: LANG.yes,
-			cancelButtonText: LANG.not,
-		}).then((resul) => {
-			if (resul.isConfirmed) {
-				setTimeout(function() { window.location = '/products'; }, 1000);
-				
-			} else {
-				return false;
-			}
-		});
-	});
-
-function getTotalKit()
-{
-  quantity = 0.00;
-  price = 0.00;
-  total = 0.00;
-  $.each(valor, function(value){
-    quantityg = $("#quantity"+value+"").val();
-    priceg = $("#price"+value+"").val();
-    
-    if(quantityg)
-    {
-      if(isNaN(quantityg))
+  function getTotalKit()
+  {
+    quantity = 0.00;
+    price = 0.00;
+    total = 0.00;
+    $.each(valor, function(value){
+      quantityg = $("#quantity"+value+"").val();
+      priceg = $("#price"+value+"").val();
+      
+      if(quantityg)
+      {
+        if(isNaN(quantityg))
+        {
+          quantity = parseFloat(0.00);
+        }
+        else
+        {
+          quantity = parseFloat($("#quantity"+value+"").val());
+        }
+      }
+      else
       {
         quantity = parseFloat(0.00);
       }
-      else
-      {
-        quantity = parseFloat($("#quantity"+value+"").val());
-      }
-    }
-    else
-    {
-      quantity = parseFloat(0.00);
-    }
 
-    if(priceg)
-    {
-      if(isNaN(priceg))
+      if(priceg)
+      {
+        if(isNaN(priceg))
+        {
+          price = 0.00;
+        }
+        else
+        {
+          price = parseFloat($("#price"+value+"").val());
+        }
+
+      }
+      else
       {
         price = 0.00;
       }
-      else
+      subtotal = quantity * price;
+      if(isNaN(subtotal))
       {
-        price = parseFloat($("#price"+value+"").val());
+        subtotal = 0.00;
       }
+      if(isInfinite(total))
+      {
+        subtotal = 0.00;
+      }
+      total = total + subtotal;
+    });
+    $("#single_dpp").val(total);
+    var purchase_exc_tax = __read_number($('input#single_dpp'));
+    purchase_exc_tax = (purchase_exc_tax == undefined) ? 0 : purchase_exc_tax;
 
-    }
-    else
-    {
-      price = 0.00;
-    }
-    subtotal = quantity * price;
-    if(isNaN(subtotal))
-    {
-      subtotal = 0.00;
-    }
-    if(isInfinite(total))
-    {
-      subtotal = 0.00;
-    }
-    total = total + subtotal;
-  });
-  $("#single_dpp").val(total);
-  var purchase_exc_tax = __read_number($('input#single_dpp'));
-  purchase_exc_tax = (purchase_exc_tax == undefined) ? 0 : purchase_exc_tax;
+    var tax_rate = $('select#tax').find(':selected').data('rate');
+    tax_rate = (tax_rate == undefined) ? 0 : tax_rate;
 
-  var tax_rate = $('select#tax').find(':selected').data('rate');
-  tax_rate = (tax_rate == undefined) ? 0 : tax_rate;
+    var price_precision = $('#price_precision').val();
 
-  var price_precision = $('#price_precision').val();
+    var purchase_inc_tax = __add_percent(purchase_exc_tax, tax_rate);
+    __write_number($('input#single_dpp_inc_tax'), purchase_inc_tax, false, price_precision);
 
-  var purchase_inc_tax = __add_percent(purchase_exc_tax, tax_rate);
-  __write_number($('input#single_dpp_inc_tax'), purchase_inc_tax, false, price_precision);
+    var profit_percent = __read_number($('#profit_percent'));
+    var selling_price = __add_percent(purchase_exc_tax, profit_percent);
+    __write_number($('input#single_dsp'), selling_price, false, price_precision);
 
-  var profit_percent = __read_number($('#profit_percent'));
-  var selling_price = __add_percent(purchase_exc_tax, profit_percent);
-  __write_number($('input#single_dsp'), selling_price, false, price_precision);
+    var selling_price_inc_tax = __add_percent(selling_price, tax_rate);
+    __write_number($('input#single_dsp_inc_tax'), selling_price_inc_tax, false, price_precision);
+  }
 
-  var selling_price_inc_tax = __add_percent(selling_price, tax_rate);
-  __write_number($('input#single_dsp_inc_tax'), selling_price_inc_tax, false, price_precision);
-}
-
-function isInfinite(n)
-{
-  return n === n/0;
-}
+  function isInfinite(n)
+  {
+    return n === n/0;
+  }
 </script>
 @endsection

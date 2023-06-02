@@ -5,6 +5,10 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>@lang('product.add_product')</h1>
+	<ol class="breadcrumb">
+		<li><a href="/products"><i class="fa fa-list"></i> Productos</a></li>
+		<li class="active">Editar</li>
+	  </ol> 
 </section>
 
 <!-- Main content -->
@@ -21,7 +25,7 @@
 <script type="text/javascript">
 	var cont = 0;
 	var supplier_ids = [];
-	
+
 	$(document).on('change', '#has_warranty', function ()
     {
         if ($("#has_warranty").is(":checked")) {
@@ -170,10 +174,10 @@
 		}
 	});
 
-	$(document).on('submit', 'form#product_add_form', function(e) {
-		$(this).find('button[type="submit"]').attr('disabled', true);
-		$("#btnUndo").attr('disabled', true);
-	});
+	// $(document).on('submit', 'form#product_add_form', function(e) {
+	// 	$(this).find('button[type="submit"]').attr('disabled', true);
+	// 	$("#btnUndo").attr('disabled', true);
+	// });
 
 	function cls(){
 		$("#lista").empty();
@@ -223,6 +227,39 @@
 	var valor=[];
 	var total = 0;
 
+	$(document).ready( function(){
+		$('#kit_children').select2({
+			dropdownParent: $('#product_add_form'),
+            ajax: {
+                url: "/products/get_only_products",
+                dataType: "json",
+                delay: 25,
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data,
+                    };
+                },
+            },
+            minimumInputLength: 1,
+            escapeMarkup: function (m) {
+                return m;
+            },
+            templateResult: function (data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                let html = data.text;
+                return html;
+            },
+        });
+	});
+	
 	function addChildren()
 	{
 		var route = "/products/showProduct/"+id;
@@ -253,9 +290,9 @@
 			else{
 				sku = 'N/A';
 			}
-
-			count = parseInt(jQuery.inArray(variation_id, kit_idsk));
-			if (count >= 0)
+			count = $('input#product_id-'+variation_id);
+			//count = parseInt(jQuery.inArray(variation_id, kit_idsk));
+			if (count.length > 0)
 			{
 				Swal.fire
 				({
@@ -269,13 +306,13 @@
 					unit = 'N/A'
 					kit_idsk.push(variation_id);
 					valor.push(contk);
-					var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="service">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+					var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="service">'+unit+'</td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 					$("#listak").append(fila);
 					contk++;
 					getTotalKit();
 				}
 				else{
-					var route = "/products/getUnitPlan/"+product_id;
+					var route = "/products/getUnitPlan/"+id;
 					$.get(route, function(res){
 						if(res.plan == 'group'){
 							var route = "/products/getUnitsFromGroup/"+res.unit_group_id;
@@ -286,18 +323,18 @@
 								});
 								kit_idsk.push(variation_id);
 								valor.push(contk);
-								var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product"><select name="kit_child['+contk+']" id="kit_child['+contk+']" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+								var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="product"><select name="kit_child[]" id="kit_child[]" class="form-control select2">'+content+'</select></td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 								$("#listak").append(fila);
 								contk++;
 								getTotalKit();
 							});
 						}
 						else{
-							unit = '<input type="hidden" value="'+res.unit_id+'" name="kit_child['+contk+']">'+res.name+'';
+							unit = '<input type="hidden" value="'+res.unit_id+'" name="kit_child[]">'+res.name+'';
 
 							kit_idsk.push(variation_id);
 							valor.push(contk);
-							var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product['+contk+']" value="product">'+unit+'</td><td><input type="hidden" name=price['+contk+'] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity['+contk+']" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
+							var fila = '<tr class="selected" id="filak'+contk+'" style="height: 10px"><td><input type="hidden" name="product_ids[]" value="'+variation_id+'" id="product_id-'+variation_id+'">'+name+'</td><td>'+sku+'</td><td>'+brand+'</td><td><input type="hidden" name="clas_product[]" value="product">'+unit+'</td><td><input type="hidden" name=price[] id="price'+contk+'" value="'+price+'">'+price+'</td><td><input type="number" id="quantity'+contk+'" name="quantity[]" class="form-control form-control-sm" min="0.01" value="1" onchange="getTotalKit()" required></td><td><button id="bitem'+contk+'" type="button" class="btn btn-danger btn-xs remove-item" onclick="deleteChildren('+contk+', '+variation_id+');"><i class="fa fa-times"></i></button></td></tr>';
 							$("#listak").append(fila);
 							contk++;
 							getTotalKit();
@@ -337,13 +374,20 @@
 		}); 
 	}
 
-	$(document).on( 'change', 'select#kit_children', function(event){
-		id = $("#kit_children").val();
-		if(id != 0){
-			addChildren();
-			$("#kit_children").val(0).change();
-		}
-	});
+	// $(document).on( 'change', 'select#kit_children', function(event){
+	// 	id = $("#kit_children").val();
+	// 	if(id != 0){
+	// 		addChildren();
+	// 		$("#kit_children").val(0).change();
+	// 	}
+	// });
+	$("#kit_children").change(function(event){
+        id = $("#kit_children").val();
+        if(id.length > 0)
+        {
+            addChildren();
+        }
+    });
 
 	function getTotalKit()
 	{
