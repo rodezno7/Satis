@@ -407,7 +407,7 @@ return [
 "add_selling_price_group" => "Ajouter un groupe de prix de vente", 
 "edit_selling_price_group" => "Modifier le groupe de prix de vente", 
 "access_selling_price_groups" => "Accéder aux groupes de prix de vente", 
-"save_n_add_selling_price_group_prices" => "Enregistrer et ajouter des prix de groupe de vente", 
+"save_n_add_selling_price_group_prices" => "Enregistrer et ajouter des prix dans les listes de prix de vente", 
 "add_selling_price_group_prices" => "Ajouter ou modifier des prix de groupe", 
 "default_selling_price_inc_tax" => "Prix de vente par défaut (taxe inc.)", 
 "variation" => "Variation", 

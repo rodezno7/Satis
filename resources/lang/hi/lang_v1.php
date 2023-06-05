@@ -405,7 +405,7 @@ return [
 "add_selling_price_group" => "बेचना मूल्य समूह जोड़ें", 
 "edit_selling_price_group" => "बेचना मूल्य समूह संपादित करें", 
 "access_selling_price_groups" => "बिक्री मूल्य समूह एक्सेस करें", 
-"save_n_add_selling_price_group_prices" => "बेचना और मूल्य-समूह मूल्य जोड़ें जोड़ें", 
+"save_n_add_selling_price_group_prices" => "बिक्री मूल्य सूची में कीमतों को सहेजें और जोड़ें", 
 "add_selling_price_group_prices" => "समूह मूल्य जोड़ें या संपादित करें", 
 "default_selling_price_inc_tax" => "डिफ़ॉल्ट बिक्री मूल्य (इंक कर)", 
 "variation" => "रूपांतर", 

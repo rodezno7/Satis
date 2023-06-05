@@ -405,7 +405,7 @@ return [
 "add_selling_price_group" => "Verkaufspreisgruppe hinzufügen", 
 "edit_selling_price_group" => "Verkaufspreisgruppe bearbeiten", 
 "access_selling_price_groups" => "Zugriff auf Verkaufspreisgruppen", 
-"save_n_add_selling_price_group_prices" => "Sparen und Hinzufügen von Verkaufspreisgruppenpreisen", 
+"save_n_add_selling_price_group_prices" => "Preise in Verkaufspreislisten speichern und hinzufügen", 
 "add_selling_price_group_prices" => "Gruppenpreise hinzufügen oder bearbeiten", 
 "default_selling_price_inc_tax" => "Default Selling Price (Inc. Tax)", 
 "variation" => "Variation", 
