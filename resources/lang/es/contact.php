@@ -36,7 +36,7 @@ return [
     "total_sale_paid" => "Pago de venta total",
     "total_sale_due" => "Venta total debida", /* modified */
     "customer" => "Cliente",
-    'supplier_already_added' => 'Proveedor ya agregado',
+    'supplier_already_added' => 'Este proveedor ya ha sido agregado',
     'last_purchase_date' => 'Ultima compra',
     'catalogue' => 'Catálogo',
     'uxc' => 'UXC',

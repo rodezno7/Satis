@@ -32,6 +32,7 @@ use App\KitHasProduct;
 use App\ProductAccountsLocation;
 use App\SalePriceScale;
 use App\TaxGroup;
+use App\Contact;
 use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +85,110 @@ class ProductController extends Controller
     public function index()
     {
         if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $rack_enabled = (request()->session()->get('business.enable_racks') || request()->session()->get('business.enable_row') || request()->session()->get('business.enable_position'));
+
+        //All for view create
+        $business_id = request()->session()->get('user.business_id');
+        $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
+
+        //Check if subscribed or not, then check for products quota
+        if (!$this->moduleUtil->isSubscribed($business_id)) {
+            return $this->moduleUtil->expiredResponse();
+        } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
+            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
+        }
+        
+        $products = DB::table('products as product')
+            ->leftJoin('brands', 'product.brand_id', '=', 'brands.id')
+            ->leftJoin('categories as c1', 'product.category_id', '=', 'c1.id')
+            ->leftJoin('categories as c2', 'product.sub_category_id', '=', 'c2.id')
+            ->where('product.business_id', $business_id)
+            ->where('product.type', '!=', 'modifier')
+            ->select(
+                'product.id as id',
+                'product.name as name',
+                'product.clasification as clasification',
+                'product.type as type',
+                'c1.name as category',
+                'c2.name as sub_category',
+                'product.status as status',
+                'brands.name as brand',
+                'product.sku as sku'
+            )->get();
+
+        return view('product.index')
+            ->with(compact(
+                'rack_enabled',
+                'selling_price_group_count',
+                'products',
+            ));
+    }
+
+    public function getProductsData()
+    {
+        if (!auth()->user()->can('product.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $business_id = request()->session()->get('user.business_id');
+
+        $products = DB::table('products as product')
+            ->leftJoin('brands', 'product.brand_id', '=', 'brands.id')
+            ->leftJoin('unit_groups as unit_group', 'product.unit_group_id', '=', 'unit_group.id')
+            ->leftJoin('units as unit', 'product.unit_id', '=', 'unit.id')
+            ->leftJoin('categories as c1', 'product.category_id', '=', 'c1.id')
+            ->leftJoin('categories as c2', 'product.sub_category_id', '=', 'c2.id')
+            ->leftJoin('tax_groups', 'product.tax', '=', 'tax_groups.id')
+            ->where('product.business_id', $business_id)
+            ->where('product.type', '!=', 'modifier')
+            ->select(
+                'product.id',
+                'product.name as product',
+                'product.clasification',
+                'product.type',
+                'product.dai',
+                'c1.name as category',
+                'c2.name as sub_category',
+                'product.status',
+                'unit_group.description as unit_group',
+                'brands.name as brand',
+                'tax_groups.description as tax',
+                'product.sku',
+                'product.image',
+                'tax_groups.description as applicable_tax'
+            );
+
+        return Datatables::of($products)
+            ->editColumn('status', function($row){
+                $status = __('product.status_inactive');
+                if($row->status == 'active'){
+                    $status = __('product.status_active');
+                }
+                return $status;
+
+            })->setRowAttr([
+                'data-href' => function ($row) {
+                    if (auth()->user()->can("product.view")) {
+                        return  action('ProductController@view', [$row->id]);
+                    } else {
+                        return '';
+                    }
+                }
+            ])
+
+            ->toJson();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        if (!auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -205,7 +310,7 @@ class ProductController extends Controller
         $product_settings = empty($business->product_settings) ? null : json_decode($business->product_settings, true);
         $default_products_tax = $product_settings['default_products_tax'];
 
-        return view('product.index')
+        return view('product.create_product')
             ->with(compact(
                 'rack_enabled',
                 'categories',
@@ -236,320 +341,144 @@ class ProductController extends Controller
                 'default_products_tax'
             ));
     }
+    // public function createProduct()
+    // {
+    //     if (!auth()->user()->can('product.create')) {
+    //         abort(403, 'Unauthorized action.');
+    //     }
 
-    public function getProductsData()
-    {
-        if (!auth()->user()->can('product.view')) {
-            abort(403, 'Unauthorized action.');
-        }
-        $business_id = request()->session()->get('user.business_id');
+    //     $business_id = request()->session()->get('user.business_id');
 
-        $products = DB::table('products as product')
-            ->leftJoin('brands', 'product.brand_id', '=', 'brands.id')
-            ->leftJoin('unit_groups as unit_group', 'product.unit_group_id', '=', 'unit_group.id')
-            ->leftJoin('units as unit', 'product.unit_id', '=', 'unit.id')
-            ->leftJoin('categories as c1', 'product.category_id', '=', 'c1.id')
-            ->leftJoin('categories as c2', 'product.sub_category_id', '=', 'c2.id')
-            ->leftJoin('tax_groups', 'product.tax', '=', 'tax_groups.id')
-            ->where('product.business_id', $business_id)
-            ->where('product.type', '!=', 'modifier')
-            ->select(
-                'product.id',
-                'product.name as product',
-                'product.clasification',
-                'product.type',
-                'product.dai',
-                'c1.name as category',
-                'c2.name as sub_category',
-                'product.status',
-                'unit_group.description as unit_group',
-                'brands.name as brand',
-                'tax_groups.description as tax',
-                'product.sku',
-                'product.image',
-                'tax_groups.description as applicable_tax'
-            );
+    //     //Check if subscribed or not, then check for products quota
+    //     if (!$this->moduleUtil->isSubscribed($business_id)) {
+    //         return $this->moduleUtil->expiredResponse();
+    //     } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
+    //         return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
+    //     }
 
-        return Datatables::of($products)
-            ->editColumn('status', function($row){
-                $status = __('product.status_inactive');
-                if($row->status == 'active'){
-                    $status = __('product.status_active');
-                }
-                return $status;
+    //     $categories = Category::where('business_id', $business_id)
+    //         ->where('parent_id', 0)
+    //         ->pluck('name', 'id');
+    //     $brands = Brands::where('business_id', $business_id)
+    //         ->pluck('name', 'id');
+    //     if ($this->getUnitConf($business_id) == 1) {
+    //         $units = UnitGroup::forDropdown($business_id);
+    //     } else {
+    //         $units = Unit::forDropdown($business_id);
+    //     }
 
-            })->setRowAttr([
-                'data-href' => function ($row) {
-                    if (auth()->user()->can("product.view")) {
-                        return  action('ProductController@view', [$row->id]);
-                    } else {
-                        return '';
-                    }
-                }
-            ])
+    //     $product_data = Product::where('business_id', $business_id)
+    //         ->pluck('name', 'id');
 
-            ->toJson();
-    }
+    //     $tax_dropdown = TaxRate::forBusinessDropdown($business_id, true, true);
+    //     $taxes = $tax_dropdown['tax_rates'];
+    //     $tax_attributes = $tax_dropdown['attributes'];
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        if (!auth()->user()->can('product.create')) {
-            abort(403, 'Unauthorized action.');
-        }
+    //     $barcode_types = $this->barcode_types;
+    //     $barcode_default =  $this->productUtil->barcode_default();
 
-        $business_id = request()->session()->get('user.business_id');
+    //     $default_profit_percent = Business::where('id', $business_id)->value('default_profit_percent');
 
-        //Check if subscribed or not, then check for products quota
-        if (!$this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse();
-        } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
-        }
+    //     //Get all business locations
+    //     $business_locations = BusinessLocation::forDropdown($business_id);
+    //     /** Business types */
+    //     $business_type = $this->business_type;
+    //     /** tax gruops */
+    //     $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'contacts');
+    //     /** Payment conditions */
+    //     $payment_conditions = $this->payment_conditions;
 
-        $categories = Category::where('business_id', $business_id)
-            ->where('parent_id', 0)
-            ->pluck('name', 'id');
-        $brands = Brands::where('business_id', $business_id)
-            ->pluck('name', 'id');
-        $units = Unit::where('business_id', $business_id)
-            ->pluck('short_name', 'id');
+    //     //Duplicate product
+    //     $duplicate_product = null;
+    //     $rack_details = null;
 
-        $product_data = Product::where('business_id', $business_id)
-            ->pluck('name', 'id');
+    //     $sub_categories = [];
+    //     if (!empty(request()->input('d'))) {
+    //         $duplicate_product = Product::where('business_id', $business_id)->find(request()->input('d'));
+    //         $duplicate_product->name .= ' (copy)';
 
-        $tax_dropdown = TaxRate::forBusinessDropdown($business_id, true, true);
-        $taxes = $tax_dropdown['tax_rates'];
-        $tax_attributes = $tax_dropdown['attributes'];
+    //         if (!empty($duplicate_product->category_id)) {
+    //             $sub_categories = Category::where('business_id', $business_id)
+    //                 ->where('parent_id', $duplicate_product->category_id)
+    //                 ->pluck('name', 'id')
+    //                 ->toArray();
+    //         }
 
-        $barcode_types = $this->barcode_types;
-        $barcode_default =  $this->productUtil->barcode_default();
+    //         //Rack details
+    //         if (!empty($duplicate_product->id)) {
+    //             $rack_details = $this->productUtil->getRackDetails($business_id, $duplicate_product->id);
+    //         }
+    //     }
 
-        $default_profit_percent = Business::where('id', $business_id)->value('default_profit_percent');
+    //     $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
+    //     $types = [];
+    //     if (auth()->user()->can('supplier.create')) {
+    //         $types['supplier'] = __('report.supplier');
+    //     }
+    //     if (auth()->user()->can('customer.create')) {
+    //         $types['customer'] = __('report.customer');
+    //     }
+    //     if (auth()->user()->can('supplier.create') && auth()->user()->can('customer.create')) {
+    //         $types['both'] = __('lang_v1.both_supplier_customer');
+    //     }
+    //     $customer_groups = CustomerGroup::forDropdown($business_id);
+    //     $employees_sales = Employees::forDropdown(($business_id));
+    //     /** Get supplier main account */
+    //     $business = Business::find($business_id);
+    //     $supplier_account = "";
+    //     if($business->accounting_supplier_id){
+    //         $supplier_account =
+    //             Catalogue::where("status", 1)
+    //                 ->where("id", $business->accounting_supplier_id)
+    //                 ->value("code");
+    //     }
 
-        //Get all business locations
-        $business_locations = BusinessLocation::forDropdown($business_id);
+    //     $products = DB::table('variations')
+    //         ->join('products', 'products.id', '=', 'variations.product_id')
+    //         ->select('products.name as name_product', 'variations.name as name_variation', 'variations.id', 'variations.sub_sku', 'products.sku')
+    //         ->where('business_id', $business_id)
+    //         ->where('products.clasification', '<>', 'kits')
+    //         ->where('products.status', 'active')
+    //         ->get();
 
-        //Duplicate product
-        $duplicate_product = null;
-        $rack_details = null;
+    //     $payment_terms = PaymentTerm::select('id', 'name')
+    //     ->pluck('name', 'id');
 
-        $sub_categories = [];
-        if (!empty(request()->input('d'))) {
-            $duplicate_product = Product::where('business_id', $business_id)->find(request()->input('d'));
-            $duplicate_product->name .= ' (copy)';
+    //     $business_debt_to_pay_type = $business->debt_to_pay_type;
 
-            if (!empty($duplicate_product->category_id)) {
-                $sub_categories = Category::where('business_id', $business_id)
-                    ->where('parent_id', $duplicate_product->category_id)
-                    ->pluck('name', 'id')
-                    ->toArray();
-            }
+    //     $countries = Country::select('id', 'name')
+    //     ->where('business_id', $business_id)
+    //     ->pluck('name', 'id');
 
-            //Rack details
-            if (!empty($duplicate_product->id)) {
-                $rack_details = $this->productUtil->getRackDetails($business_id, $duplicate_product->id);
-            }
-        }
-
-        $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
-        $types = [];
-        if (auth()->user()->can('supplier.create')) {
-            $types['supplier'] = __('report.supplier');
-        }
-        if (auth()->user()->can('customer.create')) {
-            $types['customer'] = __('report.customer');
-        }
-        if (auth()->user()->can('supplier.create') && auth()->user()->can('customer.create')) {
-            $types['both'] = __('lang_v1.both_supplier_customer');
-        }
-        $customer_groups = CustomerGroup::forDropdown($business_id);
-
-        // Llenar Select de Vendedores
-        $employees_sales = Employees::forDropdown($business_id);
-        /** Business types */
-        $business_type = $this->business_type;
-        /** tax gruops */
-        $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'contacts');
-        /** Payment conditions */
-        $payment_conditions = $this->payment_conditions;
-        /** Get supplier main account */
-        $business = Business::find($business_id);
-        $supplier_account = "";
-        if($business->accounting_supplier_id){
-            $supplier_account =
-                Catalogue::where("status", 1)
-                    ->where("id", $business->accounting_supplier_id)
-                    ->value("code");
-        }
-
-        return view('product.create')
-            ->with(compact(
-                'categories',
-                'brands',
-                'units',
-                'taxes',
-                'barcode_types',
-                'default_profit_percent',
-                'tax_attributes',
-                'barcode_default',
-                'business_locations',
-                'duplicate_product',
-                'sub_categories',
-                'rack_details',
-                'selling_price_group_count',
-                'product_data',
-                'types',
-                'customer_groups',
-                'employees_sales',
-                'business_type',
-                'tax_groups',
-                'payment_conditions',
-                'supplier_account'
-            ));
-    }
-    public function createProduct()
-    {
-        if (!auth()->user()->can('product.create')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $business_id = request()->session()->get('user.business_id');
-
-        //Check if subscribed or not, then check for products quota
-        if (!$this->moduleUtil->isSubscribed($business_id)) {
-            return $this->moduleUtil->expiredResponse();
-        } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
-            return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
-        }
-
-        $categories = Category::where('business_id', $business_id)
-            ->where('parent_id', 0)
-            ->pluck('name', 'id');
-        $brands = Brands::where('business_id', $business_id)
-            ->pluck('name', 'id');
-        if ($this->getUnitConf($business_id) == 1) {
-            $units = UnitGroup::forDropdown($business_id);
-        } else {
-            $units = Unit::forDropdown($business_id);
-        }
-
-        $product_data = Product::where('business_id', $business_id)
-            ->pluck('name', 'id');
-
-        $tax_dropdown = TaxRate::forBusinessDropdown($business_id, true, true);
-        $taxes = $tax_dropdown['tax_rates'];
-        $tax_attributes = $tax_dropdown['attributes'];
-
-        $barcode_types = $this->barcode_types;
-        $barcode_default =  $this->productUtil->barcode_default();
-
-        $default_profit_percent = Business::where('id', $business_id)->value('default_profit_percent');
-
-        //Get all business locations
-        $business_locations = BusinessLocation::forDropdown($business_id);
-        /** Business types */
-        $business_type = $this->business_type;
-        /** tax gruops */
-        $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'contacts');
-        /** Payment conditions */
-        $payment_conditions = $this->payment_conditions;
-
-        //Duplicate product
-        $duplicate_product = null;
-        $rack_details = null;
-
-        $sub_categories = [];
-        if (!empty(request()->input('d'))) {
-            $duplicate_product = Product::where('business_id', $business_id)->find(request()->input('d'));
-            $duplicate_product->name .= ' (copy)';
-
-            if (!empty($duplicate_product->category_id)) {
-                $sub_categories = Category::where('business_id', $business_id)
-                    ->where('parent_id', $duplicate_product->category_id)
-                    ->pluck('name', 'id')
-                    ->toArray();
-            }
-
-            //Rack details
-            if (!empty($duplicate_product->id)) {
-                $rack_details = $this->productUtil->getRackDetails($business_id, $duplicate_product->id);
-            }
-        }
-
-        $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
-        $types = [];
-        if (auth()->user()->can('supplier.create')) {
-            $types['supplier'] = __('report.supplier');
-        }
-        if (auth()->user()->can('customer.create')) {
-            $types['customer'] = __('report.customer');
-        }
-        if (auth()->user()->can('supplier.create') && auth()->user()->can('customer.create')) {
-            $types['both'] = __('lang_v1.both_supplier_customer');
-        }
-        $customer_groups = CustomerGroup::forDropdown($business_id);
-        $employees_sales = Employees::forDropdown(($business_id));
-        /** Get supplier main account */
-        $business = Business::find($business_id);
-        $supplier_account = "";
-        if($business->accounting_supplier_id){
-            $supplier_account =
-                Catalogue::where("status", 1)
-                    ->where("id", $business->accounting_supplier_id)
-                    ->value("code");
-        }
-
-        $products = DB::table('variations')
-            ->join('products', 'products.id', '=', 'variations.product_id')
-            ->select('products.name as name_product', 'variations.name as name_variation', 'variations.id', 'variations.sub_sku', 'products.sku')
-            ->where('business_id', $business_id)
-            ->where('products.clasification', '<>', 'kits')
-            ->where('products.status', 'active')
-            ->get();
-
-        $payment_terms = PaymentTerm::select('id', 'name')
-        ->pluck('name', 'id');
-
-        $business_debt_to_pay_type = $business->debt_to_pay_type;
-
-        $countries = Country::select('id', 'name')
-        ->where('business_id', $business_id)
-        ->pluck('name', 'id');
-
-        return view('product.create_product')
-            ->with(compact(
-                'categories',
-                'brands',
-                'units',
-                'taxes',
-                'barcode_types',
-                'default_profit_percent',
-                'tax_attributes',
-                'barcode_default',
-                'business_locations',
-                'duplicate_product',
-                'sub_categories',
-                'rack_details',
-                'selling_price_group_count',
-                'product_data',
-                'types',
-                'customer_groups',
-                'employees_sales',
-                'products',
-                'business_type',
-                'tax_groups',
-                'payment_conditions',
-                'supplier_account',
-                'payment_terms',
-                'business_debt_to_pay_type',
-                'countries'
-            ));
-    }
+    //     return view('product.create_product')
+    //         ->with(compact(
+    //             'categories',
+    //             'brands',
+    //             'units',
+    //             'taxes',
+    //             'barcode_types',
+    //             'default_profit_percent',
+    //             'tax_attributes',
+    //             'barcode_default',
+    //             'business_locations',
+    //             'duplicate_product',
+    //             'sub_categories',
+    //             'rack_details',
+    //             'selling_price_group_count',
+    //             'product_data',
+    //             'types',
+    //             'customer_groups',
+    //             'employees_sales',
+    //             'products',
+    //             'business_type',
+    //             'tax_groups',
+    //             'payment_conditions',
+    //             'supplier_account',
+    //             'payment_terms',
+    //             'business_debt_to_pay_type',
+    //             'countries'
+    //         ));
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -559,17 +488,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request);
         if (!auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
         try {
             //fields to product_has_suppliers table pivote
-            $supplier_ids = $request->input('supplier_ids');
-            $catalogue = $request->input('catalogue');
-            $uxc = $request->input('uxc');
-            $weight_product = $request->input('weight_product');
-            $dimensions = $request->input('dimensions');
-            $custom_fields = $request->input('custom_field');
+            // $supplier_ids = $request->input('supplier_ids');
+            // $catalogue = $request->input('catalogue');
+            // $uxc = $request->input('uxc');
+            // $weight_product = $request->input('weight_product');
+            // $dimensions = $request->input('dimensions');
+            // $custom_fields = $request->input('custom_field');
 
             //fields to kit_has_products table pivote
             $product_ids = $request->input('product_ids');
@@ -660,23 +590,24 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             $product = Product::create($product_details);
-            if ($clasification == "product") {
-                if (!empty($supplier_ids)) {
-                    $cont = 0;
-                    while ($cont < count($supplier_ids)) {
-                        $detail = new ProductHasSuppliers;
-                        $detail->product_id = $product->id;
-                        $detail->contact_id = $supplier_ids[$cont];
-                        $detail->catalogue = $catalogue[$cont];
-                        $detail->uxc = $uxc[$cont];
-                        $detail->weight = $weight_product[$cont];
-                        $detail->dimensions = $dimensions[$cont];
-                        $detail->custom_field = $custom_fields[$cont];
-                        $detail->save();
-                        $cont = $cont + 1;
-                    }
-                }
-            }
+            // if ($clasification == "product") {
+            //     if (!empty($supplier_ids)) {
+            //         $cont = 0;
+            //         while ($cont < count($supplier_ids)) {
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
+            //             $detail->catalogue = $catalogue[$cont];
+            //             $detail->uxc = $uxc[$cont];
+            //             $detail->weight = $weight_product[$cont];
+            //             $detail->dimensions = $dimensions[$cont];
+            //             $detail->custom_field = $custom_fields[$cont];
+            //             $detail->save();
+            //             $cont = $cont + 1;
+            //         }
+            //     }
+            // }
+            
             if ($clasification == "kits") {
                 if (!empty($product_ids)) {
                     $cont = 0;
@@ -735,7 +666,7 @@ class ProductController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __("messages.something_went_wrong")
+                'msg' => $e->getMessage()
             ];
         }
 
@@ -744,7 +675,7 @@ class ProductController extends Controller
         } else if ($request->input('submit_type') == 'submit_n_add_selling_prices') {
             return redirect()->action('ProductController@addSellingPrices', [$product->id]);
         } else if ($request->input('submit_type') == 'save_n_add_another') {
-            return redirect()->action('ProductController@createProduct')->with('status', $output);
+            return redirect()->action('ProductController@create')->with('status', $output);
         } else {
             return redirect('products')->with('status', $output);
         }
@@ -898,6 +829,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request);
         if (!auth()->user()->can('product.update')) {
             abort(403, 'Unauthorized action.');
         }
@@ -905,12 +837,12 @@ class ProductController extends Controller
         try {
 
             //fields to product_has_suppliers table pivote
-            $supplier_ids = $request->input('supplier_ids');
-            $catalogue = $request->input('catalogue');
-            $uxc = $request->input('uxc');
-            $weight_product = $request->input('weight_product');
-            $dimensions = $request->input('dimensions');
-            $custom_fields = $request->input('custom_field');
+            //$supplier_ids = $request->input('supplier_ids');
+            // $catalogue = $request->input('catalogue');
+            // $uxc = $request->input('uxc');
+            // $weight_product = $request->input('weight_product');
+            // $dimensions = $request->input('dimensions');
+            // $custom_fields = $request->input('custom_field');
 
             //fields to kit_has_products table pivote
             $product_ids = $request->input('product_ids');
@@ -935,7 +867,7 @@ class ProductController extends Controller
                 'warranty',
                 'volume',
                 'download_time',
-                'drive_unit'
+                //'drive_unit'
             ]);
 
             $product_details['status'] = !empty($request->input('is_active')) ? 'active' : 'inactive';
@@ -985,7 +917,7 @@ class ProductController extends Controller
             $product->status = $product_details['status'];
             $product->volume = $product_details['volume'];
             $product->download_time = $product_details['download_time'];
-            $product->drive_unit = $product_details['drive_unit'];
+            //$product->drive_unit = $product_details['drive_unit'];
 
             if (!empty($request->input('sub_category_id'))) {
                 $product->sub_category_id = $request->input('sub_category_id');
@@ -1074,35 +1006,38 @@ class ProductController extends Controller
             if (!empty($product_racks_update)) {
                 $this->productUtil->updateRackDetails($business_id, $product->id, $product_racks_update);
             }
-            if ($product->clasification == "product") {
-                if (!empty($supplier_ids)) {
-                    ProductHasSuppliers::where('product_id', $id)->forceDelete();
-                    $cont = 0;
-                    while ($cont < count($supplier_ids)) {
-                        $detail = new ProductHasSuppliers;
-                        $detail->product_id = $product->id;
-                        $detail->contact_id = $supplier_ids[$cont];
+            // if ($product->clasification == "product") {
+            //     if (!empty($supplier_ids)) {
+            //         ProductHasSuppliers::where('product_id', $id)->forceDelete();
+            //         $cont = 0;
+            //         while ($cont < count($supplier_ids)) {
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
 
-                        $detail->catalogue = $catalogue[$cont];
-                        $detail->uxc = $uxc[$cont];
-                        $detail->weight = $weight_product[$cont];
-                        $detail->dimensions = $dimensions[$cont];
-                        $detail->custom_field = $custom_fields[$cont];
+            //             $detail->catalogue = $catalogue[$cont];
+            //             $detail->uxc = $uxc[$cont];
+            //             $detail->weight = $weight_product[$cont];
+            //             $detail->dimensions = $dimensions[$cont];
+            //             $detail->custom_field = $custom_fields[$cont];
 
-                        $detail->save();
-                        $cont = $cont + 1;
-                    }
-                } else {
-                    ProductHasSuppliers::where('product_id', $id)->forceDelete();
-                }
-            }
+            //             $detail->save();
+            //             $cont = $cont + 1;
+            //         }
+            //     } else {
+            //         ProductHasSuppliers::where('product_id', $id)->forceDelete();
+            //     }
+            // }
+            
+            
             if ($product->clasification == "kits") {
                 if (!empty($product_ids)) {
+                    //dd($quantity);
                     KitHasProduct::where('parent_id', $id)->forceDelete();
                     $cont = 0;
                     while ($cont < count($product_ids)) {
                         $detail = new KitHasProduct;
-                        $detail->parent_id = $product->id;
+                        $detail->parent_id = $id;
                         $detail->children_id = $product_ids[$cont];
                         $detail->quantity = $quantity[$cont];
                         if ($clas[$cont] == 'product') {
@@ -1139,21 +1074,21 @@ class ProductController extends Controller
                 'msg' => __("messages.something_went_wrong")
             ];
         }
-        if ($request->input('submit_type') == 'update_n_edit_opening_stock') {
-            return redirect()->action(
-                'OpeningStockController@add',
-                ['product_id' => $product->id]
-            );
-        } else if ($request->input('submit_type') == 'submit_n_add_selling_prices') {
-            return redirect()->action(
-                'ProductController@addSellingPrices',
-                [$product->id]
-            );
-        } else if ($request->input('submit_type') == 'save_n_add_another') {
-            return redirect()->action(
-                'ProductController@create'
-            )->with('status', $output);
-        }
+        // if ($request->input('submit_type') == 'update_n_edit_opening_stock') {
+        //     return redirect()->action(
+        //         'OpeningStockController@add',
+        //         ['product_id' => $product->id]
+        //     );
+        // } else if ($request->input('submit_type') == 'submit_n_add_selling_prices') {
+        //     return redirect()->action(
+        //         'ProductController@addSellingPrices',
+        //         [$product->id]
+        //     );
+        // } else if ($request->input('submit_type') == 'save_n_add_another') {
+        //     return redirect()->action(
+        //         'ProductController@create'
+        //     )->with('status', $output);
+        // }
 
         return redirect('products')->with('status', $output);
     }
@@ -2226,8 +2161,9 @@ class ProductController extends Controller
             ->select('contacts.id', 'supplier_business_name', 'name', 'mobile', 'product_has_suppliers.catalogue', 'product_has_suppliers.uxc', 'product_has_suppliers.weight', 'product_has_suppliers.dimensions', 'product_has_suppliers.custom_field')
             ->where('product_has_suppliers.product_id', $id)
             ->get();
-        $product = Product::select('name')->where('id', $id)->first();
-        $product_name = $product->name;
+        //$product = Product::select('name')->where('id', $id)->first();
+        //$product_name = $product->name;
+        $product = Product::findOrFail($id);
         $data = array();
         foreach ($suppliers as $supplier) {
             $last_purchase = DB::table('contacts')
@@ -2268,7 +2204,73 @@ class ProductController extends Controller
             array_push($data, $item);
         }
         $dataSupplier = json_decode(json_encode($data), FALSE);
-        return view('product.view-supplier', compact('dataSupplier', 'product_name'));
+        return view('product.view-supplier', compact('dataSupplier', 'product'));
+    }
+
+    public function addSupplier(Request $request, $id)
+    {
+        try{
+            $product = Product::findOrFail($id);
+            $supplier_ids = $request->input('supplier_ids');
+            // if (!empty($supplier_ids)) {
+            //     $cont = 0;
+            //     while ($cont < count($supplier_ids)) {
+            //         $detail = ProductHasSuppliers::where('product_id', $product->id)->where('contact_id', $supplier_ids[$cont])->first();
+            //         if($detail == null){
+            //             $detail = new ProductHasSuppliers;
+            //             $detail->product_id = $product->id;
+            //             $detail->contact_id = $supplier_ids[$cont];
+            //             $detail->catalogue = '-';
+            //             $detail->uxc = 0;
+            //             $detail->weight = 0;
+            //             $detail->dimensions = 0;
+            //             $detail->custom_field = '-';
+            //             $detail->save();
+            //         }
+            //         $cont = $cont + 1;
+            //     }
+            // }
+            if (!empty($supplier_ids)) {
+                ProductHasSuppliers::where('product_id', $product->id)->forceDelete();
+                $cont = 0;
+                while ($cont < count($supplier_ids)) {
+                    $detail = new ProductHasSuppliers;
+                    $detail->product_id = $product->id;
+                    $detail->contact_id = $supplier_ids[$cont];
+    
+                    $detail->catalogue = '-';
+                    $detail->uxc = 0;
+                    $detail->weight = 0;
+                    $detail->dimensions = 0;
+                    $detail->custom_field = '-';
+    
+                    $detail->save();
+                    $cont = $cont + 1;
+                }
+            } else {
+                ProductHasSuppliers::where('product_id', $id)->forceDelete();
+            }
+            $output = [
+                'success' => 1,
+                'msg' => __('product.supplier_added_success'),
+                'product_id' => $product->id
+            ];
+        }catch(\Exception $e){
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
+        }
+        
+        return redirect('products')->with('status', $output);
+    }
+
+    public function deleteSupplier($id, $supplierId)
+    {
+        $detail = ProductHasSuppliers::where('product_id', $id)->where('contact_id', $supplierId)->first();
+        if($detail != null){
+            $detail->delete();
+        }
     }
 
     public function showProduct($id)
@@ -2278,7 +2280,7 @@ class ProductController extends Controller
             ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
             //->leftJoin('variation_location_details as stock', 'variations.id', '=', 'stock.variation_id')
             ->select('products.clasification', 'variations.id as variation_id', 'products.id as product_id', 'products.name as name_product', 'variations.name as name_variation', 'products.sku', 'variations.sub_sku', 'brands.name as brand', 'products.unit_group_id', 'products.unit_id', 'variations.default_purchase_price')
-            ->where('variations.id', $id)
+            ->where('products.id', $id)
             ->first();
         return response()->json($products);
     }
@@ -2685,7 +2687,8 @@ class ProductController extends Controller
             }
             $business_id = request()->session()->get('user.business_id');
 
-            $query = Product::where('business_id', $business_id);
+            $query = Product::where('business_id', $business_id)
+                    ->where('clasification', 'product');
 
             $products = $query->where(function ($query) use ($term) {
                 $query->where('products.name', 'like', '%' . $term . '%')

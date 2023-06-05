@@ -147,6 +147,8 @@ LANG = {
     'cashier_closure_will_send_with_differences' : 'Cashier closure will be sent with differences',
     "save_transfer_msg": "No products will be downloaded until the transfer is shipped",
     "send_transfer_msg": "The products will be unloaded from their origin warehouse",
+    "cancel_product_msg": "Product will be removed from this listing",
+    "cancel_supplier_msg": "Supplier will be removed from this listing",
     "cancel_transfer_msg": "Changes will not be saved",
     "receive_transfer_msg": "The products will be loaded to their destination warehouse",
     "count_transfer_msg": "The transfer will be accounted for",
