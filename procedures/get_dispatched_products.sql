@@ -39,7 +39,7 @@ BEGIN
 			IF(c.business_name IS NOT NULL, c.business_name, c.name) AS customer_name
 		FROM transactions AS t
 		INNER JOIN customers AS c ON t.customer_id = c.id
-		INNER JOIN document_types AS dt ON t.document_correlative_id = dt.id
+		INNER JOIN document_types AS dt ON t.document_types_id = dt.id
 		LEFT JOIN quotes AS q ON t.id = q.transaction_id
 		WHERE DATE(t.transaction_date) BETWEEN start_date AND end_date
 			AND t.`type` = 'sell'
