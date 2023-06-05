@@ -54,6 +54,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <input type="hidden" value="{{ count($dataSupplier) }}" id="count_supplier">
                 <input type="hidden" value="{{ $product->id }}" id="product_id">
                 <button type="button" class="btn btn-primary" onClick="saveSupplier()">@lang( 'messages.save' )</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">@lang( 'messages.cancel' )</button>
