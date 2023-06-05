@@ -408,23 +408,23 @@
             <i class="fa fa-sort-desc"></i>
             <span class="sr-only">Toggle Dropdown</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" role="menu" style="background: #3c8dbc">
+            <ul class="btn-primary dropdown-menu dropdown-menu-right" role="menu">
               <li>
                 @if($selling_price_group_count)
                 <a href="#" id="submit_n_add_selling_prices" type="submit" value="submit_n_add_selling_prices"
-                  class="submit_product_form" style="color: white !important">
+                  class="submit_product_form">
                   @lang('lang_v1.save_n_add_selling_price_group_prices')
                 </a>
                 @endif
               </li>
               <li>
                 <a href="#" id="opening_stock_button" @if(!empty($duplicate_product) && $duplicate_product->enable_stock == 0)
-                  disabled @endif type="submit" value="submit_n_add_opening_stock" class="submit_product_form" style="color: white !important">
+                  disabled @endif type="submit" value="submit_n_add_opening_stock" class="submit_product_form">
                   @lang('lang_v1.save_n_add_opening_stock')
                 </a>
               </li>
               <li>
-                <a href="#" type="submit" value="save_n_add_another" class="submit_product_form" style="color: white !important;">
+                <a href="#" type="submit" value="save_n_add_another" class="submit_product_form">
                   @lang('lang_v1.save_n_add_another')
                 </a>
               </li>

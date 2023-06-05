@@ -14,6 +14,18 @@
 <!-- /.content -->
 
 @endsection
+@section('css')
+	<style>
+		.dropdown-menu>li>a:hover {
+			background-color: #e1e3e9;
+			color: black;
+		}
+
+		.dropdown-menu>li>a {
+			color: white;
+		}
+	</style>
+@endsection
 @section('javascript')
 @php $asset_v = env('APP_VERSION'); @endphp
 <script src="{{ asset('js/purchase.js?v=' . $asset_v) }}"></script>

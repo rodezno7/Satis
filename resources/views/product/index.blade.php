@@ -330,10 +330,16 @@
 
     function saveSupplier(){
 		var id =  $("input#product_id").val();
+        var count_supplier = $('input#count_supplier').val();
+        var cont_fila = $('#supplier_table >tbody >tr').length;
         var route = "/products/addSupplier/"+id;
         $.post(route, $( "#form_add_supplier" ).serialize());
-        toastr.success("{{ __('product.supplier_added_success') }}");
-        $('#modalSupplier').modal('hide');
+        if(count_supplier == 0 && cont_fila == 0){
+            $('#modalSupplier').modal('hide');
+        }else{
+            toastr.success("{{ __('product.supplier_added_success') }}");
+            $('#modalSupplier').modal('hide');
+        }
     }
     
     function deleteSupplierTr(index, supplierId){
