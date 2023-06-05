@@ -66,8 +66,8 @@
 			{!! Form::hidden('submit_type', 'save', ['id' => 'submit_type']); !!}
 			<div class="text-center">
 				<div class="btn-group">
-					<button id="opening_stock_button" @if($product->enable_stock == 0) disabled @endif type="submit" value="submit_n_add_opening_stock" class="btn bg-purple submit_form">@lang('lang_v1.save_n_add_opening_stock')</button>
-					<button type="submit" value="save_n_add_another" class="btn bg-maroon submit_form">@lang('lang_v1.save_n_add_another')</button>
+					{{-- <button id="opening_stock_button" @if($product->enable_stock == 0) disabled @endif type="submit" value="submit_n_add_opening_stock" class="btn bg-purple submit_form">@lang('lang_v1.save_n_add_opening_stock')</button>
+					<button type="submit" value="save_n_add_another" class="btn bg-maroon submit_form">@lang('lang_v1.save_n_add_another')</button> --}}
 					<button type="submit" value="submit" class="btn btn-primary submit_form">@lang('messages.save')</button>
 					<a href="{!!URL::to('/products')!!}">
 						<button id="btnBack" type="button" class="btn btn-danger">@lang('messages.cancel')</button>

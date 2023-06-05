@@ -1074,21 +1074,21 @@ class ProductController extends Controller
                 'msg' => __("messages.something_went_wrong")
             ];
         }
-        if ($request->input('submit_type') == 'update_n_edit_opening_stock') {
-            return redirect()->action(
-                'OpeningStockController@add',
-                ['product_id' => $product->id]
-            );
-        } else if ($request->input('submit_type') == 'submit_n_add_selling_prices') {
-            return redirect()->action(
-                'ProductController@addSellingPrices',
-                [$product->id]
-            );
-        } else if ($request->input('submit_type') == 'save_n_add_another') {
-            return redirect()->action(
-                'ProductController@create'
-            )->with('status', $output);
-        }
+        // if ($request->input('submit_type') == 'update_n_edit_opening_stock') {
+        //     return redirect()->action(
+        //         'OpeningStockController@add',
+        //         ['product_id' => $product->id]
+        //     );
+        // } else if ($request->input('submit_type') == 'submit_n_add_selling_prices') {
+        //     return redirect()->action(
+        //         'ProductController@addSellingPrices',
+        //         [$product->id]
+        //     );
+        // } else if ($request->input('submit_type') == 'save_n_add_another') {
+        //     return redirect()->action(
+        //         'ProductController@create'
+        //     )->with('status', $output);
+        // }
 
         return redirect('products')->with('status', $output);
     }
@@ -2687,7 +2687,8 @@ class ProductController extends Controller
             }
             $business_id = request()->session()->get('user.business_id');
 
-            $query = Product::where('business_id', $business_id);
+            $query = Product::where('business_id', $business_id)
+                    ->where('clasification', 'product');
 
             $products = $query->where(function ($query) use ($term) {
                 $query->where('products.name', 'like', '%' . $term . '%')

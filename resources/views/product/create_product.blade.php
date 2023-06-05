@@ -5,10 +5,6 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>@lang('product.add_product')</h1>
-	<ol class="breadcrumb">
-		<li><a href="/products"><i class="fa fa-list"></i> Productos</a></li>
-		<li class="active">Editar</li>
-	  </ol> 
 </section>
 
 <!-- Main content -->
@@ -246,7 +242,7 @@
                     };
                 },
             },
-            minimumInputLength: 1,
+            minimumInputLength: 2,
             escapeMarkup: function (m) {
                 return m;
             },
@@ -254,7 +250,7 @@
                 if (!data.id) {
                     return data.text;
                 }
-                let html = data.text;
+                let html = data.sku +" - "+ data.text;
                 return html;
             },
         });
@@ -297,7 +293,7 @@
 				Swal.fire
 				({
 					title: "{{__('product.product_already_added')}}",
-					icon: "error",
+					icon: "warning",
 				});
 			}
 			else

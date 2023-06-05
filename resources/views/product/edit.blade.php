@@ -4,11 +4,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <h1>@lang('product.edit_product')</h1>
-  <ol class="breadcrumb">
-    <li><a href="/products"><i class="fa fa-list"></i> Productos</a></li>
-    <li class="active">Editar</li>
-  </ol> 
+  <h1>@lang('product.edit_product')</h1> 
 </section>
 
 <!-- Main content -->
@@ -34,7 +30,7 @@
         </div>
         <div class="col-lg-4 col-sm-6">
           <div class="form-group">
-            {!! Form::label('name', __('product.product_name') . ':*') !!}
+            {!! Form::label('name', __('product.product_name') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
             {!! Form::text('name', $product->name, ['class' => 'form-control', 'required',
             'placeholder' => __('product.product_name')]); !!}
           </div>
@@ -43,8 +39,8 @@
           <label>
             {!! Form::checkbox('is_active', 1, $is_active, ['class' => 'input-icheck', 'id' => 'is_active']); !!}
             <strong>@lang('product.is_active')</strong>
-          </label>@show_tooltip(__('product.is_active_help')) <small class="help-block">
-            <i>@lang('product.is_active_help')</i></small>
+          </label>@show_tooltip(__('product.is_active_help')) <p class="help-block">
+            <i>@lang('product.is_active_help')</i></p>
         </div>
         <div class="col-lg-4 col-sm-6 @if(!session('business.enable_category')) hide @endif">
           <div class="form-group">
@@ -64,7 +60,7 @@
         <div
           class="col-lg-4 col-sm-6 @if(!(session('business.enable_category') && session('business.enable_sub_category'))) hide @endif">
           <div class="form-group">
-            {!! Form::label('sku', __('product.sku') . ':*') !!} @show_tooltip(__('tooltip.sku'))
+            {!! Form::label('sku', __('product.sku') . ':') !!}<span class="text-danger"> <strong>*</strong></span> @show_tooltip(__('tooltip.sku'))
             {!! Form::text('sku', $product->sku, ['class' => 'form-control',
             'placeholder' => __('product.sku'), 'required', 'readonly']); !!}
           </div>
@@ -72,7 +68,7 @@
         <div id="divExcludeService">
           <div class="col-lg-4 col-sm-6">
             <div class="form-group">
-              {!! Form::label('barcode_type', __('product.barcode_type') . ':*') !!}
+              {!! Form::label('barcode_type', __('product.barcode_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
               {!! Form::select('barcode_type', $barcode_types, $product->barcode_type, ['placeholder' =>
               __('messages.please_select'), 'class' => 'form-control select2', 'required']); !!}
             </div>
@@ -96,7 +92,7 @@
 
           <div class="col-lg-4 col-sm-6">
             <div class="form-group">
-              {!! Form::label('unit_id', __('product.unit') . ':*') !!}
+              {!! Form::label('unit_id', __('product.unit') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
               @if($conf_units == 1)
               {!! Form::select('unit_id', $units, $product->unit_group_id, ['placeholder' =>
               __('messages.please_select'), 'class' => 'form-control select2', 'required', 'id' => 'unit_id', 'style' =>
@@ -125,13 +121,13 @@
             <label>
               {!! Form::checkbox('enable_stock', 1, $product->enable_stock, ['class' => 'input-icheck', 'id' =>
               'enable_stock']); !!} <strong>@lang('product.manage_stock')</strong>
-            </label>@show_tooltip(__('tooltip.enable_stock')) <small class="help-block">
-              <i>@lang('product.enable_stock_help')</i></small>
+            </label>@show_tooltip(__('tooltip.enable_stock')) <p class="help-block">
+              <i>@lang('product.enable_stock_help')</i></p>
           </div>
 
           <div class="col-lg-4 col-sm-6">
             <div id="alert_quantity_div" class="form-group" @if(!$product->enable_stock) style="display:none" @endif>
-              {!! Form::label('alert_quantity', __('product.alert_quantity') . ':*') !!}
+              {!! Form::label('alert_quantity', __('product.alert_quantity') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
               @show_tooltip(__('tooltip.alert_quantity'))
               {!! Form::number('alert_quantity', $product->alert_quantity, ['id' => 'alert_quantity', 'class' =>
               'form-control', 'required',
@@ -146,7 +142,7 @@
                 <strong>@lang('product.dai')</strong>
               </label>
               @show_tooltip(__('tooltip.check_dai'))
-              <small class="help-block"><i>@lang('product.check_dai_help')</i></small>
+              <p class="help-block"><i>@lang('product.check_dai_help')</i></p>
             </div>
           </div>
         </div>
@@ -161,6 +157,7 @@
           </div>
           <div class="row form-group">
             <div class="col-lg-3 col-sm-3">
+              <br>
               <label for="has_warranty">
                 {!! Form::checkbox('has_warranty', '1', $product->has_warranty,
                 ['id' => 'has_warranty', 'onClick' => 'showWarranty()']) !!}
@@ -179,11 +176,11 @@
           <div class="form-group">
             {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
             {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
-            <small class="help-block">@lang('purchase.max_file_size', ['size' =>
+            <p class="help-block">@lang('purchase.max_file_size', ['size' =>
               (config('constants.document_size_limit')
               / 1000000)]). @lang('lang_v1.aspect_ratio_should_be_1_1') @if(!empty($product->image)) <br>
               @lang('lang_v1.previous_image_will_be_replaced') @endif
-            </small>
+            </p>
           </div>
         </div>
 
@@ -197,9 +194,9 @@
     <div class="boxform_u box-solid_u">
       <div class="box-body">
         <div class="row">
-          <div class="col-lg-4 col-sm-6">
+          <div class="col-lg-6 col-sm-12">
             <div class="form-group">
-              {!! Form::label('kit_children', __('product.clasification_product') . ':*') !!}
+              {!! Form::label('kit_children', __('product.clasification_product') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
               {!! Form::select('kit_children', [], null, ['style' => 'width: 100%', 'class' => 'form-control',
               'placeholder' => __('messages.please_select'), 'id' => 'kit_children']); !!}
             </div>
@@ -273,6 +270,7 @@
         @endif
         <div class="col-lg-6 col-sm-5">
           <div class="checkbox">
+            <br>
             <label>
               {!! Form::checkbox('enable_sr_no', 1, $product->enable_sr_no, ['id' => 'imei', 'class' =>
               'input-icheck']); !!} <strong>@lang('lang_v1.enable_imei_or_sr_no')</strong>
@@ -348,25 +346,25 @@
   <div class="boxform_u box-solid_u">
     <div class="box-body">
       <div class="row">
-        <div class="col-lg-4 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
+        <div class="col-lg-5 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
           <div class="form-group">
-            {!! Form::label('tax', __('product.applicable_tax') . ':') !!}
-            {!! Form::select('tax', $taxes, $product->tax, ['placeholder' => __('messages.please_select'), 'class' =>
-            'form-control select2']); !!}
-            {!! Form::hidden('tax_percent', $tax_percent, ['id' => 'tax_percent']) !!}
-          </div>
-        </div>
-        <div class="col-lg-4 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
-          <div class="form-group">
-            {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':*') !!}
+            {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
             {!! Form::select('tax_type',['inclusive' => __('product.inclusive'), 'exclusive' =>
             __('product.exclusive')], $product->tax_type,
             ['class' => 'form-control select2', 'required']); !!}
           </div>
         </div>
-        <div class="col-lg-4 col-sm-6">
+        <div class="col-lg-4 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
           <div class="form-group">
-            {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
+            {!! Form::label('tax', __('product.applicable_tax') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
+            {!! Form::select('tax', $taxes, $product->tax, ['placeholder' => __('messages.please_select'), 'class' =>
+            'form-control select2']); !!}
+            {!! Form::hidden('tax_percent', $tax_percent, ['id' => 'tax_percent']) !!}
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6">
+          <div class="form-group">
+            {!! Form::label('type', __('product.product_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span> @show_tooltip(__('tooltip.product_type'))
             {!! Form::select('type', ['single' => 'Single', 'variable' => 'Variable'], $product->type, ['class' =>
             'form-control select2',
             'required','disabled', 'data-action' => 'edit', 'data-product_id' => $product->id ]); !!}
@@ -383,37 +381,12 @@
       <div class="row">
         <input type="hidden" name="submit_type" id="submit_type">
         <div class="col-sm-12">
-          <div class="text-center">
+          <div class="text-right">
 
             <div class="btn-group">
               <div class="btn-group dropleft" role="group">
                 <button type="submit" value="submit"
                   class="btn btn-primary submit_product_edit_form">@lang('messages.update')</button>
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-                  <i class="fa fa-sort-desc"></i>
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                  <li>
-                    @if($selling_price_group_count)
-                    <a href="#" type="submit" id="submit_n_add_selling_prices" value="submit_n_add_selling_prices"
-                      class="submit_product_edit_form">@lang('lang_v1.save_n_add_selling_price_group_prices')</a>
-                    @endif
-                  </li>
-                  <li>
-                    <a href="#" type="submit" id="update_n_edit_opening_stock" @if(empty($product->enable_stock))
-                      disabled="true"
-                      @endif value="update_n_edit_opening_stock" class="submit_product_edit_form">
-                      @lang('lang_v1.update_n_edit_opening_stock')
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" type="submit" value="save_n_add_another" class="submit_product_edit_form">
-                      @lang('lang_v1.update_n_add_another')
-                    </a>
-                  </li>
-                </ul>
               </div>
             </div>
             <a href="{!!URL::to('/products')!!}">
@@ -537,7 +510,7 @@
           };
         },
       },
-      minimumInputLength: 1,
+      minimumInputLength: 2,
       escapeMarkup: function (m) {
         return m;
       },
@@ -545,7 +518,7 @@
       if (!data.id) {
           return data.text;
       }
-      let html = data.text;
+      let html = data.sku +" - "+ data.text;
         return html;
       },
     });
@@ -590,7 +563,7 @@
           Swal.fire
           ({
             title: "{{__('product.product_already_added')}}",
-            icon: "error",
+            icon: "warning",
           });
         }
         else{

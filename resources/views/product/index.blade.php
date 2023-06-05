@@ -117,7 +117,7 @@
                         };
                     },
                 },
-                minimumInputLength: 1,
+                minimumInputLength: 2,
                 escapeMarkup: function (m) {
                     return m;
                 },
@@ -143,7 +143,7 @@
                         Swal.fire
                         ({
                             title: "{{__('contact.supplier_already_added')}}",
-                            icon: "error",
+                            icon: "warning",
                         });
                     }
                     else
@@ -207,7 +207,7 @@
                 html += '<li><a href="/products/view/'+data.id+'" class="view-product"><i class="fa fa-eye"></i>@lang("messages.view")</a></li>';
 
                 if (data.clasification == "product") {
-                    html += '<li><a href="/products/viewSupplier/'+data.id+'" class="view-supplier"><i class="fa fa-eye"></i>@lang("product.view_suppliers")</a></li>';
+                    html += '<li><a href="/products/viewSupplier/'+data.id+'" class="view-supplier"><i class="fa fa-building-o"></i>@lang("product.supplier_label")</a></li>';
                 }
 
                 if (data.clasification == "kits") {
@@ -328,6 +328,14 @@
         });        
     });
 
+    function saveSupplier(){
+		var id =  $("input#product_id").val();
+        var route = "/products/addSupplier/"+id;
+        $.post(route, $( "#form_add_supplier" ).serialize());
+        toastr.success("{{ __('product.supplier_added_success') }}");
+        $('#modalSupplier').modal('hide');
+    }
+    
     function deleteSupplierTr(index, supplierId){
         Swal.fire({
 			title: LANG.sure,
@@ -339,16 +347,16 @@
 			confirmButtonText: LANG.yes,
 			cancelButtonText: LANG.not,
 		}).then((resul) => {
-			// if (resul.isConfirmed) {
+			if (resul.isConfirmed) {
 			// 	var id =  $("input#product_id").val();
             //     var route = "/products/deleteSupplier/"+id+"/"+supplierId;
             //     $.get(route, function(res){
                     $("#fila" + index).remove();
                     supplier_ids.removeItem(supplierId);
             //     });
-			// } else {
-			// 	return false;
-			// }
+			} else {
+			    return false;
+			}
 		});
     }
 

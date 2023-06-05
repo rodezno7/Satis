@@ -126,6 +126,7 @@ class OpeningStockController extends Controller
      */
     public function save(Request $request)
     {
+        //dd($request);
         if (!auth()->user()->can('product.update')) {
             abort(403, 'Unauthorized action.');
         }
@@ -138,9 +139,9 @@ class OpeningStockController extends Controller
             $user_id = $request->session()->get('user.id');
 
             $product = Product::where('business_id', $business_id)
-                                ->where('id', $product_id)
-                                ->with(['variations', 'product_tax'])
-                                ->first();
+                ->where('id', $product_id)
+                ->with(['variations', 'product_tax'])
+                ->first();
 
             // Changes from locations to warehouses
             //$locations = BusinessLocation::forDropdown($business_id)->toArray();
@@ -222,17 +223,17 @@ class OpeningStockController extends Controller
                         }
 
                         $delete_variation_ids = [];
-
+                        $transaction = [];
                         //create transaction & purchase lines
                         if (!empty($purchase_lines)) {
                             $is_new_transaction = false;
 
                             $transaction = Transaction::where('type', 'opening_stock')
-                                                        ->where('business_id', $business_id)
-                                                        ->where('opening_stock_product_id', $product->id)
-                                                        ->where('location_id', $location_id)
-                                                        ->where('warehouse_id', $warehouse_id)
-                                                        ->first();
+                                ->where('business_id', $business_id)
+                                ->where('opening_stock_product_id', $product->id)
+                                ->where('location_id', $location_id)
+                                ->where('warehouse_id', $warehouse_id)
+                                ->first();
                             if (!empty($transaction)) {
                                 $transaction->total_before_tax = $purchase_total;
                                 $transaction->final_total = $purchase_total;
@@ -242,18 +243,18 @@ class OpeningStockController extends Controller
 
                                 $transaction = Transaction::create(
                                     [
-                                            'type' => 'opening_stock',
-                                            'opening_stock_product_id' => $product->id,
-                                            'status' => 'received',
-                                            'business_id' => $business_id,
-                                            'transaction_date' => $transaction_date,
-                                            'total_before_tax' => $purchase_total,
-                                            'location_id' => $location_id,
-                                            'final_total' => $purchase_total,
-                                            'payment_status' => 'paid',
-                                            'created_by' => $user_id,
-                                            'warehouse_id' => $warehouse_id
-                                        ]
+                                        'type' => 'opening_stock',
+                                        'opening_stock_product_id' => $product->id,
+                                        'status' => 'received',
+                                        'business_id' => $business_id,
+                                        'transaction_date' => $transaction_date,
+                                        'total_before_tax' => $purchase_total,
+                                        'location_id' => $location_id,
+                                        'final_total' => $purchase_total,
+                                        'payment_status' => 'paid',
+                                        'created_by' => $user_id,
+                                        'warehouse_id' => $warehouse_id
+                                    ]
                                 );
                             }
 
@@ -265,8 +266,8 @@ class OpeningStockController extends Controller
                             $delete_purchase_lines = null;
                             if (!empty($updated_purchase_line_ids)) {
                                 $delete_purchase_lines = PurchaseLine::where('transaction_id', $transaction->id)
-                                            ->whereNotIn('id', $updated_purchase_line_ids)
-                                            ->get();
+                                    ->whereNotIn('id', $updated_purchase_line_ids)
+                                    ->get();
 
                                 if ($delete_purchase_lines->count()) {
                                     foreach ($delete_purchase_lines as $delete_purchase_line) {
@@ -315,15 +316,41 @@ class OpeningStockController extends Controller
                             if (!$is_new_transaction) {
                                 $this->transactionUtil->adjustMappingPurchaseSellAfterEditingPurchase('received', $transaction, $delete_purchase_lines);
                             }
+
+
+
+                            //************************************************************** */
+                            //************************************************************** */
+                            //************************************************************** */
+                            //************************************************************** */
+                            // Edit avarage cost
+                            $enable_editing_avg_cost = $request->session()->get('business.enable_editing_avg_cost_from_purchase');
+
+                            if ($enable_editing_avg_cost == 1) {
+                                $variation_ids = PurchaseLine::where('transaction_id', $transaction->id)->pluck('variation_id');
+                
+                                foreach ($variation_ids as $variation_id) {
+                                    $this->productUtil->recalculateProductCost($variation_id);
+                                }
+
+                                if (! empty($delete_variation_ids)) {
+                                    foreach ($delete_variation_ids as $variation_id) {
+                                        $this->productUtil->recalculateProductCost($variation_id);
+                                    }
+                                }
+                            }
+                            //************************************************************** */
+                            //************************************************************** */
+                            //************************************************************** */
                         } else {
                             //Delete transaction if all purchase line quantity is 0 (Only if transaction exists)
                             $delete_transaction = Transaction::where('type', 'opening_stock')
-                                                        ->where('business_id', $business_id)
-                                                        ->where('opening_stock_product_id', $product->id)
-                                                        ->where('location_id', $location_id)
-                                                        ->where('warehouse_id', $warehouse_id)
-                                                        ->with(['purchase_lines'])
-                                                        ->first();
+                                ->where('business_id', $business_id)
+                                ->where('opening_stock_product_id', $product->id)
+                                ->where('location_id', $location_id)
+                                ->where('warehouse_id', $warehouse_id)
+                                ->with(['purchase_lines'])
+                                ->first();
                             
                             if (!empty($delete_transaction)) {
                                 $delete_purchase_lines = $delete_transaction->purchase_lines;
@@ -341,23 +368,6 @@ class OpeningStockController extends Controller
                                 $delete_transaction->delete();
                             }
                         }
-
-                        // Edit avarage cost
-                        $enable_editing_avg_cost = $request->session()->get('business.enable_editing_avg_cost_from_purchase');
-
-                        if ($enable_editing_avg_cost == 1) {
-                            $variation_ids = PurchaseLine::where('transaction_id', $transaction->id)->pluck('variation_id');
-            
-                            foreach ($variation_ids as $variation_id) {
-                                $this->productUtil->recalculateProductCost($variation_id);
-                            }
-
-                            if (! empty($delete_variation_ids)) {
-                                foreach ($delete_variation_ids as $variation_id) {
-                                    $this->productUtil->recalculateProductCost($variation_id);
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -372,8 +382,8 @@ class OpeningStockController extends Controller
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
             
             $output = ['success' => 0,
-                            'msg' => $e->getMessage()
-                        ];
+                'msg' => $e->getMessage()
+            ];
             return back()->with('status', $output);
         }
 

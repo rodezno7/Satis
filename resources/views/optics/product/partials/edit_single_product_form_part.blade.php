@@ -29,13 +29,13 @@
                         <input type="hidden" name="single_variation_id" value="{{$variation->id}}">
 
                         <div class="col-sm-6">
-                          {!! Form::label('single_dpp', trans('product.exc_of_tax') . ':*') !!}
+                          {!! Form::label('single_dpp', trans('product.exc_of_tax') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
 
                           {!! Form::text('single_dpp', number_format($variation->default_purchase_price, $price_precision), ['class' => 'form-control input-sm dpp input_number', 'placeholder' => 'Excluding Tax', 'required']); !!}
                         </div>
 
                         <div class="col-sm-6">
-                          {!! Form::label('single_dpp_inc_tax', trans('product.inc_of_tax') . ':*') !!}
+                          {!! Form::label('single_dpp_inc_tax', trans('product.inc_of_tax') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
                         
                           {!! Form::text('single_dpp_inc_tax', number_format($variation->dpp_inc_tax, $price_precision), ['class' => 'form-control input-sm dpp_inc_tax input_number', 'placeholder' => 'Including Tax', 'required']); !!}
                         </div>

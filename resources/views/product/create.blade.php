@@ -3,7 +3,7 @@
 'product_form', 'files' => true ]) !!}
 <div class="boxform_u box-solid_u">
   <div class="box-body">
-    <div class="row">
+    <div class="row align-items-center">
       {{-- Number of decimal places to store and use in calculations --}}
       <input type="hidden" id="price_precision" value="{{ config('app.price_precision') }}">
 
@@ -17,18 +17,18 @@
       </div>
 
       <div class="form-group col-lg-4 col-sm-6">
-          {!! Form::label('name', __('product.product_name') . ':*') !!}
+          {!! Form::label('name', __('product.product_name') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
           {!! Form::text('name', !empty($duplicate_product->name) ? $duplicate_product->name : null, ['class' =>
           'form-control', 'required',
           'placeholder' => __('product.product_name')]); !!}
           <input type="hidden" name="create" value="1">
       </div>
-      <div class="form-group col-lg-4 col-sm-6">
+      <div class="form-group col-lg-4 col-sm-6" style="vertical-align: middle; !important">
         <label>
           <input type="checkbox" name="is_active" id="is_active" value="1" class="input-icheck" checked>
           <strong>@lang('product.is_active')</strong>
         </label>@show_tooltip(__('product.is_active_help')) 
-        <small class="help-block"><i>@lang('product.is_active_help')</i></small>
+        <p class="help-block"><i>@lang('product.is_active_help')</i></p>
       </div>
 
       {{-- <div class="clearfix"></div> --}}
@@ -101,7 +101,7 @@
 
         <div class="col-lg-4 col-sm-6">
           <div class="form-group">
-            {!! Form::label('barcode_type', __('product.barcode_type') . ':*') !!}
+            {!! Form::label('barcode_type', __('product.barcode_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
             {!! Form::select('barcode_type', $barcode_types, !empty($duplicate_product->barcode_type) ?
             $duplicate_product->barcode_type : $barcode_default, ['style' => 'width: 100%', 'class' => 'form-control
             select2', 'required']); !!}
@@ -161,11 +161,11 @@
               {!! Form::checkbox('enable_stock', 1, !empty($duplicate_product) ? $duplicate_product->enable_stock :
               true, ['class' => 'input-icheck', 'id' => 'enable_stock']); !!}
               <strong>@lang('product.manage_stock')</strong>
-            </label>@show_tooltip(__('tooltip.enable_stock')) <small
-              class="help-block"><i>@lang('product.enable_stock_help')</i></small>
+            </label>@show_tooltip(__('tooltip.enable_stock')) <p
+              class="help-block"><i>@lang('product.enable_stock_help')</i></p>
           </div>
           <div class="form-group">
-            {!! Form::label('alert_quantity', __('product.alert_quantity') . ':*') !!}
+            {!! Form::label('alert_quantity', __('product.alert_quantity') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
             @show_tooltip(__('tooltip.alert_quantity'))
             {!! Form::number('alert_quantity', !empty($duplicate_product->alert_quantity) ?
             $duplicate_product->alert_quantity : 0 , ['id' => 'alert_quantity', 'class' => 'form-control input_number',
@@ -173,35 +173,14 @@
             'placeholder' => __('product.alert_quantity'), 'min' => '0']); !!}
           </div>
         </div>
-        {{-- <div class="col-sm-3">
-          <div class="form-group">
-            <label from="dai">@lang('product.dai')</label>
-            <input type="text" name="dai" id="dai" class="form-control" placeholder="@lang('product.dai_label')">
-          </div>
-        </div> --}}
-        <div class="form-group col-lg-4 col-sm-6">
+        <div class="form-group col-lg-4 col-sm-6 my-auto">
           <label>
             {!! Form::checkbox('check_dai', 1, false, ['class' => 'input-icheck', 'id' => 'check_dai']); !!}
             <strong>@lang('product.dai')</strong>
           </label>
           @show_tooltip(__('tooltip.check_dai'))
-          <small class="help-block"><i>@lang('product.check_dai_help')</i></small>
+          <p class="help-block"><i>@lang('product.check_dai_help')</i></p>
         </div>
-
-        {{-- <div class="col-sm-3">
-          <div class="form-group">
-            <label from="provider_code">@lang('product.provider_code')</label>
-            <input type="text" name="provider_code" id="provider_code" class="form-control"
-              placeholder="@lang('product.provider_code')">
-          </div>
-        </div> --}}
-        {{-- <div class="col-sm-3">
-          <div class="form-group">
-            <label from="drive_unit ">@lang('product.drive_unit')</label>
-            <input type="text" name="drive_unit" id="drive_unit" class="form-control input_number"
-              placeholder="@lang('product.drive_unit')">
-          </div>
-        </div> --}}
       </div>
       {{-- <div class="clearfix"></div> --}}
     </div>
@@ -214,7 +193,8 @@
           !!}
         </div>
         <div class="row form-group">
-          <div class="col-lg-3 col-sm-3">
+          <div class="col-lg-3 col-sm-3 align-middle">
+            <br/>
             <label for="has_warranty">
               {!! Form::checkbox('has_warranty', '0', false, ['id' => 'has_warranty']) !!}
               <strong>@lang('quote.has_warranty')</strong>
@@ -229,8 +209,8 @@
       <div class="form-group col-lg-4 col-sm-12">
         {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
         {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
-        <small class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit')
-          / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</small>
+        <p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit')
+          / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p>
       </div>
     </div>
   </div>
@@ -239,9 +219,9 @@
 <div class="boxform_u box-solid_u" id="divExcludeService4" style="display: none;">
   <div class="box-body">
       <div class="row">
-        <div class="col-lg-4 col-sm-6">
+        <div class="col-lg-6 col-sm-12">
           <div class="form-group">
-            {!! Form::label('kit_children', __('product.clasification_product') . ':*') !!}
+            {!! Form::label('kit_children', __('product.clasification_product') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
             {!! Form::select('kit_children', [], null, ['style' => 'width: 100%', 'class' => 'form-control',
               'placeholder' => __('messages.please_select'), 'id' => 'kit_children']); !!}
           </div>
@@ -289,7 +269,7 @@
       <div class="col-lg-6 col-sm-7 @if($hide) hide @endif">
         <div class="form-group">
           <div class="multi-input">
-            {!! Form::label('expiry_period', __('product.expires_in') . ':*') !!}<br>
+            {!! Form::label('expiry_period', __('product.expires_in') . ':') !!}<span class="text-danger"> <strong>*</strong></span><br>
             {!! Form::text('expiry_period', !empty($duplicate_product->expiry_period) ?
             @num_format($duplicate_product->expiry_period) : $expiry_period, ['class' => 'form-control pull-left
             input_number',
@@ -304,6 +284,7 @@
       @endif
       <div class="col-lg-6 col-sm-5">
         <div class="form-group">
+          <br/>
           <label>
             {!! Form::checkbox('enable_sr_no', 1, !(empty($duplicate_product)) ? $duplicate_product->enable_sr_no :
             false, ['id' => 'imei','class' => 'input-icheck']); !!}
@@ -374,9 +355,9 @@
 <div class="boxform_u box-solid_u">
   <div class="box-body">
     <div class="row">
-      <div class="col-lg-4 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
+      <div class="col-lg-5 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
         <div class="form-group">
-          {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':*') !!}
+          {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
           {!! Form::select('tax_type', ['inclusive' => __('product.inclusive'), 'exclusive' =>
           __('product.exclusive')], !empty($duplicate_product->tax_type) ? $duplicate_product->tax_type : 'exclusive',
           ['style' => 'width: 100%', 'class' => 'form-control select2', 'required']); !!}
@@ -385,7 +366,7 @@
 
       <div class="col-lg-4 col-sm-6 @if(!session('business.enable_price_tax')) hide @endif">
         <div class="form-group">
-          {!! Form::label('tax', __('product.applicable_tax') . ':*') !!}
+          {!! Form::label('tax', __('product.applicable_tax') . ':') !!}<span class="text-danger"> <strong>*</strong></span>
           {!! Form::select(
           'tax',
           $taxes,
@@ -399,9 +380,9 @@
           {!! Form::hidden('tax_percent', null, ['id' => 'tax_percent']) !!}
         </div>
       </div>
-      <div class="col-lg-4 col-sm-6" id="div_type">
+      <div class="col-lg-3 col-sm-6" id="div_type">
         <div class="form-group">
-          {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
+          {!! Form::label('type', __('product.product_type') . ':') !!}<span class="text-danger"> <strong>*</strong></span> @show_tooltip(__('tooltip.product_type'))
           {!! Form::select('type', ['single' => 'Single', 'variable' => 'Variable'], !empty($duplicate_product->type)
           ? $duplicate_product->type : null, ['style' => 'width: 100%', 'class' => 'form-control select2',
           'required', 'data-action' => !empty($duplicate_product) ? 'duplicate' : 'add', 'data-product_id' =>
@@ -418,7 +399,7 @@
 
     
     <div class="row">
-      <div class="col-sm-12 text-center">
+      <div class="col-sm-12 text-right">
         <input type="hidden" name="submit_type" id="submit_type">
         <div class="btn-group">
           <div class="btn-group dropleft" role="group">
@@ -427,23 +408,23 @@
             <i class="fa fa-sort-desc"></i>
             <span class="sr-only">Toggle Dropdown</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-right" role="menu" >
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" style="background: #3c8dbc">
               <li>
                 @if($selling_price_group_count)
                 <a href="#" id="submit_n_add_selling_prices" type="submit" value="submit_n_add_selling_prices"
-                  class="submit_product_form">
+                  class="submit_product_form" style="color: white !important">
                   @lang('lang_v1.save_n_add_selling_price_group_prices')
                 </a>
                 @endif
               </li>
               <li>
                 <a href="#" id="opening_stock_button" @if(!empty($duplicate_product) && $duplicate_product->enable_stock == 0)
-                  disabled @endif type="submit" value="submit_n_add_opening_stock" class="submit_product_form">
+                  disabled @endif type="submit" value="submit_n_add_opening_stock" class="submit_product_form" style="color: white !important">
                   @lang('lang_v1.save_n_add_opening_stock')
                 </a>
               </li>
               <li>
-                <a href="#" type="submit" value="save_n_add_another" class="submit_product_form">
+                <a href="#" type="submit" value="save_n_add_another" class="submit_product_form" style="color: white !important;">
                   @lang('lang_v1.save_n_add_another')
                 </a>
               </li>
