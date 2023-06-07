@@ -430,7 +430,7 @@ return [
     'add_selling_price_group' => 'Add Selling Price Group',
     'edit_selling_price_group' => 'Edit Selling Price Group',
     'access_selling_price_groups' => 'Access selling price groups',
-    'save_n_add_selling_price_group_prices' => 'Save & Add Selling-Price-Group Prices',
+    'save_n_add_selling_price_group_prices' => 'Save and add prices in sales price lists',
     'add_selling_price_group_prices' => 'Add or edit Group Prices',
     'default_selling_price_inc_tax' => 'Default Selling Price (Inc. Tax)',
     'variation' => 'Variation',

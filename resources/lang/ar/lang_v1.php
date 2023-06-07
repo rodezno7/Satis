@@ -404,7 +404,7 @@ return [
 "add_selling_price_group" => "إضافة مجموعة سعر البيع", 
 "edit_selling_price_group" => "تعديل مجموعة أسعار البيع", 
 "access_selling_price_groups" => "الوصول إلى مجموعات أسعار البيع", 
-"save_n_add_selling_price_group_prices" => "حفظ وإضافة أسعار أسعار البيع للمجموعة", 
+"save_n_add_selling_price_group_prices" => "حفظ وإضافة الأسعار في قوائم أسعار المبيعات", 
 "add_selling_price_group_prices" => "إضافة أو تعديل مجموعة الأسعار", 
 "default_selling_price_inc_tax" => "سعر البيع الافتراضي (ضريبة شركة)", 
 "variation" => "الاختلاف", 

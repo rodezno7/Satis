@@ -409,7 +409,7 @@ return [
    'add_selling_price_group' => 'Satış Fiyat Grubu Ekle',
    'edit_selling_price_group' => 'Satış Fiyat Grubunu Düzenle',
    'access_selling_price_groups' => 'Satış fiyat gruplarına erişim',
-   'save_n_add_selling_price_group_prices' => 'Satış & Satış-Grup Fiyatlarını Kaydet ve Ekle',
+   'save_n_add_selling_price_group_prices' => 'Ruani dhe shtoni çmimet në listat e çmimeve të shitjeve',
    'add_selling_price_group_prices' => 'Grup Fiyatları Ekleme veya Düzenleme',
    'default_selling_price_inc_tax' => 'Varsayılan Satış Fiyatı (Vergi Dahil)',
    'variation' => 'Varyasyon',
