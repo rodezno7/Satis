@@ -2159,7 +2159,7 @@ class ReporterController extends Controller
 
 		$business_id = request()->session()->get('user.business_id');
 
-		$locations = BusinessLocation::forDropdown($business_id);
+		$locations = BusinessLocation::forDropdown($business_id, true);
 
 		return view('book_final_consumer.index', compact('locations'));
 	}
@@ -2180,18 +2180,27 @@ class ReporterController extends Controller
 		$business_id = request()->session()->get('user.business_id');
 		$initial_date = Carbon::parse($request->input('initial_date'));
 		$final_date = Carbon::parse($request->input('final_date'));
-		$location = $request->input('location');
+		$location = $request->get('location') ?? 0;
 
 		$size = $request->input('size');
 
 		// Query
-		$lines = DB::select(
-			'CALL get_sales_book_to_final_consumer(?, ?, ?, ?)',
-			array($initial_date, $final_date, $location, $business_id)
-		);
+		$lines = collect(DB::select('CALL get_sales_book_to_final_consumer(?, ?, ?, ?)',
+			[$initial_date, $final_date, $location, $business_id]));
 
 		// Header info
 		$business = Business::where('id', $business_id)->first();
+
+        $locations = BusinessLocation::forDropdown($business_id)->toArray();
+
+        /** Filter selected location */
+        if ($location > 0) {
+            $locs = array_filter($locations, function ($k) use ($location) {
+                return $k == $location;
+            }, ARRAY_FILTER_USE_KEY);
+
+            $locations = $locs;
+        }
 
 		$months = array(__('accounting.january'), __('accounting.february'), __('accounting.march'), __('accounting.april'), __('accounting.may'), __('accounting.june'), __('accounting.july'), __('accounting.august'), __('accounting.september'), __('accounting.october'), __('accounting.november'), __('accounting.december'));
 		$initial_month = $months[($initial_date->format('n')) - 1];
@@ -2202,11 +2211,11 @@ class ReporterController extends Controller
 		$report_type = $request->input('report_type');
 		if ($report_type == 'pdf') {
 			$pdf = \PDF::loadView('reports.book_final_consumer_pdf',
-				compact('lines', 'size', 'business', 'initial_month', 'final_month', 'initial_year', 'final_year'));
+				compact('lines', 'size', 'business', 'initial_month', 'final_month', 'initial_year', 'final_year', 'locations', 'location'));
 			$pdf->setPaper('letter', 'landscape');
 			return $pdf->stream('book_final_consumer.pdf');
 		} else {
-			return Excel::download(new BookFinalConsumerExport($lines, $business, $initial_month, $final_month, $initial_year, $final_year), 'book_final_consumer.xlsx');
+			return Excel::download(new BookFinalConsumerExport($lines, $business, $initial_month, $final_month, $initial_year, $final_year, $locations, $location, $this->transactionUtil), 'book_final_consumer.xlsx');
 		}
 	}
 
