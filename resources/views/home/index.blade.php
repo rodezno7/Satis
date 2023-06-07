@@ -324,7 +324,7 @@
 		<div class="col-md-3 col-sm-6 col-xs-12">
 		<div class="small-box bg-olive">
 					<div class="inner">
-						<h3 class="info-box-number gross_profit"></h3>
+						<h3 class="info-box-number web"></h3>
 						<p class="info-box-text" style="color: white">{{ __('home.gross_profit') }}</p><br>
 					</div>
 					<div class="icon">

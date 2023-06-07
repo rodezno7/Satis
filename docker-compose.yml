@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+  php:
+    build:
+      context: "."
+      args:
+        uid: ${UID}
+    container_name: satisv1-php
+    ports:
+      - 9001:80
+    environment:
+      - APACHE_RUN_USER=#${UID}
+      - APACHE_RUN_GROUP=#${UID}
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - mysql-phpmyadmin
+
+  mysql:
+    image: mysql:8
+    container_name: satisv1-mysql
+    environment:
+      MYSQL_DATABASE: erp
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3308:3306
+    volumes:
+      - ./docker/mysql/db:/var/lib/mysql/
+    networks:
+      - mysql-phpmyadmin
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: satisv1-phpmyadmin
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    ports:
+      - 2204:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 300M
+    networks:
+      - mysql-phpmyadmin
+networks:
+  mysql-phpmyadmin:
+volumes:
+  docker:
