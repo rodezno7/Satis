@@ -257,7 +257,7 @@ class ExpenseController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $user_id = request()->session()->get('user.id');
 
-        $query = ExpenseCategory::where('business_id', $business_id)
+        $query = ExpenseCategory::where('expense_categories.business_id', $business_id)
         ->join('catalogues', 'catalogues.id', '=', 'expense_categories.account_id');
 
         $account = $query->where(function ($query) use ($term) {
