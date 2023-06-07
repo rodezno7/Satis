@@ -2199,38 +2199,43 @@ class SellPosController extends Controller
         $entry_lines = [];
         
         $transaction = Transaction::join('document_types as dt', 'transactions.document_types_id', 'dt.id')
-        ->where('transactions.id', $transaction_id)
-        ->select(
-            'transactions.business_id',
-            'transactions.location_id',
-            'transactions.customer_id',
-            'dt.short_name as doc_type',
-            'tax_amount as withheld_amount'
-        )->first();
+            ->where('transactions.id', $transaction_id)
+            ->select(
+                'transactions.business_id',
+                'transactions.location_id',
+                'transactions.customer_id',
+                'dt.short_name as doc_type',
+                'tax_amount as withheld_amount',
+                'transactions.payment_condition',
+                'final_total'
+            )->first();
+
+        $business = Business::find($transaction->business_id);
 
         $is_exempt = Customer::where('id', $transaction->customer_id)
-        ->where('is_exempt', 1)
-        ->count();
+            ->where('is_exempt', 1)
+            ->count();
 
         /** payments */
         $payments = TransactionPayment::where('transaction_id', $transaction_id)
-        ->select(
-            DB::raw('IF(method IN ("cash", "check"), "cash", method) as method'),
-            'card_pos',
-            'transfer_receiving_bank',
-            DB::raw('SUM(IF(method IN ("cash", "check"), IF(is_return = 0, amount, amount * -1), 0)) as cash'),
-            DB::raw('SUM(IF(method = "card", IF(is_return = 0, amount, amount * -1), 0)) as card'),
-            DB::raw('SUM(IF(method = "bank_transfer", IF(is_return = 0, amount, amount * -1), 0)) as bank_transfer')
-        )->groupBy('card_pos', 'transfer_receiving_bank')
-        ->get();
+            ->select(
+                DB::raw('IF(method IN ("cash", "check"), "cash", method) as method'),
+                'card_pos',
+                'transfer_receiving_bank',
+                DB::raw('SUM(IF(method IN ("cash", "check"), IF(is_return = 0, amount, amount * -1), 0)) as cash'),
+                DB::raw('SUM(IF(method = "card", IF(is_return = 0, amount, amount * -1), 0)) as card'),
+                DB::raw('SUM(IF(method = "bank_transfer", IF(is_return = 0, amount, amount * -1), 0)) as bank_transfer')
+            )->groupBy('card_pos', 'transfer_receiving_bank')
+            ->get();
 
         $location_accounts =
-        AccountBusinessLocation::where('location_id', $transaction->location_id)
-        ->select(
-            'general_cash_id',
-            'vat_final_customer_id',
-            'vat_taxpayer_id'
-        )->first();
+            AccountBusinessLocation::where('location_id', $transaction->location_id)
+            ->select(
+                'general_cash_id',
+                'vat_final_customer_id',
+                'vat_taxpayer_id',
+                'account_receivable_id'
+            )->first();
 
         $entry_lines = [];
         /** sale */
@@ -2262,6 +2267,42 @@ class SellPosController extends Controller
                     'type' => 'debit',
                     'amount' => $p->bank_transfer
                 ];
+            }
+        }
+
+        /** Credit sales */
+        if ($transaction->payment_condition == 'credit' || $transaction->payment_condition == 'partial') {
+            $credit_amount = $transaction->final_total;
+
+            foreach($payments as $p) {
+                $credit_amount -= ($p->cash + $p->card + $p->check + $p->bank_transfer);
+            }
+
+            if ($credit_amount > 0) {
+                if ($business->receivable_type == 'customer') {
+                    $customer = Customer::find($transaction->customer_id);
+
+                    if (!empty($customer->accounting_account_id)) {
+                        $entry_lines[] = [
+                            'catalogue_id' => $customer->accounting_account_id,
+                            'type' => 'debit',
+                            'amount' => $credit_amount
+                        ];
+
+                    } else {
+                        $entry_lines[] = [
+                            'catalogue_id' => $location_accounts->account_receivable_id,
+                            'type' => 'debit',
+                            'amount' => $credit_amount
+                        ];
+                    }
+                } else if ($business->receivable_type == 'bag_account') {
+                    $entry_lines[] = [
+                        'catalogue_id' => $location_accounts->account_receivable_id,
+                        'type' => 'debit',
+                        'amount' => $credit_amount
+                    ];
+                }
             }
         }
 
