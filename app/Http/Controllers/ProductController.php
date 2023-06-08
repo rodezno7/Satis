@@ -2212,24 +2212,7 @@ class ProductController extends Controller
         try{
             $product = Product::findOrFail($id);
             $supplier_ids = $request->input('supplier_ids');
-            // if (!empty($supplier_ids)) {
-            //     $cont = 0;
-            //     while ($cont < count($supplier_ids)) {
-            //         $detail = ProductHasSuppliers::where('product_id', $product->id)->where('contact_id', $supplier_ids[$cont])->first();
-            //         if($detail == null){
-            //             $detail = new ProductHasSuppliers;
-            //             $detail->product_id = $product->id;
-            //             $detail->contact_id = $supplier_ids[$cont];
-            //             $detail->catalogue = '-';
-            //             $detail->uxc = 0;
-            //             $detail->weight = 0;
-            //             $detail->dimensions = 0;
-            //             $detail->custom_field = '-';
-            //             $detail->save();
-            //         }
-            //         $cont = $cont + 1;
-            //     }
-            // }
+
             if (!empty($supplier_ids)) {
                 ProductHasSuppliers::where('product_id', $product->id)->forceDelete();
                 $cont = 0;

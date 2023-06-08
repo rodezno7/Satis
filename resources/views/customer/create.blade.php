@@ -17,9 +17,9 @@
 
                     <div class="panel-body collapse in" id="general-information-fields-box" aria-expanded="true">
                         <div class="row">
-                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                            <div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <label>@lang('customer.name')</label>
+                                    <label>@lang('customer.name')</label> <span class="text-danger">*</span>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                         <input type="text" name="name" id="name" class="form-control"
@@ -29,9 +29,9 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <label class="check-foreign">@lang('customer.dui')</label>
+                                    <label class="check-foreign">@lang('customer.dui')</label><span class="text-danger">*</span>
 
                                     {{-- is_foreign --}}
                                     <span class="pull-right">
@@ -49,7 +49,7 @@
                             </div>
 
                             @if ($nit_in_general_info)
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.tax_number')</label>
                                     <div class="input-group">
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                             @else
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.email')</label>
                                     <div class="input-group">
@@ -73,13 +73,11 @@
                                 </div>
                             </div>
                             @endif
-                        </div>
 
-                        {{-- direccion y Pais --}}
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            {{-- direccion y Pais --}}
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                    <label>@lang('customer.phone')</label>
+                                    <label>@lang('customer.phone')</label><span class="text-danger">*</span>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i
                                                 class="glyphicon glyphicon-earphone"></i></span>
@@ -90,7 +88,7 @@
                             </div>
 
                             @if ($nit_in_general_info)
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.email')</label>
                                     <div class="input-group">
@@ -116,7 +114,7 @@
                             </div>
 
                             @if (! $nit_in_general_info)
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.country')</label>
                                     <div class="input-group">
@@ -131,7 +129,7 @@
                         {{-- latitude, etc --}}
                         <div class="row">
                             @if ($nit_in_general_info)
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.country')</label>
                                     <div class="input-group">
@@ -142,7 +140,7 @@
                             </div>
                             @endif
 
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.state')</label>
                                     <div class="input-group">
@@ -152,7 +150,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.city')</label>
                                     <div class="input-group">
@@ -161,46 +159,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                <div class="form-group">
-                                    <label>@lang('customer.latitude')</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
-                                        <input type="text" name="latitude" id="latitude"
-                                            class="form-control input_number" placeholder="@lang('customer.latitude')">
-                                    </div>
-                                </div>
-                            </div>
-
-                            @if (! $nit_in_general_info)
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                <div class="form-group">
-                                    <label>@lang('customer.length')</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
-                                        <input type="text" name="length" id="length" class="form-control input_number"
-                                            placeholder="@lang('customer.length')">
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-
-                        <div class="row">
-                            @if ($nit_in_general_info)
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                <div class="form-group">
-                                    <label>@lang('customer.length')</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
-                                        <input type="text" name="length" id="length" class="form-control input_number"
-                                            placeholder="@lang('customer.length')">
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
                             @if($business_receivable_type == "customer")
                                 <input type="hidden" value="{{ $main_customer_account }}" id="main_account">
                                 <div class="col-md-3">
@@ -224,11 +182,11 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
 
                         {{-- Multiple contacts --}}
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <h4>
@@ -261,7 +219,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Customer vehicles --}}
                         @if (config('app.business') == 'workshop')
@@ -327,7 +285,7 @@
                             </div>
 
                             {{-- is_gov_institution --}}
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-3 col-md-6 col-sm-3 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.is_gov_institution')</label>
                                     {!! Form::checkbox('is_gov_institution', '1', false, ['id' => 'is_gov_institution', 'onClick' => 'showGovInstitution()']) !!}
