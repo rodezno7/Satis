@@ -321,8 +321,8 @@
 <script type="text/javascript">
   function addReference() {
     var newtr1 = newtr1 + '<tr><input name="contactid[]" type="hidden" value="0">';
-    newtr1 = newtr1 + '<td><input class="form-control input-sm" name="contactname[]" value="" required /></td>';
-    newtr1 = newtr1 + '<td><input class="form-control input-sm input_number" name="contactphone[]" value="" required /></td>';  
+    newtr1 = newtr1 + '<td><input class="form-control input-sm input_name" name="contactname[]" value="" required /></td>';
+    newtr1 = newtr1 + '<td><input class="form-control input-sm input_number input_phone" name="contactphone[]" value="" required /></td>';  
     newtr1 = newtr1 + '<td><input class="form-control input-sm input_number" name="contactlandline[]" value="" required /></td>';
     newtr1 = newtr1 + '<td><input type="email" class="form-control input-sm" name="contactemail[]" value="" required /></td>';
     newtr1 = newtr1 + '<td><input class="form-control input-sm" name="contactcargo[]"  value="" required /></td>';
@@ -703,24 +703,38 @@ function loadContacts(id){
 			}
 		}
 
-    // function saveContact(){
-		//   var id =  $("input#customer_id").val();
-    //   var count_contact = $('input#count_contact').val();
-    //   var cont_fila = $('#customer_table >tbody >tr').length;
-    //   var route = "/customers/store_contacts/"+id;
-    //     var respuesta = $.post(route, $( "#form_add_contact" ).serialize());
-    //     console.log(respuesta);
-    //     // if(count_contact == 0 && cont_fila == 0){
-    //     //     $('#modalCustomer1').modal('hide');
-    //     // }else if(count_contact == 0 && cont_fila == 1){
-    //     //   var contactname = $('input#1').val();
-    //     //   console.log(contactname);
-    //     // }
-    //     // else{
-    //     //     toastr.success("{{ __('customer.contact_added_success') }}");
-    //     //     $('#modalCustomer1').modal('hide');
-    //     // }
-    // }
+    function saveContact(){
+		  var id =  $("input#customer_id").val();
+      var count_contact = $('input#count_contact').val();
+      var cont_fila = $('#customer_table >tbody >tr').length;
+      var route = "/customers/store_contacts/"+id;
+      var count_name_empty = 0;
+      var count_phone_empty = 0;
+      $( ".input_name" ).each(function() {
+        var inputName = $( this ).val();
+        if(inputName == ""){
+          count_name_empty = count_name_empty + 1;
+        }
+      });
+      $( ".input_phone" ).each(function() {
+        var inputPhone = $( this ).val();
+        if(inputPhone == ""){
+          count_phone_empty = count_phone_empty + 1;
+        }
+      });
+      if(count_name_empty == 0 && count_phone_empty == 0){
+        var respuesta = $.post(route, $( "#form_add_contact" ).serialize());
+        if(count_contact == 0 && cont_fila == count_name_empty && cont_fila == count_phone_empty){
+          $('#modalCustomer1').modal('hide');
+        }
+        else{
+          toastr.success("{{ __('customer.contact_added_success') }}");
+          $('#modalCustomer1').modal('hide');
+        }
+      }else{
+        toastr.error("{{ __('customer.contact_name_phone_required') }}");
+      }
+    }
 
     function deleteCustomer(id) {
       Swal.fire({

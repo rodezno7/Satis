@@ -10,6 +10,7 @@ return [
     "add_portfolio" => "Registrar Cartera de Clientes",
     "added_success" => "Registro completado exitosamente",
     "contact_added_success" => "Contactos agregados con éxito",
+    "contact_name_phone_required" => "El nombre y el teléfono móvil del contacto es obligatorio",
     "updated_success" => "Registro actualizado exitosamente",
     "deleted_success" => "Registro eliminado exitosamente",
     "tittle_confirm_delete" => "¿Quieres eliminarlo?",

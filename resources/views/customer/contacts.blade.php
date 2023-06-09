@@ -37,10 +37,10 @@
                                         {{-- Se recorren todos los contactos pertenecientes a el cliente seleccionado
                                         --}}
                                         {!! Form::hidden('contactid[]', $item->id) !!}
-                                        <td><input type="text" name="contactname[]" class="form-control input-sm" id="1"
+                                        <td><input type="text" name="contactname[]" class="form-control input-sm input_name" id="1"
                                                 value="{{ $item->name }}" required></td>
                                         <td><input type="text" name="contactphone[]"
-                                                class="form-control input-sm input_number" id="2"
+                                                class="form-control input-sm input_number input_phone" id="2"
                                                 value="{{ $item->phone }}" required></td>
                                         <td><input type="text" name="contactlandline[]"
                                                 class="form-control input-sm input_number" id="3"
@@ -62,10 +62,9 @@
             <div class="modal-footer">
                 <input type="hidden" value="{{ count($contacts) }}" id="count_contact">
                 <input type="hidden" value="{{ $customer->id }}" id="customer_id">
-                <input type="submit" class="btn btn-primary" value="@lang('messages.save')">
-                {{-- <input type="button" class="btn btn-primary" value="@lang('messages.save')" onClick="saveContact()"> --}}
+                <input type="button" class="btn btn-primary" value="@lang('messages.save')" onClick="saveContact()">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"
-                    id="btn-close-modal-edit-customer">@lang('messages.close')</button>
+                    id="btn-close-modal-edit-customer">@lang('messages.cancel')</button>
             </div>
         </div>
     </form>

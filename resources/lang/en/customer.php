@@ -10,6 +10,7 @@ return [
     "add_portfolio" => "Register Client Portfolio",
     "added_success" => "Registration completed successfully",
     "contact_added_success" => "Contact added successfully",
+    "contact_name_phone_required" => "The name and mobile phone of the contact is required",
     "updated_success" => "Registration successfully updated",
     "deleted_success" => "Registry deleted successfully",
     "tittle_confirm_delete" => "Do you want to delete it?",
