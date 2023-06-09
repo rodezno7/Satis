@@ -456,45 +456,6 @@ class CustomerController extends Controller
                 $customer
             );
 
-            //Se verifica que el campo nombre de contacto no sea vacio, si este no es vacio los demas no lo seran puesto que tienen required
-            if (!empty($request->input("contactname"))) {
-                //se recorre cada uno de los campos de contactos y se agregan a un array
-
-                foreach ($request->input("contactname") as $contactname) {
-                    $contactnames[] = $contactname;
-                }
-
-                foreach ($request->input("contactphone") as $contactmobil) {
-                    $contactmobile[] = $contactmobil;
-                }
-
-                foreach ($request->input("contactlandline") as $contactlandline) {
-                    $contactlandlines[] = $contactlandline;
-                }
-
-                foreach ($request->input("contactemail") as $contactemail) {
-                    $contactmails[] = $contactemail;
-                }
-                foreach ($request->input("contactcargo") as $contactcargo) {
-                    $contactcargos[] = $contactcargo;
-                }
-
-                if (!empty($contactnames)) {
-
-                    for ($i = 0; $i < count($contactnames); $i++) {
-                        //se crea un nuevo contacto acorde a la cantidad de datos mandados en el array $contactnames
-                        CustomerContact::create([
-                            'name'      => $contactnames[$i],
-                            'phone'     => $contactmobile[$i],
-                            'landline'  => $contactlandlines[$i],
-                            'email'     => $contactmails[$i],
-                            'cargo'     => $contactcargos[$i],
-                            'customer_id' => $customer_id
-                        ]);
-                    }
-                }
-            }
-
             // Add opening balance
             if (!empty($request->input('opening_balance'))) {
                 $this->transactionUtil->createOpeningBalanceTransaction($business_id, null, $customer->opening_balance, $customer->id);
@@ -576,6 +537,81 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
     public function getContacts($id)
+    {
+        if (!auth()->user()->can('customer.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $customer = Customer::findOrFail($id);
+        $contacts = CustomerContact::where('customer_id', $customer->id)->get();
+        return view('customer.contacts', compact('contacts', 'customer'));
+    }
+
+
+    public function addContact(Request $request, $id)
+    {
+        try{
+            $customer = Customer::findOrFail($id);
+            $contactnames = $request->input("contactname");
+            $contactmobile = $request->input("contactphone");
+            $contactlandlines = $request->input("contactlandline");
+            $contactmails = $request->input("contactemail");
+            $contactcargos = $request->input("contactcargo");
+            if (!empty($contactnames)) {
+                CustomerContact::where('customer_id', $customer->id)->forceDelete();
+                $cont = 0;
+                $saveContact = false;
+                while ($cont < count($contactnames)) {
+                    //se crea un nuevo contacto acorde a la cantidad de datos mandados en el array $request->contactid
+                    if(!empty($contactnames[$cont])){
+                        CustomerContact::create([
+                            'name'      => $contactnames[$cont],
+                            'phone'     => $contactmobile[$cont],
+                            'landline'  => $contactlandlines[$cont],
+                            'email'     => $contactmails[$cont],
+                            'cargo'     => $contactcargos[$cont],
+                            'customer_id' => $customer->id
+                        ]);
+                        $saveContact = true;
+                    }
+                    $cont = $cont + 1;
+                }
+
+                if($saveContact == true){
+                    $output = [
+                        'success' => 1,
+                        'msg' => __('customer.contact_added_success'),
+                        'customer_id' => $customer->id
+                    ];
+                }
+                else{
+                    return back();
+                }
+            }
+            else{
+                $contacts = CustomerContact::where('customer_id', $customer->id)->get();
+                if(count($contacts) == 0){
+                    return back();
+                }else{
+                    CustomerContact::where('customer_id', $customer->id)->forceDelete();
+                    $output = [
+                        'success' => 1,
+                        'msg' => __('customer.contact_added_success'),
+                        'customer_id' => $customer->id
+                    ];
+                }
+            }
+        }catch(\Exception $e){
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
+        }
+        
+        return back()->with('status', $output);
+    }
+
+
+    public function getContacts1($id)
     {
         if (!auth()->user()->can('customer.view')) {
             abort(403, 'Unauthorized action.');
@@ -814,77 +850,6 @@ class CustomerController extends Controller
 
             $customer->customer_group_id = $request->get('group_id');
             $customer->update($customer_details);
-            //se crea un array el cual tendra todos los contactos del cliente
-            $oldContact = CustomerContact::where('customer_id', $customer->id)->pluck('id');
-            $newContact = [];
-            if (!empty($request->input("contactname"))) {
-                //se recorre cada uno de los campos de contactos y se agregan a un array
-                foreach ($request->input('contactid') as $contactid) {
-                    $contactids[] = $contactid;
-                }
-
-                foreach ($request->input("contactname") as $contactname) {
-                    $contactnames[] = $contactname;
-                }
-
-                foreach ($request->input("contactphone") as $contactmobil) {
-                    $contactmobile[] = $contactmobil;
-                }
-
-                foreach ($request->input("contactlandline") as $contactlandline) {
-                    $contactlandlines[] = $contactlandline;
-                }
-
-                foreach ($request->input("contactemail") as $contactemail) {
-                    $contactmails[] = $contactemail;
-                }
-                foreach ($request->input("contactcargo") as $contactcargo) {
-                    $contactcargos[] = $contactcargo;
-                }
-
-                if (!empty($contactids)) {
-
-                    for ($i = 0; $i < count($contactids); $i++) {
-                        //se crea un nuevo contacto si este no existe o es diferentes a los antes registrados
-                        if ($contactids[$i] == "0") {
-                            CustomerContact::create([
-                                'name'      => $contactnames[$i],
-                                'phone'     => $contactmobile[$i],
-                                'landline'  => $contactlandlines[$i],
-                                'email'     => $contactmails[$i],
-                                'cargo'     => $contactcargos[$i],
-                                'customer_id' => $customer->id
-                            ]);
-                        } else {
-                            //se actualizan los contactos que se les ha cambiado la informacion
-                            CustomerContact::find($contactids[$i])
-                                ->update([
-                                    'name'      => $contactnames[$i],
-                                    'phone'     => $contactmobile[$i],
-                                    'landline'  => $contactlandlines[$i],
-                                    'email'     => $contactmails[$i],
-                                    'cargo'     => $contactcargos[$i],
-                                ]);
-                            $newContact[] = $contactids[$i];
-                        }
-                    }
-                }
-            }
-
-            //Eliminar contactos
-            foreach ($oldContact as $o) {
-                $delete = true;
-
-                foreach ($newContact as $n) {
-                    if ($o == $n) {
-                        $delete = false;
-                    }
-                }
-
-                if ($delete) {
-                    CustomerContact::findOrFail($o)->delete();
-                }
-            }
 
             // Get opening balance if exists
             $ob_transaction =  Transaction::where('customer_id', $id)
@@ -983,7 +948,8 @@ class CustomerController extends Controller
             $output = ['success' => false, 'msg' => __("messages.something_went_wrong")];
         }
 
-        return $output;
+        //return $output;
+        return redirect('customers')->with('status', $output);
     }
 
     /**
@@ -1145,8 +1111,10 @@ class CustomerController extends Controller
                     }
 
                     if (auth()->user()->can('customer.update')) {
-                        $html .= '<li><a href="#" data-href="' . action('CustomerController@edit', [$row->id]) . '" class="edit_customer_button"><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
+                        $html .= '<li><a href="' . action('CustomerController@edit', [$row->id]) . '" ><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
                     }
+
+                    $html .= '<li><a href="#" data-href="' . action('CustomerController@getContacts', [$row->id]) . '" class="contact_button"><i class="fa fa-address-book"></i> ' . __("customer.Contacts") . '</a></li>';
 
                     $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->opening_balance_id]) . '" class="view_payment_modal"><i class="fa fa-money"></i> ' . __("purchase.view_payments") . '</a></li>';
 

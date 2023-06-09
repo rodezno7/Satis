@@ -9,6 +9,7 @@
     border: 2;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
+
   i.edit-glyphicon {
     position: inherit;
     line-height: inherit;
@@ -31,276 +32,272 @@
 
     <div class="box-header" id="header_customer">
       <div class="row">
-        <div class="col-lg-3col-md-3 col-sm-3 col-xs-12">
-            <div class="form-group">
-                <label for="">@lang('customer.customer_portfolio')</label>
-                {!! Form::select("customer_portfolio_id", $customer_portfolios, null,
-                    ["class" => "form-control select2", "id" => "portfolio_id", "placeholder" => __('customer.all_customers')]) !!}
-            </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+            <label for="">@lang('customer.customer_portfolio')</label>
+            {!! Form::select("customer_portfolio_id", $customer_portfolios, null,
+            ["class" => "form-control select2", "id" => "portfolio_id", "placeholder" => __('customer.all_customers')])
+            !!}
+          </div>
         </div>
       </div>
       <div class="box-tools">
-        <button
-          type="button"
-          class="btn btn-block btn-primary btn-modal"
-          data-href="{{ action('CustomerController@create') }}"
-          data-container=".customer_modal"
-          data-backdrop="static"
+        <button type="button" class="btn btn-block btn-primary btn-modal"
+          data-href="{{ action('CustomerController@create') }}" data-container=".customer_modal" data-backdrop="static"
           id="btn-new-customer">
           <i class="fa fa-plus"></i> @lang('messages.add')
         </button>
 
-        <button
-          type="button"
-          class="btn btn-block btn-success btn-modal"
-          data-href="{{ action('CustomerController@export') }}"
-          id="btn-report">
-            <i class="fa fa-download"></i>&nbsp; @lang('report.export')
+        <button type="button" class="btn btn-block btn-success btn-modal"
+          data-href="{{ action('CustomerController@export') }}" id="btn-report">
+          <i class="fa fa-download"></i>&nbsp; @lang('report.export')
         </button>
+      </div>
     </div>
-  </div>
 
-  <div class="box-header" id="header_follow" style="display: none;">
-    <h3 class="box-title">@lang('crm.customer')</h3>
-    <div class="box-tools">
-      <button type="button" class="btn btn-block btn-primary" id="back">
-        @lang('crm.back')
-      </button>
+    <div class="box-header" id="header_follow" style="display: none;">
+      <h3 class="box-title">@lang('crm.customer')</h3>
+      <div class="box-tools">
+        <button type="button" class="btn btn-block btn-primary" id="back">
+          @lang('crm.back')
+        </button>
+      </div>
     </div>
-  </div>
 
-  {{-- Index datatable --}}
-  <div class="box-body">
-    <div id="div_customers">
-      <div class="table-responsive" style="margin-top: 5px;">
-        <table
-          id="customers-table"
-          class="table table-striped table-condensed table-hover table-text-center"
-          width="100%"
-          style="font-size: inherit;">
-          <thead>
-            <th>@lang('customer.name')</th>
-            <th>@lang('customer.business_name')</th>
-            <th>@lang('business.dui')</th>
-            <th>@lang('business.nit')</th>
-            <th>@lang('business.nrc')</th>
-            <th>@lang('customer.phone')</th>
-            <th class="text-center">@lang('messages.actions')</th>
-          </thead>
-      </table>
-    </div>
-  </div>
+    {{-- Index datatable --}}
+    <div class="box-body">
+      <div id="div_customers">
+        <div class="table-responsive" style="margin-top: 5px;">
+          <table id="customers-table" class="table table-striped table-condensed table-hover table-text-center"
+            width="100%" style="font-size: inherit;">
+            <thead>
+              <th>@lang('customer.name')</th>
+              <th>@lang('customer.business_name')</th>
+              <th>@lang('business.dui')</th>
+              <th>@lang('business.nit')</th>
+              <th>@lang('business.nrc')</th>
+              <th>@lang('customer.phone')</th>
+              <th class="text-center">@lang('messages.actions')</th>
+            </thead>
+          </table>
+        </div>
+      </div>
 
-  {{-- View detail --}}
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="div_follows" style="display: none;">
-    <div class="row" style="margin-top: 5px;">
-      <div class="box box-default" id="customer_details_box">
-        <div class="box-header with-border">
-          <h3 class="box-title">@lang('crm.customer_details')</h3>
+      {{-- View detail --}}
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="div_follows" style="display: none;">
+        <div class="row" style="margin-top: 5px;">
+          <div class="box box-default" id="customer_details_box">
+            <div class="box-header with-border">
+              <h3 class="box-title">@lang('crm.customer_details')</h3>
 
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"
-              id="icon-collapsed"></i>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"
+                    id="icon-collapsed"></i>
+                </button>
+              </div>
+              <!-- /.box-tools -->
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body" id="customer_details_box_body">
+              <div class="col-sm-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <i class="fa fa-folder"></i> &nbsp;<strong>@lang('crm.general')</strong>
+                  </div>
+                  <div class="panel-body">
+                    <strong>@lang('customer.name')</strong>
+                    <p class="text-muted" id="lbl_name"></p>
+
+                    <strong>@lang('customer.portfolios')</strong>
+                    <p class="text-muted" id="lbl_customer_portfolio_id"></p>
+
+                    <strong>@lang('customer.customer_group')</strong>
+                    <p class="text-muted" id="lbl_customer_group_id"></p>
+
+                    <strong>@lang('customer.allowed_credit')</strong>
+                    <p class="text-muted" id="lbl_allowed_credit"></p>
+
+                    <strong>@lang('customer.opening_balance')</strong>
+                    <p class="text-muted" id="lbl_opening_balance"></p>
+
+                    <strong>@lang('customer.credit_limit')</strong>
+                    <p class="text-muted" id="lbl_credit_limit"></p>
+
+                    <strong>@lang('customer.credit_balance')</strong>
+                    <p class="text-muted" id="lbl_credit_balance"></p>
+
+                    <strong>@lang('customer.payment_terms')</strong>
+                    <p class="text-muted" id="lbl_payment_terms_id"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <i class="fa fa-phone"></i> &nbsp;<strong>@lang('crm.contact')</strong>
+                  </div>
+                  <div class="panel-body">
+                    <strong>@lang('customer.contact_mode')</strong>
+                    <p class="text-muted" id="lbl_contact_mode_id"></p>
+
+                    <strong>@lang('crm.email')</strong>
+                    <p class="text-muted" id="lbl_email"></p>
+
+                    <strong>@lang('customer.phone')</strong>
+                    <p class="text-muted" id="lbl_telphone"></p>
+
+                    <strong>@lang('customer.address')</strong>
+                    <p class="text-muted" id="lbl_address"></p>
+
+                    <strong>@lang('customer.country')</strong>
+                    <p class="text-muted" id="lbl_country"></p>
+
+                    <strong>@lang('customer.state')</strong>
+                    <p class="text-muted" id="lbl_state"></p>
+
+                    <strong>@lang('customer.city')</strong>
+                    <p class="text-muted" id="lbl_city"></p>
+
+                    <strong>@lang('customer.zone')</strong>
+                    <p class="text-muted" id="lbl_zone"></p>
+
+                    <strong>@lang('customer.latitude')</strong>
+                    <p class="text-muted" id="lbl_latitude"></p>
+
+                    <strong>@lang('customer.length')</strong>
+                    <p class="text-muted" id="lbl_length"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-4">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <i class="fa fa-user"></i> &nbsp;<strong>@lang('business.business')</strong>
+                  </div>
+                  <div class="panel-body">
+                    <strong>@lang('customer.business_name')</strong>
+                    <p class="text-muted" id="lbl_business_name"></p>
+
+                    <strong>@lang('customer.business_line')</strong>
+                    <p class="text-muted" id="lbl_business_line"></p>
+
+                    <strong>@lang('customer.business_type')</strong>
+                    <p class="text-muted" id="lbl_business_type"></p>
+
+                    <strong>@lang('customer.dui')</strong>
+                    <p class="text-muted" id="lbl_dni"></p>
+
+                    <strong>@lang('customer.is_taxpayer')</strong>
+                    <p class="text-muted" id="lbl_is_taxpayer"></p>
+
+                    <strong>@lang('customer.reg_number')</strong>
+                    <p class="text-muted" id="lbl_reg_number"></p>
+
+                    <strong>@lang('customer.tax_number')</strong>
+                    <p class="text-muted" id="lbl_tax_number"></p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+
+        <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-heading">Contactos del cliente</div>
+            <div class="panel-body">
+              <table id="example" class="display" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                    <th>Linea Fija</th>
+                    <th>Correo</th>
+                    <th>Cargo</th>
+                  </tr>
+                </thead>
+                <tbody id="DataResult">
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <h4>@lang('crm.manage_follows')</h4>
+        </div>
+
+        <div class="row">
+
+          <div class="form-group float-right col-lg-11 col-md-11 col-sm-11 col-xs-12">
+            <input type="hidden" name="c_id" id="c_id">
+            <input type="hidden" name="c_name" id="c_name">
+          </div>
+
+          <div class="form-group float-right col-lg-1 col-md-1 col-sm-1 col-xs-12">
+
+            <button type="button" class="btn btn-block btn-primary" id="btn_add_follow">
+              @lang('messages.add')
             </button>
           </div>
-          <!-- /.box-tools -->
         </div>
 
-        <!-- /.box-header -->
-        <div class="box-body" id="customer_details_box_body">
-          <div class="col-sm-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <i class="fa fa-folder"></i> &nbsp;<strong>@lang('crm.general')</strong>
-              </div>
-              <div class="panel-body">
-                <strong>@lang('customer.name')</strong>
-                <p class="text-muted" id="lbl_name"></p>
+        <div class="row">
 
-                <strong>@lang('customer.portfolios')</strong>
-                <p class="text-muted" id="lbl_customer_portfolio_id"></p>
-
-                <strong>@lang('customer.customer_group')</strong>
-                <p class="text-muted" id="lbl_customer_group_id"></p>
-
-                <strong>@lang('customer.allowed_credit')</strong>
-                <p class="text-muted" id="lbl_allowed_credit"></p>
-
-                <strong>@lang('customer.opening_balance')</strong>
-                <p class="text-muted" id="lbl_opening_balance"></p>
-
-                <strong>@lang('customer.credit_limit')</strong>
-                <p class="text-muted" id="lbl_credit_limit"></p>
-
-                <strong>@lang('customer.credit_balance')</strong>
-                <p class="text-muted" id="lbl_credit_balance"></p>
-
-                <strong>@lang('customer.payment_terms')</strong>
-                <p class="text-muted" id="lbl_payment_terms_id"></p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <i class="fa fa-phone"></i> &nbsp;<strong>@lang('crm.contact')</strong>
-              </div>
-              <div class="panel-body">
-                <strong>@lang('customer.contact_mode')</strong>
-                <p class="text-muted" id="lbl_contact_mode_id"></p>
-
-                <strong>@lang('crm.email')</strong>
-                <p class="text-muted" id="lbl_email"></p>
-
-                <strong>@lang('customer.phone')</strong>
-                <p class="text-muted" id="lbl_telphone"></p>
-
-                <strong>@lang('customer.address')</strong>
-                <p class="text-muted" id="lbl_address"></p>
-
-                <strong>@lang('customer.country')</strong>
-                <p class="text-muted" id="lbl_country"></p>
-
-                <strong>@lang('customer.state')</strong>
-                <p class="text-muted" id="lbl_state"></p>
-
-                <strong>@lang('customer.city')</strong>
-                <p class="text-muted" id="lbl_city"></p>
-
-                <strong>@lang('customer.zone')</strong>
-                <p class="text-muted" id="lbl_zone"></p>
-
-                <strong>@lang('customer.latitude')</strong>
-                <p class="text-muted" id="lbl_latitude"></p>
-
-                <strong>@lang('customer.length')</strong>
-                <p class="text-muted" id="lbl_length"></p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-sm-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <i class="fa fa-user"></i> &nbsp;<strong>@lang('business.business')</strong>
-              </div>
-              <div class="panel-body">
-                <strong>@lang('customer.business_name')</strong>
-                <p class="text-muted" id="lbl_business_name"></p>
-
-                <strong>@lang('customer.business_line')</strong>
-                <p class="text-muted" id="lbl_business_line"></p>
-
-                <strong>@lang('customer.business_type')</strong>
-                <p class="text-muted" id="lbl_business_type"></p>
-
-                <strong>@lang('customer.dui')</strong>
-                <p class="text-muted" id="lbl_dni"></p>
-
-                <strong>@lang('customer.is_taxpayer')</strong>
-                <p class="text-muted" id="lbl_is_taxpayer"></p>
-
-                <strong>@lang('customer.reg_number')</strong>
-                <p class="text-muted" id="lbl_reg_number"></p>
-
-                <strong>@lang('customer.tax_number')</strong>
-                <p class="text-muted" id="lbl_tax_number"></p>
-
-              </div>
-            </div>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed table-hover" id="follow_customers_table"
+              width="100%">
+              <thead>
+                <tr>
+                  <th>@lang('crm.date')</th>
+                  <th>@lang('crm.contact_type')</th>
+                  <th>@lang('crm.contactreason')</th>
+                  <th>@lang('crm.contact_mode')</th>
+                  <th>@lang('customer.customer')</th>
+                  <th>@lang('crm.register_by')</th>
+                  <th>@lang('messages.actions')</th>
+                </tr>
+              </thead>
+            </table>
           </div>
         </div>
-        <!-- /.box-body -->
       </div>
-      <!-- /.box -->
-    </div>
-
-    <div class="row">
-      <div class="panel panel-default">
-        <div class="panel-heading">Contactos del cliente</div>
-        <div class="panel-body">
-          <table id="example" class="display" style="width:100%">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Telefono</th>
-                <th>Linea Fija</th>
-                <th>Correo</th>
-                <th>Cargo</th>
-              </tr>
-            </thead>
-            <tbody id="DataResult">
-              
-            </tbody>
-          </table>
-       
-        </div>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <h4>@lang('crm.manage_follows')</h4>
-    </div>
-
-    <div class="row">
-
-      <div class="form-group float-right col-lg-11 col-md-11 col-sm-11 col-xs-12"> 
-        <input type="hidden" name="c_id" id="c_id">
-        <input type="hidden" name="c_name" id="c_name">
-      </div>
-
-      <div class="form-group float-right col-lg-1 col-md-1 col-sm-1 col-xs-12"> 
-
-        <button type="button" class="btn btn-block btn-primary" id="btn_add_follow">
-          @lang('messages.add')
-        </button>
-      </div>
-    </div>
-
-    <div class="row">
-
-      <div class="table-responsive">
-        <table class="table table-striped table-bordered table-condensed table-hover" id="follow_customers_table"
-        width="100%">
-        <thead>
-          <tr>
-            <th>@lang('crm.date')</th>
-            <th>@lang('crm.contact_type')</th>
-            <th>@lang('crm.contactreason')</th>
-            <th>@lang('crm.contact_mode')</th>
-            <th>@lang('customer.customer')</th>
-            <th>@lang('crm.register_by')</th>
-            <th>@lang('messages.actions')</th>
-          </tr>
-        </thead>
-      </table>
     </div>
   </div>
-</div>
-</div>
-</div>
 
-{{-- Modals --}}
-<div tabindex="-1" class="modal fade customer_modal" role="dialog" aria-labelledby="exampleModalCenterTitle"
-aria-hidden="true"></div>
+  {{-- Modals --}}
+  <div tabindex="-1" class="modal fade customer_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" id="modalCustomer1"
+    aria-hidden="true"></div>
 
-<div class="modal fade" id="modal_add_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-  @include('customer.follow_customers.create')
-</div>
+  <div class="modal fade" id="modal_add_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    @include('customer.follow_customers.create')
+  </div>
 
-<div class="modal fade" id="modal_edit_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-  @include('customer.follow_customers.edit')
-</div>
+  <div class="modal fade" id="modal_edit_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    @include('customer.follow_customers.edit')
+  </div>
 
-<div class="modal fade" id="modal_view_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-  @include('customer.follow_customers.show')
-</div>
+  <div class="modal fade" id="modal_view_follow" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    @include('customer.follow_customers.show')
+  </div>
 
-<div class="modal fade payment_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+  <div class="modal fade" id="modal_contact" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    @include('customer.follow_customers.edit')
+  </div>
 
-<div class="modal fade edit_payment_modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+  <div class="modal fade payment_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+
+  <div class="modal fade edit_payment_modal" data-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="gridSystemModalLabel"></div>
 
 </section>
 <!-- /.content -->
@@ -322,37 +319,42 @@ aria-hidden="true"></div>
 <script src="{{ asset('plugins/jspdf-autotable/jspdf-autotable.min.js?v=' . $asset_v) }}"></script>
 
 <script type="text/javascript">
-function addReference() {
-  var newtr1 = newtr1 + '<tr><input name="contactid[]" type="hidden" value="0">';
-  newtr1 = newtr1 + '<td><input class="form-control input-sm" name="contactname[]" value="" required /></td>';
-  newtr1 = newtr1 + '<td><input class="form-control input-sm input_number" name="contactphone[]" value="" required /></td>';  
-  newtr1 = newtr1 + '<td><input class="form-control input-sm input_number" name="contactlandline[]" value="" required /></td>';
-  newtr1 = newtr1 + '<td><input type="email" class="form-control input-sm" name="contactemail[]" value="" required /></td>';
-  newtr1 = newtr1 + '<td><input class="form-control input-sm" name="contactcargo[]"  value="" required /></td>';
-  newtr1 = newtr1 + '<td><button type="button" class="btn btn-danger btn-xs remove-item"><i class="fa fa-times"></i></button></td></tr>';
+  function addReference() {
+    var newtr1 = newtr1 + '<tr><input name="contactid[]" type="hidden" value="0">';
+    newtr1 = newtr1 + '<td><input class="form-control input-sm input_name" name="contactname[]" value="" required /></td>';
+    newtr1 = newtr1 + '<td><input class="form-control input-sm input_number input_phone" name="contactphone[]" value="" required /></td>';  
+    newtr1 = newtr1 + '<td><input class="form-control input-sm input_number" name="contactlandline[]" value="" required /></td>';
+    newtr1 = newtr1 + '<td><input type="email" class="form-control input-sm" name="contactemail[]" value="" required /></td>';
+    newtr1 = newtr1 + '<td><input class="form-control input-sm" name="contactcargo[]"  value="" required /></td>';
+    newtr1 = newtr1 + '<td><button type="button" class="btn btn-danger btn-xs remove-item"><i class="fa fa-times"></i></button></td></tr>';
 
-  $('#referencesItems').append(newtr1); //Agrego el contacto al tbody de la Tabla con el id=ProSelected
-  $('#dele').addClass("show");
+    $('#referencesItems').append(newtr1); //Agrego el contacto al tbody de la Tabla con el id=ProSelected
+    $('#dele').addClass("show");
 
-  $('.remove-item').click(function (e) {
-    Swal.fire({
-      title: LANG.sure,
-      text: '{{ __('messages.delete_content') }}',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: "{{ __('messages.accept') }}",
-      cancelButtonText: "{{ __('messages.cancel') }}"
-    }).then((willDelete) => {
-      if (willDelete.isConfirmed) {
-        $(this).parent('td').parent('tr').slideDown(300, function() {
-            $(this).remove(); //En accion elimino el contacto de la Tabla
-        });
-      }
+    
+  }
+
+  $(document).ready(function() {
+    $(document).on('click', '.remove-item', function (e) {
+      Swal.fire({
+        title: LANG.sure,
+        text: '{{ __('messages.delete_content') }}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: "{{ __('messages.accept') }}",
+        cancelButtonText: "{{ __('messages.cancel') }}"
+      }).then((willDelete) => {
+        if (willDelete.isConfirmed) {
+          $(this).parent('td').parent('tr').slideDown(300, function() {
+              $(this).remove(); //En accion elimino el contacto de la Tabla
+          });
+        }
+      });
     });
   });
-}
+  
 
 function loadContacts(id){
   var route = "/customers/get_contacts/" + id; // show
@@ -465,7 +467,7 @@ function loadContacts(id){
           viewCustomer(data.id);
         }
       });
-}
+  }
 
     function showTaxPayer() {
       if ($("#is_taxpayer").is(":checked")) {
@@ -599,61 +601,61 @@ function loadContacts(id){
       });
     });
 
-    $(document).on('submit', 'form#form-edit-customer', function(e) {
-      e.preventDefault();
-      $("#btn-edit-customer").prop('disabled', true);
-      $("#btn-close-modal-edit-customer").prop('disabled', true);
-      var data = $(this).serialize();
-      id = $("#customer_id").val();
-      route = "/customers/" + id;
-      token = $("#token").val();
-      $.ajax({
-        url: route,
-        headers: {
-          'X-CSRF-TOKEN': token
-        },
-        type: 'PUT',
-        dataType: 'json',
-        data: data,
-        success: function(result) {
-          if (result.success == true) {
-            $("#btn-edit-customer").prop('disabled', false);
-            $("#btn-close-modal-edit-customer").prop('disabled', false);
-            $("#customers-table").DataTable().ajax.reload();
-            $('div.customer_modal').modal('hide');
+    // $(document).on('submit', 'form#form-edit-customer', function(e) {
+    //   e.preventDefault();
+    //   $("#btn-edit-customer").prop('disabled', true);
+    //   $("#btn-close-modal-edit-customer").prop('disabled', true);
+    //   var data = $(this).serialize();
+    //   id = $("#customer_id").val();
+    //   route = "/customers/" + id;
+    //   token = $("#token").val();
+    //   $.ajax({
+    //     url: route,
+    //     headers: {
+    //       'X-CSRF-TOKEN': token
+    //     },
+    //     type: 'PUT',
+    //     dataType: 'json',
+    //     data: data,
+    //     success: function(result) {
+    //       if (result.success == true) {
+    //         $("#btn-edit-customer").prop('disabled', false);
+    //         $("#btn-close-modal-edit-customer").prop('disabled', false);
+    //         $("#customers-table").DataTable().ajax.reload();
+    //         $('div.customer_modal').modal('hide');
 
-            Swal.fire({
-              title: result.msg,
-              icon: "success",
-              timer: 3000,
-              showConfirmButton: false,
-            });
-          } else {
-            $("#btn-edit-customer").prop('disabled', false);
-            $("#btn-close-modal-edit-customer").prop('disabled', false);
-            Swal.fire({
-              title: result.msg,
-              icon: "error",
-            });
-          }
-        },
-        error: function(msj) {
-          $("#btn-edit-customer").prop('disabled', false);
-          $("#btn-close-modal-edit-customer").prop('disabled', false);
-          var errormessages = "";
-          $.each(msj.responseJSON.errors, function(i, field) {
-            errormessages += "<li>" + field + "</li>";
-          });
-          Swal.fire({
-            title: "{{ __('customer.errors') }}",
-            icon: "error",
-            html: "<ul>" + errormessages + "</ul>",
-          });
-        }
-      });
-    });
+    //         Swal.fire({
+    //           title: result.msg,
+    //           icon: "success",
+    //           timer: 3000,
+    //           showConfirmButton: false,
+    //         });
+    //       } else {
+    //         $("#btn-edit-customer").prop('disabled', false);
+    //         $("#btn-close-modal-edit-customer").prop('disabled', false);
+    //         Swal.fire({
+    //           title: result.msg,
+    //           icon: "error",
+    //         });
+    //       }
+    //     },
+    //     error: function(msj) {
+    //       $("#btn-edit-customer").prop('disabled', false);
+    //       $("#btn-close-modal-edit-customer").prop('disabled', false);
+    //       var errormessages = "";
+    //       $.each(msj.responseJSON.errors, function(i, field) {
+    //         errormessages += "<li>" + field + "</li>";
+    //       });
+    //       Swal.fire({
+    //         title: "{{ __('customer.errors') }}",
+    //         icon: "error",
+    //         html: "<ul>" + errormessages + "</ul>",
+    //       });
+    //     }
+    //   });
+    // });
 
-    $(document).on('click', 'a.edit_customer_button', function() {
+    $(document).on('click', 'a.contact_button', function() {
       $("div.customer_modal").load($(this).data('href'), function() {
         $(this).modal({
           backdrop: 'static'
@@ -700,6 +702,39 @@ function loadContacts(id){
 				$('#dni').attr('placeholder', '{{ __('customer.dui') }}');
 			}
 		}
+
+    function saveContact(){
+		  var id =  $("input#customer_id").val();
+      var count_contact = $('input#count_contact').val();
+      var cont_fila = $('#customer_table >tbody >tr').length;
+      var route = "/customers/store_contacts/"+id;
+      var count_name_empty = 0;
+      var count_phone_empty = 0;
+      $( ".input_name" ).each(function() {
+        var inputName = $( this ).val();
+        if(inputName == ""){
+          count_name_empty = count_name_empty + 1;
+        }
+      });
+      $( ".input_phone" ).each(function() {
+        var inputPhone = $( this ).val();
+        if(inputPhone == ""){
+          count_phone_empty = count_phone_empty + 1;
+        }
+      });
+      if(count_name_empty == 0 && count_phone_empty == 0){
+        var respuesta = $.post(route, $( "#form_add_contact" ).serialize());
+        if(count_contact == 0 && cont_fila == count_name_empty && cont_fila == count_phone_empty){
+          $('#modalCustomer1').modal('hide');
+        }
+        else{
+          toastr.success("{{ __('customer.contact_added_success') }}");
+          $('#modalCustomer1').modal('hide');
+        }
+      }else{
+        toastr.error("{{ __('customer.contact_name_phone_required') }}");
+      }
+    }
 
     function deleteCustomer(id) {
       Swal.fire({
@@ -1628,5 +1663,3 @@ Array.prototype.removeItem = function(a) {
     /* FOLLOW CUSTOMERS */
 </script>
 @endsection
-
-  
