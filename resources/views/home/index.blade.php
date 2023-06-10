@@ -96,25 +96,28 @@
 		<div id="carousel1" class="carousel slide" data-ride="carousel">
   <!-- <!– Indicatodores –> -->
   <ol class="carousel-indicators">
-    <li data-target="#carousel1" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel1" data-slide-to="1"></li>
-    <li data-target="#carousel1" data-slide-to="2"></li>
+	@foreach ($images as $key => $image)
+		@if ($loop->first)
+			<li data-target="#carousel{{$key}}" data-slide-to="{{$key}}" class="active"></li>
+		@else
+			<li data-target="#carousel{{$key}}" data-slide-to="{{$key}}" class=""></li>
+		@endif
+	@endforeach
   </ol>
 
   <!-- <!– Contenedor de las imagenes –> -->
   <div class="carousel-inner" role="listbox">
-
-    <div class="item active">
-	<img src="{{asset('img/default/cover1.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
-
-    <div class="item">
-	<img src="{{asset('img/default/cover2.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
-
-    <div class="item">
-	<img src="{{asset('img/default/cover3.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
+	@foreach ($images as $image)
+		@if ($loop->first)
+		<div class="item active">
+			<img src="{{asset('slider_files/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+		</div>
+		@else
+		<div class="item">
+			<img src="{{asset('slider_files/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+		</div>
+		@endif
+	@endforeach
   </div>
 
   <!-- <!– Controls –> -->

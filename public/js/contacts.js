@@ -11,6 +11,7 @@ $(document).ready(function () {
         let main_account = $(this).find("input#main_account").val();
         main_account = main_account ? main_account : null;
 
+        $('#organization_type').select2();
         $('#country_id').select2();
         $('#state_id').select2();
         $('#city_id').select2();

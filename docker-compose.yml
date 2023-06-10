@@ -20,8 +20,8 @@ services:
     image: mysql:8
     container_name: satisv1-mysql
     environment:
-      MYSQL_DATABASE: erp
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
     ports:
       - 3308:3306
     volumes:

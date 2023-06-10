@@ -2103,7 +2103,10 @@
                   </li>
                   @endcan
                   <!-- /.diagnostic settings -->
-
+                  <li>
+                    <a href="{{action('SliderController@index')}}" id="slider"><i class="fa fa-image"></i>
+                      @lang('carrousel.carrousel_config')</a>
+                  </li>
                   @can('invoice_settings.access')
                   <li class="@if( in_array($request->segment(1), ['invoice-schemes', 'invoice-layouts']) ) {{'active'}} @endif">
                     <a href="{{action('InvoiceSchemeController@index')}}"><i class="fa fa-file"></i>

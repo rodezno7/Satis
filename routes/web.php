@@ -91,6 +91,15 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/home/get-total-stock', 'HomeController@getTotalStock');
     Route::post('/home/choose-month', 'HomeController@chooseMonth');
 
+    //Slider options
+    Route::get('/slider', 'SliderController@index')->name('slider.index');
+    Route::get('/slider/index', 'SliderController@getSliderIndex')->name('slider.index');
+    Route::get('/image/upload', 'SliderController@create')->name('slider.upload');
+    Route::post('/image/store', 'SliderController@store')->name('slider.store');
+    Route::patch('/image/{id}/status', 'SliderController@setImageStatus')->name('slider.status');
+    Route::get('/image/{id}/show', 'SliderController@show')->name('slider.show');
+    Route::get('/image/{id}/download', 'SliderController@downloadSlide')->name('slider.download');
+    Route::delete('/image/{id}/delete', 'SliderController@destroy')->name('slider.delete');
     // Peak sales hours chart routes
     Route::get('/home/peak-sales-hours-month-chart', 'HomeController@getPeakSalesHoursByMonthChart');
     Route::get('/home/peak-sales-hours-chart', 'HomeController@getPeakSalesHoursChart');

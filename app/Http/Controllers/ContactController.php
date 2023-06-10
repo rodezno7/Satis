@@ -329,7 +329,7 @@ class ContactController extends Controller
         /** Tax groups */
         $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'contacts');
         /** Business type */
-        $business_type = BusinessType::select('id', 'name')
+        $business_type = BusinessType::select('id', 'name')->whereIn('name', ['OTROS', 'Mediana Empresa', 'Gran Empresa'])
             ->pluck('name', 'id');
         /** Payment conditions */
         $payment_conditions = $this->payment_conditions;
@@ -350,9 +350,10 @@ class ContactController extends Controller
 
         $payment_terms = PaymentTerm::select('id', 'name')
             ->pluck('name', 'id');
+        $org_type = ['natural'=>__('business.natural'), 'juridica'=>__('business.juridica')];
 
         return view('contact.create')
-            ->with(compact('types', 'employees_sales', 'tax_groups', 'business_type', 'payment_conditions', 'supplier_account', 'countries', 'payment_terms', 'business_debt_to_pay_type'));
+            ->with(compact('types', 'employees_sales', 'tax_groups', 'business_type', 'payment_conditions', 'supplier_account', 'countries', 'payment_terms', 'business_debt_to_pay_type', 'org_type'));
     }
 
     /** Only for testing */
@@ -408,6 +409,7 @@ class ContactController extends Controller
                 'payment_term_id',
                 'mobile',
                 'landline',
+                'organization_type',
                 'alternate_number',
                 'city_id',
                 'state_id',
@@ -427,6 +429,8 @@ class ContactController extends Controller
             $input['type'] = 'supplier';
             $input['business_id'] = $business_id;
             $input['created_by'] = $request->session()->get('user.id');
+            $lastContactId = Contact::select('contact_id')->latest()->first();
+            $input['contact_id'] = (int)$lastContactId->contact_id + 1;
             if ($request->is_exempt) {
                 $input['tax_group_id'] = null;
             } else {
@@ -434,7 +438,7 @@ class ContactController extends Controller
             }
 
             $credit_limit = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
-            $payment_condition = $input['payment_condition'];
+            $payment_condition = '';
 
             $input['payment_term_id'] = $payment_condition == 'credit' ? $request->input('payment_term_id') : null;
 
@@ -442,6 +446,7 @@ class ContactController extends Controller
 
             $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
             $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
+            $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
             $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
             $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
 
@@ -575,7 +580,7 @@ class ContactController extends Controller
             // Llenar Select de Vendedores
             $employees_sales = Employees::forDropdown($business_id);
             /** Business type */
-            $business_type = BusinessType::select('id', 'name')
+            $business_type = BusinessType::select('id', 'name')->whereIn('name', ['OTROS', 'Mediana Empresa', 'Gran Empresa'])
                 ->pluck('name', 'id');
             /** Payment conditions */
             $payment_conditions = $this->payment_conditions;
@@ -627,8 +632,10 @@ class ContactController extends Controller
                     ->value("code");
             }
             $business_debt_to_pay_type = $business->debt_to_pay_type;
+            $org_type = ['natural'=>__('business.natural'), 'juridica'=>__('business.juridica')];
             return view('contact.edit')
                 ->with(compact(
+                    'org_type',
                     'contact',
                     'types',
                     'opening_balance',
@@ -678,6 +685,7 @@ class ContactController extends Controller
                     'country_id',
                     'landmark',
                     'payment_condition',
+                    'organization_type',
                     'contact_id',
                     'business_type_id',
                     'custom_field1',
@@ -698,6 +706,7 @@ class ContactController extends Controller
 
                 $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
                 $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
+                $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
                 $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
                 $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
 

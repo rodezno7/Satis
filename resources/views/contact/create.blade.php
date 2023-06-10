@@ -14,9 +14,20 @@
     </div>
     <div class="modal-body">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-2">
           <div class="form-group">
-            {!! Form::label('name', __('contact.name') . ':*') !!}
+            {!! Form::label("org_type", __("business.org_type") . ':*') !!}
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-briefcase"></i>
+              </span>
+              {!! Form::select('organization_type', $org_type, '', ['class' => 'select2', 'id' => 'organization_type', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}     
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            {!! Form::label('name', __('business.social_reason') . ':*') !!}
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-user"></i>
@@ -25,7 +36,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-5 supplier_fields">
+        <div class="col-md-4 supplier_fields">
           <div class="form-group">
             {!! Form::label('supplier_business_name', __('business.business_name') . ':*') !!}
             <div class="input-group">
@@ -37,7 +48,8 @@
           </div>
         </div>
         <div class="col-md-2">
-          <div class="form-check" style="margin-top: 15px;">
+          {!! Form::label('supplier_sorting', __('business.sorting') . ':*') !!}
+          <div class="form-check">
             {!! Form::checkbox("is_supplier", true, true, ["class" => "form-check-input is_supplier", "id" => 'is_supplier']) !!}
             {!! Form::label("is_supplier", __("contact.is_supplier"), ["class" => "form-check-label"]) !!}
           </div>
@@ -48,34 +60,12 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
-            {!! Form::label('contact_id', __('contact.contact_id') . ':') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-id-badge"></i>
-              </span>
-              {!! Form::text('contact_id', null, ['class' => 'form-control','placeholder' => __('contact.contact_id')]); !!}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
             {!! Form::label('tax_number', __('contact.tax_no') . ':') !!}
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-info"></i>
               </span>
               {!! Form::text('tax_number', null, ['class' => 'form-control', 'placeholder' => __('contact.tax_no'), "required"]); !!}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('dni', __('business.dui') . ':') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-address-card-o"></i>
-              </span>
-              {!! Form::text('dni', null, ['class' => 'form-control', 'id' => 'dni', 'required', 'placeholder' => __('business.dui')]); !!}
             </div>
           </div>
         </div>
@@ -92,7 +82,7 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
-            {!! Form::label("business_type", __("contact.business_type") . ':') !!}
+            {!! Form::label("taxpayer_type_type", __("business.taxpayer_type") . ':') !!}
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-briefcase"></i>
@@ -101,6 +91,17 @@
             </div>
           </div>
         </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            {!! Form::label('dni', __('business.dui') . ':*') !!}
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-address-card-o"></i>
+              </span>
+              {!! Form::text('dni', null, ['class' => 'form-control', 'id' => 'dni', 'required', 'placeholder' => __('business.dui')]); !!}
+            </div>
+          </div>
+        </div>  
         <div class="col-md-3 supplier_fields">
           <div class="form-group">
             {!! Form::label("business_activity", __("contact.business_activity") . ':') !!}
@@ -114,62 +115,50 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
+            {!! Form::label('landmark', __('business.landmark') . ':') !!}
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-map-marker"></i>
+              </span>
+              {!! Form::text('landmark', null, ['class' => 'form-control', 'placeholder' => __('business.landmark')]); !!}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>@lang('customer.country')</label>
+            <div class="input-group">
+                <span class="input-group-addon"><i class=" glyphicon glyphicon-flag"></i></span>
+                {!! Form::select('country_id', $countries, '', ['class' => 'select2', 'id' => 'country_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 state">
+          <div class="form-group">
+            {!! Form::label('state', __('business.state') . ':') !!}
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-map-marker"></i>
+                </span>
+                {!! Form::select('state_id', [], '', ['class' => 'select2', 'id' => 'state_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            {!! Form::label('city', __('business.city') . ':') !!}
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-map-marker"></i>
+                </span>
+                {!! Form::select('city_id', [], '', ['class' => 'select2', 'id' => 'city_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-check">
+            {!! Form::checkbox("is_exempt", true, false, ["class" => "form-check-input", "id" => 'is_exempt']) !!}
             {!! Form::label('is_exempt', __("contact.is_exempt") . ':') !!} @show_tooltip(__("contact.no_taxes_applied"))
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-times"></i>
-              </span>
-              <select name="is_exempt" id="is_exempt" class="form-control">
-                <option value="0">@lang('messages.no')</option>
-                <option value="1">@lang('messages.yes')</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label("tax_group", __("tax_rate.taxes") . ':') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa">T</i>
-              </span>
-              <select name="tax_group_id" class="form-control" id="tax_group_id">
-                <option value="0">{{ __('lang_v1.none') }}</option>
-                @foreach ($tax_groups as $tg)
-                  <option value="{{ $tg->id }}">{{ $tg->name }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('opening_balance', __('lang_v1.opening_balance') . ':') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-money"></i>
-              </span>
-              {!! Form::text('opening_balance', 0, ['class' => 'form-control input_number']); !!}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('payment_condition', __('lang_v1.payment_condition') . ":") !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-credit-card"></i>
-              </span>
-              <select name="payment_condition" id="payment_condition" class="form-control">
-                @foreach ($payment_conditions as $pc)
-                  @if($loop->first)
-                    <option value="{{ $pc }}" selected>{{ __('messages.' . $pc) }}</option>
-                  @else
-                    <option value="{{ $pc }}">{{ __('messages.' . $pc) }}</option>
-                  @endif
-                @endforeach
-              </select>
-            </div>
           </div>
         </div>
         <div class="col-md-3 payment" style="display: none;">
@@ -213,6 +202,17 @@
         <div class="clearfix"></div>
         <div class="col-md-3">
           <div class="form-group">
+            {!! Form::label('landline', __('contact.landline') . ':') !!}
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-phone"></i>
+                </span>
+                {!! Form::text('landline', null, ['class' => 'form-control', 'placeholder' => __('contact.landline')]); !!}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
             {!! Form::label('email', __('business.email') . ':') !!}
             <div class="input-group">
               <span class="input-group-addon">
@@ -235,81 +235,12 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
-            {!! Form::label('alternate_number', __('contact.alternate_contact_number') . ':') !!}
+            {!! Form::label('alternate_number', __('business.alternate_contact_number') . ':') !!}
             <div class="input-group">
               <span class="input-group-addon">
-                  <i class="fa fa-phone"></i>
+                  <i class="fa fa-whatsapp"></i>
               </span>
               {!! Form::text('alternate_number', null, ['class' => 'form-control', 'placeholder' => __('contact.alternate_contact_number')]); !!}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('landline', __('contact.landline') . ':') !!}
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <i class="fa fa-phone"></i>
-                </span>
-                {!! Form::text('landline', null, ['class' => 'form-control', 'placeholder' => __('contact.landline')]); !!}
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label>@lang('customer.country')</label>
-            <div class="input-group">
-                <span class="input-group-addon"><i class=" glyphicon glyphicon-flag"></i></span>
-
-                {!! Form::select('country_id', $countries, '', ['class' => 'select2', 'id' => 'country_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3 state">
-          <div class="form-group">
-            {!! Form::label('state', __('business.state') . ':') !!}
-            <div class="input-group">
-               
-
-                <span class="input-group-addon">
-                    <i class="fa fa-map-marker"></i>
-                </span>
-
-                {{--<select name="state" id="states" class="form-control select2" disabled></select>--}}
-
-                {!! Form::select('state_id', [], '', ['class' => 'select2', 'id' => 'state_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('city', __('business.city') . ':') !!}
-            <div class="input-group">
-                <span class="input-group-addon">
-                    <i class="fa fa-map-marker"></i>
-                </span>
-                {{--<select name="city" id="cities" class="form-control" disabled></select>--}}
-
-                {!! Form::select('city_id', [], '', ['class' => 'select2', 'id' => 'city_id', 'style' => 'width: 100%;', 'placeholder' => __('messages.please_select')]) !!}
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            {!! Form::label('landmark', __('business.landmark') . ':') !!}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-map-marker"></i>
-              </span>
-              {!! Form::text('landmark', null, ['class' => 'form-control', 
-              'placeholder' => __('business.landmark')]); !!}
             </div>
           </div>
         </div>

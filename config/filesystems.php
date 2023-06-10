@@ -79,7 +79,10 @@ return [
             'driver' => 'local',
             'root' => public_path().'/rrhh_photos/',
         ],
-
+        'slide' => [
+            'driver' => 'local',
+            'root' => public_path().'/slider_files/',
+        ],
     ],
 
 ];

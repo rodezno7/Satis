@@ -11,7 +11,7 @@ use App\VariationLocationDetails;
 use App\Currency;
 use App\PurchaseLine;
 use App\BusinessLocation;
-
+use App\Image;
 use App\Utils\BusinessUtil;
 use App\Utils\TransactionUtil;
 
@@ -297,6 +297,8 @@ class HomeController extends Controller
             }
         }
 
+        $images = Image::where('business_id', $business_id)->where('is_active', true)->get();
+
         return view('home.index', compact(
             'date_filters',
             'sells_chart_1',
@@ -311,7 +313,8 @@ class HomeController extends Controller
             'default_location',
             'first_location',
             'business',
-            'dashboard_settings'
+            'dashboard_settings',
+            'images'
         ));
     }
 
