@@ -1,49 +1,396 @@
-<div class="boxform_u box-solid_u">
-  <div class="box-header">
-    <h3 class="box-title">{{ $employee->code }} - {{ $employee->name }} {{ $employee->last_name }}</h3>
-    <div class="box-tools"><button type="button" class="btn btn-primary btn-sm" id="btn_undo">@lang( 'rrhh.back' )</button></div>
+@extends('layouts.app')
+@section('title', __('rrhh.rrhh'))
+@section('content')
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>@lang('rrhh.edit') @lang('rrhh.employee')</h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <div class="boxform_u box-solid_u">
+    {!! Form::model($employee, ['route' => ['rrhh-employees.update', $employee->id], 'method' => 'patch', 'id' =>
+    'form_edit']) !!}
+    <div class="box-body">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">@lang('customer.general_information')
+              <div class="panel-tools pull-right">
+                <button type="button" class="btn btn-panel-tool" data-toggle="collapse"
+                  data-target="#general-information-fields-box" id="btn-collapse-gi">
+                  <i class="fa fa-minus" id="create-icon-collapsed-gi"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="panel-body collapse in" id="general-information-fields-box" aria-expanded="true">
+              <div class="row">
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.name')</label> <span class="text-danger">*</span>
+                    {!! Form::text("name", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.name'), 'id' => 'name']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.last_name')</label> <span class="text-danger">*</span>
+                    {!! Form::text("last_name", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.last_name'), 'id' =>
+                    'last_name']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.gender')</label> <span class="text-danger">*</span>
+                    {!! Form::select("gender", ['M' => __('rrhh.male'), 'F' => __('rrhh.female')], null,
+                    ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.gender'), 'style' =>
+                    'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.nationality')</label> <span class="text-danger">*</span>
+                    {!! Form::select("nationality_id", $nationalities, null,
+                    ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.nationality'), 'style'
+                    => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.birthdate')</label> <span class="text-danger">*</span>
+                    {!! Form::date("birthdate", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.birthdate'), 'id' =>
+                    'birthdate']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.dni')</label> <span class="text-danger">*</span>
+                    {!! Form::text("dni", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
+                    {!! Form::text("tax_number", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-000000-000-0', 'id' =>
+                    'tax_number']) !!}
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.marital_status')</label> <span class="text-danger">*</span>
+                    {!! Form::select("civil_status_id", $civil_statuses, null,
+                    ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.marital_status'),
+                    'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.phone')</label>
+                    {!! Form::text("phone", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-0000', 'id' => 'phone']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.mobile_phone')</label>
+                    {!! Form::text("mobile_phone", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-0000', 'id' => 'mobile_phone']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
+                    @show_tooltip(__('rrhh.tooltip_email'))
+                    {!! Form::email("email", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.email'), 'id' => 'email']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
+                    {!! Form::text("address", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.address'), 'id' => 'address'])
+                    !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.social_security_number')</label>
+                    {!! Form::text("social_security_number", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.social_security_number'), 'id'
+                    => 'social_security_number']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.afp')</label>
+                    {!! Form::select("afp_id", $afps, null,
+                    ['id' => 'afp_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.afp'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.afp_number')</label>
+                    {!! Form::text("afp_number", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.afp_number'), 'id' =>
+                    'afp_number']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.date_admission')</label>
+                    {!! Form::date("date_admission", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.date_admission'), 'id' =>
+                    'date_admission']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.department')</label>
+                    {!! Form::select("department_id", $departments, null,
+                    ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.position')</label>
+                    {!! Form::select("position_id", $positions, null,
+                    ['id' => 'position_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.salary')</label>
+                    {!! Form::number("salary", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'), 'id' => 'salary',
+                    'step' => '0.01', 'min' => '0.01']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.country')</label>
+                    {!! Form::select("country_id", $countries, null,
+                    ['id' => 'country_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.country'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.state')</label>
+                    {!! Form::select("state_id", $states, null,
+                    ['id' => 'state_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.state'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.city')</label>
+                    {!! Form::select("city_id", $cities, null,
+                    ['id' => 'city_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.city'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.profession_occupation')</label>
+                    {!! Form::select("profession_id", $professions, null,
+                    ['id' => 'profession_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.type')</label>
+                    {!! Form::select("type_id", $types, null,
+                    ['id' => 'type_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.type'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.way_to_pay')</label>
+                    {!! Form::select("payment_id", $payments, null,
+                    ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    __('rrhh.way_to_pay'), 'style' => 'width: 100%;']) !!}
+                  </div>
+                </div>
+
+                <div id='bank_information'>
+
+                  <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                      <label>@lang('rrhh.bank')</label>
+                      {!! Form::select("bank_id", $banks, null,
+                      ['id' => 'bank_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                      __('rrhh.bank'), 'style' => 'width: 100%;']) !!}
+                    </div>
+                  </div>
+
+                  <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                      <label>@lang('rrhh.bank_account')</label>
+                      {!! Form::number("bank_account", null,
+                      ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.bank_account'), 'id' =>
+                      'bank_account']) !!}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <br>
+                    <div class="checkbox" style="margin-top: 0;">
+                      <label>
+                        {!! Form::checkbox('status', 1, $employee->status, ['id' => 'status']) !!}
+                        <strong>@lang('rrhh.status')</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="form-group">
+                    {!! Form::label('photo', __('rrhh.photo') . ':') !!}
+                    {!! Form::file('photo', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+                    <small class="help-block">@lang('purchase.max_file_size', ['size' =>
+                      (config('constants.document_size_limit') / 1000000)]).@if(!empty($employee->photo)) <br>
+                        @lang('lang_v1.previous_image_will_be_replaced') @endif</small>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
+                </div>
+              </div>
+
+              {{-- <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label>@lang('rrhh.img')</label>
+                    @show_tooltip(__('rrhh.tooltip_img'))
+                    <input type="file" id="img" name="img" class="form-control form-control-sm">
+                    <progress id='progress' value='0' max='100' style="width: 100%; display: none;"></progress>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
+                </div>
+              </div> --}}
+              {{-- <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <div class="checkbox" style="margin-top: 0;">
+                      <label>
+                        {!! Form::checkbox('status', 1, $employee->status, ['id' => 'status']) !!}
+                        <strong>@lang('rrhh.status')</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div> --}}
+            </div>
+          </div>
+
+
+          <div class="panel panel-default">
+            <div class="panel-heading">@lang('rrhh.documents')
+              <div class="panel-tools pull-right">
+                <button type="button" class="btn btn-panel-tool" data-toggle="collapse"
+                  data-target="#documents-information-fields-box" id="btn-collapse-fi">
+                  <i class="fa fa-plus" id="create-icon-collapsed-fi"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="panel-body collapse" id="documents-information-fields-box" aria-expanded="false">
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <div class="form-group">
+
+                    <button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
+                      style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
+                      <i class="fa fa-plus"></i>
+                      @lang('rrhh.add_document')
+                    </button>
+
+                    <div class="row" id='div_documents' style="margin-top: 10px;">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+          <input type="hidden" name="employee_id" id="employee_id" value="{{ $employee->id }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="box-footer text-right">
+      <button type="button" class="btn btn-primary" id="btn_edit_item">@lang('rrhh.update')</button>
+
+      <a href="{!!URL::to('/rrhh-employees')!!}">
+        <button id="cancel_product" type="button"
+          class="btn btn-danger">@lang('messages.cancel')</button>
+      </a>
+    </div>
+    {!! Form::close() !!}
   </div>
 
-  <div class="box-body">
-    {!! Form::model($employee, ['route' => ['rrhh-employees.update', $employee->id], 'method' => 'patch', 'id' => 'form_edit']) !!}
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
-        @include('rrhh.employees.fields')
-        <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+
+  <div class="modal fade" id="modal_doc" tabindex="-1">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" id="modal_content_document">
+
       </div>
     </div>
   </div>
+</section>
+@endsection
 
-  <div class="box-footer">
-    <button type="button" class="btn btn-success btn-sm" id="btn_edit_item">@lang('rrhh.update')</button>
-
-    <button type="button" class="btn btn-primary btn-sm" id="btn_undo2">@lang( 'rrhh.back' )</button>
-  </div>
-</div>
-
-
-<div class="modal fade" id="modal_doc" tabindex="-1">
-  <div class="modal-dialog" role="document" style="width: 30%;">
-    <div class="modal-content" id="modal_content_document">
-
-    </div>
-  </div>
-</div>
-
-
-
-
-{!! Form::close() !!}
-
-
-
+@section('javascript')
 <script type="text/javascript">
-
   $( document ).ready(function() {
     select2 = $('.select2').select2();
     showBankInformation();
     getPhoto();
     getDocuments();
+
+    let dui = document.getElementById("dni");
+    $(dui).mask("00000000-0");
+
+    let nit = document.getElementById('tax_number');
+    $(nit).mask('0000-000000-000-0');
   });
 
   function getDocuments() {
@@ -55,6 +402,31 @@
     });
   }
 
+  $('#dni').on('change', function() {
+    let id = $("#employee_id").val();
+    let valor = $(this).val();
+    let route = '/rrhh-employees/verified_document/'+'dni'+'/'+valor+'/'+id;
+    $.get(route, function(data, status) {
+      if (data.success == true) {
+        Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
+      } else {
+        Swal.fire({ title: data.msg, icon: "success", timer:3000, });
+      }
+    });
+  });
+
+  $('#tax_number').on('change', function() {
+    let id = $("#employee_id").val();
+    let valor = $(this).val();
+    let route = '/rrhh-employees/verified_document/'+'tax_number'+'/'+valor+'/'+id;
+    $.get(route, function(data, status) {
+      if (data.success == true) {
+        Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
+      } else {
+        Swal.fire({ title: data.msg, icon: "success", timer:3000, });
+      }
+    });
+  });
 
   function getPhoto() {
     id = {{ $employee->id }}
@@ -65,64 +437,12 @@
     });
   }
 
-  $("#btn_edit_item").click(function() {
-    $("#btn_edit_item").prop("disabled", true);
-    id = {{ $employee->id }}
-    route = "/rrhh-employees/"+id;
-    datastring = $("#form_edit").serialize();
-    token = $("#token").val();
-    $.ajax({
-      url: route,
-      headers: {'X-CSRF-TOKEN': token},
-      type: 'PUT',
-      dataType: 'json',
-      data: datastring,
-      success:function(result){
-        if(result.success == true) {
-          $("#btn_edit_item").prop("disabled", false);
-          Swal.fire
-          ({
-            title: result.msg,
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-
-          $('#btn_undo').hide();
-          $('#btn_add').show();
-          var url = '{!!URL::to('/rrhh-employees-getEmployeesData')!!}';
-          $.get(url, function(data){
-            $("#div_content").html(data);
-
-          });       
-
-
-
-
-        } else {
-          $("#btn_edit_item").prop("disabled", false);
-          Swal.fire
-          ({
-            title: result.msg,
-            icon: "error",
-          });
-        }
-      },
-      error:function(msj){
-        $("#btn_edit_item").prop("disabled", false);
-        errormessages = "";
-        $.each(msj.responseJSON.errors, function(i, field){
-          errormessages+="<li>"+field+"</li>";
-        });
-        Swal.fire
-        ({
-          title: "@lang('rrhh.error_list')",
-          icon: "error",
-          html: "<ul>"+ errormessages+ "</ul>",
-        });
-      }
-    });
-  });
+  $(document).on( 'click', '#btn_edit_item', function(e){
+		e.preventDefault();
+		if($("form#form_edit").valid()) {
+			$("form#form_edit").submit();
+		}
+	});
 
   $("#btn_undo, #btn_undo2").click(function() {
     sendRequest();
@@ -158,8 +478,8 @@
     }
   });
 
-  $("#btn_add_documents").click(function() {
-
+  $("#btn_add_documents").click(function() 
+  {
     $("#modal_content_document").html('');
     var url = '{!!URL::to('/rrhh-documents-createDocument/:id')!!}';
     id = {{ $employee->id }}
@@ -171,8 +491,8 @@
 
   });
 
-  function deleteDocument(id) {
-
+  function deleteDocument(id) 
+  {
     $.confirm({
       title: '@lang('rrhh.confirm_delete')',
       content: '@lang('rrhh.delete_message')',
@@ -224,4 +544,86 @@
   }
 
 
+	function updateCities() 
+  {
+		$("#city_id").empty();
+		state_id = $('#state_id').val();
+
+		if (state_id) {
+
+			var route = "/cities/getCitiesByState/"+state_id;
+			$.get(route, function(res){
+
+				$("#city_id").append('<option value="0" disabled selected>{{ __('messages.please_select') }}</option>');           
+
+				$(res).each(function(key,value){
+					$("#city_id").append('<option value="'+value.id+'">'+value.name+'</option>');
+
+				});
+			});
+
+		}
+
+	}
+
+	$('#state_id').change(function(){
+		updateCities();
+	});
+
+	$('#country_id').change(function(){
+		updateStates();
+	});
+
+
+	function updateStates() 
+  {
+		$("#state_id").empty();
+		$("#city_id").empty();
+		country_id = $('#country_id').val();
+
+		var route = "/states/getStatesByCountry/"+country_id;
+		$.get(route, function(res){
+			$("#state_id").append('<option value="0" disabled selected>{{ __('messages.please_select') }}</option>');
+
+			$(res).each(function(key,value){
+				$("#state_id").append('<option value="'+value.id+'">'+value.name+'</option>');
+
+			});
+		});
+	}
+
+	function showBankInformation() 
+  {
+		selected_option = $( "#payment_id option:selected" ).text();
+
+		if (selected_option == 'Transferencia bancaria') {
+			$('#bank_information').show();
+		} else {
+			$('#bank_information').hide();
+			$('#bank_id').val('').change();
+			$('#bank_account').val('');
+		}
+	}
+
+	$('#payment_id').change(function() {
+		showBankInformation();
+	});
+
+  var img_fileinput_setting = {
+		'showUpload': false,
+		'showPreview': true,
+		'browseLabel': LANG.file_browse_label,
+		'removeLabel': LANG.remove,
+		'previewSettings': {
+			image: {
+				width: "100%",
+				height: "100%",
+				'max-width': "100%",
+				'max-height': "100%",
+			}
+		}
+	};
+  $("#upload_image").fileinput(img_fileinput_setting);
+
 </script>
+@endsection

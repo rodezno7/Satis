@@ -104,4 +104,6 @@ return[
     'only_pdf' => 'Only images and pdf',
     'view_file' => 'View file',
     'document' => 'Document',
+    'photo' => 'Employee photo',
+    'mobile_phone' => 'Mobile phone'
 ];

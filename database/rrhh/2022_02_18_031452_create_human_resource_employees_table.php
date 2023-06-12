@@ -18,29 +18,31 @@ class CreateHumanResourceEmployeesTable extends Migration
             $table->increments('id');
             $table->string('code');
             $table->string('name');
-            $table->string('last_name');            
+            $table->string('last_name');     
             $table->string('gender');
-
             $table->integer('nationality_id')->unsigned();
             $table->foreign('nationality_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-            
             $table->date('birthdate');
             $table->string('dni');
             $table->string('tax_number');
-            $table->string('social_security_number')->nullable();
-
-            $table->integer('afp_id')->unsigned()->nullable();
-            $table->foreign('afp_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->string('afp_number')->nullable();
-
             $table->integer('civil_status_id')->unsigned();
             $table->foreign('civil_status_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-
             $table->string('phone')->nullable();
-            $table->string('whatsapp')->nullable();
+            $table->string('mobile_phone')->nullable();
             $table->string('email')->nullable();
             $table->string('address');
+            $table->string('social_security_number')->nullable();
+            $table->integer('afp_id')->unsigned()->nullable();
+            $table->foreign('afp_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('afp_number')->nullable();
+            $table->date('date_admission')->nullable();
+            $table->decimal('salary', 10, 2)->nullable();
+            $table->integer('department_id')->unsigned()->nullable();
+            $table->foreign('department_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('position_id')->unsigned()->nullable();
+            $table->foreign('position_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('photo')->nullable();
+            $table->boolean('status')->default(1);
 
             $table->integer('country_id')->unsigned()->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
@@ -51,20 +53,8 @@ class CreateHumanResourceEmployeesTable extends Migration
             $table->integer('city_id')->unsigned()->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->string('photo')->nullable();
-
             $table->integer('profession_id')->unsigned()->nullable();
             $table->foreign('profession_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->date('date_admission')->nullable();
-
-            $table->integer('department_id')->unsigned()->nullable();
-            $table->foreign('department_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->integer('position_id')->unsigned()->nullable();
-            $table->foreign('position_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-
-            $table->decimal('salary', 10, 2)->nullable();
 
             $table->integer('type_id')->unsigned()->nullable();
             $table->foreign('type_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
@@ -79,7 +69,11 @@ class CreateHumanResourceEmployeesTable extends Migration
             $table->boolean('extra_hours')->default(0);
             $table->boolean('foreign_tax')->default(0);
             $table->integer('fee')->nullable();
-            $table->boolean('status')->default(1);
+            $table->integer('business_id')->unsigned();
+            $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
+            $table->integer('created_by')->unsigned();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

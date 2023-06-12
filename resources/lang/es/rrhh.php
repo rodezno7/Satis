@@ -104,4 +104,6 @@ return[
     'only_pdf' => 'Solo se permiten archivos de imagen y pdf',
     'view_file' => 'Ver archivo',
     'document' => 'Documento',
+    'photo' => 'Foto del empleado',
+    'mobile_phone' => 'Teléfono móvil'
 ];

@@ -13,38 +13,156 @@
 <!-- Main content -->
 <section class="content">
 
-    <div id='div_content'>
-        
-    </div>
-
-    <div class="modal fade" id="modal" tabindex="-1">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" id="modal_content">
-
+    <div class="boxform_u box-solid_u">
+        <div class="box-header">
+            <h3 class="box-title"></h3>
+            <div class="box-tools">
+                @can('rrhh_overall_payroll.create')
+                <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i class="fa fa-plus"></i> @lang( 'messages.add' )
+                </a>
+                {{-- <button type="button" class="btn btn-primary" id="btn_add"><i class="fa fa-plus"></i> @lang( 'messages.add' )
+                </button>
+    
+                <button type="button" class="btn btn-primary" id="btn_undo" style="display: none;">@lang( 'rrhh.back' )
+                </button> --}}
+                @endcan
+            </div>
+        </div>
+    
+        <div class="box-body">
+    
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table" width="100%">
+                        <thead>
+                            <th>@lang('rrhh.code')</th>
+                            <th>@lang('rrhh.name')</th>
+                            <th>@lang('rrhh.phone')</th>
+                            <th>@lang('rrhh.email')</th>
+                            <th>@lang('rrhh.actions' )</th>
+                        </thead>
+                    </table>
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+                </div>
             </div>
         </div>
     </div>
+
+
 
 
 </section>
 <!-- /.content -->
 @endsection
 @section('javascript')
-<script type="text/javascript">
+<script>
 
-    $( document ).ready(function() {
-        sendRequest();
+    $(document).ready(function() {
+
+        $(document).on("preInit.dt", function(){
+            $(".dataTables_filter input[type='search']").attr("size", 7);
+
+        });
+        loadEmployees();      
+        $.fn.dataTable.ext.errMode = 'none';      
+
     });
 
-    function sendRequest() {
-        var url = '{!!URL::to('/rrhh-employees-getEmployeesData')!!}';
-        $.get(url, function(data){
-          $("#div_content").html(data);
-      });
+
+
+    function loadEmployees() {
+
+        var table = $("#employees-table").DataTable();
+        table.destroy();
+        var table = $("#employees-table").DataTable({
+            select: true,
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh-employees-getEmployees",
+            columns: [
+            {data: 'code', name: 'e.code', className: "text-center"},
+            {data: 'full_name', name: 'full_name', className: "text-center"},
+            {data: 'phone', name: 'phone', className: "text-center"},
+            {data: 'email', name: 'email', className: "text-center"},
+            {data: null, render: function(data) {
+
+                html = "";
+                
+                @can('rrhh_overall_payroll.update')
+                html += '<a href="/rrhh-employees/'+data.id+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_overall_payroll.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false, className: "text-center"}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
     }
 
-    
+    function deleteItem(id) {
 
+        $.confirm({
+            title: '@lang('rrhh.confirm_delete')',
+            content: '@lang('rrhh.delete_message')',
+            icon: 'fa fa-warning',
+            theme: 'modern',
+            closeIcon: true,
+            animation: 'scale',
+            type: 'red',
+            buttons: {
+                confirm:{
+                    text: '@lang('rrhh.delete')',            
+                    action: function()
+                    {
+                        route = '/rrhh-employees/'+id;
+                        token = $("#token").val();
+                        $.ajax({
+                            url: route,
+                            headers: {'X-CSRF-TOKEN': token},
+                            type: 'DELETE',
+                            dataType: 'json',                       
+                            success:function(result){
+                                if(result.success == true) {
+                                    Swal.fire
+                                    ({
+                                        title: result.msg,
+                                        icon: "success",
+                                        timer: 2000,
+                                        showConfirmButton: false,
+                                    });
 
+                                    $("#div_info").html('');
+                                    
+                                    $("#employees-table").DataTable().ajax.reload(null, false);
+                                    
+                                    
+                                } else {
+                                    Swal.fire
+                                    ({
+                                        title: result.msg,
+                                        icon: "error",
+                                    });
+                                }
+                            }
+                        });
+                    }
+                },
+                cancel:{
+                    text: '@lang('rrhh.cancel')',
+                },
+            }
+        });
+    }
 </script>
 @endsection
+
+
+
+
+

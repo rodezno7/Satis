@@ -618,7 +618,6 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-banks', 'HumanResourceBanksController');
 
     Route::get('rrhh-employees-getEmployees', 'HumanResourceEmployeeController@getEmployees');
-    Route::get('rrhh-employees-getEmployeesData', 'HumanResourceEmployeeController@getData');
     Route::get('rrhh-employees-getPhoto/{id}', 'HumanResourceEmployeeController@getPhoto');
     Route::post('rrhh-employees-uploadPhoto', 'HumanResourceEmployeeController@uploadPhoto');
     Route::get('rrhh-documents-getByEmployee/{id}', 'HumanResourceDocumentsController@getByEmployee');
@@ -627,7 +626,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('rrhh-documents-updateDocument', 'HumanResourceDocumentsController@updateDocument');
     Route::resource('rrhh-documents', 'HumanResourceDocumentsController');
     Route::resource('rrhh-employees', 'HumanResourceEmployeeController');
-    
+    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'HumanResourceEmployeeController@verifiedIfExistsDocument');
+
     Route::get('rrhh/getCataloguesData/{id}', 'HumanResourcesDataController@getCatalogueData');
     Route::get('rrhh/getBanksData', 'HumanResourceBanksController@getBanksData');
     Route::get('rrhh/create-item/{id}', 'HumanResourcesDataController@createItem');
