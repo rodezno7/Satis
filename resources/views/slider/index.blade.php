@@ -57,7 +57,6 @@
                     {
                         data: 'is_active',
                         render: function(data) {
-                            console.log(typeof(data))
                             if (data == 1) {
                                 return "@lang('messages.yes')";
                             } else {
@@ -82,9 +81,6 @@
                                     '<li><a href="/image/' + data.id +
                                     '/status" data-toggle="tooltip" title="Show image" class="status-image"><i class="fa fa-eye"></i>@lang('messages.show')</a></li>';
                             }
-                            html +=
-                                '<li><a href="/image/' + data.id + '/show" show-id="' + data.id +
-                                '" data-toggle="tooltip" title="View image" data-container=".view_img_modal"><i class="fa fa-image"></i>@lang('messages.view')</a></li>';
                             html +=
                                 '<li><a href="/image/' + data.id +
                                 '/delete" data-toggle="tooltip" title="Delete" class="delete-image"><i class="fa fa-trash"></i>@lang('messages.delete')</a></li>';
