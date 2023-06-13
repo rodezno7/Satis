@@ -22,7 +22,8 @@ class CreateHumanResourcesDatasTable extends Migration
 
             $table->integer('human_resources_header_id')->unsigned();
             $table->foreign('human_resources_header_id')->references('id')->on('human_resources_headers')->onDelete('cascade')->onUpdate('cascade');
-
+            $table->integer('business_id')->unsigned()->after('id')->nullable();
+            $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
             $table->timestamps();
         });
     }

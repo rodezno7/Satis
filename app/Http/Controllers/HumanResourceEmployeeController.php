@@ -266,7 +266,7 @@ class HumanResourceEmployeeController extends Controller
             'gender'                => 'required',
             'birthdate'             => 'required|date',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            'tax_number'            => 'required|regex:/^\d{4}-\d{6}-\d{3}-\d$/',
+            'tax_number'            => 'nullable|regex:/^\d{4}-\d{6}-\d{3}-\d$/',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'nullable|date',

@@ -243,7 +243,7 @@
 
                             @if($business_receivable_type == "customer")
                             <input type="hidden" value="{{ $main_customer_account }}" id="main_account">
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.accounting_account')</label>
                                     {!! Form::select("accounting_account_id", $account_name,
@@ -253,6 +253,7 @@
                                 </div>
                             </div>
                             @endif
+
                             {{-- is_exempt --}}
                             <div class="col-md-3">
                                 <div class="form-group">

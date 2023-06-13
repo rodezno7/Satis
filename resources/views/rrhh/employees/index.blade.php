@@ -12,7 +12,6 @@
 
 <!-- Main content -->
 <section class="content">
-
     <div class="boxform_u box-solid_u">
         <div class="box-header">
             <h3 class="box-title"></h3>
@@ -20,26 +19,19 @@
                 @can('rrhh_overall_payroll.create')
                 <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i class="fa fa-plus"></i> @lang( 'messages.add' )
                 </a>
-                {{-- <button type="button" class="btn btn-primary" id="btn_add"><i class="fa fa-plus"></i> @lang( 'messages.add' )
-                </button>
-    
-                <button type="button" class="btn btn-primary" id="btn_undo" style="display: none;">@lang( 'rrhh.back' )
-                </button> --}}
                 @endcan
             </div>
         </div>
     
         <div class="box-body">
-    
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table" width="100%">
                         <thead>
                             <th>@lang('rrhh.code')</th>
                             <th>@lang('rrhh.name')</th>
-                            <th>@lang('rrhh.phone')</th>
                             <th>@lang('rrhh.email')</th>
+                            <th>@lang('rrhh.dni')</th>
                             <th>@lang('rrhh.actions' )</th>
                         </thead>
                     </table>
@@ -48,31 +40,23 @@
             </div>
         </div>
     </div>
-
-
-
-
 </section>
-<!-- /.content -->
 @endsection
+
 @section('javascript')
 <script>
-
-    $(document).ready(function() {
-
+    $(document).ready(function() 
+    {
         $(document).on("preInit.dt", function(){
             $(".dataTables_filter input[type='search']").attr("size", 7);
-
         });
         loadEmployees();      
         $.fn.dataTable.ext.errMode = 'none';      
-
     });
 
 
-
-    function loadEmployees() {
-
+    function loadEmployees() 
+    {
         var table = $("#employees-table").DataTable();
         table.destroy();
         var table = $("#employees-table").DataTable({
@@ -82,10 +66,10 @@
             serverSide: true,
             ajax: "/rrhh-employees-getEmployees",
             columns: [
-            {data: 'code', name: 'e.code', className: "text-center"},
+            {data: 'agent_code', name: 'e.agent_code', className: "text-center"},
             {data: 'full_name', name: 'full_name', className: "text-center"},
-            {data: 'phone', name: 'phone', className: "text-center"},
             {data: 'email', name: 'email', className: "text-center"},
+            {data: 'dni', name: 'dni', className: "text-center"},
             {data: null, render: function(data) {
 
                 html = "";

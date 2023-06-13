@@ -256,7 +256,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('users/changePassword', 'ManageUserController@changePassword');
     Route::resource('users', 'ManageUserController');
 
-    //Rutas Employees
+    // //Rutas Employees
     Route::get('employees/getEmployeesData', 'ManageEmployeesController@getEmployeesData');
     Route::get('/employees/verify-if-exists-agent-code', 'ManageEmployeesController@verifiedIfExistsAgentCode');
     Route::resource('employees', 'ManageEmployeesController');
@@ -617,16 +617,18 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-catalogues-data', 'HumanResourcesDataController');
     Route::resource('rrhh-banks', 'HumanResourceBanksController');
 
-    Route::get('rrhh-employees-getEmployees', 'HumanResourceEmployeeController@getEmployees');
-    Route::get('rrhh-employees-getPhoto/{id}', 'HumanResourceEmployeeController@getPhoto');
-    Route::post('rrhh-employees-uploadPhoto', 'HumanResourceEmployeeController@uploadPhoto');
+    //Rutas Employees
+    Route::resource('rrhh-employees', 'EmployeesController');
+    Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
+    Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
+    Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
+    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
     Route::get('rrhh-documents-getByEmployee/{id}', 'HumanResourceDocumentsController@getByEmployee');
-    Route::get('rrhh-documents-createDocument/{id}', 'HumanResourceDocumentsController@createDocument');
-    Route::get('rrhh-documents-viewFile/{id}', 'HumanResourceDocumentsController@viewFile');
-    Route::post('rrhh-documents-updateDocument', 'HumanResourceDocumentsController@updateDocument');
+    Route::get('rrhh-documents/createDocument/{id}', 'HumanResourceDocumentsController@createDocument');
+    Route::get('rrhh-documents/viewFile/{id}', 'HumanResourceDocumentsController@viewFile');
+    Route::post('rrhh-documents/updateDocument', 'HumanResourceDocumentsController@updateDocument');
     Route::resource('rrhh-documents', 'HumanResourceDocumentsController');
-    Route::resource('rrhh-employees', 'HumanResourceEmployeeController');
-    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'HumanResourceEmployeeController@verifiedIfExistsDocument');
+
 
     Route::get('rrhh/getCataloguesData/{id}', 'HumanResourcesDataController@getCatalogueData');
     Route::get('rrhh/getBanksData', 'HumanResourceBanksController@getBanksData');

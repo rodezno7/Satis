@@ -10,8 +10,7 @@
 <!-- Main content -->
 <section class="content">
   <div class="boxform_u box-solid_u">
-    {!! Form::model($employee, ['route' => ['rrhh-employees.update', $employee->id], 'method' => 'patch', 'id' =>
-    'form_edit']) !!}
+    {!! Form::model($employee, ['url' => action('EmployeesController@update', $employee->id), 'method' => 'patch', 'id' => 'form_edit']) !!}
     <div class="box-body">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
@@ -28,47 +27,45 @@
             <div class="panel-body collapse in" id="general-information-fields-box" aria-expanded="true">
               <div class="row">
 
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.name')</label> <span class="text-danger">*</span>
-                    {!! Form::text("name", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.name'), 'id' => 'name']) !!}
+                    {!! Form::text("first_name", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.name'), 'id' => 'first_name', 'required']) !!}
                   </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.last_name')</label> <span class="text-danger">*</span>
                     {!! Form::text("last_name", null,
                     ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.last_name'), 'id' =>
-                    'last_name']) !!}
+                    'last_name', 'required']) !!}
                   </div>
                 </div>
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.gender')</label> <span class="text-danger">*</span>
-                    {!! Form::select("gender", ['M' => __('rrhh.male'), 'F' => __('rrhh.female')], null,
+                    {!! Form::select("gender", ['M' => __('rrhh.male'), 'F' => __('rrhh.female')], $employee->gender,
                     ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.gender'), 'style' =>
-                    'width: 100%;']) !!}
+                    'width: 100%;', 'required']) !!}
                   </div>
                 </div>
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.nationality')</label> <span class="text-danger">*</span>
-                    {!! Form::select("nationality_id", $nationalities, null,
+                    {!! Form::select("nationality_id", $nationalities, $employee->nacionality_id,
                     ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.nationality'), 'style'
-                    => 'width: 100%;']) !!}
+                    => 'width: 100%;', 'required']) !!}
                   </div>
                 </div>
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.birthdate')</label> <span class="text-danger">*</span>
-                    {!! Form::date("birthdate", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.birthdate'), 'id' =>
-                    'birthdate']) !!}
+                    {!! Form::text("birth_date", @format_date($employee->birth_date), ['class' => 'form-control form-control-sm', 'id' => 'birth_date', 'required'])!!}
                   </div>
                 </div>
 
@@ -76,24 +73,23 @@
                   <div class="form-group">
                     <label>@lang('rrhh.dni')</label> <span class="text-danger">*</span>
                     {!! Form::text("dni", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni']) !!}
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni', 'required']) !!}
                   </div>
                 </div>
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
-                    <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
+                    <label>@lang('rrhh.tax_number')</label><span class="text-danger">*</span>
                     {!! Form::text("tax_number", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-000000-000-0', 'id' =>
-                    'tax_number']) !!}
+                    ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required']) !!}
                   </div>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.marital_status')</label> <span class="text-danger">*</span>
-                    {!! Form::select("civil_status_id", $civil_statuses, null,
+                    {!! Form::select("civil_status_id", $civil_statuses, $employee->civil_status_id,
                     ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.marital_status'),
-                    'style' => 'width: 100%;']) !!}
+                    'style' => 'width: 100%;', 'required']) !!}
                   </div>
                 </div>
 
@@ -109,8 +105,8 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.mobile_phone')</label>
-                    {!! Form::text("mobile_phone", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-0000', 'id' => 'mobile_phone']) !!}
+                    {!! Form::text("mobile", null,
+                    ['class' => 'form-control form-control-sm', 'placeholder' => '0000-0000', 'id' => 'mobile']) !!}
                   </div>
                 </div>
 
@@ -144,7 +140,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.afp')</label>
-                    {!! Form::select("afp_id", $afps, null,
+                    {!! Form::select("afp_id", $afps, $employee->afp_id,
                     ['id' => 'afp_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.afp'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -162,16 +158,14 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.date_admission')</label>
-                    {!! Form::date("date_admission", null,
-                    ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.date_admission'), 'id' =>
-                    'date_admission']) !!}
+                    {!! Form::text("date_admission", @format_date($employee->date_admission), ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
                   </div>
                 </div>
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.department')</label>
-                    {!! Form::select("department_id", $departments, null,
+                    {!! Form::select("department_id", $departments, $employee->department_id,
                     ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.department'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -180,7 +174,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.position')</label>
-                    {!! Form::select("position_id", $positions, null,
+                    {!! Form::select("position_id", $positions, $employee->position_id,
                     ['id' => 'position_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.position'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -198,7 +192,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.country')</label>
-                    {!! Form::select("country_id", $countries, null,
+                    {!! Form::select("country_id", $countries, $employee->country_id,
                     ['id' => 'country_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.country'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -207,7 +201,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.state')</label>
-                    {!! Form::select("state_id", $states, null,
+                    {!! Form::select("state_id", $states, $employee->state_id,
                     ['id' => 'state_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.state'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -216,7 +210,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.city')</label>
-                    {!! Form::select("city_id", $cities, null,
+                    {!! Form::select("city_id", $cities, $employee->city_id,
                     ['id' => 'city_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.city'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -225,7 +219,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.profession_occupation')</label>
-                    {!! Form::select("profession_id", $professions, null,
+                    {!! Form::select("profession_id", $professions, $employee->profession_id,
                     ['id' => 'profession_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -235,7 +229,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.type')</label>
-                    {!! Form::select("type_id", $types, null,
+                    {!! Form::select("type_id", $types, $employee->type_id,
                     ['id' => 'type_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.type'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -244,7 +238,7 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.way_to_pay')</label>
-                    {!! Form::select("payment_id", $payments, null,
+                    {!! Form::select("payment_id", $payments, $employee->payment_id,
                     ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.way_to_pay'), 'style' => 'width: 100%;']) !!}
                   </div>
@@ -255,7 +249,7 @@
                   <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                       <label>@lang('rrhh.bank')</label>
-                      {!! Form::select("bank_id", $banks, null,
+                      {!! Form::select("bank_id", $banks, $employee->bank_id,
                       ['id' => 'bank_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                       __('rrhh.bank'), 'style' => 'width: 100%;']) !!}
                     </div>
@@ -290,8 +284,10 @@
                         @lang('lang_v1.previous_image_will_be_replaced') @endif</small>
                   </div>
                 </div>
+                @if (!empty($employee->photo))
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
                 </div>
+                @endif
               </div>
 
               {{-- <div class="row">
@@ -389,8 +385,17 @@
     let dui = document.getElementById("dni");
     $(dui).mask("00000000-0");
 
-    let nit = document.getElementById('tax_number');
-    $(nit).mask('0000-000000-000-0');
+    // let nit = document.getElementById('tax_number');
+    // $(nit).mask('0000-000000-000-0');
+    $('#birth_date').datepicker({
+      autoclose: true,
+      format: datepicker_date_format
+    });
+
+    $('#date_admission').datepicker({
+      autoclose: true,
+      format: datepicker_date_format
+    });
   });
 
   function getDocuments() {

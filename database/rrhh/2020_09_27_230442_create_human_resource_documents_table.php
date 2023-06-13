@@ -19,7 +19,7 @@ class CreateHumanResourceDocumentsTable extends Migration
             $table->string('file')->nullable();
 
             $table->integer('employee_id')->unsigned();
-            $table->foreign('employee_id')->references('id')->on('human_resource_employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('document_type_id')->unsigned();
             $table->foreign('document_type_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');

@@ -59,7 +59,7 @@
             </a>
           </li>
           @endcan
-          @can( 'employees.view' )
+          {{-- @can( 'employees.view' )
           <li class="{{ $request->segment(1) == 'employees' ? 'active active-sub' : '' }}">
             <a href="{{action('ManageEmployeesController@index')}}">
               <i class="fa fa-user"></i>
@@ -68,7 +68,7 @@
               </span>
             </a>
           </li>
-          @endcan
+          @endcan --}}
           @can('positions.view')
           <li class="{{ $request->segment(1) == 'positions' ? 'active active-sub' : '' }}">
             <a href="{{action('ManagePositionsController@index')}}">
@@ -128,7 +128,7 @@
         @can('rrhh_overall_payroll.view')
         <ul class="treeview-menu" id="rrhh_over">
           <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
-            <a href="{{action('HumanResourceEmployeeController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
+            <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
               @lang('rrhh.employee')
             </a>
           </li>
