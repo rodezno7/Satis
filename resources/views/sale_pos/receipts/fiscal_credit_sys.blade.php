@@ -9,7 +9,12 @@
 	div#header div#header-right{ width: 39%; height: inherit; display: inline-block; }
 	div#header div#header-right div { padding-top: 0.1cm; }
 	div#header div#header-left div, div#header div#header-right div { width: 100%; vertical-align: middle; }
-	div#details { height: 7.3cm; width: 100%; }
+    @if (empty($receipt_details->staff_note))
+        div#details { height: 7.3cm; width: 100%; }
+    @else
+        div#details { height: 5.3cm; width: 100%; }
+        div#comment { height: 2cm; margin-left: 2cm; text-align: left; vertical-align: top; }
+    @endif
 	div#details table#sell_lines thead tr { height: 0.68cm; }
 	div#details table#sell_lines tbody tr  { height: 0.6cm; }
 	div#details table#sell_lines tbody td { padding-left: 0.2cm; }
@@ -45,8 +50,8 @@
 			<thead>
 				<tr>
 					<th style="width: 1.9cm">&nbsp;</th><!-- CANT -->
-					<th style="width: 8.9cm">&nbsp;</th><!-- DESCRIPCIÓN -->
-					<th style="width: 1.5cm">&nbsp;</th><!-- PRECIO UNITARIO -->
+					<th style="width: 8.5cm">&nbsp;</th><!-- DESCRIPCIÓN -->
+					<th style="width: 1.9cm">&nbsp;</th><!-- PRECIO UNITARIO -->
 					<th style="width: 1.5cm">&nbsp;</th><!-- VENTAS NO SUJETAS -->
 					<th style="width: 1.5cm">&nbsp;</th><!-- VENTAS EXENTAS -->
 					<th style="width: 2.1cm">&nbsp;</th><!-- VENTAS AFECTA -->
@@ -56,11 +61,12 @@
 				@forelse($receipt_details->lines as $line)
 				<tr>
 					<td class="text-center">{{ $line['quantity'] }}</td>
-					<td class="cutter" style="padding-left: 0.2cm;">
+					<td style="padding-left: 0.2cm;">
 						{{ $line['name']}} {{$line['variation'] }}
-						@if(!empty($line['sell_line_note']))({{$line['sell_line_note']}}) @endif 
-						@if(!empty($line['lot_number']))<br> {{$line['lot_number_label']}}:  {{$line['lot_number']}} @endif 
-						@if(!empty($line['product_expiry'])), {{$line['product_expiry_label']}}:  {{$line['product_expiry']}} @endif
+						@if(!empty($line['sell_line_note']))
+                            <br>
+                            {{ $line['sell_line_note'] }}
+                        @endif
 					</td>
 					<td class="text-center">
 						<span class="display_currency" data-currency_symbol="false">
@@ -81,6 +87,9 @@
 			</tbody>
 		</table>
 	</div>
+    <div id="comment">
+        {{ $receipt_details->staff_note }}
+    </div>
 	<div id="footer">
 		<table>
 			<tr>
@@ -117,6 +126,10 @@
 					</span>
 				</td>
 			</tr>
+			<tr><!-- IVA Percibido -->
+				<td colspan="3">&nbsp;</td>
+				<td style="height: 0.5cm;">&nbsp;</td>
+			</tr>
 			<tr><!-- IVA Retenido -->
 				<td colspan="4">&nbsp;</td>
 				<td style="text-align: right; padding-right: 0.3cm;">
@@ -125,12 +138,8 @@
 					</span>
 				</td>
 			</tr>
-			<tr><!-- IVA Percibido -->
-				<td rowspan="4" colspan="4">&nbsp;</td>
-				<td style="height: 0.5cm;">&nbsp;</td>
-			</tr>
 			<tr><!-- Vta no sujeta -->
-				<td>&nbsp;</td>
+				<td rowspan="3" colspan="4">&nbsp;</td>
 			</tr>
 			<tr><!-- Vta exenta -->
 				<td>&nbsp;</td>
