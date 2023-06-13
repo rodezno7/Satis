@@ -327,10 +327,6 @@ class TaxGroupController extends Controller
      */
 
     public function getTaxGroups() {
-        if(!auth()->user()->can('tax_group.view')) {
-            about(403, 'Unauthorized action');
-        }
-        
         if(request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
 
@@ -347,10 +343,6 @@ class TaxGroupController extends Controller
      * @return float 
      */
     public function getTaxPercent(){
-        if(!auth()->user()->can('tax_group.view')) {
-            about(403, 'Unauthorized action');
-        }
-
         if(request()->ajax()){
             $tax_group_id = request()->input('tax_group_id', null);
 
