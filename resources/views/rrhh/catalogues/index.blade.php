@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="col-xs-12 pos-tab-container">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pos-tab-menu">
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 pos-tab-menu">
                     <div class="list-group">
                         <a href="#" class="list-group-item text-center active">@lang('rrhh.marital_statuses')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.departments')</a>
@@ -29,7 +29,7 @@
                         <a href="#" class="list-group-item text-center">@lang('rrhh.document_types')</a>
                     </div>
                 </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 pos-tab">
+                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 pos-tab">
 
                     <!-- tab 1 start -->
                     @include('rrhh.catalogues.marital_statuses.index')
@@ -133,7 +133,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -165,7 +166,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -197,7 +199,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -229,7 +232,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -261,7 +265,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -293,7 +298,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -325,7 +331,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -360,7 +367,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -392,7 +400,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -424,13 +433,13 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
 
     $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type").click(function(){
-
         $("#modal_content").html('');
         catalogue_id = $(this).val();
         var url = '{!!URL::to('/rrhh/create-item/:catalogue_id')!!}';
@@ -444,7 +453,6 @@
     });
 
     $("#add_bank").click(function(){
-
         $("#modal_content").html('');        
         var url = '{!!URL::to('/rrhh-banks/create')!!}';
         $.get(url, function(data) {
@@ -456,7 +464,6 @@
     });
 
     function editItem(id) {
-
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh/edit-item/:id')!!}';
         url = url.replace(':id', id);
@@ -469,7 +476,6 @@
     }
 
     function editBank(id) {
-
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh-banks/:id/edit')!!}';
         url = url.replace(':id', id);
@@ -482,7 +488,6 @@
     }
 
     function deleteItem(id) {
-
         $.confirm({
             title: '@lang('rrhh.confirm_delete')',
             content: '@lang('rrhh.delete_message')',
@@ -590,8 +595,5 @@
             }
         });
     }
-
-
-
 </script>
 @endsection

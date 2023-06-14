@@ -46,7 +46,7 @@ return[
     'banks' => 'Bancos',
     'profession_occupation' => 'Profesión u oficio',
     'all_your_professions_occupations' => 'Todas tus profesiones/oficios',
-    'professions_occupations' => 'Profesiones/oficios',
+    'professions_occupations' => 'Profesiones/ oficios',
     'manage_your_overall_payroll' => 'Administra tu nómina general',
     'all_your_employees' => 'Todos tus empleados',
     'employee' => 'Empleado',

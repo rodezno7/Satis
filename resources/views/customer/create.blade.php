@@ -159,9 +159,10 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             @if($business_receivable_type == "customer")
                                 <input type="hidden" value="{{ $main_customer_account }}" id="main_account">
-                                <div class="col-md-3">
+                                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('customer.accounting_account')</label>
                                             {!! Form::select("accounting_account_id", [], null, ["class" => "form-control select_account", "style" => "width: 100%;", 
@@ -525,23 +526,14 @@
             console.log(status);
             if (data.success == true) {
                 $("#btn-add-customer").prop('disabled', true);
-                // $('#msg').css('color', 'red');
-                // $('#msg').text(data.msg);
                 Swal.fire({
-                title: data.msg,
-                icon: "error",
-                timer: 3000,
-                showConfirmButton: true,
+                    title: data.msg,
+                    icon: "error",
+                    timer: 3000,
+                    showConfirmButton: true,
                 });
             } else {
                 $("#btn-add-customer").prop('disabled', false);
-                // $('#msg').css('color', 'green');
-                // $('#msg').text(data.msg);
-                Swal.fire({
-                title: data.msg,
-                timer:3000,
-                icon: "success",
-                });
             }
         });
     });
@@ -554,8 +546,6 @@
             console.log(status);
             if (data.success == true) {
                 $("#btn-add-customer").prop('disabled', true);
-                // $('#msgR').css('color', 'red');
-                // $('#msgR').text(data.msg);
                 Swal.fire({
                     title: data.msg,
                     icon: "error",
@@ -564,19 +554,13 @@
                 });
             } else {
                 $("#btn-add-customer").prop('disabled', false);
-                // $('#msgR').css('color', 'green');
-                // $('#msgR').text(data.msg);
-                Swal.fire({
-                    title: data.msg,
-                    timer:3000,
-                    icon: "success",
-                });
             }
         });
     });
 
     $('input#tax_number').on('change', function() {
         let tax_number = $(this).val();
+        console.log(tax_number);
         let route = '/customer/verify-if-exists-tax-number';
         if(tax_number != ""){
             $.ajax({
@@ -585,12 +569,7 @@
                 data: {'tax_number': tax_number},
                 dataType: "json",
                 success: function(result) {
-                    if (result.success == true) {
-                        Swal.fire({ title: result.msg, icon: "success", timer: 4000});
-                    }else if(result.error == true){
-                        Swal.fire({ title: result.fail, icon: "info", timer: 4000});
-                    }
-                    else {
+                    if (result.success == false) {
                         Swal.fire({ title: result.msg, icon: "error",timer: 4000});
                     }
                 }

@@ -195,14 +195,14 @@ class CustomerController extends Controller
     public function verifiedIfExistsTaxNumber()
     {
         if (request()->ajax()) {
-            $business_id = auth()->user()->business_id;
+            $business_id = request()->session()->get('user.business_id');
             $output = ['error' => true, 'fail' => 'validate_tax_number_fail'];
             if (request()->tax_number && request()->customer_id) {
                 // This part is used for when the client id is sent in the ajax, specifically the edit section.
                 $tax_number = Customer::where('id', '<>', request()->customer_id)
                     ->where('business_id', $business_id)->where('tax_number', request()->tax_number)->exists();
 
-                if ($tax_number) {
+                if (empty($tax_number)) {
                     $output = ['success' => false, 'msg' => trans("customer.validate_tax_number_error")];
                 } else {
                     $output = ['success' => true, 'msg' => trans("customer.validate_tax_number_success")];
