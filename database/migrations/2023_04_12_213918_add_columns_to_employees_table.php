@@ -14,25 +14,37 @@ class AddColumnsToEmployeesTable extends Migration
     public function up()
     {
         Schema::table('employees', function (Blueprint $table) {
+            $table->dropForeign(['position_id']);
+            $table->dropColumn('position_id');
+
             $table->string('gender')->nullable()->after('last_name');
+
             $table->integer('nationality_id')->unsigned()->nullable()->after('gender');
             $table->foreign('nationality_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+
             $table->string('dni')->nullable()->after('nationality_id');
             $table->string('tax_number')->nullable()->after('dni');
+
             $table->integer('civil_status_id')->unsigned()->nullable()->after('tax_number');
             $table->foreign('civil_status_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+
             $table->string('phone')->nullable()->after('civil_status_id');
             $table->string('address')->nullable()->after('email');
             $table->string('social_security_number')->nullable()->after('address');
+
             $table->integer('afp_id')->unsigned()->nullable()->after('social_security_number');
             $table->foreign('afp_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+
             $table->string('afp_number')->nullable()->after('afp_id');
             $table->date('date_admission')->nullable()->after('afp_number');
             $table->decimal('salary', 10, 2)->nullable()->after('date_admission');
+
             $table->integer('department_id')->unsigned()->nullable()->after('salary');
             $table->foreign('department_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
-            // $table->integer('position_id')->unsigned()->nullable()->after('department_id');
-            // $table->foreign('position_id')->references('id')->on('human_resources_datas');
+            
+            $table->integer('position1_id')->unsigned()->nullable()->after('department_id');
+            $table->foreign('position1_id')->references('id')->on('human_resources_datas');
+            
             $table->string('photo')->nullable()->after('position_id');
             $table->boolean('status')->default(1)->after('photo');
 
@@ -89,8 +101,8 @@ class AddColumnsToEmployeesTable extends Migration
             $table->dropColumn('salary', 10, 2);
             $table->dropForeign(['department_id']);
             $table->dropColumn('department_id');
-            // $table->integer('position_id')->unsigned()->nullable()->after('department_id');
-            // $table->foreign('position_id')->references('id')->on('human_resources_datas');
+            $table->dropForeign(['position1_id']);
+            $table->dropColumn('position1_id');
             $table->dropColumn('photo');
             $table->dropColumn('status');
 

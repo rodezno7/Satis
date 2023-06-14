@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __('rrhh.rrhh'))
+@section('title', __('rrhh.catalogues'))
 
 @section('content')
 
@@ -76,7 +76,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="modal" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content" id="modal_content">
@@ -84,10 +83,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 </section>
 <!-- /.content -->
 @endsection
@@ -96,7 +91,6 @@
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
     $(document).ready(function() {
-
         loadMaritalStatuses();
         loadDepartments();
         loadPositions();
@@ -108,7 +102,6 @@
         loadWayToPays();
         loadDocumentTypes();
         $.fn.dataTable.ext.errMode = 'none';
-
     });
 
 
@@ -156,7 +149,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/2",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -189,7 +181,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/3",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -222,8 +213,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/4",
             columns: [
-            {data: 'code'},
-            {data: 'short_name'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -256,7 +245,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/5",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){

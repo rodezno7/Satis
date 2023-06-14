@@ -1,8 +1,9 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="formModal">@lang('rrhh.add') @lang('rrhh.bank')</h3>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+	<h4 class="modal-title" id="formModal">@lang('rrhh.add') @lang('rrhh.bank')
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</h4>
 </div>
 <div class="modal-body">
 	<form id="form_add" method="post">
@@ -17,6 +18,7 @@
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-primary" id="btn_add_bank">@lang('rrhh.add')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal">@lang( 'messages.cancel' )</button>
 </div>
 
 <script>

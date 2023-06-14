@@ -14,6 +14,7 @@ class CreateHumanResourceDocumentsTable extends Migration
     public function up()
     {
         Schema::create('human_resource_documents', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('number');
             $table->string('file')->nullable();

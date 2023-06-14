@@ -69,7 +69,7 @@
             </a>
           </li>
           @endcan --}}
-          @can('positions.view')
+          {{-- @can('positions.view')
           <li class="{{ $request->segment(1) == 'positions' ? 'active active-sub' : '' }}">
             <a href="{{action('ManagePositionsController@index')}}">
               <i class="fa fa-briefcase"></i>
@@ -78,7 +78,7 @@
               </span>
             </a>
           </li>
-          @endcan
+          @endcan --}}
           @can('roles.view')
           <li class="{{ $request->segment(1) == 'roles' ? 'active active-sub' : '' }}">
             <a href="{{action('RoleController@index')}}">
@@ -117,7 +117,7 @@
 
       {{-- Inicio Recurso humano --}}
       @if(auth()->user()->can('rrhh_overall_payroll.view') || auth()->user()->can('rrhh_catalogues.view') )
-      <li class="treeview {{ in_array($request->segment(1), ['rrhh-employees']) ? 'active active-sub' : '' }}"
+      <li class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues']) ? 'active active-sub' : '' }}"
         id="tour_step4">
         <a href="#" id="tour_step4_menu"><i class="fa fa-user"
             aria-hidden="true"></i><span>RRHH</span>
@@ -125,15 +125,22 @@
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
-        @can('rrhh_overall_payroll.view')
         <ul class="treeview-menu" id="rrhh_over">
+          @can('rrhh_overall_payroll.view')
           <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
             <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
               @lang('rrhh.employee')
             </a>
           </li>
+          @endcan
+          @can('rrhh_catalogues.view')
+          <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
+            <a href="{{action('HumanResourcesHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+              @lang('rrhh.catalogues')
+            </a>
+          </li>
+          @endcan
         </ul>
-        @endcan
       </li>
       @endif
       {{-- Fin Recurso humano --}}

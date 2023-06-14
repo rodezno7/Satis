@@ -1,5 +1,5 @@
 <div class="pos-tab-content">
-	<div class="boxform_u box-solid_u">
+	<div class="">
 		<div class="box-header">
 			<h3 class="box-title">@lang( 'rrhh.all_your_document_types' )</h3>
 			<div class="box-tools">

@@ -3,37 +3,40 @@
 		<thead>
 			<tr class="active">
 				<th width="20%">@lang('rrhh.document_type')</th>
-				<th class="text-center" width="20%">@lang('rrhh.state_expedition')</th>
-				<th class="text-center" width="20%">@lang('rrhh.city_expedition')</th>
-				<th class="text-center" width="15%">@lang('rrhh.number')</th>
-				<th class="text-center" width="15%">@lang('rrhh.file')</th>
-				<th width="10%" id="dele">&nbsp;</th>
+				<th width="20%">@lang('rrhh.state_expedition')</th>
+				<th width="20%">@lang('rrhh.city_expedition')</th>
+				<th width="15%">@lang('rrhh.number')</th>
+				@if(!isset($route))<th width="10%" id="dele">@lang('rrhh.actions' )</th>@endif
 			</tr>
 		</thead>
 		<tbody id="referencesItems">
-			@foreach($documents as $item)
-
-			<tr>
-
-				<td>{{ $item->type }}</td>
-				<td>{{ $item->state }}</td>
-				<td>{{ $item->city }}</td>
-				<td>{{ $item->number }}</td>
-				<td>
-					@if ($item->file != '')
-
-					<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs">@lang('rrhh.view_file')</button>
-
+			@if (count($documents) > 0)
+				@foreach($documents as $item)
+					<tr>
+						<td>{{ $item->type }}</td>
+						<td>{{ $item->state }}</td>
+						<td>{{ $item->city }}</td>
+						<td>{{ $item->number }}</td>
+						@if(!isset($route))
+						<td>
+							@if ($item->file != '')
+								<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+							@endif
+							<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+							<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+						</td>
+						@endif
+					</tr>
+				@endforeach
+			@else
+				<tr>
+					@if(!isset($route))
+						<td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
+					@else
+						<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
 					@endif
-				</td>
-				<td>
-					<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button>
-
-					<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-				</td>
-			</tr>
-
-			@endforeach
+				</tr>
+			@endif
 		</tbody>
 	</table>
 </div>
@@ -55,9 +58,7 @@
 </div>
 
 <script type="text/javascript">
-
 	function viewFile(id) {
-
 		$("#modal_content_photo").html('');
 		var url = '{!!URL::to('/rrhh-documents-viewFile/:id')!!}';
 		url = url.replace(':id', id);
@@ -68,7 +69,6 @@
 	}
 
 	function editDocument(id) {
-
 		$("#modal_content_edit_document").html('');
 		var url = '{!!URL::to('/rrhh-documents/:id/edit')!!}';
 		url = url.replace(':id', id);
@@ -77,7 +77,4 @@
 			$('#modal_edit_document').modal({backdrop: 'static'});
 		});
 	}
-
-
-
 </script>

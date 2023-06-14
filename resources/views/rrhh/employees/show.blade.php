@@ -4,16 +4,15 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1 class="box-title">@lang( 'rrhh.employee_information' )</h1>
+    <h1 class="box-title">@lang( 'rrhh.employee')</h1>
 </section>
 
 <!-- Main content -->
 <section class="content">
     <div class="boxform_u box-solid_u">
         <div class="box-header">
-            <h3 class="box-title">@lang('rrhh.employee'): {{ $employee->code }}</h3>
+            <h3 class="box-title">@lang( 'rrhh.employee_information' )</h3>
         </div>
-
         <div class="box-body">
             <div class="row">
                 <div class="col-lg-4">
@@ -27,23 +26,32 @@
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.code')</strong>
-                                    {{ $employee->code }}
+                                    @if( !empty($employee->agent_code))
+                                        {{ $employee->agent_code }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.names'):</strong>
-                                    {{ $employee->name }} {{ $employee->last_name }}
+                                    {{ $employee->first_name }} {{ $employee->last_name }}
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 33%;">
                                     <strong>@lang('rrhh.gender'):</strong>
-                                    @if ($employee->gender == 'M')
-                                    @lang('rrhh.male')
-                                    @else
-                                    @lang('rrhh.female')
+                                    @if( !empty($employee->gender))
+                                        @if ($employee->gender == 'M')
+                                        @lang('rrhh.male')
+                                        @else
+                                        @lang('rrhh.female')
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
+                                    
                                 </td>
                             </tr>
                         </table>
@@ -55,101 +63,161 @@
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.marital_status'):</strong>
-                                    {{ $employee->civilStatus->value }}
+                                    @if( !empty($employee->civil_status_id))
+                                        {{ $employee->civilStatus->value }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                                 <td style="width: 33%;">
                                     <strong>@lang('rrhh.birthdate'):</strong>
-                                    {{ @format_date($employee->birthdate) }}
+                                    @if( !empty($employee->birth_date))
+                                        {{ @format_date($employee->birth_date) }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.nationality'):</strong>
-                                    {{ $employee->nationality->value }}
+                                    @if( !empty($employee->nationality_id))
+                                        {{ $employee->nationality->value }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 34%;">
                                     <strong>@lang('rrhh.status'):</strong>
-                                    @if($employee->status == 1)
-                                    @lang('rrhh.active')
-                                    @else
-                                    @lang('rrhh.inactive')
+                                    @if( !empty($employee->status))
+                                        @if($employee->status == 1)
+                                        @lang('rrhh.active')
+                                        @else
+                                        @lang('rrhh.inactive')
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.phone'):</strong>
-                                    {{ $employee->phone }}
+                                    @if( !empty($employee->phone))
+                                        {{ $employee->phone }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.mobile_phone'):</strong>
-                                    {{ $employee->mobile }}
+                                    @if( !empty($employee->mobile))
+                                        {{ $employee->mobile }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
                                     <strong>@lang('rrhh.email'):</strong>
-                                    {{ $employee->email }}
+                                    @if( !empty($employee->email))
+                                        {{ $employee->email }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.check_payment'):</strong>
-                                    @if($employee->check_payment == 1)
-                                    @lang('rrhh.yes')
-                                    @else
-                                    @lang('rrhh.no')
+                                    @if( !empty($employee->check_payment))
+                                        @if($employee->check_payment == 1)
+                                        @lang('rrhh.yes')
+                                        @else
+                                        @lang('rrhh.no')
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.extra_hours'):</strong>
-                                    @if($employee->extra_hours == 1)
-                                    @lang('rrhh.yes')
-                                    @else
-                                    @lang('rrhh.no')
+                                    @if( !empty($employee->extra_hours))
+                                        @if($employee->extra_hours == 1)
+                                        @lang('rrhh.yes')
+                                        @else
+                                        @lang('rrhh.no')
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.foreign_tax'):</strong>
-                                    @if($employee->foreign_tax == 1)
-                                    @lang('rrhh.yes')
-                                    @else
-                                    @lang('rrhh.no')
+                                    @if( !empty($employee->foreign_tax))
+                                        @if($employee->foreign_tax == 1)
+                                        @lang('rrhh.yes')
+                                        @else
+                                        @lang('rrhh.no')
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.state'):</strong>
-                                    @if( isset($employee->state->name))
-                                    {{ $employee->state->name }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->state_id))
+                                        @if( isset($employee->state->name))
+                                        {{ $employee->state->name }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.city'):</strong>
-                                    @if( isset($employee->city->name))
-                                    {{ $employee->city->name }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->city_id))
+                                        @if( isset($employee->city->name))
+                                        {{ $employee->city->name }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td colspan="2">
                                     <strong>@lang('rrhh.address'):</strong>
-                                    {{ $employee->address }}
+                                    @if( !empty($employee->address))
+                                        {{ $employee->address }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.profession_occupation'):</strong>
-                                    @if( isset($employee->profession->value))
-                                    {{ $employee->profession->value }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->profession_id))
+                                        @if( isset($employee->profession->value))
+                                        {{ $employee->profession->value }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.date_admission'):</strong>
-                                    {{ @format_date($employee->date_admission) }}
+                                    @if( !empty($employee->date_admission))
+                                        {{ @format_date($employee->date_admission) }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.salary'):</strong>
@@ -159,53 +227,90 @@
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.department'):</strong>
-                                    @if( isset($employee->department->value))
-                                    {{ $employee->department->value }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->department_id))
+                                        @if( isset($employee->department->value))
+                                        {{ $employee->department->value }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.position'):</strong>
-                                    @if( isset($employee->position->value))
-                                    {{ $employee->position->value }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->position1_id))
+                                        @if( isset($employee->position->value))
+                                        {{ $employee->position->value }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.afp'):</strong>
-                                    @if( isset($employee->afp->value))
-                                    {{ $employee->afp->value }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->afp_id))
+                                        @if( isset($employee->afp->value))
+                                        {{ $employee->afp->value }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <strong>@lang('rrhh.type'):</strong>
-                                    @if( isset($employee->type->value))
-                                    {{ $employee->type->value }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->type_id))
+                                        @if( isset($employee->type->value))
+                                        {{ $employee->type->value }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.bank'):</strong>
-                                    @if( isset($employee->bank->name))
-                                    {{ $employee->bank->name }}
-                                    @else
-                                    N/A
+                                    @if( !empty($employee->bank_id))
+                                        @if( isset($employee->bank->name))
+                                        {{ $employee->bank->name }}
+                                        @else
+                                        N/A
+                                        @endif
+                                    @else 
+                                        N/A
                                     @endif
+                                    
                                 </td>
                                 <td>
                                     <strong>@lang('rrhh.bank_account'):</strong>
-                                    {{ $employee->bank_account }}
+                                    @if( !empty($employee->bank_account))
+                                        {{ $employee->bank_account }}
+                                    @else 
+                                        N/A
+                                    @endif
                                 </td>
                             </tr>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="boxform_u box-solid_u">
+        <div class="box-header">
+            <h3 class="box-title">@lang( 'rrhh.documents' )</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    @include('rrhh.documents.documents')
                 </div>
             </div>
         </div>

@@ -24,19 +24,22 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Casado/a',
             'status' => 1,
-            'human_resources_header_id' => 1
+            'human_resources_header_id' => 1,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Soltero/a',
             'status' => 1,
-            'human_resources_header_id' => 1
+            'human_resources_header_id' => 1,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Viudo/a',
             'status' => 1,
-            'human_resources_header_id' => 1
+            'human_resources_header_id' => 1,
+            'business_id' => 3
         ]);
 
         //-------------------------------------------------------------
@@ -48,25 +51,29 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Finanzas',
             'status' => 1,
-            'human_resources_header_id' => 2
+            'human_resources_header_id' => 2,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Informatica',
             'status' => 1,
-            'human_resources_header_id' => 2
+            'human_resources_header_id' => 2,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Contabilidad',
             'status' => 1,
-            'human_resources_header_id' => 2
+            'human_resources_header_id' => 2,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Marketing',
             'status' => 1,
-            'human_resources_header_id' => 2
+            'human_resources_header_id' => 2,
+            'business_id' => 3
         ]);
 
         //-------------------------------------------------------------
@@ -78,25 +85,29 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Auxiliar contable',
             'status' => 1,
-            'human_resources_header_id' => 3
+            'human_resources_header_id' => 3,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Contador',
             'status' => 1,
-            'human_resources_header_id' => 3
+            'human_resources_header_id' => 3,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Programador',
             'status' => 1,
-            'human_resources_header_id' => 3
+            'human_resources_header_id' => 3,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Secretaria',
             'status' => 1,
-            'human_resources_header_id' => 3
+            'human_resources_header_id' => 3,
+            'business_id' => 3
         ]);
         
         //-------------------------------------------------------------
@@ -108,13 +119,15 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Crecer',
             'status' => 1,
-            'human_resources_header_id' => 4
+            'human_resources_header_id' => 4,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Confia',
             'status' => 1,
-            'human_resources_header_id' => 4
+            'human_resources_header_id' => 4,
+            'business_id' => 3
         ]);
         
         //-------------------------------------------------------------
@@ -126,7 +139,8 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Permanente',
             'status' => 1,
-            'human_resources_header_id' => 5
+            'human_resources_header_id' => 5,
+            'business_id' => 3
         ]);
 
         //-------------------------------------------------------------
@@ -138,37 +152,43 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Salvadoreño',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Hondureño',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Costarricense',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Guatemalteco',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Panameño',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Cubano',
             'status' => 1,
-            'human_resources_header_id' => 6
+            'human_resources_header_id' => 6,
+            'business_id' => 3
         ]);
 
         //-------------------------------------------------------------
@@ -180,13 +200,15 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Licenciado',
             'status' => 1,
-            'human_resources_header_id' => 7
+            'human_resources_header_id' => 7,
+            'business_id' => 3
         ]);
 
         HumanResourcesData::firstOrCreate([
             'value' => 'Ingeniero',
             'status' => 1,
-            'human_resources_header_id' => 7
+            'human_resources_header_id' => 7,
+            'business_id' => 3
         ]);
 
         //-------------------------------------------------------------
@@ -198,7 +220,8 @@ class HumanResourceCatalogueHeaderSeeder extends Seeder {
         HumanResourcesData::firstOrCreate([
             'value' => 'Transferencia bancaria',
             'status' => 1,
-            'human_resources_header_id' => 8
+            'human_resources_header_id' => 8,
+            'business_id' => 3
         ]);
         
         //-------------------------------------------------------------

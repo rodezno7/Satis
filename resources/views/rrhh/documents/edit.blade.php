@@ -1,14 +1,12 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="formModal">@lang('rrhh.edit') @lang('rrhh.document')</h3>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+	<h4 class="modal-title" id="formModal">@lang('rrhh.edit') @lang('rrhh.document')
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</h4>
 </div>
 <div class="modal-body">
 	<form id="form_edit" method="post">
-
-
-		
 		<div class="form-group">
 			<label>@lang('rrhh.document_type')</label>
 
@@ -50,6 +48,7 @@
 
 <div class="modal-footer">
 	<button type="button" class="btn btn-primary" id="btn_edit_document">@lang('rrhh.update')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal">@lang( 'messages.cancel' )</button>
 </div>
 <script>
 

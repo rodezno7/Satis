@@ -71,17 +71,19 @@
             {data: 'email', name: 'email', className: "text-center"},
             {data: 'dni', name: 'dni', className: "text-center"},
             {data: null, render: function(data) {
-
-                html = "";
+                html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
+                html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
                 @can('rrhh_overall_payroll.update')
-                html += '<a href="/rrhh-employees/'+data.id+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
 
                 @can('rrhh_overall_payroll.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                 @endcan
                 
+                html += '</ul></div>';
+
                 return html;
             } , orderable: false, searchable: false, className: "text-center"}
             ],

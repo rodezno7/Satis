@@ -6,7 +6,6 @@ use App\User;
 use App\System;
 use App\Employees;
 use App\Positions;
-use App\BusinessLocation;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -79,27 +78,26 @@ class EmployeesController extends Controller
         if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
             abort(403, 'Unauthorized action.');
         }
+        $business_id = request()->session()->get('user.business_id');
 
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
 
         $countries = DB::table('countries')->pluck('name', 'id');
-        $business_id = request()->session()->get('user.business_id');
-        $roles = DB::table('roles')
-        ->select(DB::raw("left(roles.name,LOCATE('#', roles.name) - 1) as rol, id"))
-        ->where('business_id', $business_id)
-        ->orderBy('roles.name', 'asc')
-        ->pluck('rol', 'id');
         
-        $locations = BusinessLocation::select("name", "id")
-            ->pluck("name", "id");
+        $roles = DB::table('roles')
+            ->select(DB::raw("left(roles.name,LOCATE('#', roles.name) - 1) as rol, id"))
+            ->where('business_id', $business_id)
+            ->orderBy('roles.name', 'asc')
+            ->pluck('rol', 'id');
+
         return view('rrhh.employees.create', compact(
             'nationalities',
             'civil_statuses',
@@ -110,8 +108,7 @@ class EmployeesController extends Controller
             'afps',
             'types',
             'banks',
-            'roles',
-            'locations'
+            'roles'
         ));
     }
 
@@ -123,7 +120,6 @@ class EmployeesController extends Controller
      */
     public function store(Request $request) 
     {
-        
         if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -141,63 +137,60 @@ class EmployeesController extends Controller
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
             'department_id'         => 'nullable',
-            'position_id'           => 'nullable', 
+            'position1_id'          => 'nullable', 
         ]);
 
         try {
             $hasUser_mode = $request->input('chk_has_user');
             $commss_opt = $request->input('commission');
 
-            // if($hasUser_mode == 'has_user'){
-            //     $password_mode = $request->input('rdb_pass_mode');
+            if($hasUser_mode == 'has_user'){
+                $password_mode = $request->input('rdb_pass_mode');
 
-            //     $pass = $request->input('password');
-            //     $password_mode = $request->input('rdb_pass_mode');
-            //     //$user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'location_id', 'password']);
-            //     $user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'password']);
-            //     $user_details['business_id'] = $request->session()->get('user.business_id');
-            //     $user_details['status']      = 'pending';
-            //     $user_details['language']    = 'es';
+                $pass = $request->input('password');
+                $password_mode = $request->input('rdb_pass_mode');
+                //$user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'location_id', 'password']);
+                $user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'password']);
+                $user_details['business_id'] = $request->session()->get('user.business_id');
+                $user_details['status']      = 'pending';
+                $user_details['language']    = 'es';
 
-            //     if($password_mode == 'generated'){
-            //         $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-            //         $password = "";
-            //         for($i = 0; $i < 9; $i ++){
-            //             $password .= substr($str, rand(0,61), 1);
-            //         }
-            //         $user_details['password'] = bcrypt($password);
-            //     }else{
-            //         $password = $request->input('password');
-            //         $user_details['password'] = bcrypt($user_details['password']);
-            //     }
+                if($password_mode == 'generated'){
+                    $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+                    $password = "";
+                    for($i = 0; $i < 9; $i ++){
+                        $password .= substr($str, rand(0,61), 1);
+                    }
+                    $user_details['password'] = bcrypt($password);
+                }else{
+                    $password = $request->input('password');
+                    $user_details['password'] = bcrypt($user_details['password']);
+                }
 
-            //     $ref_count = $this->moduleUtil->setAndGetReferenceCount('username');
-            //     if(blank($user_details['username'])){
-            //         $user_details['username'] = $this->moduleUtil->generateReferenceNumber('username', $ref_count);
-            //     }
+                $ref_count = $this->moduleUtil->setAndGetReferenceCount('username');
+                if(blank($user_details['username'])){
+                    $user_details['username'] = $this->moduleUtil->generateReferenceNumber('username', $ref_count);
+                }
 
-            //     $username_ext = $this->getUsernameExtension();
-            //     if(!empty($username_ext)){
-            //         $user_details['username'] .= $username_ext;
-            //     }
+                $username_ext = $this->getUsernameExtension();
+                if(!empty($username_ext)){
+                    $user_details['username'] .= $username_ext;
+                }
 
-            //     if($commss_opt == 'has_commission'){
-            //         $user_details['is_cmmsn_agnt'] = 1;
-            //         $user_details['cmmsn_percent'] = $request->input('commision_amount');
-            //     }else{
-            //         $user_details['is_cmmsn_agnt'] = 0;
-            //     }
+                if($commss_opt == 'has_commission'){
+                    $user_details['is_cmmsn_agnt'] = 1;
+                    $user_details['cmmsn_percent'] = $request->input('commision_amount');
+                }else{
+                    $user_details['is_cmmsn_agnt'] = 0;
+                }
 
-            //     $user_details = User::create($user_details);
-            //     $user_id = $user_details->id;
-            //     $role_id = $request->input('role');
-            //     $role = Role::findOrFail($role_id);
-            //     $user_details->assignRole($role->name);
-            //     //$user_details->notify(new NewNotification($password));
-            // }
-
-            //$input_details = $request->all();
-            
+                $user_details = User::create($user_details);
+                $user_id = $user_details->id;
+                $role_id = $request->input('role');
+                $role = Role::findOrFail($role_id);
+                $user_details->assignRole($role->name);
+                //$user_details->notify(new NewNotification($password));
+            }
 
             $input_details = $request->only([
                 'first_name', 
@@ -206,7 +199,7 @@ class EmployeesController extends Controller
                 'email',
                 'last_name',
                 'gender',
-                'nacionality_id',
+                'nationality_id',
                 'dni',
                 'tax_number',
                 'civil_status_id',
@@ -218,18 +211,17 @@ class EmployeesController extends Controller
                 'afp_id',
                 'afp_number',
                 'department_id',
-                'position_id',
+                'position1_id',
                 'salary'
             ]);
+            $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
             
-            $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $mdate = Carbon::parse($input_details['date_admission'])->format('n');
             $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
             $last_correlative = DB::table('employees')
-            ->select(DB::raw('MAX(id) as max'))
-            ->first();
-
+                ->select(DB::raw('MAX(id) as max'))
+                ->first();
             if ($last_correlative->max != null) {
                 $correlative = $last_correlative->max + 1;
 
@@ -292,15 +284,20 @@ class EmployeesController extends Controller
         ->first();
 
         if ($employee->photo == '') {
-            
             $route = 'uploads/img/defualt.png';
         } else {
-
             $route = 'uploads/img/'.$employee->photo;
-
         }
 
-        return view('rrhh.employees.show', compact('employee', 'route'));
+        $documents = DB::table('human_resource_documents as document')
+        ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
+        ->join('states as state', 'state.id', '=', 'document.state_id')
+        ->join('cities as city', 'city.id', '=', 'document.city_id')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file')
+        ->where('document.employee_id', $id)
+        ->get();
+        
+        return view('rrhh.employees.show', compact('employee', 'route', 'documents'));
     }
 
     /**
@@ -316,17 +313,17 @@ class EmployeesController extends Controller
         }
 
         $employee = Employees::findOrFail($id);
+        $business_id = request()->session()->get('user.business_id');
+        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-
-        $payments = DB::table('human_resources_datas')->where('human_resources_header_id', 8)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $payments = DB::table('human_resources_datas')->where('human_resources_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');
@@ -373,7 +370,7 @@ class EmployeesController extends Controller
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
             'department_id'         => 'nullable',
-            'position_id'           => 'nullable', 
+            'position1_id'          => 'nullable', 
             'salary'                => 'nullable|numeric',
             'afp_number'            => 'nullable|integer',
             'social_security_number'=> 'nullable|integer',
@@ -386,16 +383,11 @@ class EmployeesController extends Controller
             } else {
                 $input_details['status'] = 0;
             }
-
-            $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
-            $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
+            
             $input_details['photo'] = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
-            
-            // $file_name = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'));
-            // if (!empty($file_name)) {
-            //     $input_details['photo'] = $file_name;
-            // }
-            
+            $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
+            $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));     
+
             $employee = Employees::findOrFail($id);
             $employee->update($input_details);
 
@@ -483,48 +475,48 @@ class EmployeesController extends Controller
         }
     }
 
-    public function uploadPhoto(Request $request) {
+    // public function uploadPhoto(Request $request) {
 
-        if (!auth()->user()->can('rrhh_overall_payroll.create')) {
-            abort(403, 'Unauthorized action.');
-        }
+    //     if (!auth()->user()->can('rrhh_overall_payroll.create')) {
+    //         abort(403, 'Unauthorized action.');
+    //     }
 
-        if (request()->ajax()) {
+    //     if (request()->ajax()) {
 
-            try {
+    //         try {
 
-                DB::beginTransaction();
+    //             DB::beginTransaction();
 
-                if ($request->hasFile('img')) {
-                    $file = $request->file('img');
-                    $name = time().$file->getClientOriginalName();
-                    Storage::disk('uploads/img')->put($name,  \File::get($file));
-                    $input_details['photo'] = $name;
-                }
+    //             if ($request->hasFile('img')) {
+    //                 $file = $request->file('img');
+    //                 $name = time().$file->getClientOriginalName();
+    //                 Storage::disk('uploads/img')->put($name,  \File::get($file));
+    //                 $input_details['photo'] = $name;
+    //             }
 
-                $employee = Employees::findOrFail($request->input('employee_id'));
-                $employee->update($input_details);
+    //             $employee = Employees::findOrFail($request->input('employee_id'));
+    //             $employee->update($input_details);
 
-                DB::commit();
+    //             DB::commit();
                 
-                $output = [
-                    'success' => true,
-                    'msg' => __('rrhh.upload_successfully')
-                ];
+    //             $output = [
+    //                 'success' => true,
+    //                 'msg' => __('rrhh.upload_successfully')
+    //             ];
 
 
-            } catch (\Exception $e) {
-                DB::rollBack();
-                \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-                $output = [
-                    'success' => false,
-                    'msg' => __('rrhh.error')
-                ];
-            }
+    //         } catch (\Exception $e) {
+    //             DB::rollBack();
+    //             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+    //             $output = [
+    //                 'success' => false,
+    //                 'msg' => __('rrhh.error')
+    //             ];
+    //         }
 
-            return $output;
-        }
-    }
+    //         return $output;
+    //     }
+    // }
 
     public function getPhoto($id) {
 

@@ -1,27 +1,12 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="formModal">@lang('rrhh.add') {{ $type_item }}</h3>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+	<h4 class="modal-title" id="formModal">@lang('rrhh.add') {{ $type_item }}
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</h4>
 </div>
 <div class="modal-body">
 	<form id="form_add" method="post">
-
-
-		@if($header_id > 1 && $header_id < 6)		
-		<div class="form-group">
-			<label>@lang('rrhh.code')</label>
-			<input type="text" name='code' id='code' value='{{ $code }}' class="form-control" placeholder="@lang('rrhh.code')" readonly>
-		</div>
-		@endif
-
-		@if($header_id == 4)	
-		<div class="form-group">
-			<label>@lang('rrhh.short_name')</label>
-			<input type="text" name='short_name' id='short_name' class="form-control" placeholder="@lang('rrhh.short_name')">
-		</div>
-		@endif
-
 		<div class="form-group">
 			<label>@lang('rrhh.name')</label>
 			<input type="text" name='value' id='value' class="form-control" placeholder="@lang('rrhh.name')">
@@ -29,23 +14,11 @@
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 			<input type="hidden" name="human_resources_header_id" value="{{ $header_id }}" id="human_resources_header_id">
 		</div>
-
-		<div class="form-group">
-			<label>@lang('rrhh.status')</label>
-			<select name='status' id='status' class="form-control select2" style="width: 100%;">
-				<option value="1" selected>@lang('rrhh.active')</option>
-				<option value="0">@lang('rrhh.inactive')</option>
-			</select>
-		</div>
-
-		
-
-		
-
 	</form>	
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-primary" id="btn_add_item">@lang('rrhh.add')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal">@lang( 'messages.cancel' )</button>
 </div>
 
 <script>

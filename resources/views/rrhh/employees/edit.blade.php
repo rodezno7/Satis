@@ -10,7 +10,7 @@
 <!-- Main content -->
 <section class="content">
   <div class="boxform_u box-solid_u">
-    {!! Form::model($employee, ['url' => action('EmployeesController@update', $employee->id), 'method' => 'patch', 'id' => 'form_edit']) !!}
+    {!! Form::model($employee, ['url' => action('EmployeesController@update', $employee->id), 'method' => 'patch', 'id' => 'form_edit', 'files' => true]) !!}
     <div class="box-body">
       <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-lg-12">
@@ -26,7 +26,6 @@
 
             <div class="panel-body collapse in" id="general-information-fields-box" aria-expanded="true">
               <div class="row">
-
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.name')</label> <span class="text-danger">*</span>
@@ -57,7 +56,7 @@
                   <div class="form-group">
                     <label>@lang('rrhh.nationality')</label> <span class="text-danger">*</span>
                     {!! Form::select("nationality_id", $nationalities, $employee->nacionality_id,
-                    ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.nationality'), 'style'
+                    ['id' => 'nationality_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.nationality'), 'style'
                     => 'width: 100%;', 'required']) !!}
                   </div>
                 </div>
@@ -79,20 +78,20 @@
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
-                    <label>@lang('rrhh.tax_number')</label><span class="text-danger">*</span>
+                    <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
                     {!! Form::text("tax_number", null,
                     ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required']) !!}
                   </div>
                 </div>
+
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.marital_status')</label> <span class="text-danger">*</span>
                     {!! Form::select("civil_status_id", $civil_statuses, $employee->civil_status_id,
-                    ['class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.marital_status'),
+                    ['id' => 'civil_status_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.marital_status'),
                     'style' => 'width: 100%;', 'required']) !!}
                   </div>
                 </div>
-
                 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
@@ -110,7 +109,7 @@
                   </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
                     @show_tooltip(__('rrhh.tooltip_email'))
@@ -119,7 +118,7 @@
                   </div>
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
                     {!! Form::text("address", null,
@@ -174,8 +173,8 @@
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <label>@lang('rrhh.position')</label>
-                    {!! Form::select("position_id", $positions, $employee->position_id,
-                    ['id' => 'position_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+                    {!! Form::select("position1_id", $positions, $employee->position1_id,
+                    ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
                     __('rrhh.position'), 'style' => 'width: 100%;']) !!}
                   </div>
                 </div>
@@ -224,7 +223,6 @@
                     __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
                   </div>
                 </div>
-
                 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
@@ -245,7 +243,6 @@
                 </div>
 
                 <div id='bank_information'>
-
                   <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                       <label>@lang('rrhh.bank')</label>
@@ -264,7 +261,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     <br>
                     <div class="checkbox" style="margin-top: 0;">
@@ -273,47 +270,24 @@
                         <strong>@lang('rrhh.status')</strong>
                       </label>
                     </div>
+                    <br>
                   </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12">
                   <div class="form-group">
                     {!! Form::label('photo', __('rrhh.photo') . ':') !!}
                     {!! Form::file('photo', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
                     <small class="help-block">@lang('purchase.max_file_size', ['size' =>
-                      (config('constants.document_size_limit') / 1000000)]).@if(!empty($employee->photo)) <br>
-                        @lang('lang_v1.previous_image_will_be_replaced') @endif</small>
+                      (config('constants.document_size_limit') / 1000000)]).
+                      @if(!empty($employee->photo)) <br> @lang('lang_v1.previous_image_will_be_replaced') @endif
+                    </small>
                   </div>
                 </div>
                 @if (!empty($employee->photo))
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
-                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
+                  </div>
                 @endif
               </div>
-
-              {{-- <div class="row">
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                  <div class="form-group">
-                    <label>@lang('rrhh.img')</label>
-                    @show_tooltip(__('rrhh.tooltip_img'))
-                    <input type="file" id="img" name="img" class="form-control form-control-sm">
-                    <progress id='progress' value='0' max='100' style="width: 100%; display: none;"></progress>
-                  </div>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id='div_photo'>
-                </div>
-              </div> --}}
-              {{-- <div class="row">
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                  <div class="form-group">
-                    <div class="checkbox" style="margin-top: 0;">
-                      <label>
-                        {!! Form::checkbox('status', 1, $employee->status, ['id' => 'status']) !!}
-                        <strong>@lang('rrhh.status')</strong>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div> --}}
             </div>
           </div>
 
@@ -328,7 +302,7 @@
               </div>
             </div>
 
-            <div class="panel-body collapse" id="documents-information-fields-box" aria-expanded="false">
+            <div class="panel-body collapse in" id="documents-information-fields-box" aria-expanded="true">
               <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <div class="form-group">
@@ -385,11 +359,19 @@
     let dui = document.getElementById("dni");
     $(dui).mask("00000000-0");
 
-    // let nit = document.getElementById('tax_number');
-    // $(nit).mask('0000-000000-000-0');
+    var fechaMaxima = new Date();
+    fechaMaxima.setFullYear(fechaMaxima.getFullYear() - 18);
+    fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    var fechaMinima = new Date();
+    fechaMinima.setFullYear(fechaMinima.getFullYear() - 99);
+    fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
     $('#birth_date').datepicker({
       autoclose: true,
-      format: datepicker_date_format
+      format: datepicker_date_format,
+      startDate: fechaMinima,
+      endDate: fechaMaxima,
     });
 
     $('#date_admission').datepicker({
@@ -435,7 +417,7 @@
 
   function getPhoto() {
     id = {{ $employee->id }}
-    var url = '{!!URL::to('/rrhh-employees-getPhoto/:id')!!}';
+    var url = "{!!URL::to('/rrhh-employees-getPhoto/:id')!!}";
     url = url.replace(':id', id);
     $.get(url, function(data){
       $("#div_photo").html(data);
@@ -486,7 +468,7 @@
   $("#btn_add_documents").click(function() 
   {
     $("#modal_content_document").html('');
-    var url = '{!!URL::to('/rrhh-documents-createDocument/:id')!!}';
+    var url = "{!!URL::to('/rrhh-documents-createDocument/:id')!!}";
     id = {{ $employee->id }}
     url = url.replace(':id', id);
     $.get(url, function(data) {

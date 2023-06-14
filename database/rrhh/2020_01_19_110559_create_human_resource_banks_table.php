@@ -14,6 +14,7 @@ class CreateHumanResourceBanksTable extends Migration
     public function up()
     {
         Schema::create('human_resource_banks', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->string('checkformat')->nullable();

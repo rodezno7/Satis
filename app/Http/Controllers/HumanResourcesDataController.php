@@ -37,7 +37,6 @@ class HumanResourcesDataController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-
         if ( !auth()->user()->can('rrhh_catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -49,20 +48,38 @@ class HumanResourcesDataController extends Controller
                 ->where(function ($query) {
                     return $query->where('human_resources_header_id', request('human_resources_header_id'));
                 })
+                ->where(function ($query) {
+                    return $query->where('business_id', request()->session()->get('user.business_id'));
+                })
             ],           
         ]);
 
         try {
+            $code = '';
+            if($request->input('human_resources_header_id') > 1 && $request->input('human_resources_header_id') < 6) {
+                
+                if($request->input('human_resources_header_id') > 1 && $request->input('human_resources_header_id') < 6) {
+                    $last_correlative = DB::table('human_resources_datas')
+                    ->where('human_resources_header_id', $request->input('human_resources_header_id'))
+                    ->count();
+                    if ($last_correlative > 0) {
+                        $correlative = $last_correlative + 1;
+                    } else {
+                        $correlative = 1;
+                    }
+                    $correlative = str_pad($correlative, 5, "0", STR_PAD_LEFT);            
+                    $code = $this->getCorrelative($request->input('human_resources_header_id'), $correlative);
+                }
 
-            $input_details = $request->all();
-
-            if($input_details['human_resources_header_id'] > 1 && $input_details['human_resources_header_id'] < 6) {
-
-                $input_details['code'] = $this->getCorrelative($input_details['human_resources_header_id'], $input_details['code']);
+                $code = $this->getCorrelative($request->input('human_resources_header_id'), $code);
             }
-
-            $human_resource_item = HumanResourcesData::create($input_details);
-
+            $human_resource_item = new HumanResourcesData();
+            $human_resource_item->business_id = $request->session()->get('user.business_id');
+            $human_resource_item->human_resources_header_id = $request->input('human_resources_header_id');
+            $human_resource_item->status = 1;
+            $human_resource_item->code = $code;
+            $human_resource_item->value = $request->input('value');
+            $human_resource_item->save();
 
             $output = [
                 'success' => 1,
@@ -74,7 +91,7 @@ class HumanResourcesDataController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
         return $output;
@@ -123,10 +140,8 @@ class HumanResourcesDataController extends Controller
 
             $input_details = $request->all();
             $item = HumanResourcesData::findOrFail($id);
-
             
             $item->update($input_details);
-
 
             $output = [
                 'success' => 1,
@@ -142,7 +157,6 @@ class HumanResourcesDataController extends Controller
             ];
         }
         return $output;
-        
     }
 
     /**
@@ -152,8 +166,6 @@ class HumanResourcesDataController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-
-
         if (!auth()->user()->can('rrhh_catalogues.delete')) {
             abort(403, 'Unauthorized action.');
         }
@@ -161,7 +173,6 @@ class HumanResourcesDataController extends Controller
         if (request()->ajax()) {
 
             try {
-
                 $count = DB::table('human_resource_employees')
                 ->where('afp_id', $id)
                 ->orWhere('civil_status_id', $id)
@@ -173,24 +184,18 @@ class HumanResourcesDataController extends Controller
                 ->count();
 
                 if ($count > 0) {
-
                     $output = [
                         'success' => false,
                         'msg' => __('rrhh.item_has_childs')
                     ];
-
                 } else {
-
                     $item = HumanResourcesData::findOrFail($id);
                     $item->forceDelete();
                     $output = [
                         'success' => true,
                         'msg' => __('rrhh.deleted_successfully')
                     ];
-
-
                 }                
-
             }
             catch (\Exception $e){
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
@@ -205,14 +210,15 @@ class HumanResourcesDataController extends Controller
     }
 
     public function getCatalogueData($id) {
-
         if ( !auth()->user()->can('rrhh_catalogues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
+        $business_id = request()->session()->get('user.business_id');
         $data = DB::table('human_resources_datas')
         ->select('human_resources_datas.*')
-        ->where('human_resources_header_id', $id);
+        ->where('human_resources_header_id', $id)
+        ->where('business_id', $business_id);
 
 
         return DataTables::of($data)
@@ -237,26 +243,6 @@ class HumanResourcesDataController extends Controller
         if ( !auth()->user()->can('rrhh_catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
-
-        $code = '';
-
-        if($id > 1 && $id < 6) {
-
-            $last_correlative = DB::table('human_resources_datas')
-            ->where('human_resources_header_id', $id)
-            ->count();
-
-            if ($last_correlative > 0) {
-                $correlative = $last_correlative + 1;
-            } else {
-                $correlative = 1;
-            }
-
-            $correlative = str_pad($correlative, 5, "0", STR_PAD_LEFT);            
-            $code = $this->getCorrelative($id, $correlative);
-
-        }
-
         
         $type_item = '';
         $header_id = $id;
@@ -299,7 +285,7 @@ class HumanResourcesDataController extends Controller
             break;
         }
 
-        return view('rrhh.catalogues.create', compact('type_item', 'header_id', 'code'));
+        return view('rrhh.catalogues.create', compact('type_item', 'header_id'));
     }
 
     public function editItem($id) {

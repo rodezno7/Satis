@@ -613,23 +613,23 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('bank-checkbooks', 'BankCheckbookController');
 
     //RRHH Routes
-    Route::resource('rrhh-catalogues', 'HumanResourcesHeaderController');
-    Route::resource('rrhh-catalogues-data', 'HumanResourcesDataController');
-    Route::resource('rrhh-banks', 'HumanResourceBanksController');
-
     //Rutas Employees
     Route::resource('rrhh-employees', 'EmployeesController');
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
-    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
+    Route::get('/rrhh-employeesverified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
     Route::get('rrhh-documents-getByEmployee/{id}', 'HumanResourceDocumentsController@getByEmployee');
-    Route::get('rrhh-documents/createDocument/{id}', 'HumanResourceDocumentsController@createDocument');
-    Route::get('rrhh-documents/viewFile/{id}', 'HumanResourceDocumentsController@viewFile');
-    Route::post('rrhh-documents/updateDocument', 'HumanResourceDocumentsController@updateDocument');
+    Route::get('rrhh-documents-createDocument/{id}', 'HumanResourceDocumentsController@createDocument');
+    Route::get('rrhh-documents-viewFile/{id}', 'HumanResourceDocumentsController@viewFile');
+    Route::post('rrhh-documents-updateDocument', 'HumanResourceDocumentsController@updateDocument');
     Route::resource('rrhh-documents', 'HumanResourceDocumentsController');
 
-
+    //Rutas catalogos RRHH
+    Route::resource('rrhh-catalogues', 'HumanResourcesHeaderController');
+    Route::resource('rrhh-catalogues-data', 'HumanResourcesDataController');
+    Route::resource('rrhh-banks', 'HumanResourceBanksController');
+    
     Route::get('rrhh/getCataloguesData/{id}', 'HumanResourcesDataController@getCatalogueData');
     Route::get('rrhh/getBanksData', 'HumanResourceBanksController@getBanksData');
     Route::get('rrhh/create-item/{id}', 'HumanResourcesDataController@createItem');

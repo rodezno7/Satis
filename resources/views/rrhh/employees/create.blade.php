@@ -45,7 +45,7 @@
           <div class="form-group">
             <label>@lang('rrhh.nationality')</label> <span class="text-danger">*</span>
             {!! Form::select("nationality_id", $nationalities, null,
-            ['class' => 'form-control form-control-sm select2', 'style' => 'width: 100%;', 'required']) !!}
+            ['class' => 'form-control form-control-sm select2', 'id' => 'nationality_id', 'style' => 'width: 100%;', 'required']) !!}
           </div>
         </div>
 
@@ -66,9 +66,9 @@
 
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.tax_number')</label>
+            <label>@lang('rrhh.tax_number')</label></label> <span class="text-danger">*</span>
             {!! Form::text("tax_number", null,
-            ['class' => 'form-control form-control-sm', 'id' => 'tax_number'])!!}
+            ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])!!}
           </div>
         </div>
 
@@ -76,7 +76,7 @@
           <div class="form-group">
             <label>@lang('rrhh.marital_status')</label> <span class="text-danger">*</span>
             {!! Form::select("civil_status_id", $civil_statuses, null,
-            ['class' => 'form-control form-control-sm select2', 'style' =>
+            ['id' => 'civil_status_id', 'class' => 'form-control form-control-sm select2', 'style' =>
             'width: 100%;', 'required']) !!}
           </div>
         </div>
@@ -97,7 +97,7 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
             @show_tooltip(__('rrhh.tooltip_email'))
@@ -106,7 +106,8 @@
             !!}
           </div>
         </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+        <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
             {!! Form::text("address", null,
@@ -159,8 +160,8 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.position')</label>
-            {!! Form::select("position_id", $positions, null,
-            ['id' => 'position_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+            {!! Form::select("position1_id", $positions, null,
+            ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
             __('rrhh.position'), 'style' => 'width: 100%;']) !!}
           </div>
         </div>
@@ -262,7 +263,8 @@
         </div>
         <div class="row" id="commision_div" style="display: none">
           <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="form-group">
+            <div class="input-group input-group">
+              <span class="input-group-addon" id="sizing-addon1">%</span>
               {!! Form::number('commision_amount', null, 
               ['class' => 'form-control', 'id' => 'commision_amount', 'placeholder' => __('employees.commision_amount')]) !!}
             </div>
@@ -328,19 +330,20 @@
 
     var fechaMaxima = new Date();
     fechaMaxima.setFullYear(fechaMaxima.getFullYear() - 18);
-    console.log(fechaMaxima);
+    fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
     var fechaMinima = new Date();
     fechaMinima.setFullYear(fechaMinima.getFullYear() - 99);
-    console.log(fechaMinima);
+    fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
     $('#birth_date').datepicker({
       autoclose: true,
       format: datepicker_date_format,
-      minDate: fechaMinima,
-      maxDate: fechaMaxima,
+      startDate: fechaMinima,
+      endDate: fechaMaxima,
     });
 
-    $( "#birth_date" ).datepicker( "setDate", fechaMaxima );
+    $("#birth_date").datepicker("setDate", fechaMaxima);
 
     $('#date_admission').datepicker({
       autoclose: true,
