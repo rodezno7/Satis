@@ -423,6 +423,43 @@
             }
         });
     });
+
+    // Generate accounting entry by transaction
+    $(document).on('click', 'a.gen-account-entry', function (e) {
+        e.preventDefault();
+        swal({
+            title: LANG.sure,
+            text: '¿Desea generar la partida contable?',
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willGenerate) => {
+            if (willGenerate) {
+                $.ajax({
+                    method: "GET",
+                    url: $(this).attr('href'),
+                    dataType: "json",
+                    success: function(res) {
+                        if (res.success == true) {
+                            Swal.fire({
+                                title: LANG.success,
+                                text: res.msg,
+                                icon: "success"
+                            });
+                        } else {
+                            Swal.fire
+                            ({
+                                title: res.msg,
+                                text: res.msg,
+                                icon: "error"
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    });
+
 </script>
 
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>

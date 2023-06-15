@@ -1148,13 +1148,14 @@ class SellController extends Controller
             $status = $transaction->status;
             $transaction_date = $transaction->transaction_date;
             $business_id = request()->session()->get('user.business_id');
-            $business = Business::where('id', $business_id)->select('annull_sale_expiry', 'enable_sell_delete')->first();
+            $business = Business::where('id', $business_id)->select('annull_sale_expiry', 'enable_sell_delete', 'sale_accounting_entry_mode')->first();
             $enable_sell_delete = $business->enable_sell_delete;
 
             $doc_type = DocumentType::where('id', $transaction->document_types_id)
                 ->value('short_name');
 
             $parent_doc = null;
+            $sale_accounting_entry_mode = $business->sale_accounting_entry_mode;
             if (!empty($transaction->parent_correlative)) {
                 $parent_doc = Transaction::where('id', $transaction->return_parent_id)
                     ->where('location_id', $transaction->location_id)
@@ -1163,7 +1164,7 @@ class SellController extends Controller
             }
 
             return view('sale_pos.partials.toggle_dropdown')
-                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'doc_type', 'enable_sell_delete'))
+                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'doc_type', 'enable_sell_delete', 'sale_accounting_entry_mode'))
                 ->render();
             
         } catch (\Exception $e) {
