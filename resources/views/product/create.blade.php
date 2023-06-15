@@ -440,5 +440,5 @@
 {!! Form::close() !!}
 <!-- /.content -->
 <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-  @include('contact.create', ['quick_add' => true])
+  @include('contact.create', ['quick_add' => true, 'org_type' => ['natural'=>__('business.natural'), 'juridica'=>__('business.juridica')]])
 </div>

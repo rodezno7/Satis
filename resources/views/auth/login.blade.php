@@ -2,79 +2,82 @@
 @section('title', __('lang_v1.login'))
 
 @section('content')
-
-
-    <div class="wrapper fadeInDown">
-        <div id="formContent">
-            <img src="../img/default/satis.png" style="width:60%;margin-bottom: 15px; margin-top: 15px"
-                alt="SATIS ERP Logo" />
-        </div>
-        <div id="formContent">
-            <div style="background-color:rgba(19,20,21,0.80); align-items:baseline;padding:4px">
-                <!-- Formulario de Login -->
-                <form method="POST" action="{{ route('login') }}" autocomplete="off">
-                    {{ csrf_field() }}
-                    <br>
-                    <label for="username" style="color:#F7F7F9;font-size:18px">@lang('lang_v1.username')</label>
-                    <div data-validate="Username is required">
-                        @php
-                        $username = old('username');
-                        $password = null;
-                        @endphp
-                        <input id="username" type="text" class="fadeIn second center-block" autocomplete="off"
-                            style="border-radius: 30px 30px 30px 30px; color: #F7F7F9" name="username" value="{{ $username }}" required
-                            autofocus>
+<div class="bg-auth-side bg-primary"></div>
+<div class="auth-content">
+    <div class="card border-0">
+        <div class="row align-items-center text-start">
+            <div class="col-xl-6">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img src="../img/default/satis.png" alt="" class="img-fluid logo" />
                     </div>
-                    <div>
-                        @if ($errors->has('username'))
-                            <script>
-                                swal({
-                                    title: "¡Error!",
-                                    text: "{{ $errors->first('username') }}",
-                                    icon: "error"
-                                });
-
-                            </script>
-                        @endif
-                    </div>
-                    <label for="password" style="color:#F7F7F9; font-size:18px">@lang('lang_v1.password')</label>
-                    <div data-validate="Password is required">
-                        <input id="password" type="password" class="fadeIn second center-block" autocomplete="off"
-                            style="border-radius: 30px 30px 30px 30px; color: #F7F7F9" name="password" value="{{ $password }}" required>
-                    </div>
-                    <div class="wrap-login100">
-                        @if ($errors->has('password'))
-                            <script>
-                                swal({
-                                    title: "¡Error!",
-                                    text: "{{ $errors->first('password') }}",
-                                    icon: "error"
-                                });
-
-                            </script>
-                        @endif
-                    </div>
-                    <br>
-
-                    @if ($business->count() > 1)    
-                    <label for="business_id" style="color:#F7F7F9; font-size:18px">@lang('business.business')</label>
-                    <div data-validate="Business is required">
-                        {!! Form::select('business_id', $business, '', [
-                            'class' => 'fadeIn second center-block',
-                            'style' => 'border-radius: 30px 30px 30px 30px; color: #dce8f1;',
-                            'placeholder' => __('messages.please_select'),
-                            'required']) !!}
-                    </div>
-                    <br>
-                    @else
-                    {!! Form::hidden('business_id', $business->keys()->first()) !!}
-                    @endif
-
-                    <input type="submit" class="fadeIn fourth"  value="Acceder" style="border-radius: 30px 30px 30px 30px; margin-bottom: 0px; padding-top: 10px; padding-bottom: 10px; font-size: 16px;" />
-                    <a class="btn btn-link txt1" style="font-size: 18px; color: #F7F7F9" href="{{ route('password.request') }}">
-                        @lang('lang_v1.forgot_your_password')
-                    </a>
-                </form>
+                    <form method="POST" action="{{ route('login') }}" autocomplete="off">
+                        {{ csrf_field() }}
+                        <br>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="username">@lang('lang_v1.username')</label>
+                            <div data-validate="Username is required">
+                                @php
+                                $username = old('username');
+                                $password = null;
+                                @endphp
+                                <input id="username" type="text" class="form-control" autocomplete="off" name="username" value="{{ $username }}" required autofocus>
+                            </div>
+                            @if ($errors->has('username'))
+                                <div class="d-block invalid-feedback" role="alert">{{ $errors->first('username') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="password">@lang('lang_v1.password')</label>
+                            <div class="form-group" data-validate="Password is required">
+                                <input id="password" type="password" class="form-control" autocomplete="off" name="password" value="{{ $password }}" required>
+                            </div>
+                            <div class="wrap-login100">
+                                @if ($errors->has('password'))
+                                <div class="invalid-feedback" role="alert">{{ $errors->first('password') }}</div>
+                                @endif
+                            </div>
+                            @if ($business->count() > 1)    
+                            <label for="business_id">@lang('business.business')</label>
+                            <div data-validate="Business is required">
+                                {!! Form::select('business_id', $business, '', [
+                                    'class' => 'form-control',
+                                    'placeholder' => __('messages.please_select'),
+                                    'required']) !!}
+                            </div>
+                            @else
+                            {!! Form::hidden('business_id', $business->keys()->first()) !!}
+                            @endif
+                        </div>
+                        <div class="form-group mb-4">
+                            <a class="txt-xs" href="{{ route('password.request') }}">
+                                @lang('lang_v1.forgot_your_password')
+                            </a>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Acceder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-xl-6 img-card-side">
+                <div class="auth-img-content">
+                    <img src="../img/img-auth-3.svg" alt="" class="img-fluid" />
+                    <h3 class="text-white mb-4 mt-5">Attention is the new currency</h3>
+                    <p class="text-white">The more effortless the writing looks, the more effort the
+                        writer actually put into the process.</p>
+                </div>
             </div>
         </div>
     </div>
+    <div class="auth-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <p>&copy; Copyright Satis ERP {{ date('Y') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

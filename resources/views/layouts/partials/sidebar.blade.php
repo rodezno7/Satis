@@ -2017,12 +2017,13 @@
                 auth()->user()->can('document_type.view') ||
                 auth()->user()->can('document_type.create') ||
                 auth()->user()->can('correlatives.view') ||
-                auth()->user()->can('correlatives.create')
+                auth()->user()->can('correlatives.create') ||
+                auth()->user()->can('alert.view')
               )
 
 
                 <li
-                class="treeview @if( in_array($request->segment(1), ['business', 'tax-rates', 'cashiers', 'barcodes', 'invoice-schemes', 'business-location', 'business-accounting', 'geography', 'invoice-layouts', 'printers', 'subscription', 'documents', 'diagnostic']) || in_array($request->segment(2), ['tables', 'modifiers']) ) {{'active active-sub'}} @endif">
+                class="treeview @if( in_array($request->segment(1), ['business', 'tax-rates', 'cashiers', 'barcodes', 'invoice-schemes', 'business-location', 'business-accounting', 'geography', 'invoice-layouts', 'printers', 'subscription', 'documents', 'diagnostic', 'carrousel', 'correlatives']) || in_array($request->segment(2), ['tables', 'modifiers']) ) {{'active active-sub'}} @endif">
 
                 <a href="#" id="tour_step2_menu"><i class="fa fa-cog"></i> <span>@lang('business.settings')</span>
                   <span class="pull-right-container">
@@ -2084,9 +2085,21 @@
                       </ul>
                     </li>
                   @endif
-
-
-
+                  <li class="treeview @if( in_array($request->segment(1), ['carrousel']) ) {{'active active-sub'}} @endif">
+                    <a href="#" id="ss"><i class="fa fa-tachometer"></i> <span>Dashboard</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu" id="aas">
+                      @can('alert.view')
+                      <li class="{{ $request->segment(1) == 'carrousel' ? 'active' : '' }}">
+                        <a href="{{action('SliderController@index')}}"><i class="fa fa-image"></i>
+                          <span>@lang('carrousel.carrousel_config')</span></a>
+                      </li>
+                      @endcan
+                    </ul>
+                  </li>
                   <!-- diagnostic settings -->
                   @can('sales_settings.access')                                  
                   <li class="treeview @if (in_array($request->segment(1), ['diagnostic']) ) {{ 'active active-sub' }} @endif">
@@ -2103,20 +2116,12 @@
                   </li>
                   @endcan
                   <!-- /.diagnostic settings -->
-
                   @can('invoice_settings.access')
                   <li class="@if( in_array($request->segment(1), ['invoice-schemes', 'invoice-layouts']) ) {{'active'}} @endif">
                     <a href="{{action('InvoiceSchemeController@index')}}"><i class="fa fa-file"></i>
                       <span>@lang('invoice.invoice_settings')</span></a>
                     </li>
                     @endcan
-
-                    @can('barcode_settings.access')
-                    <li class="{{ $request->segment(1) == 'barcodes' ? 'active' : '' }}">
-                      <a href="{{action('BarcodeController@index')}}"><i class="fa fa-barcode"></i>
-                        <span>@lang('barcode.barcode_settings')</span></a>
-                      </li>
-                      @endcan
 
                       <li class="{{ $request->segment(1) == 'printers' ? 'active' : '' }}">
                         <a href="{{action('PrinterController@index')}}"><i class="fa fa-share-alt"></i>

@@ -63,4 +63,9 @@ return [
     'save_and_process' => 'Save and process',
     'update_and_process' => 'Update and process',
     'clone' => 'Clone', 
+    'show'=>'Show',
+    'yes' => 'Yes',
+    'hide' => 'Hide',
+    'view'=>'View',
+    "edit"=>'Edit'
 ];

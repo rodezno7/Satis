@@ -91,32 +91,34 @@
 		</div>
 	</div> -->
 
-	<div class="row">
+	<div class="row" style="@if ($images->isEmpty()) {{'display:none !important;'}} @endif">
 		<div class="col-md-12">
 		<div id="carousel1" class="carousel slide" data-ride="carousel">
   <!-- <!– Indicatodores –> -->
   <ol class="carousel-indicators">
-    <li data-target="#carousel1" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel1" data-slide-to="1"></li>
-    <li data-target="#carousel1" data-slide-to="2"></li>
+	@foreach ($images as $key => $image)
+		@if ($loop->first)
+			<li data-target="#carousel{{$key}}" data-slide-to="{{$key}}" class="active"></li>
+		@else
+			<li data-target="#carousel{{$key}}" data-slide-to="{{$key}}" class=""></li>
+		@endif
+	@endforeach
   </ol>
 
   <!-- <!– Contenedor de las imagenes –> -->
   <div class="carousel-inner" role="listbox">
-
-    <div class="item active">
-	<img src="{{asset('img/default/cover1.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
-
-    <div class="item">
-	<img src="{{asset('img/default/cover2.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
-
-    <div class="item">
-	<img src="{{asset('img/default/cover3.jpg')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
-    </div>
+	@foreach ($images as $image)
+		@if ($loop->first)
+		<div class="item active">
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
+		</div>
+		@else
+		<div class="item">
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
+		</div>
+		@endif
+	@endforeach
   </div>
-
   <!-- <!– Controls –> -->
   <a class="left carousel-control" href="#carousel1" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -324,7 +326,7 @@
 		<div class="col-md-3 col-sm-6 col-xs-12">
 		<div class="small-box bg-olive">
 					<div class="inner">
-						<h3 class="info-box-number gross_profit"></h3>
+						<h3 class="info-box-number web"></h3>
 						<p class="info-box-text" style="color: white">{{ __('home.gross_profit') }}</p><br>
 					</div>
 					<div class="icon">

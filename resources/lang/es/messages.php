@@ -15,6 +15,10 @@
     "delete" => "Borrar",
     "months" => "Mes/es", 
     "days" => "Día/s", 
+    'name'=> 'Nombre',
+    'show'=> 'Mostrar',
+    'hide' => 'Ocultar',
+    'view'=>'Ver',
     "close" => "Cerrar", /* modified */
     "something_went_wrong" => "Algo salió mal, por favor intente de nuevo más tarde",
     "required" => "Este campo es requerido",
@@ -55,4 +59,5 @@
     'save_and_process' => 'Guardar y procesar',
     'update_and_process' => 'Actualizar y procesar',
     'clone' => 'Clonar', 
+    "edit"=>'Editar'
 ];

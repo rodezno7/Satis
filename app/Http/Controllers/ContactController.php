@@ -329,7 +329,7 @@ class ContactController extends Controller
         /** Tax groups */
         $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'contacts');
         /** Business type */
-        $business_type = BusinessType::select('id', 'name')
+        $business_type = BusinessType::select('id', 'name')->whereIn('name', ['OTROS', 'Mediana Empresa', 'Gran Empresa'])
             ->pluck('name', 'id');
         /** Payment conditions */
         $payment_conditions = $this->payment_conditions;
@@ -350,9 +350,10 @@ class ContactController extends Controller
 
         $payment_terms = PaymentTerm::select('id', 'name')
             ->pluck('name', 'id');
+        $org_type = ['natural' => __('business.natural'), 'juridica' => __('business.juridica')];
 
         return view('contact.create')
-            ->with(compact('types', 'employees_sales', 'tax_groups', 'business_type', 'payment_conditions', 'supplier_account', 'countries', 'payment_terms', 'business_debt_to_pay_type'));
+            ->with(compact('types', 'employees_sales', 'tax_groups', 'business_type', 'payment_conditions', 'supplier_account', 'countries', 'payment_terms', 'business_debt_to_pay_type', 'org_type'));
     }
 
     /** Only for testing */
@@ -384,6 +385,7 @@ class ContactController extends Controller
 
         try {
             $business_id = $request->session()->get('user.business_id');
+            $type = request()->get('type');
 
             if (!$this->moduleUtil->isSubscribed($business_id)) {
                 return $this->moduleUtil->expiredResponse();
@@ -408,6 +410,7 @@ class ContactController extends Controller
                 'payment_term_id',
                 'mobile',
                 'landline',
+                'organization_type',
                 'alternate_number',
                 'city_id',
                 'state_id',
@@ -427,6 +430,9 @@ class ContactController extends Controller
             $input['type'] = 'supplier';
             $input['business_id'] = $business_id;
             $input['created_by'] = $request->session()->get('user.id');
+            $lastContactId = Contact::select('contact_id')->latest()->first();
+            $input['contact_id'] = str_pad(((int)$lastContactId->contact_id + 1), 4, '0', STR_PAD_LEFT);
+
             if ($request->is_exempt) {
                 $input['tax_group_id'] = null;
             } else {
@@ -434,7 +440,7 @@ class ContactController extends Controller
             }
 
             $credit_limit = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
-            $payment_condition = $input['payment_condition'];
+            $payment_condition = '';
 
             $input['payment_term_id'] = $payment_condition == 'credit' ? $request->input('payment_term_id') : null;
 
@@ -442,6 +448,7 @@ class ContactController extends Controller
 
             $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
             $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
+            $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
             $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
             $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
 
@@ -462,7 +469,6 @@ class ContactController extends Controller
                     $input['contact_id'] = $this->commonUtil->generateReferenceNumber('contacts', $ref_count);
                 }
 
-
                 $contact = Contact::create($input);
 
                 if ($request->only(['type']) == 'supplier') {
@@ -482,6 +488,7 @@ class ContactController extends Controller
                     'data' => $contact,
                     'msg' => __("contact.added_success")
                 ];
+                return redirect()->action('ContactController@index', ['type' => 'supplier'])->with('status', $output);
             } else {
                 throw new \Exception("Error Processing Request", 1);
             }
@@ -575,7 +582,7 @@ class ContactController extends Controller
             // Llenar Select de Vendedores
             $employees_sales = Employees::forDropdown($business_id);
             /** Business type */
-            $business_type = BusinessType::select('id', 'name')
+            $business_type = BusinessType::select('id', 'name')->whereIn('name', ['OTROS', 'Mediana Empresa', 'Gran Empresa'])
                 ->pluck('name', 'id');
             /** Payment conditions */
             $payment_conditions = $this->payment_conditions;
@@ -627,8 +634,10 @@ class ContactController extends Controller
                     ->value("code");
             }
             $business_debt_to_pay_type = $business->debt_to_pay_type;
+            $org_type = ['natural' => __('business.natural'), 'juridica' => __('business.juridica')];
             return view('contact.edit')
                 ->with(compact(
+                    'org_type',
                     'contact',
                     'types',
                     'opening_balance',
@@ -657,114 +666,119 @@ class ContactController extends Controller
     public function update(Request $request, $id)
     {
 
-        if (!auth()->user()->can('supplier.update') && !auth()->user()->can('customer.update')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        if (request()->ajax()) {
-            try {
-                $input = $request->only([
-                    'supplier_business_name',
-                    'name',
-                    'nit',
-                    'tax_number',
-                    'payment_term_id',
-                    'mobile',
-                    'landline',
-                    'employee_id',
-                    'alternate_number',
-                    'city_id',
-                    'state_id',
-                    'country_id',
-                    'landmark',
-                    'payment_condition',
-                    'contact_id',
-                    'business_type_id',
-                    'custom_field1',
-                    'custom_field2',
-                    'custom_field3',
-                    'custom_field4',
-                    'email',
-                    'business_activity',
-                    'dni'
-                ]);
-
-                $credit_limit = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
-                $payment_condition = $input['payment_condition'];
-
-                $input['payment_term_id'] = $payment_condition == 'credit' ? $request->input('payment_term_id') : null;
-
-                $input['credit_limit'] = $payment_condition == 'credit' ? $credit_limit : null;
-
-                $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
-                $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
-                $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
-                $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
-
-                if ($request->is_exempt) {
-                    $input['tax_group_id'] = null;
-                } else {
-                    $input['tax_group_id'] = $request->input('tax_group_id') != 0 ? $request->input('tax_group_id') : null;
-                }
-
-                $business_id = $request->session()->get('user.business_id');
-
-                if (!$this->moduleUtil->isSubscribed($business_id)) {
-                    return $this->moduleUtil->expiredResponse();
-                }
-
-                $count = 0;
-
-                //Check Contact id
-                if (!empty($input['contact_id'])) {
-                    $count = Contact::where('business_id', $business_id)
-                        ->where('contact_id', $input['contact_id'])
-                        ->where('id', '!=', $id)
-                        ->count();
-                }
-
-                if ($count == 0) {
-                    $contact = Contact::where('business_id', $business_id)->findOrFail($id);
-                    foreach ($input as $key => $value) {
-                        $contact->$key = $value;
-                    }
-                    $contact->save();
-
-                    //Get opening balance if exists
-                    $ob_transaction =  Transaction::where('contact_id', $id)
-                        ->where('type', 'opening_balance')
-                        ->first();
-
-                    if (!empty($ob_transaction)) {
-                        $amount = $this->commonUtil->num_uf($request->input('opening_balance'));
-                        $ob_transaction->final_total = $amount;
-                        $ob_transaction->save();
-                        //Update opening balance payment status
-                        $this->transactionUtil->updatePaymentStatus($ob_transaction->id, $ob_transaction->final_total);
-                    } else {
-                        //Add opening balance
-                        if (!empty($request->input('opening_balance'))) {
-                            $this->transactionUtil->createOpeningBalanceTransaction($business_id, $contact->id, $request->input('opening_balance'));
-                        }
-                    }
-
-                    $output = [
-                        'success' => true,
-                        'msg' => __("contact.updated_success")
-                    ];
-                } else {
-                    throw new \Exception("Error Processing Request", 1);
-                }
-            } catch (\Exception $e) {
-                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-
-                $output = [
-                    'success' => false,
-                    'msg' => __("messages.something_went_wrong")
-                ];
+        try {
+            if (!auth()->user()->can('supplier.update') && !auth()->user()->can('customer.update')) {
+                abort(403, 'Unauthorized action.');
             }
 
-            return $output;
+            if (request()->ajax()) {
+                try {
+                    $input = $request->only([
+                        'supplier_business_name',
+                        'name',
+                        'nit',
+                        'tax_number',
+                        'payment_term_id',
+                        'mobile',
+                        'landline',
+                        'employee_id',
+                        'alternate_number',
+                        'city_id',
+                        'state_id',
+                        'country_id',
+                        'landmark',
+                        'payment_condition',
+                        'organization_type',
+                        'contact_id',
+                        'business_type_id',
+                        'custom_field1',
+                        'custom_field2',
+                        'custom_field3',
+                        'custom_field4',
+                        'email',
+                        'business_activity',
+                        'dni'
+                    ]);
+
+                    $credit_limit = $request->input('credit_limit') != '' ? $this->commonUtil->num_uf($request->input('credit_limit')) : null;
+                    $payment_condition = '';
+
+                    $input['payment_term_id'] = $payment_condition == 'credit' ? $request->input('payment_term_id') : null;
+
+                    $input['credit_limit'] = $payment_condition == 'credit' ? $credit_limit : null;
+
+                    $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
+                    $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
+                    $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+                    $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
+                    $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
+                    
+                    if ($request->is_exempt) {
+                        $input['tax_group_id'] = null;
+                    } else {
+                        $input['tax_group_id'] = $request->input('tax_group_id') != 0 ? $request->input('tax_group_id') : null;
+                    }
+
+                    $business_id = $request->session()->get('user.business_id');
+
+                    if (!$this->moduleUtil->isSubscribed($business_id)) {
+                        return $this->moduleUtil->expiredResponse();
+                    }
+
+                    $count = 0;
+
+                    //Check Contact id
+                    if (!empty($input['contact_id'])) {
+                        $count = Contact::where('business_id', $business_id)
+                            ->where('contact_id', $input['contact_id'])
+                            ->where('id', '!=', $id)
+                            ->count();
+                    }
+                    if ($count == 0) {
+                        $contact = Contact::where('business_id', $business_id)->findOrFail($id);
+                        foreach ($input as $key => $value) {
+                            $contact->$key = $value;
+                        }
+                        $contact->save();
+
+                        //Get opening balance if exists
+                        $ob_transaction =  Transaction::where('contact_id', $id)
+                            ->where('type', 'opening_balance')
+                            ->first();
+
+                        if (!empty($ob_transaction)) {
+                            $amount = $this->commonUtil->num_uf($request->input('opening_balance'));
+                            $ob_transaction->final_total = $amount;
+                            $ob_transaction->save();
+                            //Update opening balance payment status
+                            $this->transactionUtil->updatePaymentStatus($ob_transaction->id, $ob_transaction->final_total);
+                        } else {
+                            //Add opening balance
+                            if (!empty($request->input('opening_balance'))) {
+                                $this->transactionUtil->createOpeningBalanceTransaction($business_id, $contact->id, $request->input('opening_balance'));
+                            }
+                        }
+
+                        $output = [
+                            'success' => true,
+                            'msg' => __("contact.updated_success")
+                        ];
+                    } else {
+                        throw new \Exception("Error Processing Request", 1);
+                    }
+                } catch (\Exception $e) {
+                    \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+                    $output = [
+                        'success' => false,
+                        'msg' => __("messages.something_went_wrong")
+                    ];
+                }
+
+                return $output;
+            }
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
         }
     }
 
@@ -867,13 +881,14 @@ class ContactController extends Controller
         }
     }
 
-        /**
+    /**
      * Retrieves list of customers, if filter is passed then filter it accordingly.
      *
      * @param  string  $q
      * @return JSON
      */
-    public function getSuppliers() {
+    public function getSuppliers()
+    {
         if (request()->ajax()) {
             $term = request()->input('q', '');
             $business_id = request()->session()->get('user.business_id');
@@ -883,10 +898,10 @@ class ContactController extends Controller
 
             if (!empty($term)) {
                 $contacts->where(function ($query) use ($term) {
-                    $query->where('contacts.name', 'like', '%' . $term .'%')
-                        ->orWhere('contacts.supplier_business_name', 'like', '%' . $term .'%')
-                        ->orWhere('contacts.contact_id', 'like', '%' . $term .'%')
-                        ->orWhere('contacts.tax_number', 'like', '%' . $term .'%');
+                    $query->where('contacts.name', 'like', '%' . $term . '%')
+                        ->orWhere('contacts.supplier_business_name', 'like', '%' . $term . '%')
+                        ->orWhere('contacts.contact_id', 'like', '%' . $term . '%')
+                        ->orWhere('contacts.tax_number', 'like', '%' . $term . '%');
                 });
             }
             $contacts = $contacts->select('contacts.id', 'contacts.supplier_business_name as text')->get();
@@ -1415,14 +1430,12 @@ class ContactController extends Controller
                         'success' => false,
                         'msg' => trans('customer.validate_dni_number_error')
                     ];
-
                 } else {
                     $output = [
                         'success' => true,
                         'msg' => trans('customer.validate_dni_success')
                     ];
                 }
-
             } else if (request()->dni) {
                 // Check if there are records in the database that are the same as the input
                 $dui = Contact::where('business_id', $business_id)
@@ -1434,7 +1447,6 @@ class ContactController extends Controller
                         'success' => false,
                         'msg' => trans('customer.validate_tax_number_error')
                     ];
-
                 } else {
                     $output = [
                         'success' => true,

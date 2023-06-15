@@ -1,17 +1,24 @@
 <?php 
 return [ 
     "register_and_get_started_in_minutes" => "Registrarse y comenzar en minutos",
-    "business_name" => "Nombre de la empresa", /* modified */
+    "social_reason" => "Razón social",
+    "business_name" => "Nombre comercial", /* modified */
+    "sorting" => "Clasificación",
+    "alternate_contact_number" => "Whatsapp",
+    "taxpayer_type" => "Categoría contribuyente",
     "start_date" => "Fecha de inicio",
+    "org_type" => "Tipo de persona",
+    "natural" => "Persona natural",
+    "juridica" => "Persona juridica",
     "currency" => "Moneda",
     "currency_placeholder" => "Seleccione el tipo de moneda",
     "upload_logo" => "Cargar logotipo",
     "country" => "País",
-    "state" => "Estado",
-    "city" => "Ciudad",
+    "state" => "Departamento",
+    "city" => "Municipio",
     "zip_code" => "Código postal",
     "zip_code_placeholder" => "Código Postal / Zip",
-    "landmark" => "Punto de referencia",
+    "landmark" => "Dirección",
     "tax_1_name" => "Nombre Impuesto 1", /* modified */
     "tax_1_no" => " No Impuesto 1", /* modified */
     "tax_2_name" => "Nombre Impuesto 2", /* modified */
@@ -22,7 +29,7 @@ return [
     "first_name" => "Nombre", /* modified */
     "last_name" => "Apellido",
     "username" => "Usuario",
-    "email" => "Correo", /* modified */
+    "email" => "Correo electrónico", /* modified */
     "password" => "Contraseña",
     "confirm_password" => "Confirmar contraseña",
     "register" => "Registro",
@@ -69,7 +76,7 @@ return [
     "show_help_text" => "Mostrar texto de ayuda",
     "mobile" => "Móvil",
     "alternate_number" => "Número de contacto alternativo",
-    "email" => "Correo", /* modified */ 
+    "email" => "Correo electrónico", /* modified */ 
     "settings" => "Configuraciones", 
     "transaction_edit_days" => "Días de edición de transacción", 
     "dashboard" => "Tablero", 
