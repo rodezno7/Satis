@@ -81,7 +81,7 @@ return [
         ],
         'slide' => [
             'driver' => 'local',
-            'root' => public_path().'/slider_files/',
+            'root' => public_path().'/uploads/slides/',
         ],
     ],
 

@@ -85,4 +85,14 @@ return [
     "payment_commitment_annulled_successfully" => "Payment commitment annulled successfully",
     "payment_commitment_deleted_successfully" => "Payment commitment deleted successfully",
     "annulled" => "Annulled",
+    "balance" => "Balance",
+    "tax_info_title" => "Tax information",
+    "social_reason" => "Social reason",
+    "business_name" => "Business name",
+    "type_person" => "Type of person",
+    "type_person_natural" => "Natural person",
+    "type_person_business" => "Business person",
+    "id_number" => "Identification number",
+    "new_register" => "New register",
+    "create_supplier" => "Crete supplier"
 ];

@@ -6,6 +6,7 @@ use App\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class SliderController extends Controller
 {
@@ -26,35 +27,70 @@ class SliderController extends Controller
         return view('slider.create');
     }
 
+    public function edit($id)
+    {
+        $image = Image::find($id);
+        return view('slider.edit')->with(compact('image'));
+    }
+
     public function store(Request $request)
     {
         try {
-            $request->validate(
-                [
-                    'image_slide' =>'file|mimes:jpg,png,jpeg'
-                ]
-            );
+            $validator = Validator::make($request->all(), [
+                'image_slide' => 'required|file|max:5000|mimes:png,jpg,jpeg|dimensions:max_width=1500,max_height=500',
+            ]);
+            $validator->setCustomMessages([
+                'image_slide.required' => 'El campo es requerido',
+                'image_slide.file' => 'El campo seleccionado no es valido.',
+                'image_slide.max' => 'El archivo cargado no debe exceder los 5MB.',
+                'image_slide.mimes' => 'Los formatos permitidos son: PNG, JPG, JPEG',
+                'image_slide.dimensions' => 'Las dimensiones deben ser: 1500 x 300 px max.',
+            ]);
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator);
+            }
             $business_id = Auth::user()->business_id;
-            $folderPath = 'bs00'.$business_id.'_slides';
+            $folderName = 'bs00'.$business_id.'_slides';
             if ($request->hasFile('image_slide')) {
-                if (!Storage::disk('slide')->exists($folderPath)) {
-                    \File::makeDirectory(public_path().'/slider_files/'.$folderPath, $mode = 0755, true, true);
+                if (!Storage::disk('slide')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/slides/'.$folderName, $mode = 0755, true, true);
                 }
                 $file = $request->file('image_slide');
                 $name = $file->getClientOriginalName();
-                Storage::disk('slide')->put($folderPath.'/'.$name,  \File::get($file));
+                Storage::disk('slide')->put($folderName.'/'.$name,  \File::get($file));
                 $newImage = new Image();
                 $newImage->name = $name;
+                $newImage->description = $request->description;
                 $newImage->is_active = true;
                 $newImage->business_id = $business_id;
-                $newImage->path = $folderPath.'/'.$name;
+                $newImage->path = $folderName.'/'.$name;
+                $newImage->start_date = $request->start_date;
+                $newImage->end_date = $request->end_date;
+                $newImage->link = $request->slide_link;
                 $newImage->save();
             }
-            return redirect()->action('SliderController@index');
+            return response()->json(['msg'=>'Alerta guardada satisfactoriamente', 'success'=> true]);
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            return response()->json(['msg'=>'Error, contacte al administrador', 'success'=> false]);
         }
-        return redirect()->action('SliderController@index');
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $image = Image::find($id);
+            $image->description = $request->description;
+            $image->start_date = $request->start_date;
+            $image->end_date = $request->end_date;
+            $image->link = $request->slide_link;
+            $image->save();
+            return response()->json(['msg'=>'Alerta guardada satisfactoriamente', 'success'=> true]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['msg'=>'Error, contacte al administrador', 'success'=> false]);
+        }
+
     }
 
     public function destroy($id)
@@ -63,17 +99,17 @@ class SliderController extends Controller
         if(Storage::disk('slide')->exists($image->path)){
             Storage::disk('slide')->delete($image->path);
             $image->delete();
-            return response()->json(['msg'=>'Image deleted successfully', 'success'=> true]);
+            return response()->json(['msg'=>'Alerta eliminada satisfactoriamente', 'success'=> true]);
         }
-        return response()->json(['msg'=>'Error, contact admin. please!', 'success'=> false]);
+        return response()->json(['msg'=>'Error, contacte al administrador', 'success'=> false]);
     }
 
     public function show($id)
     {
         $image = Image::find($id);
         if(Storage::disk('slide')->exists($image->path)){
-            $hash = base64_decode(Storage::disk('slide')->get($image->path));
-            return view('slider.show', compact('hash'));
+            $path = $image->path;
+            return view('slider.show', compact('path'));
         }
     }
 
@@ -91,6 +127,10 @@ class SliderController extends Controller
         $image = Image::find($id);
         $image->is_active = !$image->is_active;
         $image->save();
-        return response()->json(['success'=> true]);
+        if($image->is_active) {
+            return response()->json(['msg'=>'Alerta activada satisfactoriamente', 'success'=> true]);
+        } else {
+            return response()->json(['msg'=>'Alerta desactivada satisfactoriamente', 'success'=> true]);
+        }
     }
 }

@@ -10,6 +10,7 @@ class Image extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'path',
         'is_active',
         'business_id'

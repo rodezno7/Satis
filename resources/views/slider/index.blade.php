@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', __('carrousel.carrousel_config'))
 @section('content')
-
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>@lang('carrousel.carrousel')
@@ -16,7 +15,8 @@
                     <h3 class="box-title">@lang('carrousel.carrousel_images')</h3>
                 </span>
                 <div class="box-tools">
-                    <a href="{{ url('image/upload') }}" type="button" class="btn btn-primary">
+                    <a data-href="{{ url('image/upload') }}" class="btn btn-primary btn-modal" data-toggle="tooltip"
+                        title="Create" data-container=".contact_modal">
                         <i class="fa fa-plus"></i> @lang('messages.add')
                     </a>
                 </div>
@@ -28,7 +28,8 @@
                             width="100%">
                             <thead>
                                 <tr id="div_datatable">
-                                    <th>@lang('messages.name')</th>
+                                    <th>@lang('carrousel.file')</th>
+                                    <th>@lang('carrousel.description')</th>
                                     <th>@lang('messages.show')</th>
                                     <th>@lang('messages.actions')</th>
                                 </tr>
@@ -38,21 +39,25 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        </div>
     </section>
-    <div class="modal fade view_img_modal" tabindex="-1" role="dialog" 
-    	aria-labelledby="gridSystemModalLabel">
-    </div>
+@endsection
 @section('javascript')
     <script type="text/javascript">
         $(document).ready(function() {
             let slider_table = $('#slider_table').DataTable({
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 deferRender: true,
-                ajax: '/slider/index',
+                ajax: '/carrousel/index',
                 columns: [{
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
                     },
                     {
                         data: 'is_active',
@@ -81,6 +86,12 @@
                                     '<li><a href="/image/' + data.id +
                                     '/status" data-toggle="tooltip" title="Show image" class="status-image"><i class="fa fa-eye"></i>@lang('messages.show')</a></li>';
                             }
+                            html +=
+                                '<li><a data-href="/image/' + data.id +
+                                '/show" class="btn-modal" data-toggle="tooltip" title="View" data-container=".contact_modal"><i class="fa fa-image"></i>@lang('messages.view')</a></li>';
+                            html +=
+                                '<li><a data-href="/image/' + data.id +
+                                '/edit" class="btn-modal" data-toggle="tooltip" title="Edit" data-container=".contact_modal"><i class="fa fa-edit"></i>@lang('messages.edit')</a></li>';
                             html +=
                                 '<li><a href="/image/' + data.id +
                                 '/delete" data-toggle="tooltip" title="Delete" class="delete-image"><i class="fa fa-trash"></i>@lang('messages.delete')</a></li>';
@@ -137,20 +148,53 @@
                     dataType: "json",
                     success: function(result) {
                         if (result.success == true) {
+                            Swal.fire({
+                                title: result.msg,
+                                icon: "success",
+                            });
                             slider_table.ajax.reload(null, false);
                         } else {
                             Swal.fire({
-                                title: 'Error',
+                                title: 'Error, contacte al administrador.',
                                 icon: "error",
                             });
                         }
                     }
                 });
             })
-            $("div.view_img_modal").on("shown.bs.modal", function () {
 
-            })
+            $('.contact_modal').on('shown.bs.modal', function(s) {
+                $('form#image_add_form, form#image_update_form').submit(function(e) {
+                    e.preventDefault();
+                    let data = new FormData(this);
+                    $(this).find('button[type="submit"]').attr('disabled', true);
+                    $.ajax({
+                            method: $(this).attr('method'),
+                            url: $(this).attr("action"),
+                            dataType: "json",
+                            data: data,
+                            processData: false,
+                            contentType: false,
+                            success: function (result) {
+                                if (result.success == true) {
+                                    $('div.contact_modal').modal('hide');
+                                    Swal.fire({
+                                        title: result.msg,
+                                        icon: "success",
+                                    });
+                                    slider_table.ajax.reload(null, false);
+                                } else {
+                                    $('div.contact_modal').modal('hide');
+                                    Swal.fire({
+                                        title: 'Error, contacte al administrador.',
+                                        icon: "error",
+                                    });
+                                }
+                            }
+                    });
+                })
+            });
+
         });
     </script>
-@endsection
 @endsection

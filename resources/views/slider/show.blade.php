@@ -5,10 +5,10 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Uploaded Image</h4>
+                <h4 class="modal-title">@lang('carrousel.uploaded_image')</h4>
             </div>
             <div class="modal-body">
-                <img id="uploaded-image" src="" alt="" class="img-fluid">
+                <img src="{{asset('uploads/slides/'.$path)}}" style="width: 100% !important; height: 300px !important;">
             </div>
         </div>
     </div>

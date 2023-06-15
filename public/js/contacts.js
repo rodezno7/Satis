@@ -11,7 +11,6 @@ $(document).ready(function () {
         let main_account = $(this).find("input#main_account").val();
         main_account = main_account ? main_account : null;
 
-        $('#organization_type').select2();
         $('#country_id').select2();
         $('#state_id').select2();
         $('#city_id').select2();
@@ -149,5 +148,51 @@ $(document).on('change', '#state_id', function (e) {
     } else {
         $("#city_id").empty();
         $("#city_id").append('<option value="0" disabled selected>' + LANG.select_please + '</option>');
+    }
+});
+
+$(document).on('change', '#organization_type', function (e) {
+    let selectedOpc = $(this).val()
+    if(selectedOpc == 'natural'){
+        $('#box-dni').css('display', 'block');
+        $('#dni').attr('required', 'required');
+    } else {
+        $('#box-dni').css('display', 'none');
+        $('#dni').removeAttr('required');
+    }
+});
+let selectedOpcBusinessType = $('#organization_type').val()
+if(selectedOpcBusinessType == 'natural'){
+    $('#box-dni-edit').css('display', 'block');
+    $('#dni_edit').attr('required', 'required');
+} else {
+    $('#box-dni-edit').css('display', 'none');
+    $('#dni_edit').removeAttr('required');
+}
+
+if($('#is_supplier').prop('checked')) {
+    $('#is_provider').removeAttr('required');
+}
+if($('#is_provider').prop('checked')) {
+    $('#is_supplier').removeAttr('required');
+}
+if(!$('#is_provider').prop('checked') && !$('#is_supplier').prop('checked')) {
+    $('#is_provider').attr('required', 'required');
+}
+$(document).on('change', '#is_supplier', function (e) {
+    if($(this).prop('checked')) {
+        $('#is_provider').removeAttr('required');
+    }
+    if(!$('#is_provider').prop('checked') && !$('#is_supplier').prop('checked')) {
+        $('#is_provider').attr('required', 'required');
+    }
+});
+
+$(document).on('change', '#is_provider', function (e) {
+    if($(this).prop('checked')) {
+        $('#is_supplier').removeAttr('required');
+    }
+    if(!$('#is_provider').prop('checked') && !$('#is_supplier').prop('checked')) {
+        $('#is_provider').attr('required', 'required');
     }
 });

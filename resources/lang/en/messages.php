@@ -66,5 +66,6 @@ return [
     'show'=>'Show',
     'yes' => 'Yes',
     'hide' => 'Hide',
-    'view'=>'View'
+    'view'=>'View',
+    "edit"=>'Edit'
 ];

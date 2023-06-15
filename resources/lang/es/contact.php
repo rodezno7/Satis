@@ -75,4 +75,14 @@ return [
     "payment_commitment_annulled_successfully" => "Quedan anulado con éxito",
     "payment_commitment_deleted_successfully" => "Quedan eliminado con éxito",
     "annulled" => "Anulado",
+    "balance" => "Balance",
+    "tax_info_title" => "Información fiscal",
+    "social_reason" => "Razón social",
+    "business_name" => "Nombre comercial",
+    "type_person" => "Tipo de persona",
+    "type_person_natural" => "Persona natural",
+    "type_person_business" => "Persona jurídica",
+    "id_number" => "DUI",
+    "new_register" => "Nuevo registro",
+    "create_supplier" => "Crear proveedor"
 ];

@@ -15,7 +15,7 @@ return [
     'start_date' => 'Start Date',
     "sorting" => "Clasification",
     "taxpayer_type" => "Taxpayer type",
-    "org_type" => "Organization type",
+    "org_type" => "Type of person",
     "natural" => "Natural person",
     "juridica" => "Business person",
     "alternate_contact_number" => "Whatsapp",

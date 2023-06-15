@@ -91,7 +91,7 @@
 		</div>
 	</div> -->
 
-	<div class="row">
+	<div class="row" style="@if ($images->isEmpty()) {{'display:none !important;'}} @endif">
 		<div class="col-md-12">
 		<div id="carousel1" class="carousel slide" data-ride="carousel">
   <!-- <!– Indicatodores –> -->
@@ -110,16 +110,15 @@
 	@foreach ($images as $image)
 		@if ($loop->first)
 		<div class="item active">
-			<img src="{{asset('slider_files/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
 		</div>
 		@else
 		<div class="item">
-			<img src="{{asset('slider_files/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;">
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
 		</div>
 		@endif
 	@endforeach
   </div>
-
   <!-- <!– Controls –> -->
   <a class="left carousel-control" href="#carousel1" role="button" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>

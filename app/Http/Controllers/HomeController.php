@@ -297,8 +297,10 @@ class HomeController extends Controller
             }
         }
 
-        $images = Image::where('business_id', $business_id)->where('is_active', true)->get();
-
+        $images = Image::where('business_id', $business_id)
+            ->whereRaw('DATE(end_date) >= ?', [date('Y-m-d')])
+            ->where('is_active', true)
+            ->get();
         return view('home.index', compact(
             'date_filters',
             'sells_chart_1',

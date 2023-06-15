@@ -5,166 +5,290 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header no-print">
-    <h1>{{ __('contact.view_contact') }}</h1>
+    <div class="row text-center">
+        <div class="col-sm-12">
+            <img src="{{asset('img/default/satis.png')}}" alt="" style="width: 120px; height: 100px;" class="img-fluid">
+        </div>
+    </div>
 </section>
 
 <!-- Main content -->
 <section class="content no-print">
-	<div class="box">
-        <div class="box-header">
-        	<h3 class="box-title">
-                <i class="fa fa-user margin-r-5"></i>
-                @if($contact->type == 'both') 
-                    @lang('contact.contact_info', ['contacts' => __('contact.contact')])
-                @else
-                    @lang('contact.contact_info', ['contacts' => __('contact.' . $contact->type)])
-                @endif
-            </h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        <i class="fa fa-user margin-r-5"></i>
+                        @if($contact->type == 'both') 
+                            @lang('contact.contact_info', ['contacts' => __('contact.contact')])
+                        @else
+                            @lang('contact.contact_info', ['contacts' => __('contact.' . $contact->type)])
+                        @endif
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <span id="view_contact_page"></span>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div>
+                                @if ($contact->supplier_business_name)
+                                    <strong>{{ $contact->supplier_business_name }}</strong><br>
+                                    <small>{{ $contact->name }}</small>
+                                @else
+                                    <strong>{{ $contact->name }}</strong>    
+                                @endif
+                                <br><br>
+                                <strong>@lang('business.address')</strong>
+                                <p class="text-muted">
+                                    @if($contact->landmark)
+                                        {{ $contact->landmark }}
+                                    @endif
+        
+                                    {{ ', ' . $contact->city }}
+        
+                                    @if($contact->state)
+                                        {{ ', ' . $contact->state }}
+                                    @endif
+                                    <br>
+                                    @if($contact->country)
+                                        {{ $contact->country }}
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div>
+                                <strong> @lang('contact.mobile')</strong>
+                                <p class="text-muted">
+                                    {{ $contact->mobile }}
+                                </p>
+                                @if($contact->landline)
+                                    <strong> @lang('contact.landline')</strong>
+                                    <p class="text-muted">
+                                        {{ $contact->landline }}
+                                    </p>
+                                @endif
+                                @if($contact->alternate_number)
+                                    <strong> @lang('business.alternate_contact_number')</strong>
+                                    <p class="text-muted">
+                                        {{ $contact->alternate_number }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                        @if ($contact->is_supplier == 1)
+                        <div class="col-md-4">
+                            <strong>{{__('contact.is_supplier')}}</strong>
+                            <p class="text-muted">
+                                {{ __('messages.yes') }}
+                            </p>
+                        </div>
+                        @endif
+                        @if ($contact->is_provider == 1)
+                        <div class="col-md-4">
+                            <strong>{{__('contact.is_provider')}}</strong>
+                            <p class="text-muted">
+                                {{ __('messages.yes') }}
+                            </p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="box-body">
-            <span id="view_contact_page"></span>
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="well well-sm">
-                        @if ($contact->supplier_business_name)
-                            <strong>{{ $contact->supplier_business_name }}</strong><br>
-                            <small>{{ $contact->name }}</small>
-                        @else
-                            <strong>{{ $contact->name }}</strong>    
-                        @endif
-                        <br><br>
-                        <strong><i class="fa fa-map-marker margin-r-5"></i> @lang('business.address')</strong>
-                        <p class="text-muted">
-                            @if($contact->landmark)
-                                {{ $contact->landmark }}
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        <i class="fa fa-money margin-r-5"></i>
+                        {{__('contact.balance')}}
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div>
+                            @if( $contact->type == 'supplier' || $contact->type == 'both')
+                                <strong>@lang('report.total_purchase')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->total_purchase }}</span>
+                                </p>
+                                <strong>@lang('contact.total_purchase_paid')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->purchase_paid }}</span>
+                                </p>
+                                <strong>@lang('contact.total_purchase_due')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->total_purchase - $contact->purchase_paid }}</span>
+                                </p>
                             @endif
-
-                            {{ ', ' . $contact->city }}
-
-                            @if($contact->state)
-                                {{ ', ' . $contact->state }}
+                            @if( $contact->type == 'customer' || $contact->type == 'both')
+                                <strong>@lang('report.total_sell')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->total_invoice }}</span>
+                                </p>
+                                <strong>@lang('contact.total_sale_paid')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->invoice_received }}</span>
+                                </p>
+                                <strong>@lang('contact.total_sale_due')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->total_invoice - $contact->invoice_received }}</span>
+                                </p>
                             @endif
-                            <br>
-                            @if($contact->country)
-                                {{ $contact->country }}
+                            @if(!empty($contact->opening_balance) && $contact->opening_balance != '0.00')
+                                <strong>@lang('lang_v1.opening_balance')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->opening_balance }}</span>
+                                </p>
+                                <strong>@lang('lang_v1.opening_balance_due')</strong>
+                                <p class="text-muted">
+                                <span class="display_currency" data-currency_symbol="true">
+                                {{ $contact->opening_balance - $contact->opening_balance_paid }}</span>
+                                </p>
                             @endif
-                        </p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well well-sm">
-                        <strong><i class="fa fa-mobile margin-r-5"></i> @lang('contact.mobile')</strong>
-                        <p class="text-muted">
-                            {{ $contact->mobile }}
-                        </p>
-                        @if($contact->landline)
-                            <strong><i class="fa fa-phone margin-r-5"></i> @lang('contact.landline')</strong>
-                            <p class="text-muted">
-                                {{ $contact->landline }}
-                            </p>
-                        @endif
-                        @if($contact->alternate_number)
-                            <strong><i class="fa fa-phone margin-r-5"></i> @lang('contact.alternate_contact_number')</strong>
-                            <p class="text-muted">
-                                {{ $contact->alternate_number }}
-                            </p>
+                            </div>
+                        </div>
+                        @if( $contact->type == 'supplier' || $contact->type == 'both')
+                            <div class="clearfix"></div>
+                            <div class="col-sm-12" style="display:none;">
+                                @if(($contact->total_purchase - $contact->purchase_paid) > 0)
+                                    <a href="{{action('TransactionPaymentController@getPayContactDue', [$contact->id])}}?type=purchase" class="pay_purchase_due btn btn-primary btn-sm pull-right"><i class="fa fa-money" aria-hidden="true"></i> @lang("contact.pay_due_amount")</a>
+                                @endif
+                            </div>
                         @endif
                     </div>
                 </div>
-                <div class="col-sm-3">
-                    <div class="well well-sm">
-                        @if ($contact->tax_number)
-                            <strong><i class="fa fa-info margin-r-5"></i> @lang('contact.tax_no')</strong>
-                            <p class="text-muted">
-                                {{ $contact->tax_number }}
-                            </p>
-                        @endif
-                        @if ($contact->payment_condition == "credit")
-                            <strong><i class="fa fa-calendar margin-r-5"></i> @lang('lang_v1.payment_condition')</strong>
-                            <p class="text-muted">
-                                {{ __('messages.' . $contact->payment_condition) }}
-                            </p>
-                            <strong><i class="fa fa-calendar margin-r-5"></i> @lang('contact.pay_term_period')</strong>
-                            <p class="text-muted">
-                                {{ $contact->pay_term_number }}
-                                {{ __('messages.' . $contact->pay_term_type) }}
-                            </p>
-                        @elseif($contact->payment_condition == "cash")
-                            <strong><i class="fa fa-calendar margin-r-5"></i> @lang('lang_v1.payment_condition')</strong>
-                            <p class="text-muted">
-                                {{ __('messages.' . $contact->payment_condition) }}
-                            </p>
-                        @else
-                        @endif
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well well-sm">
-                    @if( $contact->type == 'supplier' || $contact->type == 'both')
-                        <strong>@lang('report.total_purchase')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->total_purchase }}</span>
-                        </p>
-                        <strong>@lang('contact.total_purchase_paid')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->purchase_paid }}</span>
-                        </p>
-                        <strong>@lang('contact.total_purchase_due')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->total_purchase - $contact->purchase_paid }}</span>
-                        </p>
-                    @endif
-                    @if( $contact->type == 'customer' || $contact->type == 'both')
-                        <strong>@lang('report.total_sell')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->total_invoice }}</span>
-                        </p>
-                        <strong>@lang('contact.total_sale_paid')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->invoice_received }}</span>
-                        </p>
-                        <strong>@lang('contact.total_sale_due')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->total_invoice - $contact->invoice_received }}</span>
-                        </p>
-                    @endif
-                    @if(!empty($contact->opening_balance) && $contact->opening_balance != '0.00')
-                        <strong>@lang('lang_v1.opening_balance')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->opening_balance }}</span>
-                        </p>
-                        <strong>@lang('lang_v1.opening_balance_due')</strong>
-                        <p class="text-muted">
-                        <span class="display_currency" data-currency_symbol="true">
-                        {{ $contact->opening_balance - $contact->opening_balance_paid }}</span>
-                        </p>
-                    @endif
-                    </div>
-                </div>
-                @if( $contact->type == 'supplier' || $contact->type == 'both')
-                    <div class="clearfix"></div>
-                    <div class="col-sm-12">
-                        @if(($contact->total_purchase - $contact->purchase_paid) > 0)
-                            <a href="{{action('TransactionPaymentController@getPayContactDue', [$contact->id])}}?type=purchase" class="pay_purchase_due btn btn-primary btn-sm pull-right"><i class="fa fa-money" aria-hidden="true"></i> @lang("contact.pay_due_amount")</a>
-                        @endif
-                    </div>
-                @endif
             </div>
         </div>
     </div>
+    <div class="box">
+        <div class="box-header">
+        	<h3 class="box-title">
+                <i class="fa fa-info-circle margin-r-5" aria-hidden="true"></i>
+                {{__('contact.tax_info_title')}}
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    @if ($contact->supplier_business_name)
+                    <div class="col-md-4">
+                        <strong>{{__('contact.social_reason')}}</strong>
+                        <p class="text-muted">
+                            {{ $contact->name }}
+                        </p>
+                    </div>
+                    @endif
+                    @if ($contact->name)
+                    <div class="col-md-4">
+                        <strong>{{__('contact.business_name')}}</strong>
+                        <p class="text-muted">
+                            {{ $contact->supplier_business_name }}
+                        </p>
+                    </div>
+                    @endif
+                    @if ($contact->organization_type)
+                    <div class="col-md-4">
+                        <strong>{{__('contact.type_person')}}</strong>
+                        @if($contact->organization_type == 'natural')
+                        <p class="text-muted">
+                            {{__('contact.type_person_natural')}}
+                        </p>
+                        @elseif ($contact->organization_type == 'juridica')
+                        <p class="text-muted">
+                            {{__('contact.type_person_business')}}
+                        </p>
+                        @endif
+                    </div>
+                    @endif
+                    @if ($contact->business_activity)
+                    <div class="col-md-4">
+                        <strong>{{__('contact.business_activity')}}</strong>
+                        <p class="text-muted">
+                            {{ $contact->business_activity }}
+                        </p>
+                    </div>
+                    @endif
+                    @if ($contact->nit)
+                    <div class="col-md-4">
+                        <strong>NIT</strong>
+                        <p class="text-muted">
+                            {{ $contact->nit }}
+                        </p>
+                    </div>
+                    @endif
+                    @if ($contact->dni)
+                    <div class="col-md-4">
+                        <strong>{{__('contact.id_number')}}</strong>
+                        <p class="text-muted">
+                            {{ $contact->dni }}
+                        </p>
+                    </div>
+                    @endif
+                    @if ($contact->tax_number)
+                    <div class="col-md-4">
+                        <strong>@lang('contact.tax_no')</strong>
+                        <p class="text-muted">
+                            {{ $contact->tax_number }}
+                        </p>
+                    </div>
+                    @endif
+                    <div class="col-md-4">
+                        <strong>@lang('business.address')</strong>
+                        <p class="text-muted">
+                            @if ($contact->country || $contact->state || $contact->city || $contact->landmark)
+                                @if($contact->landmark)
+                                    {{ $contact->landmark }}
+                                @endif
+                                @if($contact->city)
+                                    {{ ', ' . $contact->city }}
+                                @endif
+                                @if($contact->state)
+                                    {{ ', ' . $contact->state }}
+                                @endif
+                                <br>
+                                @if($contact->country)
+                                    {{ ', ' . $contact->country }}
+                                @endif
+                            @else
+                                {{'n/a'}}
+                            @endif
+                        </p>
+                    </div>
+                    @if ($contact->is_exempt)
+                    <div class="col-md-4">
+                        <strong>@lang('contact.is_exempt')</strong>&nbsp;@show_tooltip(__("contact.no_taxes_applied"))
+                        <p class="text-muted">
+                            @if ($contact->is_exempt == 1)
+                                {{ __('messages.yes') }}
+                            @else
+                                {{ __('No') }}
+                            @endif
+                        </p>
+                    </div>
+                    @endif
+                </div>
+                <div class="col-sm-6"></div>
+            </div>
+        </div>
+    </div>
+    
+    
     <!-- list purchases -->
     @if( in_array($contact->type, ['supplier', 'both']) )
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">
-                    <i class="fa fa-money margin-r-5"></i>
+                    <i class="fa fa-shopping-cart margin-r-5"></i>
                     @lang( 'contact.all_purchases_linked_to_this_contact')
                 </h3>
             </div>

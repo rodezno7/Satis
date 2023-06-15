@@ -23,10 +23,9 @@
         	<h3 class="box-title">@lang( 'contact.all_your_contact', ['contacts' => __('lang_v1.'.$type.'s') ])</h3>
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create'))
             	<div class="box-tools">
-                    <button type="button" class="btn btn-block btn-primary btn-modal" 
-                    data-href="{{action('ContactController@create', ['type' => $type])}}" 
-                    data-container=".contact_modal">
-                    <i class="fa fa-plus"></i> @lang('messages.add')</button>
+                    <a class="btn btn-block btn-primary" 
+                    href="{{action('ContactController@create', ['type' => $type])}}">
+                    <i class="fa fa-plus"></i> @lang('messages.add')</a>
                 </div>
             @endif
         </div>

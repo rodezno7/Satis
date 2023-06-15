@@ -92,14 +92,16 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('/home/choose-month', 'HomeController@chooseMonth');
 
     //Slider options
-    Route::get('/slider', 'SliderController@index')->name('slider.index');
-    Route::get('/slider/index', 'SliderController@getSliderIndex')->name('slider.index');
-    Route::get('/image/upload', 'SliderController@create')->name('slider.upload');
-    Route::post('/image/store', 'SliderController@store')->name('slider.store');
-    Route::patch('/image/{id}/status', 'SliderController@setImageStatus')->name('slider.status');
-    Route::get('/image/{id}/show', 'SliderController@show')->name('slider.show');
-    Route::get('/image/{id}/download', 'SliderController@downloadSlide')->name('slider.download');
-    Route::delete('/image/{id}/delete', 'SliderController@destroy')->name('slider.delete');
+    Route::get('/carrousel', 'SliderController@index');
+    Route::get('/carrousel/index', 'SliderController@getSliderIndex');
+    Route::get('/image/upload', 'SliderController@create');
+    Route::post('/image/store', 'SliderController@store');
+    Route::get('/image/{id}/edit', 'SliderController@edit');
+    Route::patch('/image/{id}/update', 'SliderController@update');
+    Route::patch('/image/{id}/status', 'SliderController@setImageStatus');
+    Route::get('/image/{id}/show', 'SliderController@show');
+    Route::get('/image/{id}/download', 'SliderController@downloadSlide');
+    Route::delete('/image/{id}/delete', 'SliderController@destroy');
     // Peak sales hours chart routes
     Route::get('/home/peak-sales-hours-month-chart', 'HomeController@getPeakSalesHoursByMonthChart');
     Route::get('/home/peak-sales-hours-chart', 'HomeController@getPeakSalesHoursChart');
