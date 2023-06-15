@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header no-print">
-    <div class="row text-center">
+    <div class="row text-center" style="display:none;">
         <div class="col-sm-12">
             <img src="{{asset('img/default/satis.png')}}" alt="" style="width: 120px; height: 100px;" class="img-fluid">
         </div>

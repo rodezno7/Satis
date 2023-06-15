@@ -12,11 +12,17 @@ class SliderController extends Controller
 {
     public function index()
     {
+        if (!auth()->user()->can('alert.view')) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('slider.index');
     }
 
     public function getSliderIndex()
     {
+        if (!auth()->user()->can('alert.view')) {
+            abort(403, 'Unauthorized action.');
+        }
         $business_id = Auth::user()->business_id;
         $uploadedImages = Image::where('business_id', $business_id)->get();
         return response()->json(['data'=> $uploadedImages]);
@@ -24,17 +30,26 @@ class SliderController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->can('alert.create')) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('slider.create');
     }
 
     public function edit($id)
     {
+        if (!auth()->user()->can('alert.edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::find($id);
         return view('slider.edit')->with(compact('image'));
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->can('alert.create')) {
+            abort(403, 'Unauthorized action.');
+        }
         try {
             $validator = Validator::make($request->all(), [
                 'image_slide' => 'required|file|max:5000|mimes:png,jpg,jpeg|dimensions:max_width=1500,max_height=500',
@@ -78,6 +93,9 @@ class SliderController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!auth()->user()->can('alert.edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         try {
             $image = Image::find($id);
             $image->description = $request->description;
@@ -95,6 +113,9 @@ class SliderController extends Controller
 
     public function destroy($id)
     {
+        if (!auth()->user()->can('alert.delete')) {
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::find($id);
         if(Storage::disk('slide')->exists($image->path)){
             Storage::disk('slide')->delete($image->path);
@@ -106,6 +127,9 @@ class SliderController extends Controller
 
     public function show($id)
     {
+        if (!auth()->user()->can('alert.view')) {
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::find($id);
         if(Storage::disk('slide')->exists($image->path)){
             $path = $image->path;
@@ -115,6 +139,9 @@ class SliderController extends Controller
 
     public function downloadSlide($id)
     {
+        if (!auth()->user()->can('alert.view')) {
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::find($id);
         if(Storage::disk('slide')->exists($image->path)){
             return Storage::disk('slide')->download($image->path);
@@ -124,6 +151,9 @@ class SliderController extends Controller
 
     public function setImageStatus($id)
     {
+        if (!auth()->user()->can('alert.edit')) {
+            abort(403, 'Unauthorized action.');
+        }
         $image = Image::find($id);
         $image->is_active = !$image->is_active;
         $image->save();

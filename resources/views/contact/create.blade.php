@@ -18,7 +18,7 @@
         <div class="boxform_u box-solid_u">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('name', __('business.social_reason') . ':') !!}&nbsp;<span class="text-danger">*</span>
                             <div class="input-group">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5 supplier_fields">
+                    <div class="col-md-6 supplier_fields">
                         <div class="form-group">
                             {!! Form::label('supplier_business_name', __('business.business_name') . ':') !!}&nbsp;<span class="text-danger">*</span>
                             <div class="input-group">
@@ -44,7 +44,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('org_type', __('business.org_type') . ':') !!}&nbsp;<span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-briefcase"></i>
+                                </span>
+                                {!! Form::select('organization_type', $org_type, '', [
+                                    'class' => 'form-control',
+                                    'id' => 'organization_type',
+                                    'style' => 'width: 100%;',
+                                    'placeholder' => __('messages.please_select'),
+                                    'required',
+                                ]) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         {!! Form::label('supplier_sorting', __('business.sorting') . ':') !!}&nbsp;<span class="text-danger">*</span>
                         <div class="form-check">
                             {!! Form::checkbox('is_supplier', true, true, [
@@ -63,23 +80,6 @@
                                 'id' => 'is_provider',
                             ]) !!}
                             {!! Form::label('is_provider', __('contact.is_provider'), ['class' => 'form-check-label']) !!}
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            {!! Form::label('org_type', __('business.org_type') . ':') !!}&nbsp;<span class="text-danger">*</span>
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-briefcase"></i>
-                                </span>
-                                {!! Form::select('organization_type', $org_type, '', [
-                                    'class' => 'form-control',
-                                    'id' => 'organization_type',
-                                    'style' => 'width: 100%;',
-                                    'placeholder' => __('messages.please_select'),
-                                    'required',
-                                ]) !!}
-                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -113,6 +113,33 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 supplier_fields">
+                        <div class="form-group">
+                            {!! Form::label('business_activity', __('contact.business_activity') . ':') !!}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-building"></i>
+                                </span>
+                                {!! Form::text('business_activity', null, [
+                                    'class' => 'form-control',
+                                    'placeholder' => __('contact.business_activity'),
+                                ]) !!}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('landmark', __('business.landmark') . ':') !!}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-map-marker"></i>
+                                </span>
+                                {!! Form::text('landmark', null, ['class' => 'form-control', 'placeholder' => __('business.landmark')]) !!}
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('taxpayer_type_type', __('business.taxpayer_type') . ':') !!}
@@ -142,31 +169,6 @@
                                     'required',
                                     'placeholder' => __('business.dui'),
                                 ]) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 supplier_fields">
-                        <div class="form-group">
-                            {!! Form::label('business_activity', __('contact.business_activity') . ':') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-building"></i>
-                                </span>
-                                {!! Form::text('business_activity', null, [
-                                    'class' => 'form-control',
-                                    'placeholder' => __('contact.business_activity'),
-                                ]) !!}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            {!! Form::label('landmark', __('business.landmark') . ':') !!}
-                            <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-map-marker"></i>
-                                </span>
-                                {!! Form::text('landmark', null, ['class' => 'form-control', 'placeholder' => __('business.landmark')]) !!}
                             </div>
                         </div>
                     </div>
@@ -328,7 +330,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 text-right">
                         <button type="submit" class="btn btn-primary" id="submit">@lang('messages.save')</button>
                         <a class="btn btn-default" href="{{action('ContactController@index', ['type' => 'supplier'])}}">@lang('messages.close')</a>
                     </div>

@@ -2017,7 +2017,8 @@
                 auth()->user()->can('document_type.view') ||
                 auth()->user()->can('document_type.create') ||
                 auth()->user()->can('correlatives.view') ||
-                auth()->user()->can('correlatives.create')
+                auth()->user()->can('correlatives.create') ||
+                auth()->user()->can('alert.view')
               )
 
 
@@ -2091,10 +2092,12 @@
                       </span>
                     </a>
                     <ul class="treeview-menu" id="aas">
+                      @can('alert.view')
                       <li class="{{ $request->segment(1) == 'carrousel' ? 'active' : '' }}">
                         <a href="{{action('SliderController@index')}}"><i class="fa fa-image"></i>
                           <span>@lang('carrousel.carrousel_config')</span></a>
                       </li>
+                      @endcan
                     </ul>
                   </li>
                   <!-- diagnostic settings -->

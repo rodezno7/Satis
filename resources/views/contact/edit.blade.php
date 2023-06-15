@@ -10,7 +10,7 @@
 
     <div class="modal-body">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="form-group">
                     {!! Form::label('name', __('business.social_reason') . ':') !!}&nbsp;<span class="text-danger">*</span>
                     <div class="input-group">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 supplier_fields">
+            <div class="col-md-6 supplier_fields">
                 <div class="form-group">
                     {!! Form::label('supplier_business_name', __('business.business_name') . ':') !!}&nbsp;<span class="text-danger">*</span>
                     <div class="input-group">
@@ -38,23 +38,6 @@
                             'placeholder' => __('business.business_name'),
                         ]) !!}
                     </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                {!! Form::label('supplier_sorting', __('business.sorting') . ':') !!}&nbsp;<span class="text-danger">*</span>
-                <div class="form-check">
-                    {!! Form::checkbox('is_supplier', true, $contact->is_supplier, [
-                        'class' => 'form-check-input is_supplier',
-                        'id' => 'is_supplier',
-                    ]) !!}
-                    {!! Form::label('is_supplier', __('contact.is_supplier'), ['class' => 'form-check-label']) !!}
-                </div>
-                <div class="form-check">
-                    {!! Form::checkbox('is_provider', true, $contact->is_provider, [
-                        'class' => 'form-check-input is_provider',
-                        'id' => 'is_provider',
-                    ]) !!}
-                    {!! Form::label('is_provider', __('contact.is_provider'), ['class' => 'form-check-label']) !!}
                 </div>
             </div>
             <div class="col-md-3">
@@ -71,6 +54,23 @@
                             'disabled' => 'disabled',
                         ]) !!}
                     </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                {!! Form::label('supplier_sorting', __('business.sorting') . ':') !!}&nbsp;<span class="text-danger">*</span>
+                <div class="form-check">
+                    {!! Form::checkbox('is_supplier', true, $contact->is_supplier, [
+                        'class' => 'form-check-input is_supplier',
+                        'id' => 'is_supplier',
+                    ]) !!}
+                    {!! Form::label('is_supplier', __('contact.is_supplier'), ['class' => 'form-check-label']) !!}
+                </div>
+                <div class="form-check">
+                    {!! Form::checkbox('is_provider', true, $contact->is_provider, [
+                        'class' => 'form-check-input is_provider',
+                        'id' => 'is_provider',
+                    ]) !!}
+                    {!! Form::label('is_provider', __('contact.is_provider'), ['class' => 'form-check-label']) !!}
                 </div>
             </div>
             <div class="col-md-3">
@@ -104,6 +104,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
                     {!! Form::label('nit', __('business.nit') . ':') !!}
@@ -136,20 +138,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 supplier_fields">
-                <div class="form-group">
-                    {!! Form::label('business_activity', __('contact.business_activity') . ':') !!}
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <i class="fa fa-building"></i>
-                        </span>
-                        {!! Form::text('business_activity', $contact->business_activity, [
-                            'class' => 'form-control',
-                            'placeholder' => __('contact.business_activity'),
-                        ]) !!}
-                    </div>
-                </div>
-            </div>
             <div id="box-dni-edit" class="col-md-3" style="display: none;">
                 <div class="form-group">
                     {!! Form::label('dni', __('business.dui') . ':') !!}&nbsp;<span class="text-danger">*</span>
@@ -166,7 +154,21 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6 supplier_fields">
+                <div class="form-group">
+                    {!! Form::label('business_activity', __('contact.business_activity') . ':') !!}
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-building"></i>
+                        </span>
+                        {!! Form::text('business_activity', $contact->business_activity, [
+                            'class' => 'form-control',
+                            'placeholder' => __('contact.business_activity'),
+                        ]) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="form-group">
                     {!! Form::label('landmark', __('business.landmark') . ':') !!}
                     <div class="input-group">
