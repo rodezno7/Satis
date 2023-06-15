@@ -69,7 +69,7 @@
                             <div class="form-group">
                                 <label>@lang('accounting.location')</label>
                                 {!! Form::select('location', $locations, '',
-                                    ['id' => 'location', 'class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'style' => 'width: 100%;', 'required']) !!}
+                                    ['id' => 'location', 'class' => 'form-control select2', 'style' => 'width: 100%;']) !!}
                             </div>
                         </div>
                     </div>

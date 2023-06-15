@@ -698,7 +698,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('manage-credit-requests/getCreditsData', 'ManageCreditRequestController@getCreditsData');
     Route::post('manage-credit-requests/edit', 'ManageCreditRequestController@editCredit');
 
-    Route::get('manage-credit-requests/view/{id}', 'ManageCreditRequestController@viewCredit');
+    Route::get('manage-credit-requests/view/{id}', 'ManageCreditRequestControllerupdate/product@viewCredit');
     Route::resource('manage-credit-requests', 'ManageCreditRequestController');
 
     // Customers
@@ -708,8 +708,11 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('customers/getCustomersData', 'CustomerController@getCustomersData');
     Route::get('customers/get_add_customer/{customer_name?}', 'CustomerController@getAddCustomer');
     Route::get('customers/get_contacts/{id}', 'CustomerController@getContacts');
+    Route::post('/customers/store_contacts/{id}', 'CustomerController@addContact');
     Route::post('/customers/export', 'CustomerController@export');
     Route::resource('customers', 'CustomerController');
+    Route::get('customers/edit/{id}', 'CustomerController@edit');
+    Route::post('customers/update/{id}', 'CustomerController@update');
 
     Route::get('follow-customers/getFollowsByCustomer/{id}', 'FollowCustomerController@getFollowsByCustomer');
     Route::get('follow-customers/getProductsByFollowCustomer/{id}', 'FollowCustomerController@getProductsByFollowCustomer');

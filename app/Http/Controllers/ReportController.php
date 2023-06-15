@@ -101,6 +101,7 @@ class ReportController extends Controller
         ];
 
         $this->crystal_warehouse = 1;
+        DB::statement('SET SESSION sql_require_primary_key=0');
     }
 
     /**
