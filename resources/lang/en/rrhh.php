@@ -105,5 +105,10 @@ return[
     'view_file' => 'View file',
     'document' => 'Document',
     'photo' => 'Employee photo',
-    'mobile_phone' => 'Mobile phone'
+    'mobile_phone' => 'Mobile phone',
+    'date_required' => 'Expedition date is required',
+    'Date_required' => 'Expedition date',
+    'date_expedition' => 'Expedition date',
+    'date_expiration' => 'Expiration date',
+    'no_file' => 'I need to upload the document of this type'
 ];

@@ -11,6 +11,12 @@
 			<label>@lang('rrhh.name')</label>
 			<input type="text" name='value' id='value' class="form-control" value='{{ $item->value }}' placeholder="@lang('rrhh.name')">
 
+			@if ($item->human_resources_header_id == 9)
+			<br>
+			<input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
+			<label>@lang('rrhh.date_required')</label>
+			@endif
+
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 			<input type="hidden" name="human_resources_header_id" value="{{ $item->human_resources_header_id }}" id="human_resources_header_id">
 		</div>
@@ -35,6 +41,12 @@
 
 	$( document ).ready(function() {		
 		select2 = $('.select2').select2();
+		let date_required = $("#date_required").val();
+		if (date_required == 1) {
+			$("#date_required").prop("checked", true);
+		} else {
+			$("#date_required").prop("checked", false);
+		}
 	});
 
 	$("#btn_edit_item").click(function() {
@@ -96,5 +108,13 @@
 			}
 		});
 	});
+
+	function dateRequired() {
+		if ($("#date_required").is(":checked")) {
+			$("#date_required").val('1');
+		} else {
+			$("#date_required").val('0');
+		}
+	}
 
 </script>

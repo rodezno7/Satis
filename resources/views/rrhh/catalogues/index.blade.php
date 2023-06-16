@@ -385,6 +385,7 @@
             ajax: "/rrhh/getCataloguesData/9",
             columns: [
             {data: 'value'},
+            {data: 'date_required'},
             {data: 'status'},
             {data: null, render: function(data){
 
@@ -488,111 +489,97 @@
     }
 
     function deleteItem(id) {
-        $.confirm({
-            title: '@lang('rrhh.confirm_delete')',
-            content: '@lang('rrhh.delete_message')',
-            icon: 'fa fa-warning',
-            theme: 'modern',
-            closeIcon: true,
-            animation: 'scale',
-            type: 'red',
-            buttons: {
-                confirm:{
-                    text: '@lang('rrhh.delete')',            
-                    action: function()
-                    {
-                        route = '/rrhh-catalogues-data/'+id;
-                        token = $("#token").val();
-                        $.ajax({
-                            url: route,
-                            headers: {'X-CSRF-TOKEN': token},
-                            type: 'DELETE',
-                            dataType: 'json',                       
-                            success:function(result){
-                                if(result.success == true) {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "success",
-                                        timer: 2000,
-                                        showConfirmButton: false,
-                                    });
-                                    $("#afps-table").DataTable().ajax.reload(null, false);
-                                    $("#marital-statuses-table").DataTable().ajax.reload(null, false);
-                                    $("#departments-table").DataTable().ajax.reload(null, false);
-                                    $("#positions-table").DataTable().ajax.reload(null, false);
-                                    $("#types-table").DataTable().ajax.reload(null, false);
-                                    $("#nationalities-table").DataTable().ajax.reload(null, false);
-                                    $("#professions-table").DataTable().ajax.reload(null, false);
-                                    $("#way-to-pays-table").DataTable().ajax.reload(null, false);
-                                    $("#document-types-table").DataTable().ajax.reload(null, false);
-                                    $('#modal').modal('hide');
-                                } else {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "error",
-                                    });
-                                }
-                            }
-                        });
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-catalogues-data/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#afps-table").DataTable().ajax.reload(null, false);
+                            $("#marital-statuses-table").DataTable().ajax.reload(null, false);
+                            $("#departments-table").DataTable().ajax.reload(null, false);
+                            $("#positions-table").DataTable().ajax.reload(null, false);
+                            $("#types-table").DataTable().ajax.reload(null, false);
+                            $("#nationalities-table").DataTable().ajax.reload(null, false);
+                            $("#professions-table").DataTable().ajax.reload(null, false);
+                            $("#way-to-pays-table").DataTable().ajax.reload(null, false);
+                            $("#document-types-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
                     }
-                },
-                cancel:{
-                    text: '@lang('rrhh.cancel')',
-                },
+                });
             }
         });
     }
 
     function deleteBank(id) {
-
-        $.confirm({
-            title: '@lang('rrhh.confirm_delete')',
-            content: '@lang('rrhh.delete_message')',
-            icon: 'fa fa-warning',
-            theme: 'modern',
-            closeIcon: true,
-            animation: 'scale',
-            type: 'red',
-            buttons: {
-                confirm:{
-                    text: '@lang('rrhh.delete')',            
-                    action: function()
-                    {
-                        route = '/rrhh-banks/'+id;
-                        token = $("#token").val();
-                        $.ajax({
-                            url: route,
-                            headers: {'X-CSRF-TOKEN': token},
-                            type: 'DELETE',
-                            dataType: 'json',                       
-                            success:function(result){
-                                if(result.success == true) {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "success",
-                                        timer: 2000,
-                                        showConfirmButton: false,
-                                    });
-                                    $("#banks-table").DataTable().ajax.reload(null, false);
-                                    $('#modal').modal('hide');
-                                } else {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "error",
-                                    });
-                                }
-                            }
-                        });
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-banks/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#banks-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
                     }
-                },
-                cancel:{
-                    text: '@lang('rrhh.cancel')',
-                },
+                });
             }
+        
         });
     }
 </script>

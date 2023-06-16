@@ -51,10 +51,14 @@ class HumanResourcesDataController extends Controller
                 ->where(function ($query) {
                     return $query->where('business_id', request()->session()->get('user.business_id'));
                 })
+                ->where(function ($query) {
+                    return $query->where('deleted_at', null);
+                })
             ],           
         ]);
 
         try {
+            
             $code = '';
             if($request->input('human_resources_header_id') > 1 && $request->input('human_resources_header_id') < 6) {
                 
@@ -73,11 +77,20 @@ class HumanResourcesDataController extends Controller
 
                 $code = $this->getCorrelative($request->input('human_resources_header_id'), $code);
             }
+            $date_required = null;
+            if($request->input('human_resources_header_id') == 9) {
+                if($request->input('date_required')){
+                    $date_required = 1;
+                }else{
+                    $date_required = 0;
+                }
+            }
             $human_resource_item = new HumanResourcesData();
             $human_resource_item->business_id = $request->session()->get('user.business_id');
             $human_resource_item->human_resources_header_id = $request->input('human_resources_header_id');
             $human_resource_item->status = 1;
             $human_resource_item->code = $code;
+            $human_resource_item->date_required = $date_required;
             $human_resource_item->value = $request->input('value');
             $human_resource_item->save();
 
@@ -85,13 +98,11 @@ class HumanResourcesDataController extends Controller
                 'success' => 1,
                 'msg' => __('rrhh.added_successfully')
             ];
-
-
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
         return $output;
@@ -137,18 +148,16 @@ class HumanResourcesDataController extends Controller
         ]);
 
         try {
-
-            $input_details = $request->all();
-            $item = HumanResourcesData::findOrFail($id);
-            
-            $item->update($input_details);
+            $human_resource_item = HumanResourcesData::findOrFail($id);
+            $human_resource_item->status = $request->input('status');
+            $human_resource_item->date_required = $request->input('date_required');
+            $human_resource_item->value = $request->input('value');
+            $human_resource_item->save();
 
             $output = [
                 'success' => 1,
                 'msg' => __('rrhh.updated_successfully')
             ];
-
-
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
@@ -190,7 +199,7 @@ class HumanResourcesDataController extends Controller
                     ];
                 } else {
                     $item = HumanResourcesData::findOrFail($id);
-                    $item->forceDelete();
+                    $item->delete();
                     $output = [
                         'success' => true,
                         'msg' => __('rrhh.deleted_successfully')
@@ -218,7 +227,8 @@ class HumanResourcesDataController extends Controller
         $data = DB::table('human_resources_datas')
         ->select('human_resources_datas.*')
         ->where('human_resources_header_id', $id)
-        ->where('business_id', $business_id);
+        ->where('business_id', $business_id)
+        ->where('deleted_at', null);
 
 
         return DataTables::of($data)
@@ -231,6 +241,19 @@ class HumanResourcesDataController extends Controller
                 } else {
 
                     $html = 'Inactivo';
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
+            'date_required',
+            function ($row) {
+                if ($row->date_required == 1) {
+
+                    $html = 'Requerida';
+                } else {
+
+                    $html = 'No requerida';
                 }
                 return $html;
             }

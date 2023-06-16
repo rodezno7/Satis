@@ -17,8 +17,6 @@ use Illuminate\Validation\Rule;
 use App\Utils\ProductUtil;
 use App\Utils\ModuleUtil;
 
-
-
 class EmployeesController extends Controller
 {
     protected $productUtil;
@@ -60,7 +58,8 @@ class EmployeesController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $employees = DB::table('employees as e')
         ->select('e.id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
-        ->where('e.business_id', $business_id);
+        ->where('e.business_id', $business_id)
+        ->where('deleted_at', null);
         
         return DataTables::of($employees)->filterColumn('full_name', function($query, $keyword) {
             $sql = "CONCAT(e.first_name, ' ', e.last_name)  like ?";
@@ -328,7 +327,29 @@ class EmployeesController extends Controller
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $employee->state_id)->pluck('name', 'id');
+        $documents = DB::table('human_resource_documents as document')
+        ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
+        ->join('states as state', 'state.id', '=', 'document.state_id')
+        ->join('cities as city', 'city.id', '=', 'document.city_id')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id')
+        ->where('document.employee_id', $employee->id)
+        ->get();
+
+        $type_documents = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
         
+       
+        for ($i=0; $i < count($documents); $i++) { 
+            if(isset($type_documents)){
+                if(!empty($type_documents)){
+                    for ($j=0; $j < count($type_documents); $j++) {
+                        if($type_documents[$j]->id == $documents[$i]->document_type_id){
+                            unset($type_documents[$j]);
+                        }
+                    }
+                }
+            }
+        }
+    
         return view('rrhh.employees.edit', compact(
             'employee',
             'nationalities',
@@ -342,7 +363,9 @@ class EmployeesController extends Controller
             'banks',
             'cities',
             'payments',
-            'countries'
+            'countries',
+            'documents',
+            'type_documents'
         ));        
     }
 
@@ -384,7 +407,10 @@ class EmployeesController extends Controller
                 $input_details['status'] = 0;
             }
             
-            $input_details['photo'] = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+            if ($request->hasFile('photo')) {
+                $input_details['photo'] = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+            }
+            
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));     
 
@@ -421,7 +447,7 @@ class EmployeesController extends Controller
             try {
                 $item = Employees::findOrFail($id);
 
-                $item->forceDelete();
+                $item->delete();
                 $output = [
                     'success' => true,
                     'msg' => __('rrhh.deleted_successfully')

@@ -14,6 +14,7 @@
 				<table class="table table-striped table-bordered table-condensed table-hover" id="document-types-table" width="100%">
 					<thead>
 						<th>@lang('rrhh.name')</th>
+						<th>@lang('rrhh.Date_required')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>

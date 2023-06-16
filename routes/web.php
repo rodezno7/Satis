@@ -660,6 +660,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('cities/getCitiesData', 'CityController@getCitiesData');
     Route::get('cities/changeStatus/{id}', 'CityController@changeStatus');
     Route::get('cities/getCitiesByState/{id}', 'CityController@getCitiesByState');
+    Route::get('cities/getCitiesByStateSelect2/{id?}', 'CityController@getCitiesByStateSelect2');
     Route::resource('cities', 'CityController');
 
     Route::resource('crm', 'CRMController');

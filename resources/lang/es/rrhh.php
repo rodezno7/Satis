@@ -105,5 +105,10 @@ return[
     'view_file' => 'Ver archivo',
     'document' => 'Documento',
     'photo' => 'Foto del empleado',
-    'mobile_phone' => 'Teléfono móvil'
+    'mobile_phone' => 'Teléfono móvil',
+    'date_required' => 'Fecha de expedición es requerida',
+    'Date_required' => 'Fecha de expedición',
+    'date_expedition' => 'Fecha de expedición',
+    'date_expiration' => 'Fecha de expiración',
+    'no_file' => 'Falta que suba un documento de este tipo'
 ];

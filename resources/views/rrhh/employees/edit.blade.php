@@ -297,7 +297,7 @@
               <div class="panel-tools pull-right">
                 <button type="button" class="btn btn-panel-tool" data-toggle="collapse"
                   data-target="#documents-information-fields-box" id="btn-collapse-fi">
-                  <i class="fa fa-plus" id="create-icon-collapsed-fi"></i>
+                  <i class="fa fa-minus" id="create-icon-collapsed-fi"></i>
                 </button>
               </div>
             </div>
@@ -305,17 +305,73 @@
             <div class="panel-body collapse in" id="documents-information-fields-box" aria-expanded="true">
               <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                  <div class="form-group">
+                  {{-- <ul class="list-group">
+                    @foreach ($documents as $document)
+                      <li class="list-group-item">{{ $document->type }}</li>
+                    @endforeach
+                  </ul> --}}
+                  <table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
+                    <thead>
+                      <tr class="active">
+                        <th width="5%"></th>
+                        <th width="20%">@lang('rrhh.document_type')</th>
+                        <th width="20%">@lang('rrhh.state_expedition')</th>
+                        <th width="20%">@lang('rrhh.city_expedition')</th>
+                        <th width="15%">@lang('rrhh.number')</th>
+                        <th width="15%">@lang('rrhh.file')</th>
+                      </tr>
+                    </thead>
+                    <tbody id="referencesItems">
+                      @if (count($documents) > 0)
+                        @if (count($type_documents) == 0)
+                          @foreach($documents as $item)
+                            <tr style="background: #DFF0D8">
+                              <td><i class="alert alert-success fa fa-check"></i></td>
+                              <td>{{ $item->type }}</td>
+                              <td>{{ $item->state }}</td>
+                              <td>{{ $item->city }}</td>
+                              <td>{{ $item->number }}</td>
+                              <td><button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button></td>
+                            </tr>
+                          @endforeach
+                        @else
+                          @foreach($documents as $item)
+                            <tr style="background: #DFF0D8">
+                              <td><i class="fa fa-check"></i></td>
+                              <td>{{ $item->type }}</td>
+                              <td>{{ $item->state }}</td>
+                              <td>{{ $item->city }}</td>
+                              <td>{{ $item->number }}</td>
+                              <td><button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button></td>
+                            </tr>
+                          @endforeach
+                          @foreach($type_documents as $item)
+                            <tr style="background: #FCF8E3">
+                              <td><i class="glyphicon glyphicon-remove"></i></td>
+                              <td>{{ $item->value }}</td>
+                              <td colspan="4" class="text-center">@lang('rrhh.no_file')</td>
+                            </tr>
+                          @endforeach
+                        @endif
+                      @else
+                        @if (count($type_documents) > 0)
+                        @foreach($type_documents as $item)
+                          <tr style="background: #FCF8E3">
+                            <td><i class="glyphicon glyphicon-remove"></i></td>
+                            <td>{{ $item->value }}</td>
+                            <td colspan="4" class="text-center">@lang('rrhh.no_file')</td>
+                          </tr>
+                        @endforeach
 
-                    <button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
-                      style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
-                      <i class="fa fa-plus"></i>
-                      @lang('rrhh.add_document')
-                    </button>
+                        @else
+                        <tr>
+                            <td colspan="6" class="text-center">@lang('lang_v1.no_records')</td>
+                        </tr>
+                        @endif
 
-                    <div class="row" id='div_documents' style="margin-top: 10px;">
-                    </div>
-                  </div>
+                      @endif
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -342,6 +398,13 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content" id="modal_content_document">
 
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modal_photo" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content" id="modal_content_photo">
+  
       </div>
     </div>
   </div>
@@ -389,6 +452,17 @@
     });
   }
 
+  function viewFile(id) 
+	{
+		$("#modal_content_photo").html('');
+		var url = "{!!URL::to('/rrhh-documents-viewFile/:id')!!}";
+		url = url.replace(':id', id);
+		$.get(url, function(data) {
+			$("#modal_content_photo").html(data);
+			$('#modal_photo').modal({backdrop: 'static'});
+		});
+	}
+
   $('#dni').on('change', function() {
     let id = $("#employee_id").val();
     let valor = $(this).val();
@@ -435,18 +509,9 @@
     sendRequest();
   });
 
-  $('#btn-collapse-ci').click(function(){
-    if ($("#commercial-information-fields-box").hasClass("in")) {            
-      $("#create-icon-collapsed").removeClass("fa fa-minus");
-      $("#create-icon-collapsed").addClass("fa fa-plus");
-    }else{
-      $("#create-icon-collapsed").removeClass("fa fa-plus");
-      $("#create-icon-collapsed").addClass("fa fa-minus"); 
-    }
-  });
 
   $('#btn-collapse-fi').click(function(){
-    if ($("#fiscal-information-fields-box").hasClass("in")) {            
+    if ($("#documents-information-fields-box").hasClass("in")) {            
       $("#create-icon-collapsed-fi").removeClass("fa fa-minus");
       $("#create-icon-collapsed-fi").addClass("fa fa-plus");
     }else{
@@ -463,19 +528,6 @@
       $("#create-icon-collapsed-gi").removeClass("fa fa-plus");
       $("#create-icon-collapsed-gi").addClass("fa fa-minus"); 
     }
-  });
-
-  $("#btn_add_documents").click(function() 
-  {
-    $("#modal_content_document").html('');
-    var url = "{!!URL::to('/rrhh-documents-createDocument/:id')!!}";
-    id = {{ $employee->id }}
-    url = url.replace(':id', id);
-    $.get(url, function(data) {
-      $("#modal_content_document").html(data);
-      $('#modal_doc').modal({backdrop: 'static'});
-    });
-
   });
 
   function deleteDocument(id) 

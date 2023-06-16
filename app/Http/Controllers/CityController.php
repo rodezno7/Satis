@@ -217,5 +217,35 @@ class CityController extends Controller
         ->where('state_id', $id)
         ->get();
         return response()->json($cities);
+        
+    }
+
+
+    public function getCitiesByStateSelect2($id=null)
+    {
+        if (request()->ajax()) {
+            $term = request()->q;
+            if (empty($term)) {
+                return json_encode([]);
+            }
+
+            $business_id = request()->session()->get('user.business_id');
+            if($id != null){
+                $cities = City::where('business_id', $business_id)
+                ->where('state_id', $id)
+                ->where('name', 'LIKE', '%'.$term.'%')
+                ->select('id','name as text')
+                ->get();
+    
+                return json_encode($cities);
+            }else{
+                $cities = City::where('business_id', $business_id)
+                ->where('name', 'LIKE', '%'.$term.'%')
+                ->select('id','name as text')
+                ->get();
+    
+                return json_encode($cities);
+            } 
+        }        
     }
 }

@@ -24,6 +24,7 @@ class CreateHumanResourceBanksTable extends Migration
             $table->unsignedInteger('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
             $table->string('host');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
