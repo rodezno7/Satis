@@ -21,11 +21,12 @@
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
 						<thead>
 							<tr class="active">
-								<th width="20%">@lang('rrhh.document_type')</th>
-								<th width="20%">@lang('rrhh.state_expedition')</th>
-								<th width="20%">@lang('rrhh.city_expedition')</th>
-								<th width="15%">@lang('rrhh.number')</th>
-								@if(!isset($route))<th width="10%" id="dele">@lang('rrhh.actions' )</th>@endif
+								<th>@lang('rrhh.document_type')</th>
+								<th>@lang('rrhh.date_expedition')</th>
+								<th>@lang('rrhh.date_expiration')</th>
+								<th width="12%">@lang('rrhh.number')</th>
+								<th width="10%">@lang('rrhh.status')</th>
+								@if(!isset($route))<th width="15%" id="dele">@lang('rrhh.actions' )</th>@endif
 							</tr>
 						</thead>
 						<tbody id="referencesItems">
@@ -33,9 +34,28 @@
 								@foreach($documents as $item)
 									<tr>
 										<td>{{ $item->type }}</td>
-										<td>{{ $item->state }}</td>
-										<td>{{ $item->city }}</td>
+										<td>
+											@if ($item->date_expedition != null)
+											{{ @format_date($item->date_expedition) }}
+											@else
+												N/A
+											@endif
+										</td>
+										<td>
+											@if ($item->date_expiration != null)
+											{{ @format_date($item->date_expiration) }}
+											@else
+												N/A
+											@endif
+										</td>
 										<td>{{ $item->number }}</td>
+										<td>
+											@if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d'))
+											<span class="badge" style="background: #449D44">Vigente</span>
+											@else
+											<span class="badge" style="background: #C9302C">Expirado</span>
+											@endif
+										  </td>
 										@if(!isset($route))
 										<td>
 											@if ($item->file != '')
@@ -50,9 +70,9 @@
 							@else
 								<tr>
 									@if(!isset($route))
-										<td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
-									@else
 										<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
+									@else
+										<td colspan="6" class="text-center">@lang('lang_v1.no_records')</td>
 									@endif
 								</tr>
 							@endif

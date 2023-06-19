@@ -1,5 +1,10 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="formModal">@lang('rrhh.view_file')
+    <h4 class="modal-title" id="formModal">@lang('rrhh.file') | 
+        @if ($document->date_expiration == null || $document->date_expiration >= Carbon::now()->format('Y-m-d'))
+        <span class="badge" style="background: #449D44">Vigente</span>
+        @else
+        <span class="badge" style="background: #C9302C">Expirado</span>
+        @endif
 		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
 			<span aria-hidden="true">&times;</span>
 		</button>
@@ -7,7 +12,7 @@
 </div>
 <div class="modal-body">
     <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             @if ($ext == 'pdf')
                 <style>
                     .pdfobject-container {width: 55rem; height: 50rem; border: 1rem solid rgba(0,0,0,.1); }
@@ -19,12 +24,11 @@
                 <script>
                     PDFObject.embed("{{ asset($route) }}", "#pdf");
                 </script>
-
             @else
-                <img src="{{ asset($route) }}" class="img-responsive">
+                <center><img src="{{ asset($route) }}" class="img-responsive"></center>
             @endif
         </div>
-        <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="col-lg-12 col-md-12 col-sm-12">
             <h4>{{ __('rrhh.document') }}</h4>
             <ul>
                 <li><strong>{{ __('rrhh.document_type') }}:</strong> {{ $type->value }}</li>

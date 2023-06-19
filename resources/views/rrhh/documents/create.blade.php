@@ -15,7 +15,9 @@
 						placeholder="{{ __('rrhh.document_type') }}" style="width: 100%;">
 						<option value="">{{ __('rrhh.document_type') }}</option>
 						@foreach ($types as $type)
-						<option value="{{ $type->id }}">{{ $type->value }}</option>
+							@if ($type->value != '')
+								<option value="{{ $type->id }}">{{ $type->value }}</option>
+							@endif
 						@endforeach
 					</select>
 				</div>
@@ -27,7 +29,7 @@
 						placeholder="@lang('rrhh.number')">
 				</div>
 			</div>
-			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="display: none" id="div_date_expedition">
+			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
 					<label>@lang('rrhh.date_expedition')</label> <span class="text-danger">*</span>
 					{!! Form::text("date_expedition", null, ['class' => 'form-control form-control-sm', 'id' => 'date_expedition'])!!}
@@ -167,12 +169,12 @@
 		types.forEach(function(type) {
 			if (type.id == document_type) {
 				if(type.date_required == 1){
-					$('#div_date_expedition').show();
+					//$('#div_date_expedition').show();
 					$('#div_date_expiration').show();
 					$("#date_expedition").prop('required', true);
 					$("#date_expiration").prop('required', true);
 				}else{
-					$('#div_date_expedition').hide();
+					//$('#div_date_expedition').hide();
 					$('#div_date_expiration').hide();
 					$("#date_expedition").prop('required', false);
 					$("#date_expiration").prop('required', false);

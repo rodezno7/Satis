@@ -188,7 +188,7 @@ class EmployeesController extends Controller
                 $role_id = $request->input('role');
                 $role = Role::findOrFail($role_id);
                 $user_details->assignRole($role->name);
-                //$user_details->notify(new NewNotification($password));
+                $user_details->notify(new NewNotification($password));
             }
 
             $input_details = $request->only([
@@ -243,7 +243,7 @@ class EmployeesController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -331,7 +331,7 @@ class EmployeesController extends Controller
         ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
 
@@ -343,7 +343,7 @@ class EmployeesController extends Controller
                 if(!empty($type_documents)){
                     for ($j=0; $j < count($type_documents); $j++) {
                         if($type_documents[$j]->id == $documents[$i]->document_type_id){
-                            unset($type_documents[$j]);
+                            $type_documents[$j]->value = '';
                         }
                     }
                 }

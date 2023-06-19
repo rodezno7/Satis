@@ -106,9 +106,11 @@ return[
     'document' => 'Documento',
     'photo' => 'Foto del empleado',
     'mobile_phone' => 'Teléfono móvil',
-    'date_required' => 'Fecha de expedición es requerida',
-    'Date_required' => 'Fecha de expedición',
+    'date_required' => 'Fecha de expiración es requerida',
+    'Date_required' => 'Fecha de expiración',
     'date_expedition' => 'Fecha de expedición',
     'date_expiration' => 'Fecha de expiración',
-    'no_file' => 'Falta que suba un documento de este tipo'
+    'no_file' => 'Falta que suba un documento de este tipo',
+    'message_date_valitation' => 'La fecha de expiración debe ser una fecha posterior a la fecha de expedición',
+    'status_employee' => 'Estado del empleado. Puede ser Activo o Inactivo'
 ];
