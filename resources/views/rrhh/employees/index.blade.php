@@ -23,22 +23,19 @@
                 @endcan
             </div>
         </div>
-
         <div class="box-body">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
-                        width="100%">
-                        <thead>
-                            <th>@lang('rrhh.code')</th>
-                            <th>@lang('rrhh.name')</th>
-                            <th>@lang('rrhh.email')</th>
-                            <th>@lang('rrhh.dni')</th>
-                            <th>@lang('rrhh.actions' )</th>
-                        </thead>
-                    </table>
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-                </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
+                    width="100%">
+                    <thead>
+                        <th>@lang('rrhh.code')</th>
+                        <th>@lang('rrhh.name')</th>
+                        <th>@lang('rrhh.email')</th>
+                        <th>@lang('rrhh.dni')</th>
+                        <th>@lang('rrhh.actions' )</th>
+                    </thead>
+                </table>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
             </div>
         </div>
     </div>

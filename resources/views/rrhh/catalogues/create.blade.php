@@ -14,8 +14,9 @@
 			@if ($header_id == 9)
 			<br>
 			{{-- <input type="checkbox" name='value' id='value' class="form-control"> --}}
-			{!! Form::checkbox('date_required', '0', false, ['id' => 'date_required', 'onClick' => 'dateRequired()']) !!}
-			<label>@lang('rrhh.date_required')</label>
+			<label>
+                {!! Form::checkbox('date_required', '0', false, ['id' => 'date_required', 'onClick' => 'dateRequired()']) !!}
+			@lang('rrhh.date_required')</label>
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">

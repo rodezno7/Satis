@@ -13,8 +13,9 @@
 
 			@if ($item->human_resources_header_id == 9)
 			<br>
-			<input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
-			<label>@lang('rrhh.date_required')</label>
+			<label>
+                <input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
+			@lang('rrhh.date_required')</label>
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
