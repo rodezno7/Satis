@@ -310,10 +310,54 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-lg-12">
-                    @include('rrhh.documents.documents')
+                    <table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
+                        <thead>
+                          <tr class="active">
+                            <th width="20%">@lang('rrhh.document_type')</th>
+                            <th width="20%">@lang('rrhh.state_expedition')</th>
+                            <th width="20%">@lang('rrhh.city_expedition')</th>
+                            <th width="15%">@lang('rrhh.number')</th>
+                            <th width="15%">@lang('rrhh.file')</th>
+                          </tr>
+                        </thead>
+                        <tbody id="referencesItems">
+                          @if (count($documents) > 0)
+                              @foreach($documents as $item)
+                                <tr>
+                                  <td>{{ $item->type }}</td>
+                                  <td>{{ $item->state }}</td>
+                                  <td>{{ $item->city }}</td>
+                                  <td>{{ $item->number }}</td>
+                                  <td><button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button></td>
+                                </tr>
+                              @endforeach
+                            @endif
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal_photo" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content" id="modal_content_photo">
+      
+          </div>
+        </div>
+      </div>
 </section>
+@endsection
+@section('javascript')
+<script type="text/javascript">
+        function viewFile(id) 
+	{
+		$("#modal_content_photo").html('');
+		var url = "{!!URL::to('/rrhh-documents-viewFile/:id')!!}";
+		url = url.replace(':id', id);
+		$.get(url, function(data) {
+			$("#modal_content_photo").html(data);
+			$('#modal_photo').modal({backdrop: 'static'});
+		});
+	}
+    </script>
 @endsection
