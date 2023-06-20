@@ -3,8 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HumanResourceEmployee extends Model {
+    
+    use SoftDeletes;
 
     protected $fillable = [
         'code',
@@ -39,7 +42,9 @@ class HumanResourceEmployee extends Model {
         'extra_hours',
         'foreign_tax',
         'fee',
-        'status'
+        'status',
+        'created_by',
+        'business_id'
     ];
 
     public function afp() {

@@ -1,5 +1,5 @@
 <div class="pos-tab-content active">
-	<div class="boxform_u box-solid_u">
+	<div class="">
 		<div class="box-header">
 			<h3 class="box-title">@lang( 'rrhh.all_your_marital_statuses' )</h3>
 			<div class="box-tools">

@@ -14,12 +14,15 @@ class CreateHumanResourceDocumentsTable extends Migration
     public function up()
     {
         Schema::create('human_resource_documents', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('number');
             $table->string('file')->nullable();
+            $table->date('date_expedition')->nullable();
+            $table->date('date_expiration')->nullable();
 
             $table->integer('employee_id')->unsigned();
-            $table->foreign('employee_id')->references('id')->on('human_resource_employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('document_type_id')->unsigned();
             $table->foreign('document_type_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
@@ -29,8 +32,6 @@ class CreateHumanResourceDocumentsTable extends Migration
 
             $table->integer('city_id')->unsigned()->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
-
-
             $table->timestamps();
         });
     }

@@ -501,8 +501,8 @@ $(document).ready(function(){
 		'removeLabel': LANG.remove,
 		'previewSettings': {
 			image: {
-				width: "auto",
-				height: "auto",
+				width: "100%",
+				height: "100%",
 				'max-width': "100%",
 				'max-height': "100%"
 			}

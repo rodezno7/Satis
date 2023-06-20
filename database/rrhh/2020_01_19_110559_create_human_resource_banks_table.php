@@ -14,6 +14,7 @@ class CreateHumanResourceBanksTable extends Migration
     public function up()
     {
         Schema::create('human_resource_banks', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
             $table->string('checkformat')->nullable();
@@ -23,6 +24,7 @@ class CreateHumanResourceBanksTable extends Migration
             $table->unsignedInteger('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
             $table->string('host');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

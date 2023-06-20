@@ -104,4 +104,13 @@ return[
     'only_pdf' => 'Only images and pdf',
     'view_file' => 'View file',
     'document' => 'Document',
+    'photo' => 'Employee photo',
+    'mobile_phone' => 'Mobile phone',
+    'date_required' => 'Expiration date is required',
+    'Date_required' => 'Expiration date',
+    'date_expedition' => 'Expedition date',
+    'date_expiration' => 'Expiration date',
+    'no_file' => 'I need to upload the document of this type',
+    'message_date_valitation' => 'The expiration date must be a date after the expedition date.',
+    'status_employee' => 'Employee status. It can be Active or Inactive'
 ];

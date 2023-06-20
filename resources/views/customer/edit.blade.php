@@ -49,11 +49,10 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                         <input type="text" name="name" id="name" class="form-control"
-                                            value="{{ $customer->name }}" placeholder="@lang('customer.name')">
+                                            value="{{ $customer->name }}" placeholder="@lang('customer.name')" required>
                                     </div>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-                                    <input type="hidden" name="customer_id" id="customer_id"
-                                        value="{{ $customer->id }}">
+                                    <input type="hidden" name="customer_id" id="customer_id" value="{{ $customer->id }}">
                                 </div>
                             </div>
 
@@ -72,7 +71,7 @@
                                         <span class="input-group-addon"><i
                                                 class="glyphicon glyphicon-list-alt"></i></span>
                                         <input type="text" name="dni" id="dni" class="form-control"
-                                            value="{{ $customer->dni }}" placeholder="@lang('customer.dui')">
+                                            value="{{ $customer->dni }}" placeholder="@lang('customer.dui')" required>
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +112,7 @@
                                         <span class="input-group-addon"><i
                                                 class="glyphicon glyphicon-earphone"></i></span>
                                         <input type="text" name="telphone" id="telphone" class="form-control"
-                                            value="{{ $customer->telphone }}" placeholder="@lang('customer.phone')">
+                                            value="{{ $customer->telphone }}" placeholder="@lang('customer.phone')" required>
                                     </div>
                                 </div>
                             </div>
@@ -243,7 +242,7 @@
 
                             @if($business_receivable_type == "customer")
                             <input type="hidden" value="{{ $main_customer_account }}" id="main_account">
-                            <div class="col-md-3">
+                            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label>@lang('customer.accounting_account')</label>
                                     {!! Form::select("accounting_account_id", $account_name,
@@ -253,6 +252,7 @@
                                 </div>
                             </div>
                             @endif
+
                             {{-- is_exempt --}}
                             <div class="col-md-3">
                                 <div class="form-group">
@@ -729,6 +729,30 @@
                 }
             });
         });
+
+        /** select accounting account to customer */
+        $("select.select_account").select2({
+            ajax: {
+                type: "post",
+                url: "/catalogue/get_accounts_for_select2",
+                dataType: "json",
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        main_account: main_account
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data
+                    };
+                }
+            },
+            minimumInputLength: 1,
+            escapeMarkup: function (markup) {
+                return markup;
+            }
+        });
     });
 
     $(document).on('change', '#country_id', function(e) {
@@ -793,7 +817,8 @@
 
     $('input#tax_number').on('change', function() {
         let tax_number = $(this).val();
-        let customer_id = $('input#customer_id').val();
+        let customer_id = $("input#customer_id").val();
+        console.log(tax_number);
         let route = '/customer/verify-if-exists-tax-number';
         if(tax_number != ""){
             $.ajax({
@@ -802,12 +827,7 @@
                 data: {'customer_id': customer_id,'tax_number': tax_number},
                 dataType: "json",
                 success: function(result) {
-                    if (result.success == true) {
-                        Swal.fire({ title: result.msg, icon: "success", timer: 4000});
-                    }else if(result.error == true){
-                        Swal.fire({ title: result.fail, icon: "info", timer: 4000});
-                    }
-                    else {
+                    if (result.success == false) {
                         Swal.fire({ title: result.msg, icon: "error",timer: 4000});
                     }
                 }
@@ -819,13 +839,9 @@
         let valor = $(this).val();
         let id = $("#customer_id").val();
         let route = '/customers/verified_documentID/' + 'dni' + '/' + valor + '/' + id;
-        console.log(route);
         $.get(route, function(data, status) {
-            console.log(status);
             if (data.success == true) {
                 $("#btn-add-customer").prop('disabled', true);
-                // $('#msgEd').css('color', 'red');
-                // $('#msgEd').text(data.msg);
                 Swal.fire({
                 title: data.msg,
                 icon: "error",
@@ -834,13 +850,6 @@
                 });
             } else {
                 $("#btn-add-customer").prop('disabled', false);
-                // $('#msgEd').css('color', 'green');
-                // $('#msgEd').text(data.msg);
-                Swal.fire({
-                title: data.msg,
-                timer:3000,
-                icon: "success",
-                });
             }
         });
     });
@@ -849,13 +858,9 @@
         let valor = $(this).val();
         let id = $("#customer_id").val();
         let route = '/customers/verified_documentID/' + 'reg_number' + '/' + valor + '/' + id;
-        console.log(route);
         $.get(route, function(data, status) {
-            console.log(status);
             if (data.success == true) {
                 $("#btn-add-customer").prop('disabled', true);
-                // $('#msgREd').css('color', 'red');
-                // $('#msgREd').text(data.msg);
                 Swal.fire({
                 title: data.msg,
                 icon: "error",
@@ -864,8 +869,6 @@
                 });
             } else {
                 $("#btn-add-customer").prop('disabled', false);
-                // $('#msgREd').css('color', 'green');
-                // $('#msgREd').text(data.msg);
                 Swal.fire({
                 title: data.msg,
                 timer:3000,
@@ -960,29 +963,6 @@
     let main_account = $("#main_account").val();
     main_account = main_account ? main_account : null;
 
-    /** select accounting account to customer */
-        $("select.select_account").select2({
-            ajax: {
-                type: "post",
-                url: "/catalogue/get_accounts_for_select2",
-                dataType: "json",
-                data: function (params) {
-                    return {
-                        q: params.term,
-                        main_account: main_account
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data
-                    };
-                }
-            },
-            minimumInputLength: 1,
-            escapeMarkup: function (markup) {
-                return markup;
-            }
-        });
 
     $('#btn-collapse-ci').click(function(){
         if ($("#commercial-information-fields-box").hasClass("in")) {            

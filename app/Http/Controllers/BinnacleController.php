@@ -51,9 +51,9 @@ class BinnacleController extends Controller
                     'binnacles.action',
                     'binnacles.old_record',
                     'binnacles.new_record',
-                    'binnacles.entrie_number',
-                    'binnacles.entrie_correlative',
-                    'binnacles.account_code',
+                    // 'binnacles.entrie_number',
+                    // 'binnacles.entrie_correlative',
+                    // 'binnacles.account_code',
                     'binnacles.id'
                 );
     
