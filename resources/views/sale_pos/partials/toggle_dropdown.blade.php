@@ -89,6 +89,15 @@
             </li>
         @endif
     @endif
+    @if($sale_accounting_entry_mode == 'transaction')
+        @can('entries.create')
+        <li>
+            <a class="gen-account-entry" href="{{ action('SellPosController@createTransAccountingEntry', [$id]) }}">
+                <i class="fa fa-book" aria-hidden="true"></i> @lang("accounting.generate_accounting_entry")
+            </a>
+        </li>
+        @endcan
+    @endif
     <li class="divider"></li> 
     @if ($payment_status != 'paid')
         @if (auth()->user()->can("sell.create_payments") || auth()->user()->can("direct_sell.access"))

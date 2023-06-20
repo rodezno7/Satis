@@ -785,6 +785,9 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     // Correlative validation route
     Route::get('/pos/validateCorrelative/{location}/{document}/{correlative}/{transaction_id?}', 'SellPosController@validateCorrelative');
 
+    // Generate accounting entry
+    Route::get('/generate-accounting-entry-by-transaction/{transaction_id}', 'SellPosController@createTransAccountingEntry');
+
     // Cost of sale detail report routes
     Route::get('/product-reports/warehouse-closure-report', 'ReportController@getCostOfSaleDetailReport');
     Route::post('/product-reports/warehouse-closure-report', 'ReportController@postCostOfSaleDetailReport');
