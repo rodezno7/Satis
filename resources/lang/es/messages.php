@@ -59,5 +59,6 @@
     'save_and_process' => 'Guardar y procesar',
     'update_and_process' => 'Actualizar y procesar',
     'clone' => 'Clonar', 
-    "edit"=>'Editar'
+    "edit"=>'Editar',
+    "wrong_password" => 'Contraseña incorrecta'
 ];

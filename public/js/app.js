@@ -1701,6 +1701,46 @@ $(document).ready(function() {
         });
     });
 
+    $(document).on('click', 'a.btn_business_modal', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr("href"),
+            dataType: "html",
+            success: function(result) {
+                $('.business_modal').html(result).modal('show');
+            }
+        });
+    });
+
+    $('div.business_modal').on('shown.bs.modal', function() {
+        $(document).on('submit', 'form#change_business_form', function(e) {
+            e.preventDefault();
+            let data = $(this).serialize();
+            $.ajax({
+                method: $(this).attr("method"),
+                url: $(this).attr("action"),
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    if (result.success == true) {
+                        $('div.btn_business_modal').modal('hide');
+                        Swal.fire({
+                            title: ""+result.msg+"",
+                            icon: "success",
+                        });
+                        window.location.href='/home'
+                    } else {
+                        $('div.btn_business_modal').modal('hide');
+                        Swal.fire({
+                            title: ""+result.msg+"",
+                            icon: "error",
+                        });
+                    }
+                }
+            });
+        });
+    });
+
     //Todays profit modal
     $('#view_todays_profit').click(function() {
         $('#todays_profit_modal').modal('show');

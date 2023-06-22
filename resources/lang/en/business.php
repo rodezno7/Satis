@@ -169,4 +169,9 @@ return [
     'no_note_full_payment' => 'Don\'t create credit note when making full payment',
     'default_products_tax' => 'Default products tax',
     'hide_location_column' => 'Hide location column',
+    'change_business' => 'Change business',
+    'swap' => 'Cambiar',
+    'business_required' => 'Business is required',
+    'business_required' => 'Business is required',
+    'success_change_business' => 'Success business change'
 ];
