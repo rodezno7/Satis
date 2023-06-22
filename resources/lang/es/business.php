@@ -161,4 +161,7 @@ return [
     'no_note_full_payment' => 'No crear nota de abono al realizar pago completo',
     'default_products_tax' => 'Impuesto de producto predeterminado',
     'hide_location_column' => 'Ocultar columna de sucursal',
+    'change_business' => 'Cambiar empresa',
+    'swap' => 'Cambiar',
+    'success_change_business' => 'Se cambió de empresa exitosamente'
 ];

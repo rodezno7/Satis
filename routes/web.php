@@ -106,6 +106,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/home/peak-sales-hours-month-chart', 'HomeController@getPeakSalesHoursByMonthChart');
     Route::get('/home/peak-sales-hours-chart', 'HomeController@getPeakSalesHoursChart');
 
+    Route::get('/business/change-modal', 'BusinessController@getChangeBusiness')->name('business.getChangeBusiness');
+    Route::patch('/business/change', 'BusinessController@changeBusiness')->name('business.changeBusiness');
     Route::get('/business/settings', 'BusinessController@getBusinessSettings')->name('business.getBusinessSettings');
     Route::get('business-accounting', 'BusinessController@getAccountingSettings')->name('business.getAccountingSettings');
     Route::post('/business/update', 'BusinessController@postBusinessSettings')->name('business.postBusinessSettings');

@@ -67,5 +67,6 @@ return [
     'yes' => 'Yes',
     'hide' => 'Hide',
     'view'=>'View',
-    "edit"=>'Edit'
+    "edit"=>'Edit',
+    "wrong_password" => 'Incorrect password'
 ];

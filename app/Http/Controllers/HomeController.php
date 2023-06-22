@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Business;
-use Illuminate\Http\Request;
+use DB;
+use Charts;
 
+use App\User;
+use App\Image;
+use Datatables;
 use App\Product;
-use App\Transaction;
-use App\VariationLocationDetails;
+use App\Business;
 use App\Currency;
+use App\Transaction;
 use App\PurchaseLine;
 use App\BusinessLocation;
-use App\Image;
-use App\Utils\BusinessUtil;
-use App\Utils\TransactionUtil;
 
-use Datatables;
-use Charts;
-use DB;
+use App\Utils\BusinessUtil;
+use Illuminate\Http\Request;
+use App\Utils\TransactionUtil;
+use App\VariationLocationDetails;
 
 class HomeController extends Controller
 {
@@ -50,9 +51,12 @@ class HomeController extends Controller
     public function index()
     {
         $business_id = request()->session()->get('user.business_id');
-
         if (!auth()->user()->can('dashboard.data')) {
-            return view('home.index');
+            $images = Image::where('business_id', $business_id)
+            ->whereRaw('DATE(end_date) >= ?', [date('Y-m-d')])
+            ->where('is_active', true)
+            ->get();
+            return view('home.index', compact('images'));
         }
 
         $fy = $this->businessUtil->getCurrentFinancialYear($business_id);
@@ -300,7 +304,7 @@ class HomeController extends Controller
         $images = Image::where('business_id', $business_id)
             ->whereRaw('DATE(end_date) >= ?', [date('Y-m-d')])
             ->where('is_active', true)
-            ->get();
+            ->get(); 
         return view('home.index', compact(
             'date_filters',
             'sells_chart_1',

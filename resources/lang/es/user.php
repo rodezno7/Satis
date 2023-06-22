@@ -37,4 +37,5 @@ return [
 	"modules_permissions" => 'Módulos y permisos',
 	"all_your_modules" => 'Todos tus módulos',
     "all_your_permissions" => 'Todos tus permisos',
+	"wrong_password" => 'Contraseña incorrecta'
 ];
