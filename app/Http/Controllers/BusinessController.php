@@ -2,32 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use App\Business;
-use App\BusinessLocation;
-use App\TaxRate;
-use App\Currency;
 use App\Unit;
-use App\Catalogue;
-use App\Shortcut;
+use App\User;
 use App\State;
 use App\Module;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Auth;
-
+use App\System;
+use App\TaxRate;
+use App\Business;
+use App\Currency;
+use App\Shortcut;
 use DateTimeZone;
+use App\Catalogue;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Utils\TaxUtil;
+
+use App\BusinessLocation;
+use App\Utils\ModuleUtil;
+use App\Utils\BusinessUtil;
 use Illuminate\Http\Request;
 
-use App\Utils\BusinessUtil;
 use App\Utils\RestaurantUtil;
+use Illuminate\Support\Facades\DB;
 
-use App\Utils\ModuleUtil;
+use Spatie\Permission\Models\Role;
 
-use App\System;
-use App\Utils\TaxUtil;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class BusinessController extends Controller
 {
@@ -116,6 +117,60 @@ class BusinessController extends Controller
         ];
     }
 
+    public function getChangeBusiness()
+    {
+        $businessIds = User::select('business_id')
+                ->where('username', Auth::user()->username)
+                ->where('email', Auth::user()->email)
+                ->where('business_id', '!=', Auth::user()->business_id)
+                ->get();
+        $business = Business::whereIn('id', $businessIds->toArray())->pluck('name','id');
+        return view('business.partials.change_business_modal')->with(compact('business'));
+    }
+
+    public function changeBusiness(Request $request)
+    {
+        $credentials = $request->only(['username', 'password']);
+        $business_id =  $request->input('business_id');
+        $password = User::where('id', Auth::user()->id)->value('password');
+
+        $request->validate(
+            [
+                'business_id' => 'required',
+                'password' => 'required'
+            ],
+            [
+                'business_id.required' => __('messages.business_required'),
+                'password.required' => __('user.password_required'),
+            ]
+        );
+
+        if (Hash::check($credentials['password'], $password)) {
+            // Logout User
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            // Automatic Log In
+            $verified = Auth::attempt(
+                [
+                    'username' => $credentials['username'],
+                    'password' => $credentials['password'],
+                    'business_id' => $business_id
+                ]
+            );
+            if ($verified) {
+                $request->session()->regenerate();
+                if (Auth::check()) {
+                    return response()->json(['success' => true, 'msg' => __('business.success_change_business')]);
+                } else {
+                    return response()->json(['success' => false, 'msg' => 'Error, contacte al administrador']);
+                }
+            }
+        } else {
+            return response()->json(['success' => false, 'msg' => __('messages.wrong_password')]);
+        }
+    }
     /**
      * Shows registration form
      *

@@ -47,4 +47,5 @@ return [
     "modules_permissions" => 'Modules ands permissions',
     "all_your_modules" => 'All your modules',
     "all_your_permissions" => 'All your permissions',
+    "wrong_password" => 'Incorrect password'
 ];

@@ -1,4 +1,7 @@
 @inject('request', 'Illuminate\Http\Request')
+<div class="modal fade business_modal" tabindex="-1" role="dialog" 
+    	aria-labelledby="gridSystemModalLabel">
+</div>
 <!-- Main Header -->
   <header class="main-header no-print">
     <a href="{{action('HomeController@index')}}" class="logo">
@@ -30,9 +33,9 @@
           </button>
         @endif
 
-        <a href="#" title="{{ __('home.conected_business') }}" data-toggle="tooltip" data-placement="bottom" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
-            <strong><i class="fa fa-briefcase"></i>&nbsp; {{ Session::get('business.name') }}</strong>
-          </a>
+        <a href="{{ action('BusinessController@getChangeBusiness')}}" title="{{ __('home.conected_business') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10 btn_business_modal">
+            <strong><i class="fa fa-briefcase"></i>&nbsp; @lang("business.change_business")</strong>
+        </a>
 
         @can('sell.create')
           <a href="{{action('SellPosController@create')}}" title="POS" data-toggle="tooltip" data-placement="bottom" class="btn btn-success btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
