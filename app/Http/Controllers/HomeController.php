@@ -41,6 +41,7 @@ class HomeController extends Controller
     
         $this->businessUtil = $businessUtil;
         $this->transactionUtil = $transactionUtil;
+        DB::statement('SET SESSION sql_require_primary_key=0');
     }
 
     /**
