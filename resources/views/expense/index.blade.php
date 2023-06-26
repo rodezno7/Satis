@@ -4,7 +4,7 @@
 @section('content')
 
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    <section class="content-header no-print">
         <h1>@lang('expense.expenses')
             <small></small>
         </h1>
@@ -15,7 +15,7 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content no-print">
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-primary" id="accordion">
@@ -106,6 +106,8 @@
     </section>
     <!-- /.content -->
     <!-- /.content -->
+    {{-- Print section --}}
+    <section id="receipt_section" class="print_section"></section>
     <div class="modal fade expenses_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="gridSystemModalLabel">
     </div>
 
