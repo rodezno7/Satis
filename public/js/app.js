@@ -1801,6 +1801,31 @@ $(document).ready(function() {
         });
     });
 
+    $(document).on('click', 'a.print-expense', function(e) {
+        e.preventDefault();
+        var href = $(this).data('href');
+
+        $.ajax({
+            method: "GET",
+            url: href,
+            dataType: "json",
+            success: function(result) {
+
+                if (result.success == 1 && result.receipt.html_content != '') {
+                    $('#receipt_section').html(result.receipt.html_content);
+                    __currency_convert_recursively($('#receipt_section'));
+                    setTimeout(function() { window.print(); }, 1000);
+                } else {
+                    Swal.fire
+                    ({
+                        title: ""+result.msg+"",
+                        icon: "error",
+                    });
+                }
+            }
+        });
+    });
+
     //Sales commission agent
     var sales_commission_agent_table = $('#sales_commission_agent_table').DataTable({
         processing: true,

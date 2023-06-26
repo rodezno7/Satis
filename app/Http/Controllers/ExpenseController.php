@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\BankAccount;
-use App\BankTransaction;
-use Illuminate\Http\Request;
-
-use App\Transaction;
-use App\ExpenseCategory;
-use App\BusinessLocation;
-use App\Contact;
-use App\DocumentType;
-use App\PaymentTerm;
-use App\TransactionPayment;
-use App\TypeBankTransaction;
+use DB;
 use App\User;
-use App\Utils\BusinessUtil;
 use Validator;
 
-use Yajra\DataTables\Facades\DataTables;
-
-use App\Utils\TransactionUtil;
-use App\Utils\ModuleUtil;
+use App\Contact;
+use App\Business;
+use App\BankAccount;
+use App\PaymentTerm;
+use App\Transaction;
+use App\DocumentType;
 use App\Utils\TaxUtil;
-use DB;
+use App\BankTransaction;
+use App\ExpenseCategory;
+use App\BusinessLocation;
+use App\Utils\ModuleUtil;
+
+use App\TransactionPayment;
+
+use App\Utils\BusinessUtil;
+use App\TypeBankTransaction;
+use Illuminate\Http\Request;
+use App\Utils\TransactionUtil;
+use Yajra\DataTables\Facades\DataTables;
 
 class ExpenseController extends Controller
 {
+    protected $taxUtil;
     /**
      * Constructor
      *
@@ -130,6 +132,7 @@ class ExpenseController extends Controller
                 @endif
                 <li>
                 <a style="cursor: pointer" data-href="{{action(\'ExpenseController@destroy\', [$id])}}" class="delete_expense"><i class="glyphicon glyphicon-trash"></i> @lang("messages.delete")</a></li>
+                <li><a href="#" class="print-expense" data-href="{{action("ExpenseController@printExpense", [$id])}}"><i class="fa fa-print" aria-hidden="true"></i>' . __("messages.print") . '</a></li>
                 <li class="divider"></li> 
                 @if($payment_status != "paid")
                 <li><a href="{{action("TransactionPaymentController@addPayment", [$id])}}" class="add_payment_modal"><i class="fa fa-money" aria-hidden="true"></i> @lang("purchase.add_payment")</a></li>
@@ -964,5 +967,53 @@ class ExpenseController extends Controller
         }
 
         return $tax_amount;
+    }
+
+    public function printExpense($id)
+    {
+        try {
+            $business_id = request()->session()->get('user.business_id');
+            $taxes = $this->taxUtil->getTaxGroups($business_id, 'products')
+                ->pluck('name', 'id');
+            $expense = Transaction::leftJoin('expense_categories AS ec', 'transactions.expense_category_id', '=', 'ec.id')
+                ->join('document_types', 'document_types.id', '=', 'transactions.document_types_id')
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.id', $id)
+                ->with(
+                    'contact',
+                    'purchase_lines',
+                    'purchase_lines.product',
+                    'purchase_lines.variations',
+                    'purchase_lines.variations.product_variation',
+                    'location',
+                    'payment_lines'
+                )
+                ->first();
+            $taxes = [];
+            if($expense->tax_id) {
+                $tax_amount = !is_null($expense->tax_amount) || $expense->tax_amount == '' ? $expense->tax_amount : 0;
+                $tax_group_amount = !is_null($expense->tax_group_amount) || $expense->tax_group_amount == '' ? $expense->tax_group_amount : 0;
+
+                $taxes[] = [
+                    "tax_name" => $this->taxUtil->getTaxName($expense->tax_id),
+                    "tax_amount" => $tax_amount + $tax_group_amount
+                ];
+            } else {
+                $taxes[] = [
+                    "tax_name" => '',
+                    "tax_amount" => '$0.00'
+                ];
+            }
+            $output = ['success' => 1, 'receipt' => []];
+            $output['receipt']['html_content'] = view('expense.print', compact('expense', 'taxes'))->render();
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => 0,
+                'msg' => __('messages.something_went_wrong')
+            ];
+        }
+        return $output;
     }
 }

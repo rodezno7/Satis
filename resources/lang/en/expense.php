@@ -43,4 +43,13 @@ return [
     "pay_transaction" => "Pay transaction",
     'pending' => 'Pending',
     'amount' => 'Amount',
+    'type_doc' => 'Document type',
+    'type_expense' => 'Expense type',
+    'expense_details' => 'Expense details',
+    'tax_expense' => 'Tax expense',
+    'total_expense' => 'Total expense',
+    'expense_status' => 'Expense status',
+    'expense_paid' => 'Paid',
+    'expense_due' => 'Due',
+    'expense_partial' => 'Partial'
 ];

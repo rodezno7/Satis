@@ -48,4 +48,13 @@ return [
     "pay_transaction" => "Pagar transacción",
     'pending' => 'Pendiente',
     'amount' => 'Monto',
+    'type_doc' => 'Tipo de documento',
+    'type_expense' => 'Tipo de gasto',
+    'expense_details' => 'Detalles del gasto',
+    'tax_expense' => 'Impuesto del gasto',
+    'total_expense' => 'Total del gasto',
+    'expense_status' => 'Estado del gasto',
+    'expense_paid' => 'Pagado',
+    'expense_due' => 'Debido',
+    'expense_partial' => 'Cuota'
 ];
