@@ -678,4 +678,27 @@ class HomeController extends Controller
 
         return view('home.peak_sales_hours_chart', compact('sells_chart_3'));
     }
+
+    public function getProfitsDetails()
+    {
+        if (request()->ajax()) {
+            $start = request()->start;
+            $end = request()->end;
+            $location_id = request()->location_id;
+            $business_id = request()->session()->get('user.business_id');
+
+            $sale_details = $this->transactionUtil->getSellTotals($business_id, $start, $end, $location_id);
+            $purchase_details = $this->transactionUtil->getPurchaseTotals($business_id, $start, $end, $location_id);
+            $expense_details = $this->transactionUtil->getExpenseTotals($business_id, $start, $end, $location_id);
+
+            $details = [
+                'gross_profit' => $sale_details['total_sell_inc_tax'] - $purchase_details['total_purchase_inc_tax'],
+                'net_earnings' => $sale_details['total_sell_inc_tax'] - ($purchase_details['total_purchase_inc_tax'] + $expense_details['total_expense_inc_tax'])
+            ];
+            \Log::emergency($sale_details);
+            \Log::emergency($purchase_details);
+            \Log::emergency($expense_details);
+            return $details;
+        }
+    }
 }

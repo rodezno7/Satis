@@ -6461,4 +6461,54 @@ class TransactionUtil extends Util
 
         return $result;
     }
+
+    /**
+     * Gives the total expense amount for a business within the date range passed.
+     *
+     * @param  int  $business_id
+     * @param  string  $start_date
+     * @param  string  $end_date
+     * @param  int  $location_id
+     * @return array
+     */
+    public function getExpenseTotals($business_id, $start_date = null, $end_date = null, $location_id = null)
+    {
+        $query = Transaction::where('business_id', $business_id)
+            ->where('type', 'expense')
+            ->select(
+                'final_total',
+                DB::raw("(final_total - tax_amount) as total_exc_tax"),
+                DB::raw("SUM((SELECT SUM(tp.amount) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id)) as total_paid"),
+                DB::raw('SUM(total_before_tax) as total_before_tax')
+            )
+            ->groupBy('transactions.id');
+
+        // Check for permitted locations of a user
+        $permitted_locations = auth()->user()->permitted_locations();
+
+        if ($permitted_locations != 'all') {
+            $query->whereIn('transactions.location_id', $permitted_locations);
+        }
+
+        if (!empty($start_date) && !empty($end_date)) {
+            $query->whereBetween(DB::raw('date(transaction_date)'), [$start_date, $end_date]);
+        }
+
+        if (empty($start_date) && !empty($end_date)) {
+            $query->whereDate('transaction_date', '<=', $end_date);
+        }
+
+        // Filter by the location
+        if (!empty($location_id)) {
+            $query->where('transactions.location_id', $location_id);
+        }
+
+        $expense_details = $query->get();
+
+        $output['total_expense_inc_tax'] = $expense_details->sum('final_total');
+        $output['total_expense_exc_tax'] = $expense_details->sum('total_before_tax');
+        $output['expense_due'] = $expense_details->sum('final_total') - $expense_details->sum('total_paid');
+
+        return $output;
+    }
 }
