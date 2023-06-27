@@ -1877,13 +1877,16 @@ class ProductUtil extends Util
      * Sync product for all businees
      * 
      * @param int $id
+     * @param string $sku
+     * @param string $type
      * @author Arquímides Martínez
      */
     public function syncProduct($id, $sku, $type) {
         $business_id = auth()->user()->business_id;
+        $current_nrc = Business::where('id', $business_id)->value('nrc');
 
         $business = Business::where('id', '!=', $business_id)
-            ->select('id')->get();
+            ->select('id', 'nrc')->get();
 
         /** If there is not more than one business, exit */
         if (empty($business)) {
@@ -1900,7 +1903,7 @@ class ProductUtil extends Util
             $product = Product::findOrFail($id)->toArray();
             $product['business_id'] = $b->id;
 
-            /** Remove needless columns */
+            /** Remove useless columns */
             unset(
                 $product['id'],
                 $product['sku'],
@@ -2092,8 +2095,11 @@ class ProductUtil extends Util
                             ->first();
 
                         $cloned_variation->sub_sku = $cloned_product->sku;
-                        $cloned_variation->default_purchase_price = $variation->default_purchase_price;
-                        $cloned_variation->dpp_inc_tax = $variation->dpp_inc_tax;
+                        /** Exclude update cost for AGL */
+                        if ($b->nrc != '226979-2' && $current_nrc != '226979-2') {
+                            $cloned_variation->default_purchase_price = $variation->default_purchase_price;
+                            $cloned_variation->dpp_inc_tax = $variation->dpp_inc_tax;
+                        }
                         $cloned_variation->profit_percent = $variation->profit_percent;
                         $cloned_variation->default_sell_price = $variation->default_sell_price;
                         $cloned_variation->sell_price_inc_tax = $variation->sell_price_inc_tax;
