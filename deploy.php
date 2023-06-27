@@ -15,7 +15,6 @@ add('writable_dirs', []);
 host('demo.satiserp.app')
     ->setHostname('devtech-satis-deploy')
     ->setRemoteUser('deployer')
-    ->set('repository', 'git@github.com:rodezno7/Satis.git')
     ->set('branch', 'development')
     ->setDeployPath('/var/www/demo.satiserp.app/html');
 
