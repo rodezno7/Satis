@@ -696,9 +696,7 @@ class HomeController extends Controller
                 'gross_profit' => $sale_details['total_sell_inc_tax'] - $purchase_details['total_purchase_inc_tax'],
                 'net_earnings' => $sale_details['total_sell_inc_tax'] - ($purchase_details['total_purchase_inc_tax'] + $expense_details['total_expense_inc_tax'])
             ];
-            \Log::emergency($sale_details);
-            \Log::emergency($purchase_details);
-            \Log::emergency($expense_details);
+            
             return $details;
         }
     }
