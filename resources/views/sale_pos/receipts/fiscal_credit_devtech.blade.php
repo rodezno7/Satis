@@ -388,7 +388,7 @@
 
             {{-- NIT --}}
             <div id="nit" class="cutter">
-                {{ $receipt_details->customer_dui }}
+                {{ $receipt_details->customer_nit }}
             </div>
 
             {{-- GIRO --}}
