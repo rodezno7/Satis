@@ -64,7 +64,7 @@ class ReporterController extends Controller
 		$this->taxUtil = $taxUtil;
 		$this->businessUtil = $businessUtil;
 		$this->transactionUtil = $transactionUtil;
-        DB::statement('SET SESSION sql_require_primary_key=0');
+        //DB::statement('SET SESSION sql_require_primary_key=0');
 	}
 
 	public function allEntries(Request $request) {
