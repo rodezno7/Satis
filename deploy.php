@@ -12,9 +12,12 @@ add('shared_dirs', []);
 add('writable_dirs', []);
 
 // Hosts
-host('devtech-proy-deploy')
-    ->set('remote_user', 'deployer')
-    ->set('deploy_path', '/var/www/satis-erp/html');
+host('demo.satiserp.app')
+    ->setHostname('devtech-satis-deploy')
+    ->setRemoteUser('deployer')
+    ->set('repository', 'git@github.com:rodezno7/Satis.git')
+    ->set('branch', 'development')
+    ->setDeployPath('/var/www/demo.satiserp.app/html');
 
 /** Override vendors task */
 task('deploy:vendors', function () {
@@ -47,8 +50,6 @@ task('artisan:migrate', function () {
     $log = run('php artisan migrate --force');
     info($log);
 });
-
-task('artisan:migrate:status', artisan('migrate:status', ['skipIfNoEnv', 'showOutput']));
 
 /** Disabled artisan route:cache task */
 task('artisan:route:cache')
