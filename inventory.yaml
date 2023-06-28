@@ -1,0 +1,5 @@
+hosts:
+  demo.satiserp.app:
+    hostname: devtech-satis-deploy
+    branch: development
+    deploy_path: /var/www/demo.satiserp.app/html

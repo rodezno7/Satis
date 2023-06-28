@@ -5,18 +5,13 @@ require 'recipe/laravel.php';
 
 // Config git
 set('repository', 'git@github.com:rodezno7/Satis.git');
-set('ssh_user', 'deployer');
 
 add('shared_files', []);
 add('shared_dirs', []);
 add('writable_dirs', []);
 
 // Hosts
-host('demo.satiserp.app')
-    ->setHostname('devtech-satis-deploy')
-    ->setRemoteUser('deployer')
-    ->set('branch', 'development')
-    ->setDeployPath('/var/www/demo.satiserp.app/html');
+import('inventory.yaml');
 
 /** Override vendors task */
 task('deploy:vendors', function () {
