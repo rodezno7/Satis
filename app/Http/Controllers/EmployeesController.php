@@ -79,15 +79,15 @@ class EmployeesController extends Controller
         }
         $business_id = request()->session()->get('user.business_id');
 
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
+        $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
         $countries = DB::table('countries')->pluck('name', 'id');
         
@@ -135,8 +135,9 @@ class EmployeesController extends Controller
             'date_admission'        => 'nullable',
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
-            'department_id'         => 'nullable',
-            'position1_id'          => 'nullable', 
+            'department_id'         => 'required',
+            'position1_id'          => 'required', 
+            'salary'                => 'required'
         ]);
 
         try {
@@ -183,6 +184,7 @@ class EmployeesController extends Controller
                     $user_details['is_cmmsn_agnt'] = 0;
                 }
 
+                DB::beginTransaction();
                 $user_details = User::create($user_details);
                 $user_id = $user_details->id;
                 $role_id = $request->input('role');
@@ -209,9 +211,9 @@ class EmployeesController extends Controller
                 'social_security_number',
                 'afp_id',
                 'afp_number',
-                'department_id',
-                'position1_id',
-                'salary'
+                //'department_id',
+                //'position1_id',
+                //'salary'
             ]);
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
@@ -234,12 +236,24 @@ class EmployeesController extends Controller
             $input_details['business_id']    = $request->session()->get('user.business_id');
             $employee = Employees::create($input_details);
 
+            DB::table('rrhh_position_history')->insert(
+                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
+            );
+
+            DB::table('rrhh_salary_history')->insert(
+                ['employee_id' => $employee->id, 'salary' => $request->input('salary')]
+            );
+
+            DB::commit();
+
             $output = [
                 'success' => 1,
                 'id' => $employee->id,
                 'msg' => __('rrhh.added_successfully')
             ];
         } catch (\Exception $e) {
+            DB::rollBack();
+
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
@@ -288,8 +302,8 @@ class EmployeesController extends Controller
             $route = 'uploads/img/'.$employee->photo;
         }
 
-        $documents = DB::table('human_resource_documents as document')
-        ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
+        $documents = DB::table('rrhh_documents as document')
+        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
         ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
@@ -313,29 +327,29 @@ class EmployeesController extends Controller
 
         $employee = Employees::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $payments = DB::table('human_resources_datas')->where('human_resources_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
+        $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $employee->state_id)->pluck('name', 'id');
-        $documents = DB::table('human_resource_documents as document')
-        ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
+        $documents = DB::table('rrhh_documents as document')
+        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
         ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
 
-        $type_documents = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
+        $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
         
        
         for ($i=0; $i < count($documents); $i++) { 

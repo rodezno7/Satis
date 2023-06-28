@@ -20,30 +20,30 @@ class AddColumnsToEmployeesTable extends Migration
             $table->string('gender')->nullable()->after('last_name');
 
             $table->integer('nationality_id')->unsigned()->nullable()->after('gender');
-            $table->foreign('nationality_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('nationality_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('dni')->nullable()->after('nationality_id');
             $table->string('tax_number')->nullable()->after('dni');
 
             $table->integer('civil_status_id')->unsigned()->nullable()->after('tax_number');
-            $table->foreign('civil_status_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('civil_status_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('phone')->nullable()->after('civil_status_id');
             $table->string('address')->nullable()->after('email');
             $table->string('social_security_number')->nullable()->after('address');
 
             $table->integer('afp_id')->unsigned()->nullable()->after('social_security_number');
-            $table->foreign('afp_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('afp_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('afp_number')->nullable()->after('afp_id');
             $table->date('date_admission')->nullable()->after('afp_number');
-            $table->decimal('salary', 10, 2)->nullable()->after('date_admission');
+            // $table->decimal('salary', 10, 2)->nullable()->after('date_admission');
 
-            $table->integer('department_id')->unsigned()->nullable()->after('salary');
-            $table->foreign('department_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            // $table->integer('department_id')->unsigned()->nullable()->after('salary');
+            // $table->foreign('department_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
             
-            $table->integer('position1_id')->unsigned()->nullable()->after('department_id');
-            $table->foreign('position1_id')->references('id')->on('human_resources_datas');
+            // $table->integer('position1_id')->unsigned()->nullable()->after('department_id');
+            // $table->foreign('position1_id')->references('id')->on('rrhh_datas');
             
             $table->string('photo')->nullable()->after('position_id');
             $table->boolean('status')->default(1)->after('photo');
@@ -58,16 +58,16 @@ class AddColumnsToEmployeesTable extends Migration
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('profession_id')->unsigned()->nullable()->after('city_id');
-            $table->foreign('profession_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('profession_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('type_id')->unsigned()->nullable()->after('profession_id');
-            $table->foreign('type_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('type_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('payment_id')->unsigned()->nullable()->after('type_id');
-            $table->foreign('payment_id')->references('id')->on('human_resources_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('payment_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('bank_id')->unsigned()->nullable()->after('payment_id');
-            $table->foreign('bank_id')->references('id')->on('human_resource_banks')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('bank_account')->nullable()->after('bank_id');
             $table->boolean('extra_hours')->default(0)->after('bank_account');

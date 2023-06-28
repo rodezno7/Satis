@@ -1,5 +1,6 @@
 <div class="modal-header">
-	<h4 class="modal-title" id="formModal">@lang('rrhh.add') {{ $type_item }}
+	{{-- <h4 class="modal-title" id="formModal">@lang('rrhh.add') {{ $type_item }} --}}
+	<h4 class="modal-title" id="formModal">{{ $type_item }}
 		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">&times;</span>
 		</button>
@@ -19,7 +20,7 @@
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-			<input type="hidden" name="human_resources_header_id" value="{{ $header_id }}" id="human_resources_header_id">
+			<input type="hidden" name="rrhh_header_id" value="{{ $header_id }}" id="rrhh_header_id">
 		</div>
 	</form>	
 </div>
@@ -36,7 +37,6 @@
 	});
 
 	$("#btn_add_item").click(function() {
-		$("#btn_add_item").prop("disabled", true);
 		route = "/rrhh-catalogues-data";
 		datastring = $("#form_add").serialize();
 		token = $("#token").val();
@@ -49,7 +49,6 @@
 			success:function(result) {
 
 				if(result.success == true) {
-					$("#btn_add_item").prop("disabled", false);
 					Swal.fire
 					({
 						title: result.msg,
@@ -66,12 +65,23 @@
 					$("#professions-table").DataTable().ajax.reload(null, false);
 					$("#way-to-pays-table").DataTable().ajax.reload(null, false);
 					$("#document-types-table").DataTable().ajax.reload(null, false);
-					$('#modal').modal('hide');
 
-					
+					$("#special_capabilities-table").DataTable().ajax.reload(null, false);
+					//$("#types_wages-table").DataTable().ajax.reload(null, false);
+					$("#employee_classification-table").DataTable().ajax.reload(null, false);
+					//$("#cost_center-table").DataTable().ajax.reload(null, false);
+					//$("#types_contracts-table").DataTable().ajax.reload(null, false);
+					//$("#types_clause_contracts-table").DataTable().ajax.reload(null, false);
+					$("#types_professions_occupations-table").DataTable().ajax.reload(null, false);
+					$("#types_studies-table").DataTable().ajax.reload(null, false);
+					$("#types_personnel_actions-table").DataTable().ajax.reload(null, false);
+					$("#types_income_discounts-table").DataTable().ajax.reload(null, false);
+					$("#types_disabilities-table").DataTable().ajax.reload(null, false);
+					$("#types_relationships-table").DataTable().ajax.reload(null, false);
+
+					$('#modal').modal('hide');
 				}
 				else {
-					$("#btn_add_item").prop("disabled", false);
 					Swal.fire
 					({
 						title: result.msg,
@@ -80,7 +90,6 @@
 				}
 			},
 			error:function(msj){
-				$("#btn_add_item").prop("disabled", false);
 				errormessages = "";
 				$.each(msj.responseJSON.errors, function(i, field){
 					errormessages+="<li>"+field+"</li>";

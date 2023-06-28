@@ -135,7 +135,7 @@
           @endcan
           @can('rrhh_catalogues.view')
           <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-            <a href="{{action('HumanResourcesHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+            <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
               @lang('rrhh.catalogues')
             </a>
           </li>

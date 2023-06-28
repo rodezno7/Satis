@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Employees;
-use App\HumanResourceDocuments;
+use App\RrhhDocuments;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Storage;
 use App\Utils\ModuleUtil;
 
-class HumanResourceDocumentsController extends Controller
+class RrhhDocumentsController extends Controller
 {
     protected $moduleUtil;
 
@@ -41,14 +41,14 @@ class HumanResourceDocumentsController extends Controller
         }
         $employee = Employees::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
-        $documents = DB::table('human_resource_documents as document')
-        ->join('human_resources_datas as type', 'type.id', '=', 'document.document_type_id')
+        $documents = DB::table('rrhh_documents as document')
+        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
         ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->get();
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->get();
         
         return view('rrhh.documents.documents', compact('documents', 'employee', 'types'));
     }
@@ -72,8 +72,8 @@ class HumanResourceDocumentsController extends Controller
         $states = DB::table('states')->pluck('name', 'id');
         $cities = DB::table('cities')->pluck('name', 'id');
         $business_id = request()->session()->get('user.business_id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
-        $documents = DB::table('human_resource_documents')->where('employee_id', $id)->get();
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
+        $documents = DB::table('rrhh_documents')->where('employee_id', $id)->get();
 
         for ($i=0; $i < count($documents); $i++) { 
             if(isset($types)){
@@ -86,7 +86,7 @@ class HumanResourceDocumentsController extends Controller
                 }
             }
         }
-        $type_documents = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
+        $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
         $employee_id = $id;
 
         return view('rrhh.documents.create', compact('states', 'cities', 'types', 'employee_id', 'type_documents'));
@@ -105,7 +105,7 @@ class HumanResourceDocumentsController extends Controller
         }
         if($request->document_type_id != null){
             $business_id = request()->session()->get('user.business_id');
-            $type = DB::table('human_resources_datas')->where('business_id', $business_id)->where('human_resources_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $request->document_type_id)->first();
+            $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $request->document_type_id)->first();
             if($type){
                 $request->validate([
                     'state_id'              => 'required',
@@ -151,7 +151,7 @@ class HumanResourceDocumentsController extends Controller
                     $input_details['file'] = $name;
                 }
     
-                $document = HumanResourceDocuments::create($input_details);
+                $document = RrhhDocuments::create($input_details);
     
                 DB::commit();
     
@@ -182,10 +182,10 @@ class HumanResourceDocumentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\HumanResourceDocuments  $humanResourceDocuments
+     * @param  \App\RrhhDocuments  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
-    public function show(HumanResourceDocuments $humanResourceDocuments)
+    public function show(RrhhDocuments $rrhhDocuments)
     {
         //
     }
@@ -195,10 +195,10 @@ class HumanResourceDocumentsController extends Controller
         if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
             abort(403, 'Unauthorized action.');
         }
-        $document = HumanResourceDocuments::findOrFail($id);
+        $document = RrhhDocuments::findOrFail($id);
         $state = DB::table('states')->where('id', $document->state_id)->first();
         $city = DB::table('cities')->where('id', $document->city_id)->first();
-        $type = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('id', $document->document_type_id)->first();
+        $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('id', $document->document_type_id)->first();
         
         $route = 'flags/'.$document->file;
         $ext = substr($document->file, -3);
@@ -210,7 +210,7 @@ class HumanResourceDocumentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\HumanResourceDocuments  $humanResourceDocuments
+     * @param  \App\RrhhDocuments  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
     public function edit($id) 
@@ -219,11 +219,11 @@ class HumanResourceDocumentsController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
-        $document = HumanResourceDocuments::findOrFail($id);
+        $document = RrhhDocuments::findOrFail($id);
         $states = DB::table('states')->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $document->state_id)->pluck('name', 'id');
-        $type = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->where('id', $document->document_type_id)->first();
-        //$types = DB::table('human_resources_datas')->where('human_resources_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->where('id', $document->document_type_id)->first();
+        //$types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $employee_id = $document->employee_id;
 
         return view('rrhh.documents.edit', compact('type', 'document', 'states', 'cities', 'employee_id'));
@@ -233,7 +233,7 @@ class HumanResourceDocumentsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\HumanResourceDocuments  $humanResourceDocuments
+     * @param  \App\RrhhDocuments  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
@@ -246,27 +246,27 @@ class HumanResourceDocumentsController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $item = HumanResourceDocuments::findOrFail($request->id);
-            $business_id = request()->session()->get('user.business_id');
-            $type = DB::table('human_resources_datas')->where('business_id', $business_id)->where('human_resources_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $item->document_type_id)->first();
-            if($type){
-                $request->validate([
-                    'state_id'              => 'required',
-                    'city_id'               => 'required',
-                    'number'                => 'required',
-                    'date_expedition'       => 'required',
-                    'date_expiration'       => 'required',
-                    'file'                  => 'required',
-                ]);
-            }else{
-                $request->validate([
-                    'state_id'              => 'required',
-                    'city_id'               => 'required',
-                    'number'                => 'required',
-                    'file'                  => 'required',
-                    'date_expedition'       => 'required',
-                ]);
-            }
+        $item = RrhhDocuments::findOrFail($request->id);
+        $business_id = request()->session()->get('user.business_id');
+        $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $item->document_type_id)->first();
+        if($type){
+            $request->validate([
+                'state_id'              => 'required',
+                'city_id'               => 'required',
+                'number'                => 'required',
+                'date_expedition'       => 'required',
+                'date_expiration'       => 'required',
+                'file'                  => 'required',
+            ]);
+        }else{
+            $request->validate([
+                'state_id'              => 'required',
+                'city_id'               => 'required',
+                'number'                => 'required',
+                'file'                  => 'required',
+                'date_expedition'       => 'required',
+            ]);
+        }
         try {
             $input_details = $request->only([
                 'date_expiration', 
@@ -284,7 +284,7 @@ class HumanResourceDocumentsController extends Controller
             {
                 DB::beginTransaction();
 
-                $item = HumanResourceDocuments::findOrFail($request->id);
+                $item = RrhhDocuments::findOrFail($request->id);
 
                 if ($request->hasFile('file')) {
                     $file = $request->file('file');
@@ -325,7 +325,7 @@ class HumanResourceDocumentsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\HumanResourceDocuments  $humanResourceDocuments
+     * @param  \App\RrhhDocuments  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -336,7 +336,7 @@ class HumanResourceDocumentsController extends Controller
 
         if (request()->ajax()) {
             try {
-                $item = HumanResourceDocuments::findOrFail($id);
+                $item = RrhhDocuments::findOrFail($id);
                 $item->forceDelete();
                 
                 $output = [

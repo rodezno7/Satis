@@ -23,10 +23,24 @@
                         <a href="#" class="list-group-item text-center">@lang('rrhh.afps')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.nationalities')</a>
-                        <a href="#" class="list-group-item text-center">@lang('rrhh.banks')</a>
+                        {{-- <a href="#" class="list-group-item text-center">@lang('rrhh.banks')</a> --}}
                         <a href="#" class="list-group-item text-center">@lang('rrhh.professions_occupations')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.way_to_pays')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.document_types')</a>
+                        
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.special_capabilities')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.employee_classification')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_studies')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_absences')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_disabilities')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_relationships')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_income_discounts')</a>
+
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_personnel_actions')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_wages')</a>
+                        {{-- <a href="#" class="list-group-item text-center">@lang('rrhh.cost_center')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_contracts')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_clause_contracts')</a> --}}
                     </div>
                 </div>
                 <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 pos-tab">
@@ -55,22 +69,69 @@
                     @include('rrhh.catalogues.nationalities.index')
                     <!-- tab 6 end -->
 
-                    <!-- tab 7 start -->
+                    {{-- <!-- tab 7 start -->
                     @include('rrhh.catalogues.banks.index')
+                    <!-- tab 7 end --> --}}
+
+                    <!-- tab 7 start -->
+                    @include('rrhh.catalogues.professions.index')
                     <!-- tab 7 end -->
 
                     <!-- tab 8 start -->
-                    @include('rrhh.catalogues.professions.index')
+                    @include('rrhh.catalogues.pays.index')
                     <!-- tab 8 end -->
 
                     <!-- tab 9 start -->
-                    @include('rrhh.catalogues.pays.index')
+                    @include('rrhh.catalogues.documents.index')
                     <!-- tab 9 end -->
 
                     <!-- tab 10 start -->
-                    @include('rrhh.catalogues.documents.index')
+                    @include('rrhh.catalogues.special_capabilities.index')
                     <!-- tab 10 end -->
 
+                    <!-- tab 11 start -->
+                    @include('rrhh.catalogues.employee_classification.index')
+                    <!-- tab 11 end -->
+
+                    <!-- tab 12 start -->
+                    @include('rrhh.catalogues.types_studies.index')
+                    <!-- tab 12 end -->
+
+                    <!-- tab 13 start -->
+                    @include('rrhh.catalogues.types_absences.index')
+                    <!-- tab 13 end -->
+
+                    <!-- tab 14 start -->
+                    @include('rrhh.catalogues.types_disabilities.index')
+                    <!-- tab 14 end -->
+                    
+                    <!-- tab 15 start -->
+                    @include('rrhh.catalogues.types_relationships.index')
+                    <!-- tab 15 end -->
+
+                    <!-- tab 16 start -->
+                    @include('rrhh.catalogues.types_income_discounts.index')
+                    <!-- tab 16 end -->
+
+                    <!-- tab start -->
+                    @include('rrhh.catalogues.types_personnel_actions.index')
+                    <!-- tab end -->
+
+                    <!-- tab start -->
+                    @include('rrhh.catalogues.types_wages.index')
+                    <!-- tab end -->
+
+                    {{-- <!-- tab start -->
+                    @include('rrhh.catalogues.cost_center.index')
+                    <!-- tab end -->
+
+                    <!-- tab start -->
+                    @include('rrhh.catalogues.types_contracts.index')
+                    <!-- tab end -->
+
+                    <!-- tab start -->
+                    @include('rrhh.catalogues.types_clause_contracts.index')
+                    <!-- tab end --> --}}
                 </div>
             </div>
         </div>
@@ -79,6 +140,14 @@
     <div class="modal fade" id="modal" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content" id="modal_content">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_type" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="modal_content_type">
 
             </div>
         </div>
@@ -97,17 +166,29 @@
         loadAfps();
         loadTypes();
         loadNationalities();
-        loadBanks();
+        // loadBanks();
         loadProfessions();
         loadWayToPays();
         loadDocumentTypes();
+        loadSpecialCapabilities();
+        loadEmployeeClassification();
+        //loadTypesProfessionsOccupations();
+        loadTypesStudies();
+        loadTypesPersonnelActions();
+        loadTypesIncomeDiscounts();
+        loadTypesAbsences();
+        loadTypesDisabilities();
+        loadKinshipTypes();
+
+        loadTypesWages();
+        loadCostCenter();
+        loadTypesContracts();
+        loadTypesClauseContracts();
         $.fn.dataTable.ext.errMode = 'none';
     });
 
 
-
     function loadMaritalStatuses() {
-
         var table = $("#marital-statuses-table").DataTable();
         table.destroy();
         var table = $("#marital-statuses-table").DataTable({
@@ -140,7 +221,6 @@
     }
 
     function loadDepartments() {
-
         var table2 = $("#departments-table").DataTable();
         table2.destroy();
         var table2 = $("#departments-table").DataTable({
@@ -173,7 +253,6 @@
     }
 
     function loadPositions() {
-
         var table3 = $("#positions-table").DataTable();
         table3.destroy();
         var table3 = $("#positions-table").DataTable({
@@ -206,7 +285,6 @@
     }
 
     function loadAfps() {
-
         var table4 = $("#afps-table").DataTable();
         table4.destroy();
         var table4 = $("#afps-table").DataTable({
@@ -239,7 +317,6 @@
     }
 
     function loadTypes() {
-
         var table5 = $("#types-table").DataTable();
         table5.destroy();
         var table5 = $("#types-table").DataTable({
@@ -272,7 +349,6 @@
     }
 
     function loadNationalities() {
-
         var table = $("#nationalities-table").DataTable();
         table.destroy();
         var table = $("#nationalities-table").DataTable({
@@ -305,7 +381,6 @@
     }
 
     function loadProfessions() {
-
         var table = $("#professions-table").DataTable();
         table.destroy();
         var table = $("#professions-table").DataTable({
@@ -338,7 +413,6 @@
     }
 
     function loadWayToPays() {
-
         var table = $("#way-to-pays-table").DataTable();
         table.destroy();
         var table = $("#way-to-pays-table").DataTable({
@@ -374,7 +448,6 @@
     }
 
     function loadDocumentTypes() {
-
         var table = $("#document-types-table").DataTable();
         table.destroy();
         var table = $("#document-types-table").DataTable({
@@ -407,29 +480,28 @@
 
     }
 
-
-    function loadBanks() {
-
-        var table = $("#banks-table").DataTable();
-        table.destroy();
-        var table = $("#banks-table").DataTable({
+    function loadSpecialCapabilities() {
+        var table5 = $("#special_capabilities-table").DataTable();
+        table5.destroy();
+        var table5 = $("#special_capabilities-table").DataTable({
 
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/rrhh/getBanksData",
+            ajax: "/rrhh/getCataloguesData/10",
             columns: [
-            {data: 'name'},
+            {data: 'value'},
+            {data: 'status'},
             {data: null, render: function(data){
 
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteBank('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -440,7 +512,388 @@
 
     }
 
-    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type").click(function(){
+
+    function loadEmployeeClassification() {
+        var table5 = $("#employee_classification-table").DataTable();
+        table5.destroy();
+        var table5 = $("#employee_classification-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/11",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+    function loadTypesStudies() {
+        var table5 = $("#types_studies-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_studies-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/12",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    function loadTypesAbsences() {
+        var table5 = $("#types_absences-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_absences-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/13",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+    function loadTypesDisabilities() {
+        var table5 = $("#types_disabilities-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_disabilities-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/14",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    function loadKinshipTypes() {
+        var table5 = $("#types_relationships-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_relationships-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/15",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+    function loadTypesIncomeDiscounts() {
+        var table5 = $("#types_income_discounts-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_income_discounts-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/16",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+    // function loadBanks() {
+    //     var table = $("#banks-table").DataTable();
+    //     table.destroy();
+    //     var table = $("#banks-table").DataTable({
+
+    //         deferRender: true,
+    //         processing: true,
+    //         serverSide: true,
+    //         ajax: "/rrhh/getBanksData",
+    //         columns: [
+    //         {data: 'name'},
+    //         {data: null, render: function(data){
+
+    //             html = "";
+                
+    //             @can('rrhh_catalogues.update')
+    //             html += '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+    //             @endcan
+
+    //             @can('rrhh_catalogues.delete')
+    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteBank('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+    //             @endcan
+                
+    //             return html;
+    //         } , orderable: false, searchable: false}
+    //         ],
+    //         dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+    //     });
+
+    // }
+
+    function loadTypesPersonnelActions() {
+        var table5 = $("#types_personnel_actions-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_personnel_actions-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getTypePersonnelActionData",
+            columns: [
+            {data: 'name'},
+            {data: 'required_authorization'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    function loadTypesWages() {
+        var table5 = $("#types_wages-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_wages-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getTypeWagesData",
+            columns: [
+            {data: 'name'},
+            {data: 'isss'},
+            {data: 'afp'},
+            {data: 'type'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editTypeWage('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeWage('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+    function loadCostCenter() {
+        var table5 = $("#cost_center-table").DataTable();
+        table5.destroy();
+        var table5 = $("#cost_center-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/13",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    function loadTypesContracts() {
+        var table5 = $("#types_contracts-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_contracts-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/14",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    function loadTypesClauseContracts() {
+        var table5 = $("#types_clause_contracts-table").DataTable();
+        table5.destroy();
+        var table5 = $("#types_clause_contracts-table").DataTable({
+
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getCataloguesData/15",
+            columns: [
+            {data: 'value'},
+            {data: 'status'},
+            {data: null, render: function(data){
+
+                html = "";
+                
+                @can('rrhh_catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                @endcan
+                
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+
+    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_income_discounts, #add_types_absences, #add_types_disabilities, #add_types_relationships").click(function(){
         $("#modal_content").html('');
         catalogue_id = $(this).val();
         var url = '{!!URL::to('/rrhh/create-item/:catalogue_id')!!}';
@@ -453,9 +906,9 @@
         });
     });
 
-    $("#add_bank").click(function(){
+    $("#add_types_wages").click(function(){
         $("#modal_content").html('');        
-        var url = '{!!URL::to('/rrhh-banks/create')!!}';
+        var url = '{!!URL::to('/rrhh-type-wages/create')!!}';
         $.get(url, function(data) {
 
             $("#modal_content").html(data);
@@ -463,6 +916,27 @@
             
         });
     });
+
+    $("#add_types_personnel_actions").click(function(){
+        $("#modal_content_type").html('');        
+        var url = '{!!URL::to('/rrhh-type-personnel-action/create')!!}';
+        $.get(url, function(data) {
+            $("#modal_content_type").html(data);
+            $('#modal_type').modal({backdrop: 'static'});
+            
+        });
+    });
+
+    // $("#add_bank").click(function(){
+    //     $("#modal_content").html('');        
+    //     var url = '{!!URL::to('/rrhh-banks/create')!!}';
+    //     $.get(url, function(data) {
+
+    //         $("#modal_content").html(data);
+    //         $('#modal').modal({backdrop: 'static'});
+            
+    //     });
+    // });
 
     function editItem(id) {
         $("#modal_content").html('');
@@ -476,9 +950,9 @@
         });
     }
 
-    function editBank(id) {
+    function editTypeWage(id) {
         $("#modal_content").html('');
-        var url = '{!!URL::to('/rrhh-banks/:id/edit')!!}';
+        var url = '{!!URL::to('/rrhh-type-wages/:id/edit')!!}';
         url = url.replace(':id', id);
         $.get(url, function(data) {
 
@@ -487,6 +961,31 @@
             
         });
     }
+
+
+    function editTypePersonnelAction(id) {
+        $("#modal_content_type").html('');
+        var url = '{!!URL::to('/rrhh-type-personnel-action/:id/edit')!!}';
+        url = url.replace(':id', id);
+        $.get(url, function(data) {
+
+            $("#modal_content_type").html(data);
+            $('#modal_type').modal({backdrop: 'static'});
+            
+        });
+    }
+
+    // function editBank(id) {
+    //     $("#modal_content").html('');
+    //     var url = '{!!URL::to('/rrhh-banks/:id/edit')!!}';
+    //     url = url.replace(':id', id);
+    //     $.get(url, function(data) {
+
+    //         $("#modal_content").html(data);
+    //         $('#modal').modal({backdrop: 'static'});
+            
+    //     });
+    // }
 
     function deleteItem(id) {
         Swal.fire({
@@ -539,7 +1038,7 @@
         });
     }
 
-    function deleteBank(id) {
+    function deleteTypeWage(id) {
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -551,7 +1050,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/rrhh-banks/'+id;
+                route = '/rrhh-type-wages/'+id;
                 token = $("#token").val();
                 $.ajax({
                     url: route,
@@ -567,7 +1066,7 @@
                                 timer: 2000,
                                 showConfirmButton: false,
                             });
-                            $("#banks-table").DataTable().ajax.reload(null, false);
+                            $("#types_wages-table").DataTable().ajax.reload(null, false);
                             $('#modal').modal('hide');
                         } else {
                             Swal.fire
@@ -582,5 +1081,93 @@
         
         });
     }
+
+    function deleteTypePersonnelAction(id) {
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-type-personnel-action/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#types_personnel_actions-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
+                    }
+                });
+            }
+        
+        });
+    }
+
+    // function deleteBank(id) {
+    //     Swal.fire({
+    //         title: LANG.sure,
+    //         text: "{{ __('messages.delete_content') }}",
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: "{{ __('messages.accept') }}",
+    //         cancelButtonText: "{{ __('messages.cancel') }}"
+    //     }).then((willDelete) => {
+    //         if (willDelete.value) {
+    //             route = '/rrhh-banks/'+id;
+    //             token = $("#token").val();
+    //             $.ajax({
+    //                 url: route,
+    //                 headers: {'X-CSRF-TOKEN': token},
+    //                 type: 'DELETE',
+    //                 dataType: 'json',                       
+    //                 success:function(result){
+    //                     if(result.success == true) {
+    //                         Swal.fire
+    //                         ({
+    //                             title: result.msg,
+    //                             icon: "success",
+    //                             timer: 2000,
+    //                             showConfirmButton: false,
+    //                         });
+    //                         $("#banks-table").DataTable().ajax.reload(null, false);
+    //                         $('#modal').modal('hide');
+    //                     } else {
+    //                         Swal.fire
+    //                         ({
+    //                             title: result.msg,
+    //                             icon: "error",
+    //                         });
+    //                     }
+    //                 }
+    //             });
+    //         }
+        
+    //     });
+    // }
 </script>
 @endsection

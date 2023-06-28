@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHumanResourcesHeadersTable extends Migration
+class CreateRrhhCostCentersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateHumanResourcesHeadersTable extends Migration
      */
     public function up()
     {
-        Schema::create('human_resources_headers', function (Blueprint $table) {
+        Schema::create('rrhh_cost_centers', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name');
-            $table->string('description');
-            $table->boolean('status')->default(1);
+            $table->integer('business_id')->unsigned()->nullable();
+            $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
+            
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +32,6 @@ class CreateHumanResourcesHeadersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('human_resources_headers');
+        Schema::dropIfExists('rrhh_cost_centers');
     }
 }
