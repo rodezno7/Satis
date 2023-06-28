@@ -37,6 +37,10 @@ class KardexController extends Controller
         $this->transactionUtil = $transactionUtil;
         $this->taxUtil = $taxUtil;
         $this->productUtil = $productUtil;
+
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**

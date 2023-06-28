@@ -35,6 +35,10 @@ class CashierClosureController extends Controller
     public function __construct(CashierUtil $cashierUtil, AccountingUtil $accountingUtil){
         $this->cashierUtil = $cashierUtil;
         $this->accountingUtil = $accountingUtil;
+
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**
