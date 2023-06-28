@@ -57,7 +57,10 @@ class CustomerController extends Controller
 
         // Binnacle data
         $this->module_name = 'customer';
-        //DB::statement('SET SESSION sql_require_primary_key=0');
+        
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**

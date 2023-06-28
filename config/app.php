@@ -264,6 +264,9 @@ return [
     // Precision of purchase and sale prices
     'clone_product' => env('CLONE_PRODUCT', false),
 
+    /** Disable SQL require primary key */
+    'disable_sql_req_pk' => env('DISABLE_SQL_REQ_PK', false),
+
     // App Version
     'app_version' => env('APP_VERSION', 11.22)
 ];
