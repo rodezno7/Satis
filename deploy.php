@@ -3,6 +3,9 @@ namespace Deployer;
 
 require 'recipe/laravel.php';
 
+/** Number of releases kept on the server */
+set('keep_releases', 5);
+
 // Config git
 set('repository', 'git@github.com:rodezno7/Satis.git');
 
