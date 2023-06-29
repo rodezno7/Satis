@@ -3,3 +3,7 @@ hosts:
     hostname: devtech-satis-deploy
     branch: development
     deploy_path: /var/www/demo.satiserp.app/html
+  devtch.envex.app:
+    hostname: devtech-satis-deploy
+    branch: main
+    deploy_path: /var/www/devtch.envex.app/html
