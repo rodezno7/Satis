@@ -35,6 +35,7 @@ return[
 	'afp' => 'AFP',
 	'type' => 'Type',
 	'added_successfully' => 'Added successfully',
+    'authorized_successfully' => 'Authorized successfully',
 	'error' => 'Error',
 	'error_list' => 'Error list',
 	'confirm_delete' => 'Are you sure!',
@@ -161,5 +162,10 @@ return[
     'not_required' => 'Not required',
     'authorizer' => 'Authorization required by',
     'message_authorizer' => 'Select the user(s) that will authorize this personnel action',
-    'created_date' => 'Created date'
+    'created_date' => 'Created date',
+    'authorizations' => 'Authorizations',
+    'confirm_authorization' => 'Confirm authorization',
+    'message_to_confirm_authorization' => 'To confirm your authorization you must enter your password to validate your identity.',
+    'authorize' => 'Authorize',
+    'wrong_password' => 'You have entered wrong password'
 ];

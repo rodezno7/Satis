@@ -35,6 +35,7 @@ return[
 	'afp' => 'Fondo de pensión',
 	'type' => 'Tipo de empleado',
 	'added_successfully' => 'Agregado exitosamente',
+    'authorized_successfully' => 'Autorizado exitosamente',
 	'error' => 'Ocurrió un error',
 	'error_list' => 'Lista de errores',
 	'confirm_delete' => '¡Confirma que desea eliminar!',
@@ -160,5 +161,11 @@ return[
     'required' => 'No require',
     'authorizer' => 'Autorización requerida por',
     'message_authorizer' => 'Seleccione el o los usuarios que van a autorizar esta acción de personal.',
-    'created_date' => 'Fecha de creación'
+    'created_date' => 'Fecha de creación',
+    'authorizations' => 'Autorizaciones',
+    'type_personnel_action' => 'Tipo de acción de personal',
+    'confirm_authorization' => 'Confirmar autorización',
+    'message_to_confirm_authorization' => 'Para confirmar su autorización debe ingresar su contraseña para validar su identidad.',
+    'authorize' => 'Autorizar',
+    'wrong_password' => 'Ha ingresado una contraseña incorrecta'
 ];

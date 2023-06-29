@@ -11,9 +11,12 @@ use DataTables;
 use Carbon\Carbon;
 use Storage;
 use App\Utils\ModuleUtil;
+use App\Utils\Util;
 use App\Notifications\PersonnelActionNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notification;
+use App\Utils\TransactionUtil;
+use Illuminate\Support\Facades\Hash;
 
 class RrhhPersonnelActionController extends Controller
 {
@@ -25,9 +28,10 @@ class RrhhPersonnelActionController extends Controller
      * @param ProductUtil $product
      * @return void
      */
-    public function __construct(ModuleUtil $moduleUtil)
+    public function __construct(ModuleUtil $moduleUtil, TransactionUtil $transactionUtil)
     {
         $this->moduleUtil = $moduleUtil;
+        $this->transactionUtil = $transactionUtil;
     }
     /**
      * Display a listing of the resource.
@@ -36,19 +40,41 @@ class RrhhPersonnelActionController extends Controller
      */
     public function index()
     {
+        if (!auth()->user()->can('rrhh_personnel_action.authorize')) {
+            abort(403, 'Unauthorized action.');
+        }
         
+        return view('rrhh.personnel_actions.index_by_authorizer');
+    }
+
+    public function getByAuthorizer()
+    {
+        if (!auth()->user()->can('rrhh_personnel_action.authorize')) {
+            abort(403, 'Unauthorized action.');
+        }
+        $user_id = auth()->user()->id;
+        $data = DB::table('rrhh_personnel_actions as personnel_action')
+            ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
+            ->join('rrhh_personnel_action_authorizer as personnel_action_authorizer', 'personnel_action_authorizer.rrhh_personnel_action_id', '=', 'personnel_action.id')
+            ->join('employees as employees', 'employees.id', '=', 'personnel_action.employee_id')
+            ->select('personnel_action.id as id', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"), 'personnel_action.created_at as created_at', 'type.name as type', 'personnel_action.status as status')
+            ->where('personnel_action_authorizer.user_id', $user_id)
+            ->get();
+        
+        return DataTables::of($data)->editColumn('created_at', '{{ @format_date($created_at) }} {{ @format_time($created_at) }}')
+        ->toJson();
     }
 
     public function getByEmployee($id)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.view')) {
+        if (!auth()->user()->can('rrhh_personnel_action.view')) {
             abort(403, 'Unauthorized action.');
         }
 
         $employee = Employees::findOrFail($id);
         $personnelActions = DB::table('rrhh_personnel_actions as personnel_action')
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
-            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'type.name as type', 'type.required_authorization as required_authorization', 'personnel_action.authorized as authorized')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'type.name as type', 'type.required_authorization as required_authorization', 'personnel_action.status as status')
             ->where('personnel_action.employee_id', $employee->id)
             ->get();
 
@@ -67,7 +93,7 @@ class RrhhPersonnelActionController extends Controller
 
     function createPersonnelAction($id)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.create')) {
+        if (!auth()->user()->can('rrhh_personnel_action.create')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -78,7 +104,7 @@ class RrhhPersonnelActionController extends Controller
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
-        
+
         $users = DB::table('users as user')
             ->join('model_has_roles as user_role', 'user_role.model_id', '=', 'user.id')
             ->join('roles as roles', 'roles.id', '=', 'user_role.role_id')
@@ -91,18 +117,18 @@ class RrhhPersonnelActionController extends Controller
             ->get();
 
         $employee = Employees::findOrFail($id);
-        
+
         $positionHistory = DB::table('rrhh_position_history')
-        ->where('employee_id', $id)
-        ->where('current', 1)
-        ->orderBy('id', 'DESC')
-        ->first();
+            ->where('employee_id', $id)
+            ->where('current', 1)
+            ->orderBy('id', 'DESC')
+            ->first();
 
         $salaryHistory = DB::table('rrhh_salary_history')
-        ->where('employee_id', $id)
-        ->where('current', 1)
-        ->orderBy('id', 'DESC')
-        ->first();
+            ->where('employee_id', $id)
+            ->where('current', 1)
+            ->orderBy('id', 'DESC')
+            ->first();
 
         return view('rrhh.personnel_actions.create', compact('actions', 'typesPersonnelActions', 'employee', 'positionHistory', 'salaryHistory', 'departments', 'positions', 'payments', 'banks', 'users'));
     }
@@ -115,7 +141,7 @@ class RrhhPersonnelActionController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.create')) {
+        if (!auth()->user()->can('rrhh_personnel_action.create')) {
             abort(403, 'Unauthorized action.');
         }
         $requiredUser = 'nullable';
@@ -202,7 +228,7 @@ class RrhhPersonnelActionController extends Controller
                     }
 
                     if ($action->rrhh_required_action_id == 2) { // Cambiar departamento/puesto
-                        if($type->required_authorization == 0){
+                        if ($type->required_authorization == 0) {
                             DB::table('rrhh_position_history')->where('employee_id', $employee->id)->update(['current' => 0]);
                         }
                         DB::table('rrhh_position_history')->insert(
@@ -211,7 +237,7 @@ class RrhhPersonnelActionController extends Controller
                     }
 
                     if ($action->rrhh_required_action_id == 3) { // Cambiar salario
-                        if($type->required_authorization == 0){
+                        if ($type->required_authorization == 0) {
                             DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->update(['current' => 0]);
                         }
 
@@ -226,21 +252,19 @@ class RrhhPersonnelActionController extends Controller
                     }
 
                     if ($action->rrhh_required_action_id == 5) { // Cambiar cuenta bancaria
-                        if($type->required_authorization == 0){
+                        if ($type->required_authorization == 0) {
                             $input_employee = $request->only(['bank_account']);
                             $employee->update($input_employee);
-                        }
-                        else{
+                        } else {
                             $input_details['bank_account'] = $request->input('bank_account');
                         }
                     }
 
                     if ($action->rrhh_required_action_id == 6) { // Cambiar forma de pago
-                        if($type->required_authorization == 0){
+                        if ($type->required_authorization == 0) {
                             $input_employee = $request->only(['payment_id', 'bank_id', 'bank_account']);
                             $employee->update($input_employee);
-                        }
-                        else{
+                        } else {
                             $input_details['payment_id'] = $request->input('payment_id');
                             $input_details['bank_id'] = $request->input('bank_id');
                             $input_details['bank_account'] = $request->input('bank_account');
@@ -257,19 +281,21 @@ class RrhhPersonnelActionController extends Controller
                     }
                 }
             }
+            if ($type->required_authorization == 1) { // Requiere autorizacion la accion de personal
+                $input_details['status'] = 'No autorizada (En tramite)';
+            }
 
             $personnelAction = RrhhPersonnelAction::create($input_details);
 
             if ($type->required_authorization == 1) { // Requiere autorizacion la accion de personal
                 $users = $request->input('user_id');
-                \Log::emergency($users);
                 foreach ($users as $userID) {
                     $user = User::findOrFail($userID);
                     DB::table('rrhh_personnel_action_authorizer')->insert(
-                        ['personnel_action_id' => $personnelAction->id, 'user_id' => $userID]
+                        ['rrhh_personnel_action_id' => $personnelAction->id, 'user_id' => $userID]
                     );
                     $user->notify(new PersonnelActionNotification($user->first_name, $user->last_name, $type->name, $employee->first_name, $employee->last_name));
-                } 
+                }
             }
 
             DB::commit();
@@ -301,21 +327,101 @@ class RrhhPersonnelActionController extends Controller
         //
     }
 
-    function viewFile($id)
+    function validateAuthorization($password)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.view')) {
+        $user_id = auth()->user()->id;
+        $user = User::findOrFail($user_id);
+        \Log::emergency($user->password);
+        \Log::emergency($password);
+    }
+
+    function confirmAutorization(Request $request, $id)
+    {
+        if (!auth()->user()->can('rrhh_personnel_action.view')) {
             abort(403, 'Unauthorized action.');
         }
-        $document = RrhhPersonnelAction::findOrFail($id);
-        $state = DB::table('states')->where('id', $document->state_id)->first();
-        $city = DB::table('cities')->where('id', $document->city_id)->first();
-        $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('id', $document->document_type_id)->first();
+        
+        if ($request->ajax()) {
 
-        $route = 'flags/' . $document->file;
-        $ext = substr($document->file, -3);
+            try{
 
+                DB::beginTransaction();
 
-        return view('rrhh.personnel_actions.file', compact('route', 'ext', 'document', 'state', 'city', 'type'));
+                $personnelAction = RrhhPersonnelAction::findOrFail($id);
+                $user_id = auth()->user()->id;
+                $user = User::findOrFail($user_id);
+                \Log::emergency($user->password);
+                \Log::emergency($request->input('password'));
+
+                if (Hash::check($request->input('password'), $user->password)) {
+                    $business_id = request()->session()->get('user.business_id');
+                    $type = DB::table('rrhh_type_personnel_actions')->where('business_id', $business_id)->where('id', $personnelAction->rrhh_type_personnel_action_id)->first();
+                    $employee = Employees::findOrFail($personnelAction->employee_id);
+                    $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $type->id)->orderBy('id', 'DESC')->get();
+                    foreach ($actions as $action) {
+                        if ($action->rrhh_required_action_id == 1) { // Cambiar estado de empleado (De inactivo a activo)
+                            $employee->status = 1;
+                            $employee->update();
+                        }
+        
+                        if ($action->rrhh_required_action_id == 2) { // Cambiar departamento/puesto
+                            DB::table('rrhh_position_history')->where('employee_id', $employee->id)->update(['current' => 0]);
+                            $lastPosition = DB::table('rrhh_position_history')->where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                        }
+        
+                        if ($action->rrhh_required_action_id == 3) { // Cambiar salario
+                            DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->update(['current' => 0]);
+                            $lastSalary = DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                        }
+        
+                        if ($action->rrhh_required_action_id == 5) { // Cambiar cuenta bancaria
+                            $employee->bank_account = $personnelAction->bank_account;
+                            $employee->update();
+                        }
+        
+                        if ($action->rrhh_required_action_id == 6) { // Cambiar forma de pago
+                            $employee->payment_id = $personnelAction->payment_id;
+                            $employee->bank_id = $personnelAction->bank_id;
+                            $employee->bank_account = $personnelAction->bank_account;
+                            $employee->update();
+                        }
+        
+                        if ($action->rrhh_required_action_id == 8) { // Cambiar estado de empleado (De inactivo a activo)
+                            $employee->status = 0;
+                            $employee->update();
+                       }
+                        
+                    }
+
+                    DB::table('rrhh_personnel_action_authorizer')->where('rrhh_personnel_action_id', $personnelAction->id)->where('user_id', $user_id)->update(['authorized' => 1]);
+                    $users = DB::table('rrhh_personnel_action_authorizer')->where('rrhh_personnel_action_id', $personnelAction->id)->where('authorized', 0)->get();
+
+                    if (count($users) == 0) { // Requiere autorizacion la accion de personal
+                        $personnelAction->status = 'Autorizada';
+                        $personnelAction->authorization_date = Carbon::now();
+                        $personnelAction->update();
+                    }
+        
+                    $output = ['success' => 1,
+                        'msg' => __('rrhh.authorized_successfully')
+                    ];
+                } else {
+                    $output = ['success' => 0,
+                        'msg' => __('rrhh.wrong_password')
+                    ];
+                }
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.error')
+                ];
+            }
+            return $output;
+        }
+        
     }
 
     /**
@@ -326,7 +432,7 @@ class RrhhPersonnelActionController extends Controller
      */
     public function edit($id)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.edit')) {
+        if (!auth()->user()->can('rrhh_personnel_action.edit')) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
@@ -354,7 +460,7 @@ class RrhhPersonnelActionController extends Controller
 
     public function updatePersonnelAction(Request $request)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.edit')) {
+        if (!auth()->user()->can('rrhh_personnel_action.edit')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -439,7 +545,7 @@ class RrhhPersonnelActionController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.delete')) {
+        if (!auth()->user()->can('rrhh_personnel_action.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

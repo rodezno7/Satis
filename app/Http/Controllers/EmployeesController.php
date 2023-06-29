@@ -237,11 +237,11 @@ class EmployeesController extends Controller
             $employee = Employees::create($input_details);
 
             DB::table('rrhh_position_history')->insert(
-                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
+                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
             );
 
             DB::table('rrhh_salary_history')->insert(
-                ['employee_id' => $employee->id, 'salary' => $request->input('salary')]
+                ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
             );
 
             DB::commit();

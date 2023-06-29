@@ -9,18 +9,20 @@
             <div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="form-group">
-						<button type="button" class="btn btn-info btm-sm" id='btn_add_personnel_actions'
-						style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
-						<i class="fa fa-plus"></i>
-						{{ __('rrhh.add_personnel_action') }}
-						</button>
+						@can('rrhh_personnel_action.create')
+							<button type="button" class="btn btn-info btm-sm" id='btn_add_personnel_actions'
+							style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
+							<i class="fa fa-plus"></i>
+							{{ __('rrhh.add_personnel_action') }}
+							</button>
+						@endcan
 					</div>
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
 						<thead>
 							<tr class="active">
-								<th>@lang('rrhh.types_personnel_actions')</th>
+								<th>@lang('rrhh.type_personnel_action')</th>
 								<th>@lang('rrhh.description')</th>
-								<th>@lang('rrhh.authorization')</th>
+								<th>@lang('rrhh.status')</th>
 								<th>@lang('rrhh.created_date')</th>
 								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
@@ -34,23 +36,19 @@
 											{{ $item->description }}
 										</td>
 										<td>
-											@if ($item->required_authorization == true)
-												@if ($item->authorized == true)
-													Autorizada
-												@else
-													No autorizada (En tramite)
-												@endif
-											@else
-												No requiere autorizacion
-											@endif
-
+											{{ $item->status }}
 										</td>
 										<td>
 											{{ @format_date($item->created_at) }}
 										</td>
 										<td>
-											<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-											<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+											@can('rrhh_personnel_action.update')
+												<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+											@endcan
+
+											@can('rrhh_personnel_action.delete')
+												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+											@endcan
 										</td>
 									</tr>
 								@endforeach

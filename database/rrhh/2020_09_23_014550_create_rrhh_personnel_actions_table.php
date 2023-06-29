@@ -24,7 +24,7 @@ class CreateRrhhPersonnelActionsTable extends Migration
             $table->integer('bank_id')->nullable();
             $table->string('bank_account')->nullable();
 
-            $table->boolean('authorized')->nullable();
+            $table->string('status')->default('No requiere autorización');
             $table->date('authorization_date')->nullable();
 
             $table->integer('employee_id')->unsigned();

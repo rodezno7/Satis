@@ -16,8 +16,8 @@ class CreateRrhhPersonnelActionAuthorizerTable extends Migration
         Schema::create('rrhh_personnel_action_authorizer', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('authorized')->default(false);
-            $table->integer('personnel_action_id')->unsigned();
-            $table->foreign('personnel_action_id')->references('id')->on('personnel_actions')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('rrhh_personnel_action_id')->unsigned();
+            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
