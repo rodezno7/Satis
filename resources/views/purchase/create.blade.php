@@ -60,7 +60,7 @@
                                 {!! Form::select('contact_id', [], null, ['class' => 'form-control', 'placeholder' => __('messages.please_select'), 'required', 'id' => 'supplier_id']) !!}
                                 <span class="input-group-btn">
                                     <button type="button" class="btn btn-default bg-white btn-flat add_new_supplier"
-                                        data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                        data-name="" disabled><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
                                 </span>
                                 {!! Form::hidden("contact_tax_id", null, ["id" => "contact_tax_id"]) !!}
                                 <input type="hidden" id="tax_min_amount">
@@ -572,11 +572,11 @@
     <!-- quick product modal -->
     <div class="modal fade quick_add_product_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="modalTitle"></div>
     <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-        @include('contact.create', [
+        {{-- @include('contact.create', [
             'quick_add' => true,
             'countries' => $countries,             
             'business_debt_to_pay_type' => $business_debt_to_pay_type
-            ])
+            ]) --}}
     </div>
     <!-- /.content -->
 @endsection
