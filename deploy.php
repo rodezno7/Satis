@@ -7,7 +7,13 @@ require 'recipe/laravel.php';
 set('repository', 'git@github.com:rodezno7/Satis.git');
 
 add('shared_files', []);
-add('shared_dirs', []);
+add('shared_dirs',
+    [
+        'public/uploads/business_logos',
+        'public/uploads/documents',
+        'public/uploads/img',
+        'public/uploads/slides'
+    ]);
 add('writable_dirs', []);
 
 // Hosts
