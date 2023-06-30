@@ -33,4 +33,5 @@
     "seller_name" => "Seller",
     "validate_agent_code_error" => "The agent code has already been registered previously",
     "validate_agent_code_success" => "Valid agent code number",
+    "employee_photo" => "Employee photo",
 ];

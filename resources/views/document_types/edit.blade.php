@@ -211,16 +211,13 @@
                             } else if (willAccept.dismiss === Swal.DismissReason.cancel) {
                                 $("#is_default").prop("checked", false);
                                 $("#is_default").val(0);
-                                console.log('hola');
                             }
                         });
                     } else {
                         $("#is_default").val(1);
-                        // $("#document_id").text(id);
                     }
                 },
                 error: function(msj) {
-
                 }
             });
         }

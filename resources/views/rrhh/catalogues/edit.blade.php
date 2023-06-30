@@ -1,30 +1,22 @@
 <div class="modal-header">
-	<h3 class="modal-title" id="formModal">@lang('rrhh.edit') {{ $type_item }}</h3>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+	<h4 class="modal-title" id="formModal">@lang('rrhh.edit') {{ $type_item }}
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</h4>
 </div>
 <div class="modal-body">
 	<form id="form_edit" method="post">
-
-
-		@if($header_id > 1 && $header_id < 6)		
-		<div class="form-group">
-			<label>@lang('rrhh.code')</label>
-			<input type="text" name='code' id='code' value='{{ $item->code }}' class="form-control" placeholder="@lang('rrhh.code')" readonly>
-		</div>
-		@endif
-
-		@if($header_id == 4)	
-		<div class="form-group">
-			<label>@lang('rrhh.short_name')</label>
-			<input type="text" name='short_name' id='short_name' value='{{ $item->short_name }}' class="form-control" placeholder="@lang('rrhh.short_name')">
-		</div>
-		@endif
-
 		<div class="form-group">
 			<label>@lang('rrhh.name')</label>
 			<input type="text" name='value' id='value' class="form-control" value='{{ $item->value }}' placeholder="@lang('rrhh.name')">
+
+			@if ($item->human_resources_header_id == 9)
+			<br>
+			<label>
+                <input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
+			@lang('rrhh.date_required')</label>
+			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 			<input type="hidden" name="human_resources_header_id" value="{{ $item->human_resources_header_id }}" id="human_resources_header_id">
@@ -43,12 +35,19 @@
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-primary" id="btn_edit_item">@lang('rrhh.update')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal">@lang( 'messages.cancel' )</button>
 </div>
 
 <script>
 
 	$( document ).ready(function() {		
 		select2 = $('.select2').select2();
+		let date_required = $("#date_required").val();
+		if (date_required == 1) {
+			$("#date_required").prop("checked", true);
+		} else {
+			$("#date_required").prop("checked", false);
+		}
 	});
 
 	$("#btn_edit_item").click(function() {
@@ -110,5 +109,13 @@
 			}
 		});
 	});
+
+	function dateRequired() {
+		if ($("#date_required").is(":checked")) {
+			$("#date_required").val('1');
+		} else {
+			$("#date_required").val('0');
+		}
+	}
 
 </script>

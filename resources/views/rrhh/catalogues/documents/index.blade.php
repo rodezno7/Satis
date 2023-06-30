@@ -1,5 +1,5 @@
 <div class="pos-tab-content">
-	<div class="boxform_u box-solid_u">
+	<div class="">
 		<div class="box-header">
 			<h3 class="box-title">@lang( 'rrhh.all_your_document_types' )</h3>
 			<div class="box-tools">
@@ -14,6 +14,7 @@
 				<table class="table table-striped table-bordered table-condensed table-hover" id="document-types-table" width="100%">
 					<thead>
 						<th>@lang('rrhh.name')</th>
+						<th>@lang('rrhh.Date_required')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>

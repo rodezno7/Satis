@@ -55,17 +55,6 @@
 								</div>
 							</div>
 							@endif
-
-							@if (! $pos_settings['show_order_number_field'] == 1)
-							<div class="col-md-6">
-								{{-- staff_note --}}
-								<div class="form-group">
-									{!! Form::label('staff_note', __('sale.staff_note') . ':') !!}
-									{!! Form::textarea('staff_note', !empty($transaction) ? $transaction->staff_note : null,
-										['class' => 'form-control', 'rows' => 3, 'placeholder' => __('sale.staff_note')]) !!}
-								</div>
-							</div>
-							@endif
 						</div>
 						@endif
 					</div>

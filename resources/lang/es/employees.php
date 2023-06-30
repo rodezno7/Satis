@@ -33,4 +33,5 @@
     "seller_name" => "Vendedor",
     "validate_agent_code_error" => "El código de empleado ya ha sido registrado anteriormente",
     "validate_agent_code_success" => "Código de empleado válido",
+    "employee_photo" => "Foto de empleado/a",
 ];

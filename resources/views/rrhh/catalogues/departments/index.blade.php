@@ -1,5 +1,5 @@
 <div class="pos-tab-content">
-	<div class="boxform_u box-solid_u">
+	<div class="">
 		<div class="box-header">
 			<h3 class="box-title">@lang( 'rrhh.all_your_departments' )</h3>
 			<div class="box-tools">
@@ -13,7 +13,6 @@
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-condensed table-hover" id="departments-table" width="100%">
 					<thead>
-						<th>@lang('rrhh.code')</th>
 						<th>@lang('rrhh.name')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __('rrhh.rrhh'))
+@section('title', __('rrhh.catalogues'))
 
 @section('content')
 
@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="col-xs-12 pos-tab-container">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 pos-tab-menu">
+                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 pos-tab-menu">
                     <div class="list-group">
                         <a href="#" class="list-group-item text-center active">@lang('rrhh.marital_statuses')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.departments')</a>
@@ -29,7 +29,7 @@
                         <a href="#" class="list-group-item text-center">@lang('rrhh.document_types')</a>
                     </div>
                 </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 pos-tab">
+                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 pos-tab">
 
                     <!-- tab 1 start -->
                     @include('rrhh.catalogues.marital_statuses.index')
@@ -76,7 +76,6 @@
         </div>
     </div>
 
-
     <div class="modal fade" id="modal" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content" id="modal_content">
@@ -84,10 +83,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 </section>
 <!-- /.content -->
 @endsection
@@ -96,7 +91,6 @@
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
     $(document).ready(function() {
-
         loadMaritalStatuses();
         loadDepartments();
         loadPositions();
@@ -108,7 +102,6 @@
         loadWayToPays();
         loadDocumentTypes();
         $.fn.dataTable.ext.errMode = 'none';
-
     });
 
 
@@ -140,7 +133,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -156,7 +150,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/2",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -173,7 +166,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -189,7 +183,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/3",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -206,7 +199,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -222,8 +216,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/4",
             columns: [
-            {data: 'code'},
-            {data: 'short_name'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -240,7 +232,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -256,7 +249,6 @@
             serverSide: true,
             ajax: "/rrhh/getCataloguesData/5",
             columns: [
-            {data: 'code'},
             {data: 'value'},
             {data: 'status'},
             {data: null, render: function(data){
@@ -273,7 +265,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -305,7 +298,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -337,7 +331,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -372,7 +367,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -389,6 +385,7 @@
             ajax: "/rrhh/getCataloguesData/9",
             columns: [
             {data: 'value'},
+            {data: 'date_required'},
             {data: 'status'},
             {data: null, render: function(data){
 
@@ -404,7 +401,8 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
@@ -436,13 +434,13 @@
                 
                 return html;
             } , orderable: false, searchable: false}
-            ]
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
 
     }
 
     $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type").click(function(){
-
         $("#modal_content").html('');
         catalogue_id = $(this).val();
         var url = '{!!URL::to('/rrhh/create-item/:catalogue_id')!!}';
@@ -456,7 +454,6 @@
     });
 
     $("#add_bank").click(function(){
-
         $("#modal_content").html('');        
         var url = '{!!URL::to('/rrhh-banks/create')!!}';
         $.get(url, function(data) {
@@ -468,7 +465,6 @@
     });
 
     function editItem(id) {
-
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh/edit-item/:id')!!}';
         url = url.replace(':id', id);
@@ -481,7 +477,6 @@
     }
 
     function editBank(id) {
-
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh-banks/:id/edit')!!}';
         url = url.replace(':id', id);
@@ -494,116 +489,98 @@
     }
 
     function deleteItem(id) {
-
-        $.confirm({
-            title: '@lang('rrhh.confirm_delete')',
-            content: '@lang('rrhh.delete_message')',
-            icon: 'fa fa-warning',
-            theme: 'modern',
-            closeIcon: true,
-            animation: 'scale',
-            type: 'red',
-            buttons: {
-                confirm:{
-                    text: '@lang('rrhh.delete')',            
-                    action: function()
-                    {
-                        route = '/rrhh-catalogues-data/'+id;
-                        token = $("#token").val();
-                        $.ajax({
-                            url: route,
-                            headers: {'X-CSRF-TOKEN': token},
-                            type: 'DELETE',
-                            dataType: 'json',                       
-                            success:function(result){
-                                if(result.success == true) {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "success",
-                                        timer: 2000,
-                                        showConfirmButton: false,
-                                    });
-                                    $("#afps-table").DataTable().ajax.reload(null, false);
-                                    $("#marital-statuses-table").DataTable().ajax.reload(null, false);
-                                    $("#departments-table").DataTable().ajax.reload(null, false);
-                                    $("#positions-table").DataTable().ajax.reload(null, false);
-                                    $("#types-table").DataTable().ajax.reload(null, false);
-                                    $("#nationalities-table").DataTable().ajax.reload(null, false);
-                                    $("#professions-table").DataTable().ajax.reload(null, false);
-                                    $("#way-to-pays-table").DataTable().ajax.reload(null, false);
-                                    $("#document-types-table").DataTable().ajax.reload(null, false);
-                                    $('#modal').modal('hide');
-                                } else {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "error",
-                                    });
-                                }
-                            }
-                        });
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-catalogues-data/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#afps-table").DataTable().ajax.reload(null, false);
+                            $("#marital-statuses-table").DataTable().ajax.reload(null, false);
+                            $("#departments-table").DataTable().ajax.reload(null, false);
+                            $("#positions-table").DataTable().ajax.reload(null, false);
+                            $("#types-table").DataTable().ajax.reload(null, false);
+                            $("#nationalities-table").DataTable().ajax.reload(null, false);
+                            $("#professions-table").DataTable().ajax.reload(null, false);
+                            $("#way-to-pays-table").DataTable().ajax.reload(null, false);
+                            $("#document-types-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
                     }
-                },
-                cancel:{
-                    text: '@lang('rrhh.cancel')',
-                },
+                });
             }
         });
     }
 
     function deleteBank(id) {
-
-        $.confirm({
-            title: '@lang('rrhh.confirm_delete')',
-            content: '@lang('rrhh.delete_message')',
-            icon: 'fa fa-warning',
-            theme: 'modern',
-            closeIcon: true,
-            animation: 'scale',
-            type: 'red',
-            buttons: {
-                confirm:{
-                    text: '@lang('rrhh.delete')',            
-                    action: function()
-                    {
-                        route = '/rrhh-banks/'+id;
-                        token = $("#token").val();
-                        $.ajax({
-                            url: route,
-                            headers: {'X-CSRF-TOKEN': token},
-                            type: 'DELETE',
-                            dataType: 'json',                       
-                            success:function(result){
-                                if(result.success == true) {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "success",
-                                        timer: 2000,
-                                        showConfirmButton: false,
-                                    });
-                                    $("#banks-table").DataTable().ajax.reload(null, false);
-                                    $('#modal').modal('hide');
-                                } else {
-                                    Swal.fire
-                                    ({
-                                        title: result.msg,
-                                        icon: "error",
-                                    });
-                                }
-                            }
-                        });
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-banks/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#banks-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
                     }
-                },
-                cancel:{
-                    text: '@lang('rrhh.cancel')',
-                },
+                });
             }
+        
         });
     }
-
-
-
 </script>
 @endsection

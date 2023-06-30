@@ -117,6 +117,10 @@ class PurchaseController extends Controller
 
         // Binnacle data
         $this->module_name = 'purchase';
+        
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**

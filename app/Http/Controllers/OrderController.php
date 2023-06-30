@@ -62,6 +62,10 @@ class OrderController extends Controller
             "location" => __("order.location"),
             "other" => __("order.other")
         ];
+
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**

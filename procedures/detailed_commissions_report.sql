@@ -1,3 +1,6 @@
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 DROP PROCEDURE IF EXISTS detailed_commissions_report;
 
 DELIMITER $$
@@ -23,6 +26,7 @@ BEGIN
         t.correlative AS doc_no,
         dt.short_name AS doc_type,
         IF (t.payment_condition = 'cash', 'Contado', 'Crédito') AS payment_condition,
+        IF (t.payment_status = 'paid', 'Pagado', IF (t.payment_status = 'due', 'Debido', 'Parcial')) AS payment_status,
         c.id AS customer_id,
         IF(c.is_default = 1, t.customer_name, c.name) AS customer_name,
         cat.name AS category,
@@ -34,6 +38,7 @@ BEGIN
         IF (dt.tax_exempt = 1, tsl.unit_price_before_discount * tsl.quantity, tsl.unit_price * tsl.quantity) AS price_inc,
         (tsl.unit_price_before_discount * tsl.quantity) AS price_exc,
         IF (dt.tax_exempt = 1, tsl.unit_price_before_discount, tsl.unit_price) AS unit_price,
+        t.payment_balance,
         CONCAT(e.first_name, ' ', e.last_name) AS seller_name,
         v.default_purchase_price AS unit_cost,
         (v.default_purchase_price * tsl.quantity) AS total_cost,

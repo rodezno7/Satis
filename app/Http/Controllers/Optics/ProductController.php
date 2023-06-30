@@ -75,6 +75,10 @@ class ProductController extends Controller
         $this->payment_conditions = ['cash', 'credit'];
 
         $this->module_name = 'product';
+
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**

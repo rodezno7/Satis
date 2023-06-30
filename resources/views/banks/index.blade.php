@@ -324,7 +324,7 @@
                                                     <input type="text" name="txt-payment-to" id="txt-payment-to" class="form-control">
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" id="check_number" style="display: none;">
                                                 <label>@lang('accounting.check_number')</label>
                                                 <div class="form-group">
                                                     <input type="text" name="txt-check-number-transaction" id="txt-check-number-transaction" class="form-control">
@@ -3284,22 +3284,24 @@ function changeType()
             }
             if(res.enable_checkbook == 1) {
                 $("#div_checkbook").show();
+                $("div#check_number").show();
                 $("#div_reference").hide();
                 $("#txt-reference-transaction").val('0');
+                $("#txt-check-number-transaction").val('');
             }
             else
             {
                 $("#div_checkbook").hide();
+                $("div#check_number").hide();
                 $("#div_reference").show();
                 $("#txt-reference-transaction").val('');
+                $("#txt-check-number-transaction").val('0');
             }
             if(res.enable_headline == 1) {
-                $("#txt-check-number-transaction").val('');
                 $("#div_contact").show();
             }
             else
             {
-                $("#txt-check-number-transaction").val('0');
                 $("#div_contact").hide();
             }
             $("#select-bank-account-id-transaction").val('0').change();

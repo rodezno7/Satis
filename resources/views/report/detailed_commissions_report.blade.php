@@ -72,8 +72,8 @@
                                     <i class="fa fa-caret-down"></i>
                                   </button>
                                 </div>
-                                {!! Form::hidden('start_date', null, ['id' => 'start_date']) !!}
-                                {!! Form::hidden('end_date', null, ['id' => 'end_date']) !!}
+                                {!! Form::hidden("start_date", date('Y-m-d', strtotime('first day of this month')), ['id' => 'start_date']) !!}
+                                {!! Form::hidden("end_date", date('Y-m-d', strtotime('last day of this month')), ['id' => 'end_date']) !!}
                               </div>
                         </div>
                     </div>
@@ -145,6 +145,8 @@
                                     <th>@lang('lang_v1.quantity')</th>
                                     <th>@lang('report.price_inc_tax')</th>
                                     <th>@lang('report.price_exc_tax')</th>
+                                    <th>@lang('sale.payments')</th>
+                                    <th>@lang('sale.payment_status')</th>
                                     <th>@lang('quote.seller')</th>
                                     <th>@lang('report.unit_cost')</th>
                                     <th>@lang('report.total_cost')</th>
@@ -229,6 +231,8 @@
                 { data: 'quantity', name: 'quantity', orderable: false },
                 { data: 'price_inc', name: 'price_inc', orderable: false },
                 { data: 'price_exc', name: 'price_exc', orderable: false },
+                { data: 'payment_balance', name: 'payment_balance', orderable: false },
+                { data: 'payment_status', name: 'payment_status', orderable: false },
                 { data: 'seller_name', name: 'seller_name', orderable: false },
                 { data: 'unit_cost', name: 'unit_cost', orderable: false },
                 { data: 'total_cost', name: 'total_cost', orderable: false },
@@ -263,6 +267,9 @@
         $('.dataTables_filter input').off().on('change', function() {
             $('#detailed_commissions_report_table').DataTable().search(this.value.trim(), false, false).draw();
         });
+
+        dateRangeSettings['startDate'] = moment().startOf('month');
+        dateRangeSettings['endDate'] = moment().endOf('month');
 
         // Date filter
         $('#date_filter').daterangepicker(

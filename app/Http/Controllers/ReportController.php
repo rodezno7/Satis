@@ -101,7 +101,10 @@ class ReportController extends Controller
         ];
 
         $this->crystal_warehouse = 1;
-        DB::statement('SET SESSION sql_require_primary_key=0');
+        
+        if (config('app.disable_sql_req_pk')) {
+            DB::statement('SET SESSION sql_require_primary_key=0');
+        }
     }
 
     /**
@@ -4285,13 +4288,15 @@ class ReportController extends Controller
                 ->editColumn('unit_cost', '$ {{ @num_format($unit_cost) }}')
                 ->editColumn('total_cost', '$ {{ @num_format($total_cost) }}')
                 ->editColumn('unit_price', '$ {{ @num_format($unit_price) }}')
+                ->editColumn('payment_balance', '$ {{ @num_format($payment_balance) }}')
                 ->rawColumns([
                     'quantity',
                     'price_inc',
                     'price_exc',
                     'unit_cost',
                     'total_cost',
-                    'unit_price'
+                    'unit_price',
+                    'payment_balance'
                 ])
                 ->setTotalRecords($commissions['count'])
                 ->setFilteredRecords($commissions['count'])
@@ -4398,6 +4403,8 @@ class ReportController extends Controller
                     __('lang_v1.quantity'),
                     __('report.price_inc_tax'),
                     __('report.price_exc_tax'),
+                    __('sale.payments'),
+                    __('sale.payment_status'),
                     __('quote.seller'),
                     __('report.unit_cost'),
                     __('report.total_cost'),
@@ -4467,6 +4474,8 @@ class ReportController extends Controller
                         $this->transactionUtil->num_f($item->quantity),
                         $this->transactionUtil->num_f($item->price_inc),
                         $this->transactionUtil->num_f($item->price_exc),
+                        $this->transactionUtil->num_f($item->payment_balance),
+                        $item->payment_status,
                         $item->seller_name,
                         $this->transactionUtil->num_f($item->unit_cost),
                         $this->transactionUtil->num_f($item->total_cost),
