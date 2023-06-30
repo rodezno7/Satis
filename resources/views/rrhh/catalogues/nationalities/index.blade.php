@@ -1,7 +1,7 @@
 <div class="pos-tab-content">
 	<div class="">
 		<div class="box-header">
-			<h3 class="box-title">@lang( 'rrhh.all_your_nationalities' )</h3>
+			<h3 class="box-title">@lang( 'rrhh.nationalities' )</h3>
 			<div class="box-tools">
 				@can('rrhh_catalogues.create')
 				<button type="button" class="btn btn-primary" id="add_nationality" value='6'><i class="fa fa-plus"></i> @lang( 'messages.add' )

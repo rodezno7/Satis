@@ -68,14 +68,14 @@ class HumanResourceEmployeeController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
 
         $countries = DB::table('countries')->pluck('name', 'id');
@@ -217,16 +217,16 @@ class HumanResourceEmployeeController extends Controller
 
         $employee = HumanResourceEmployee::findOrFail($id);
 
-        $nationalities = DB::table('human_resources_datas')->where('human_resources_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $civil_statuses = DB::table('human_resources_datas')->where('human_resources_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $professions = DB::table('human_resources_datas')->where('human_resources_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $departments = DB::table('human_resources_datas')->where('human_resources_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $positions = DB::table('human_resources_datas')->where('human_resources_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $afps = DB::table('human_resources_datas')->where('human_resources_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('human_resources_datas')->where('human_resources_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
-        $payments = DB::table('human_resources_datas')->where('human_resources_header_id', 8)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = DB::table('human_resource_banks')->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');

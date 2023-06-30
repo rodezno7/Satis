@@ -150,7 +150,7 @@
 
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.department')</label>
+            <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
             {!! Form::select("department_id", $departments, null,
             ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
             __('rrhh.department'), 'style' => 'width: 100%;']) !!}
@@ -159,7 +159,7 @@
 
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.position')</label>
+            <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
             {!! Form::select("position1_id", $positions, null,
             ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
             __('rrhh.position'), 'style' => 'width: 100%;']) !!}
@@ -168,7 +168,7 @@
 
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.salary')</label>
+            <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
             {!! Form::number("salary", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'), 'id' => 'salary', 'step' =>
             '0.01', 'min' => '0.01']) !!}

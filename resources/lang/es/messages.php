@@ -60,5 +60,7 @@
     'update_and_process' => 'Actualizar y procesar',
     'clone' => 'Clonar', 
     "edit"=>'Editar',
-    "wrong_password" => 'Contraseña incorrecta'
+    "wrong_password" => 'Contraseña incorrecta',
+    "authorizer_question" => '¿Está seguro que va autorizar esta acción de personal?',
+    'authorizer_content' => 'Recuerde que no podrá revertir esta acción',
 ];

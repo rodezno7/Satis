@@ -355,15 +355,6 @@ class ProductController extends Controller
             abort(403, 'Unauthorized action.');
         }
         try {
-            //fields to product_has_suppliers table pivote
-            // $supplier_ids = $request->input('supplier_ids');
-            // $catalogue = $request->input('catalogue');
-            // $uxc = $request->input('uxc');
-            // $weight_product = $request->input('weight_product');
-            // $dimensions = $request->input('dimensions');
-            // $custom_fields = $request->input('custom_field');
-
-            //fields to kit_has_products table pivote
             $product_ids = $request->input('product_ids');
             $quantity = $request->input('quantity');
             $clas = $request->input('clas_product');
@@ -452,23 +443,6 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             $product = Product::create($product_details);
-            // if ($clasification == "product") {
-            //     if (!empty($supplier_ids)) {
-            //         $cont = 0;
-            //         while ($cont < count($supplier_ids)) {
-            //             $detail = new ProductHasSuppliers;
-            //             $detail->product_id = $product->id;
-            //             $detail->contact_id = $supplier_ids[$cont];
-            //             $detail->catalogue = $catalogue[$cont];
-            //             $detail->uxc = $uxc[$cont];
-            //             $detail->weight = $weight_product[$cont];
-            //             $detail->dimensions = $dimensions[$cont];
-            //             $detail->custom_field = $custom_fields[$cont];
-            //             $detail->save();
-            //             $cont = $cont + 1;
-            //         }
-            //     }
-            // }
             
             if ($clasification == "kits") {
                 if (!empty($product_ids)) {

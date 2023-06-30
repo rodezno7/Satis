@@ -251,11 +251,11 @@
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.type')</label>
+                                        <label>@lang('rrhh.type_employee')</label>
                                         {!! Form::select("type_id", $types, $employee->type_id,
                                         ['id' => 'type_id', 'class' => 'form-control form-control-sm select2',
                                         'placeholder' =>
-                                        __('rrhh.type'), 'style' => 'width: 100%;']) !!}
+                                        __('rrhh.type_employee'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
@@ -709,8 +709,7 @@
 		});
 	}
 
-	function showBankInformation() 
-  {
+	function showBankInformation() {
 		selected_option = $( "#payment_id option:selected" ).text();
 
 		if (selected_option == 'Transferencia bancaria') {

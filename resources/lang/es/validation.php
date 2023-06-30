@@ -290,6 +290,14 @@ return [
         'reg_number'    => 'NRC',
         'tax_number'    => 'NIT',
         'business_line' => 'giro',
+        'user_id' => 'usuario que autoriza la acción de personal',
+        'new_salary' => 'nuevo salario',
+        'description' => 'descripción',
+        'department_id' => 'departamento',
+        'position1_id' => 'puesto',
+        'start_date' => 'Fecha de inicio',
+        'end_date' => 'Fecha fin',
+        'effective_date' => 'Fecha en vigor'
     ),
 
 ];

@@ -42,6 +42,11 @@
 </section>
 <div tabindex="-1" class="modal fade" id="document_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 </div>
+<div tabindex="-1" class="modal fade" id="modal_action" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+</div>
+<div tabindex="-1" class="modal fade" id="modal_action_ap" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+</div>
+
 <div class="modal fade" id="modal_photo" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content" id="modal_content_photo">
@@ -50,12 +55,20 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modal_edit_document" tabindex="-1">
+<div class="modal fade" id="modal_edit_action" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content" id="modal_content_edit_document">
 
 		</div>
 	</div>
+</div>
+
+<div class="modal fade" id="modal_personnel_action" tabindex="-1">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" id="modal_content_personnel_action">
+
+      </div>
+    </div>
 </div>
 
 <div class="modal fade" id="modal_doc" tabindex="-1">
@@ -64,7 +77,7 @@
 
       </div>
     </div>
-  </div>
+</div>
 @endsection
 
 @section('javascript')
@@ -76,8 +89,13 @@
         });
         loadEmployees();      
         $.fn.dataTable.ext.errMode = 'none';      
-    });
 
+        $('#modal_action').on('shown.bs.modal', function () {
+		    $(this).find('#rrhh_type_personnel_action_id').select2({
+                dropdownParent: $(this),
+			})
+		})
+	});
 
     function loadEmployees() 
     {
@@ -103,6 +121,8 @@
                 @endcan
 
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
+                html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
+                html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.personnel_actions')</a></li>';
 
                 @can('rrhh_overall_payroll.delete')
                 html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
@@ -153,10 +173,10 @@
                             
                         } else {
                             Swal.fire
-                                ({
-                                    title: result.msg,
-                                    icon: "error",
-                                });
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
                         }
                     }
                     
@@ -168,6 +188,26 @@
     function addDocument(id) {
         var route = '/rrhh-documents-getByEmployee/'+id;
         $("#document_modal").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
+        });
+    }
+
+    function addEconomicDependencies(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-economic-dependence-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
+        });
+    }
+
+    function addPesonnelAction(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-personnel-action-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
             $(this).modal({
             backdrop: 'static'
             });

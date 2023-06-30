@@ -264,7 +264,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <strong>@lang('rrhh.type'):</strong>
+                                    <strong>@lang('rrhh.type_employee'):</strong>
                                     @if( !empty($employee->type_id))
                                         @if( isset($employee->type->value))
                                         {{ $employee->type->value }}
