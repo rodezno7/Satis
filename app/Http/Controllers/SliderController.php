@@ -42,7 +42,8 @@ class SliderController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $image = Image::find($id);
-        return view('slider.edit')->with(compact('image'));
+        $file = Storage::disk('slide')->get($image->path);
+        return view('slider.edit')->with(compact('image', 'file'));
     }
 
     public function store(Request $request)
@@ -53,6 +54,7 @@ class SliderController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'image_slide' => 'required|file|max:5000|mimes:png,jpg,jpeg|dimensions:max_width=1500,max_height=500',
+                'slide_link' => 'url'
             ]);
             $validator->setCustomMessages([
                 'image_slide.required' => 'El campo es requerido',
@@ -60,9 +62,15 @@ class SliderController extends Controller
                 'image_slide.max' => 'El archivo cargado no debe exceder los 5MB.',
                 'image_slide.mimes' => 'Los formatos permitidos son: PNG, JPG, JPEG',
                 'image_slide.dimensions' => 'Las dimensiones deben ser: 1500 x 300 px max.',
+                'slide_link.url' => 'La url proporcionada es invalida.'
             ]);
             if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator);
+                $errors = $validator->messages()->toArray();
+                if(isset($errors['image_slide'])) {
+                    return response()->json(['msg'=> $errors['image_slide'], 'success'=> false]);
+                } else {
+                    return response()->json(['msg'=> $errors['slide_link'], 'success'=> false]); 
+                }
             }
             $business_id = Auth::user()->business_id;
             $folderName = 'bs00'.$business_id.'_slides';
@@ -97,6 +105,20 @@ class SliderController extends Controller
             abort(403, 'Unauthorized action.');
         }
         try {
+            $validator = Validator::make($request->all(), [
+                'image_slide' => 'required|file|max:5000|mimes:png,jpg,jpeg|dimensions:max_width=1500,max_height=500',
+            ]);
+            $validator->setCustomMessages([
+                'image_slide.required' => 'El campo es requerido',
+                'image_slide.file' => 'El campo seleccionado no es valido.',
+                'image_slide.max' => 'El archivo cargado no debe exceder los 5MB.',
+                'image_slide.mimes' => 'Los formatos permitidos son: PNG, JPG, JPEG',
+                'image_slide.dimensions' => 'Las dimensiones deben ser: 1500 x 300 px max.',
+            ]);
+            if ($validator->fails()) {
+                $errors = $validator->messages()->toArray();
+                return response()->json(['msg'=> $errors['image_slide'], 'success'=> false]);
+            }
             $image = Image::find($id);
             $image->description = $request->description;
             $image->start_date = $request->start_date;

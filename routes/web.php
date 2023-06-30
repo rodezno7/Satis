@@ -600,6 +600,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('bank-transactions/cancelCheck/{id}', 'BankTransactionController@cancelCheck');
     Route::post('bank-transactions/getBankTransactions', 'ReporterController@getBankTransactions');
     Route::get('bank-transactions/printCheck/{id}/{print}', 'BankTransactionController@printCheck');
+    Route::get('bank-transactions/printTransfer/{id}', 'BankTransactionController@printTransferFormat');
+
     Route::resource('bank-transactions', 'BankTransactionController');
 
     Route::get('fiscal-years/getFiscalYearsData', 'FiscalYearController@getFiscalYearsData');

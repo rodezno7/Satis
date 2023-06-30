@@ -54,6 +54,8 @@ class HomeController extends Controller
         if (!auth()->user()->can('dashboard.data')) {
             $images = Image::where('business_id', $business_id)
             ->whereRaw('DATE(end_date) >= ?', [date('Y-m-d')])
+            ->orWhere('start_date', null)
+            ->orWhere('end_date', null)
             ->where('is_active', true)
             ->get();
             return view('home.index', compact('images'));
@@ -303,6 +305,8 @@ class HomeController extends Controller
 
         $images = Image::where('business_id', $business_id)
             ->whereRaw('DATE(end_date) >= ?', [date('Y-m-d')])
+            ->orWhere('start_date', null)
+            ->orWhere('end_date', null)
             ->where('is_active', true)
             ->get(); 
         return view('home.index', compact(
@@ -695,9 +699,6 @@ class HomeController extends Controller
                 'gross_profit' => $sale_details['total_sell_inc_tax'] - $purchase_details['total_purchase_inc_tax'],
                 'net_earnings' => $sale_details['total_sell_inc_tax'] - ($purchase_details['total_purchase_inc_tax'] + $expense_details['total_expense_inc_tax'])
             ];
-            \Log::emergency($sale_details);
-            \Log::emergency($purchase_details);
-            \Log::emergency($expense_details);
             return $details;
         }
     }

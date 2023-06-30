@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(function(){
 	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
 	$('#carouselHacked').carousel();
@@ -16,7 +16,6 @@ $(document).ready(function(){
 		var start = $('input[name="date-filter"]:checked').data('start');
 		var end = $('input[name="date-filter"]:checked').data('end');
 		var location_id = $('select#business_location_id').val() == 0 ? 1 : $('select#business_location_id').val();	
-
 		update_statistics(start, end, location_id);
 	});
 
@@ -52,7 +51,6 @@ $(document).ready(function(){
 		var start = $('input[name="date-filter"]:checked').data('start');
 		var end = $('input[name="date-filter"]:checked').data('end');
 		var location_id = $("#business_location_id").val();
-
 		update_statistics(start, end, location_id);
 	});
 });
@@ -131,14 +129,14 @@ function update_statistics( start, end, location_id){
 		}
 	});
 	//get the amount of expired products and the ones that are close to expire
-	$.ajax({
-		method: "GET",
-		url: '/home/get-stock-expiry-products',
-		data: data,
-		success: function (data) {
-			$('.expire_products').text(data);
-		}
-	});
+	// $.ajax({
+	// 	method: "GET",
+	// 	url: '/home/get-stock-expiry-products',
+	// 	data: data,
+	// 	success: function (data) {
+	// 		$('.expire_products').text(data);
+	// 	}
+	// });
 
 	// Get the monetary value of the total stock
 	$.ajax({

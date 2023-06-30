@@ -31,13 +31,9 @@
                         {!! Form::text('slide_link', $image->link, ['class' => 'form-control', 'placeholder' => __('carrousel.link')]) !!}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'messages.close' )</button>
-                        </div>
-                    </div>
+                <div class="modal-footer" style="border-top-color: white;">
+                    <button type="submit" class="btn btn-primary">@lang('messages.save')</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'messages.close' )</button>
                 </div>
                 {!! Form::close() !!}
             </div>

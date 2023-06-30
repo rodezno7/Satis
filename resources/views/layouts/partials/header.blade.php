@@ -32,10 +32,20 @@
             <strong><i class="fa fa-window-close fa-lg"></i></strong>
           </button>
         @endif
-
+        @php
+          use App\Business;
+          use App\User;
+          $businessIds = User::select('business_id')
+            ->where('username', Auth::user()->username)
+            ->where('email', Auth::user()->email)
+            ->get();
+        $businessCount = Business::whereIn('id', $businessIds->toArray())->count();
+        @endphp
+        @if($businessCount > 1)
         <a href="{{ action('BusinessController@getChangeBusiness')}}" title="{{ __('home.conected_business') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10 btn_business_modal">
             <strong><i class="fa fa-briefcase"></i>&nbsp; @lang("business.change_business")</strong>
         </a>
+        @endif
 
         @can('sell.create')
           <a href="{{action('SellPosController@create')}}" title="POS" data-toggle="tooltip" data-placement="bottom" class="btn btn-success btn-flat pull-left m-8 hidden-xs btn-sm mt-10">

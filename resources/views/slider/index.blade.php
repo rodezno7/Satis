@@ -167,7 +167,8 @@
                 $('form#image_add_form, form#image_update_form').submit(function(e) {
                     e.preventDefault();
                     let data = new FormData(this);
-                    $(this).find('button[type="submit"]').attr('disabled', true);
+                    let btnSubmit = $(this).find('button[type="submit"]');
+                    btnSubmit.attr('disabled', true);
                     $.ajax({
                             method: $(this).attr('method'),
                             url: $(this).attr("action"),
@@ -184,10 +185,17 @@
                                     });
                                     slider_table.ajax.reload(null, false);
                                 } else {
-                                    $('div.contact_modal').modal('hide');
+                                    let errors = result.msg
+                                    let msgError = errors.map((e) => {
+                                        let tmp = ''
+                                        tmp += e
+                                        return tmp
+                                    })
+                                    btnSubmit.removeAttr('disabled');
                                     Swal.fire({
-                                        title: 'Error, contacte al administrador.',
                                         icon: "error",
+                                        title: 'Error',
+                                        text: msgError
                                     });
                                 }
                             }
