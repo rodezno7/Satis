@@ -6,6 +6,9 @@ use App\User;
 use App\System;
 use App\Employees;
 use App\Positions;
+use App\RrhhSalaryHistory;
+use App\RrhhPositionHistory;
+use App\Bank;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -87,7 +90,7 @@ class EmployeesController extends Controller
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
         $countries = DB::table('countries')->pluck('name', 'id');
         
@@ -236,11 +239,11 @@ class EmployeesController extends Controller
             $input_details['business_id']    = $request->session()->get('user.business_id');
             $employee = Employees::create($input_details);
 
-            DB::table('rrhh_position_history')->insert(
+            RrhhPositionHistory::insert(
                 ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
             );
 
-            DB::table('rrhh_salary_history')->insert(
+            RrhhSalaryHistory::insert(
                 ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
             );
 
@@ -337,7 +340,7 @@ class EmployeesController extends Controller
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
 
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $employee->state_id)->pluck('name', 'id');

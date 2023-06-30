@@ -25,8 +25,7 @@ class RrhhTypePersonnelActionController extends Controller
 
         $business_id =  request()->session()->get('user.business_id');
         
-        $data = DB::table('rrhh_type_personnel_actions')
-        ->select('rrhh_type_personnel_actions.*')
+        $data = RrhhTypePersonnelAction::select('rrhh_type_personnel_actions.*')
         ->where('business_id', $business_id)
         ->get();
 

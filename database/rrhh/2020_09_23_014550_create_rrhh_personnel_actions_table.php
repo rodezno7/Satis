@@ -20,10 +20,13 @@ class CreateRrhhPersonnelActionsTable extends Migration
             $table->date('end_date')->nullable();
             $table->date('effective_date')->nullable();
             
-            $table->integer('payment_id')->nullable();
-            $table->integer('bank_id')->nullable();
-            $table->string('bank_account')->nullable();
+            $table->integer('payment_id')->unsigned()->nullable();
+            $table->foreign('payment_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
+            $table->integer('bank_id')->unsigned()->nullable();
+            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->string('bank_account')->nullable();
             $table->string('status')->default('No requiere autorización');
             $table->date('authorization_date')->nullable();
 
@@ -32,7 +35,10 @@ class CreateRrhhPersonnelActionsTable extends Migration
 
             $table->integer('rrhh_type_personnel_action_id')->unsigned();
             $table->foreign('rrhh_type_personnel_action_id')->references('id')->on('rrhh_type_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
-
+            
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            
             $table->timestamps();
             $table->softDeletes();
         });

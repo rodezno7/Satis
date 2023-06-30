@@ -20,6 +20,7 @@ class CreateRrhhTypePersonnelActionsTable extends Migration
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

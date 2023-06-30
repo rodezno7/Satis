@@ -81,17 +81,7 @@ class Employees extends Model
         return $this->belongsTo('App\RrhhData');
     }
 
-    public function department() {
-
-        return $this->belongsTo('App\RrhhData');
-    }
-
     public function nationality() {
-
-        return $this->belongsTo('App\RrhhData');
-    }
-
-    public function position() {
 
         return $this->belongsTo('App\RrhhData');
     }

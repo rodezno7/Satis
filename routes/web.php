@@ -652,7 +652,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-personnel-action', 'RrhhPersonnelActionController@index');
     Route::get('rrhh-personnel-action-getByAuthorizer', 'RrhhPersonnelActionController@getByAuthorizer');
     // Route::get('rrhh-personnel-action/{password}/validateAuthorization', 'RrhhPersonnelActionController@validateAuthorization');
-    Route::post('rrhh-personnel-action/{id}/confirmAutorization', 'RrhhPersonnelActionController@confirmAutorization');
+    Route::post('rrhh-personnel-action/{id}/confirmAuthorization', 'RrhhPersonnelActionController@confirmAuthorization');
+    Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport');
 
     //Rutas catalogos RRHH
     Route::resource('rrhh-catalogues', 'RrhhHeaderController');

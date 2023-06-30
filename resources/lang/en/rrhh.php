@@ -167,5 +167,13 @@ return[
     'confirm_authorization' => 'Confirm authorization',
     'message_to_confirm_authorization' => 'To confirm your authorization you must enter your password to validate your identity.',
     'authorize' => 'Authorize',
-    'wrong_password' => 'You have entered wrong password'
+    'wrong_password' => 'You have entered wrong password',
+    'personnel_action' => 'Personnel action',
+    'previous_department' => 'Previous department',
+    'new_department' => 'New department',
+    'previous_position' => 'Previous position',
+    'new_position' => 'New position',
+    'period' => 'Period',
+    'requested_by' => 'Requested by',
+    'approved_by' => 'Approved by'
 ];

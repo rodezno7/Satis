@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRrhhPersonnelActionAuthorizerTable extends Migration
+class CreateRrhhPersonnelActionAuthorizersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRrhhPersonnelActionAuthorizerTable extends Migration
      */
     public function up()
     {
-        Schema::create('rrhh_personnel_action_authorizer', function (Blueprint $table) {
+        Schema::create('rrhh_personnel_action_authorizers', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('authorized')->default(false);
             $table->integer('rrhh_personnel_action_id')->unsigned();
@@ -31,6 +31,6 @@ class CreateRrhhPersonnelActionAuthorizerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rrhh_personnel_action_authorizer');
+        Schema::dropIfExists('rrhh_personnel_action_authorizers');
     }
 }

@@ -67,10 +67,16 @@
 				{data: 'created_at', name: 'created_at'},
 				{data: null, render: function(data) {
 					html = "";
-					
 					@can('rrhh_personnel_action.authorize')
-					html += '<button type="button" onClick="autorizerPersonnelAction('+data.id+')" class="btn btn-primary btn-xs"><i class="fa fa-check-square"></i></button>';
+					if (data.status == 'Autorizada'){
+						html += '<button type="button" class="btn btn-primary btn-xs" disabled><i class="fa fa-check-square"></i></button>';
+					}
+					else{
+						html += '<button type="button" onClick="autorizerPersonnelAction('+data.id+')" class="btn btn-primary btn-xs" title="{{ __('rrhh.authorize') }}"><i class="fa fa-check-square"></i></button>';
+					}
 					@endcan
+
+					html += '<a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>';
 
 					return html;
 				}, orderable: false, searchable: false, className: "text-center"}
@@ -99,6 +105,8 @@
 						autocapitalize: 'off'
 					},
 					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+            		cancelButtonColor: '#d33',
 					confirmButtonText: "{{ __('rrhh.authorize') }}",
 					cancelButtonText: "{{ __('messages.cancel') }}",
 					showLoaderOnConfirm: true,
@@ -109,7 +117,7 @@
 					},
 				}).then((result) => {
 					if (result.isConfirmed) {
-						var route = "{!!URL::to('/rrhh-personnel-action/:id/confirmAutorization')!!}";
+						var route = "{!!URL::to('/rrhh-personnel-action/:id/confirmAuthorization')!!}";
 						route = route.replace(':id', id);   
 						token = $("#token").val();
 						console.log(result.value);

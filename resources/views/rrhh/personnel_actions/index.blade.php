@@ -49,6 +49,8 @@
 											@can('rrhh_personnel_action.delete')
 												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
 											@endcan
+
+											<a href="rrhh-personnel-action/{{ $item->id }}/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>
 										</td>
 									</tr>
 								@endforeach

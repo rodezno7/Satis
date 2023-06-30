@@ -167,5 +167,13 @@ return[
     'confirm_authorization' => 'Confirmar autorización',
     'message_to_confirm_authorization' => 'Para confirmar su autorización debe ingresar su contraseña para validar su identidad.',
     'authorize' => 'Autorizar',
-    'wrong_password' => 'Ha ingresado una contraseña incorrecta'
+    'wrong_password' => 'Ha ingresado una contraseña incorrecta',
+    'personnel_action' => 'Acción de personal',
+    'previous_department' => 'Departamento anterior',
+    'new_department' => 'Nuevo departamento',
+    'previous_position' => 'Cargo anterior',
+    'new_position' => 'Nuevo cargo',
+    'period' => 'Periodo',
+    'requested_by' => 'Solicitado por',
+    'approved_by' => 'Aprobado por'
 ];

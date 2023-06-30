@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Employees;
 use App\User;
+use App\Business;
 use App\RrhhPersonnelAction;
+use App\RrhhSalaryHistory;
+use App\RrhhPositionHistory;
+use App\Bank;
+use App\RrhhPersonnelActionAuthorizer;
+use App\RrhhTypePersonnelAction;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -55,7 +61,7 @@ class RrhhPersonnelActionController extends Controller
         $user_id = auth()->user()->id;
         $data = DB::table('rrhh_personnel_actions as personnel_action')
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
-            ->join('rrhh_personnel_action_authorizer as personnel_action_authorizer', 'personnel_action_authorizer.rrhh_personnel_action_id', '=', 'personnel_action.id')
+            ->join('rrhh_personnel_action_authorizers as personnel_action_authorizer', 'personnel_action_authorizer.rrhh_personnel_action_id', '=', 'personnel_action.id')
             ->join('employees as employees', 'employees.id', '=', 'personnel_action.employee_id')
             ->select('personnel_action.id as id', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"), 'personnel_action.created_at as created_at', 'type.name as type', 'personnel_action.status as status')
             ->where('personnel_action_authorizer.user_id', $user_id)
@@ -99,11 +105,11 @@ class RrhhPersonnelActionController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $actions = DB::table('rrhh_action_type')->orderBy('id', 'DESC')->get();
-        $typesPersonnelActions = DB::table('rrhh_type_personnel_actions')->where('business_id', $business_id)->get();
+        $typesPersonnelActions = RrhhTypePersonnelAction::where('business_id', $business_id)->get();
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $banks = DB::table('banks')->where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
         $users = DB::table('users as user')
             ->join('model_has_roles as user_role', 'user_role.model_id', '=', 'user.id')
@@ -118,14 +124,12 @@ class RrhhPersonnelActionController extends Controller
 
         $employee = Employees::findOrFail($id);
 
-        $positionHistory = DB::table('rrhh_position_history')
-            ->where('employee_id', $id)
+        $positionHistory = RrhhPositionHistory::where('employee_id', $id)
             ->where('current', 1)
             ->orderBy('id', 'DESC')
             ->first();
 
-        $salaryHistory = DB::table('rrhh_salary_history')
-            ->where('employee_id', $id)
+        $salaryHistory = RrhhSalaryHistory::where('employee_id', $id)
             ->where('current', 1)
             ->orderBy('id', 'DESC')
             ->first();
@@ -157,7 +161,7 @@ class RrhhPersonnelActionController extends Controller
 
         if ($request->rrhh_type_personnel_action_id != null) {
             $business_id = request()->session()->get('user.business_id');
-            $type = DB::table('rrhh_type_personnel_actions')->where('business_id', $business_id)->where('id', $request->rrhh_type_personnel_action_id)->first();
+            $type = RrhhTypePersonnelAction::where('business_id', $business_id)->where('id', $request->rrhh_type_personnel_action_id)->first();
 
             if ($type->required_authorization == 1) { // Requiere autorizacion la accion de personal
                 $requiredUser = 'required';
@@ -215,6 +219,7 @@ class RrhhPersonnelActionController extends Controller
 
         try {
             $input_details = $request->only(['rrhh_type_personnel_action_id', 'description', 'employee_id']);
+            $input_details['user_id'] = auth()->user()->id;
             $employee = Employees::findOrFail($request->employee_id);
 
             DB::beginTransaction();
@@ -229,19 +234,19 @@ class RrhhPersonnelActionController extends Controller
 
                     if ($action->rrhh_required_action_id == 2) { // Cambiar departamento/puesto
                         if ($type->required_authorization == 0) {
-                            DB::table('rrhh_position_history')->where('employee_id', $employee->id)->update(['current' => 0]);
+                            RrhhPositionHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                         }
-                        DB::table('rrhh_position_history')->insert(
+                        RrhhPositionHistory::insert(
                             ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
                         );
                     }
 
                     if ($action->rrhh_required_action_id == 3) { // Cambiar salario
                         if ($type->required_authorization == 0) {
-                            DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->update(['current' => 0]);
+                            RrhhSalaryHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                         }
 
-                        DB::table('rrhh_salary_history')->insert(
+                        RrhhSalaryHistory::insert(
                             ['employee_id' => $employee->id, 'salary' => $request->input('new_salary')]
                         );
                     }
@@ -291,7 +296,7 @@ class RrhhPersonnelActionController extends Controller
                 $users = $request->input('user_id');
                 foreach ($users as $userID) {
                     $user = User::findOrFail($userID);
-                    DB::table('rrhh_personnel_action_authorizer')->insert(
+                    RrhhPersonnelActionAuthorizer::insert(
                         ['rrhh_personnel_action_id' => $personnelAction->id, 'user_id' => $userID]
                     );
                     $user->notify(new PersonnelActionNotification($user->first_name, $user->last_name, $type->name, $employee->first_name, $employee->last_name));
@@ -327,24 +332,14 @@ class RrhhPersonnelActionController extends Controller
         //
     }
 
-    function validateAuthorization($password)
-    {
-        $user_id = auth()->user()->id;
-        $user = User::findOrFail($user_id);
-        \Log::emergency($user->password);
-        \Log::emergency($password);
-    }
-
-    function confirmAutorization(Request $request, $id)
+    function confirmAuthorization(Request $request, $id)
     {
         if (!auth()->user()->can('rrhh_personnel_action.view')) {
             abort(403, 'Unauthorized action.');
         }
         
         if ($request->ajax()) {
-
             try{
-
                 DB::beginTransaction();
 
                 $personnelAction = RrhhPersonnelAction::findOrFail($id);
@@ -355,7 +350,7 @@ class RrhhPersonnelActionController extends Controller
 
                 if (Hash::check($request->input('password'), $user->password)) {
                     $business_id = request()->session()->get('user.business_id');
-                    $type = DB::table('rrhh_type_personnel_actions')->where('business_id', $business_id)->where('id', $personnelAction->rrhh_type_personnel_action_id)->first();
+                    $type = RrhhTypePersonnelAction::where('business_id', $business_id)->where('id', $personnelAction->rrhh_type_personnel_action_id)->first();
                     $employee = Employees::findOrFail($personnelAction->employee_id);
                     $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $type->id)->orderBy('id', 'DESC')->get();
                     foreach ($actions as $action) {
@@ -365,13 +360,13 @@ class RrhhPersonnelActionController extends Controller
                         }
         
                         if ($action->rrhh_required_action_id == 2) { // Cambiar departamento/puesto
-                            DB::table('rrhh_position_history')->where('employee_id', $employee->id)->update(['current' => 0]);
-                            $lastPosition = DB::table('rrhh_position_history')->where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                            RrhhPositionHistory::where('employee_id', $employee->id)->update(['current' => 0]);
+                            $lastPosition = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
                         }
         
                         if ($action->rrhh_required_action_id == 3) { // Cambiar salario
-                            DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->update(['current' => 0]);
-                            $lastSalary = DB::table('rrhh_salary_history')->where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                            RrhhSalaryHistory::where('employee_id', $employee->id)->update(['current' => 0]);
+                            $lastSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
                         }
         
                         if ($action->rrhh_required_action_id == 5) { // Cambiar cuenta bancaria
@@ -393,8 +388,8 @@ class RrhhPersonnelActionController extends Controller
                         
                     }
 
-                    DB::table('rrhh_personnel_action_authorizer')->where('rrhh_personnel_action_id', $personnelAction->id)->where('user_id', $user_id)->update(['authorized' => 1]);
-                    $users = DB::table('rrhh_personnel_action_authorizer')->where('rrhh_personnel_action_id', $personnelAction->id)->where('authorized', 0)->get();
+                    RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction->id)->where('user_id', $user_id)->update(['authorized' => 1]);
+                    $users = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction->id)->where('authorized', 0)->get();
 
                     if (count($users) == 0) { // Requiere autorizacion la accion de personal
                         $personnelAction->status = 'Autorizada';
@@ -421,7 +416,49 @@ class RrhhPersonnelActionController extends Controller
             }
             return $output;
         }
+    }
+
+    public function authorizationReport($id, $employee_id = null){
+
+        $user_id = auth()->user()->id;
+        $personnelAction = DB::table('rrhh_personnel_actions as personnel_action')
+            ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
+            ->join('users as user', 'user.id', '=', 'personnel_action.user_id')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
+            ->where('personnel_action.id', $id)
+            ->get();
+
+        $payment = DB::table('rrhh_datas as payment')
+            ->join('rrhh_personnel_actions as personnel_action', 'payment.id', '=', 'personnel_action.payment_id')
+            ->select('payment.value as name')
+            ->where('personnel_action.id', $id)
+            ->where('payment.rrhh_header_id', 8)
+            ->get();
+
+        $bank = DB::table('banks as bank')
+            ->join('rrhh_personnel_actions as personnel_action', 'bank.id', '=', 'personnel_action.bank_id')
+            ->select('bank.name as name')
+            ->where('personnel_action.id', $id)
+            ->get();
+
+        \Log::emergency($personnelAction); 
+        $employee = Employees::findOrFail($personnelAction[0]->employee_id);
+        $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get(); 
+          
+        $positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get();
+        $users = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction[0]->id)->get();
+        $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $personnelAction[0]->type_id)->orderBy('id', 'DESC')->get();
+                    
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::find($business_id);
         
+        $pdf = \PDF::loadView('rrhh.personnel_actions.authorization_report_pdf',
+            compact('personnelAction', 'salaries', 'positions', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
+        
+        // $paper = 'letter';
+        // $pdf->setPaper($paper, 'landscape');
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream(__('rrhh.personnel_action') . '.pdf');
     }
 
     /**
