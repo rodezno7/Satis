@@ -1922,9 +1922,12 @@ function loadTransactionsData()
                             expenses = parseInt(data.expenses);
                             if (expenses > 0) {
                                 html_expense = "";
+                                if(data.type_transaction == 'Transferencias bancarias salida' && data.reference !== ''){
+                                    html_expense = '<li><a href="#" onClick="printBankTransferOnly('+data.id+');"><i class="glyphicon glyphicon-print"></i>@lang('messages.print')</a></li>';
+                                }
                             } else {
                                 html_expense = '<li><a href="#" onClick="addExpenses('+data.id+')"><i class="fa fa-credit-card-alt"></i>@lang('expense.pay_transaction')</a></li>';
-                                if(data.type_transaction == 'Transferencias bancarias salida'){
+                                if(data.type_transaction == 'Transferencias bancarias salida' && data.reference !== ''){
                                     html_expense = '<li><a href="#" onClick="printBankTransferOnly('+data.id+');"><i class="glyphicon glyphicon-print"></i>@lang('messages.print')</a></li>';
                                 }
                             }
@@ -1933,6 +1936,9 @@ function loadTransactionsData()
 
                         if(data.type == 'debit') { 
                             html_expense = "";
+                            if(data.type_transaction == 'Transferencias bancarias salida' && data.reference !== ''){
+                                html_expense = '<li><a href="#" onClick="printBankTransferOnly('+data.id+');"><i class="glyphicon glyphicon-print"></i>@lang('messages.print')</a></li>';
+                            }
                         }
 
                         if(data.check_number != null) {
@@ -1950,8 +1956,14 @@ function loadTransactionsData()
 
                             if (expenses > 0) {
                                 html_expense = "";
+                                if(data.type_transaction == 'Transferencias bancarias salida' && data.reference !== ''){
+                                    html_expense = '<li><a href="#" onClick="printBankTransferOnly('+data.id+');"><i class="glyphicon glyphicon-print"></i>@lang('messages.print')</a></li>';
+                                }
                             } else {
                                 html_expense = '<li><a href="#" onClick="addExpenses('+data.id+')"><i class="fa fa-credit-card-alt"></i>@lang('expense.pay_transaction')</a></li>';
+                                if(data.type_transaction == 'Transferencias bancarias salida' && data.reference !== ''){
+                                    html_expense = '<li><a href="#" onClick="printBankTransferOnly('+data.id+');"><i class="glyphicon glyphicon-print"></i>@lang('messages.print')</a></li>';
+                                }
                             }
                         }
 
