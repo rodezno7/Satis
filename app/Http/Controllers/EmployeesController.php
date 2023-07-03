@@ -91,7 +91,8 @@ class EmployeesController extends Controller
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
-
+        $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        
         $countries = DB::table('countries')->pluck('name', 'id');
         
         $roles = DB::table('roles')
@@ -109,6 +110,7 @@ class EmployeesController extends Controller
             'positions',
             'afps',
             'types',
+            'payments',
             'banks',
             'roles'
         ));
@@ -140,7 +142,8 @@ class EmployeesController extends Controller
             'civil_status_id'       => 'required', 
             'department_id'         => 'required',
             'position1_id'          => 'required', 
-            'salary'                => 'required'
+            'salary'                => 'required',
+            'payment_id'            => 'required',
         ]);
 
         try {
@@ -214,9 +217,12 @@ class EmployeesController extends Controller
                 'social_security_number',
                 'afp_id',
                 'afp_number',
-                //'department_id',
-                //'position1_id',
-                //'salary'
+                'payment_id',
+                'bank_id',
+                'bank_account'
+                // 'department_id',
+                // 'position1_id',
+                // 'salary'
             ]);
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));

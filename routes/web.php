@@ -629,7 +629,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
-    Route::get('/rrhh-employeesverified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
+    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
     //Rutas documents by employees
     Route::get('rrhh-documents-getByEmployee/{id}', 'RrhhDocumentsController@getByEmployee');
@@ -654,6 +654,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     // Route::get('rrhh-personnel-action/{password}/validateAuthorization', 'RrhhPersonnelActionController@validateAuthorization');
     Route::post('rrhh-personnel-action/{id}/confirmAuthorization', 'RrhhPersonnelActionController@confirmAuthorization');
     Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport');
+    Route::get('rrhh-personnel-action-createDocument/{id}', 'RrhhPersonnelActionController@createDocument');
+    Route::post('rrhh-personnel-action-storeDocument', 'RrhhPersonnelActionController@storeDocument');
 
     //Rutas catalogos RRHH
     Route::resource('rrhh-catalogues', 'RrhhHeaderController');

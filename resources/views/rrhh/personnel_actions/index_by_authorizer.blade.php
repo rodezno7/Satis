@@ -39,6 +39,7 @@
 		</div>
 	</div>
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+	<div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
 </section>
 @endsection
 
@@ -69,19 +70,30 @@
 					html = "";
 					@can('rrhh_personnel_action.authorize')
 					if (data.status == 'Autorizada'){
-						html += '<button type="button" class="btn btn-primary btn-xs" disabled><i class="fa fa-check-square"></i></button>';
+						html += '<button type="button" class="btn btn-success btn-xs" disabled><i class="fa fa-check-square"></i></button> ';
 					}
 					else{
-						html += '<button type="button" onClick="autorizerPersonnelAction('+data.id+')" class="btn btn-primary btn-xs" title="{{ __('rrhh.authorize') }}"><i class="fa fa-check-square"></i></button>';
+						html += '<button type="button" onClick="autorizerPersonnelAction('+data.id+')" class="btn btn-success btn-xs" title="{{ __('rrhh.authorize') }}"><i class="fa fa-check-square"></i></button> ';
 					}
 					@endcan
 
-					html += '<a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>';
+					html += '<a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.file') }}"><i class="fa fa-file"></i></a> ';
+
+					html += '<a href="#" onClick="addDocument('+data.id+')" type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.documents') }}"><i class="fa fa-upload"></i></a>';
 
 					return html;
 				}, orderable: false, searchable: false, className: "text-center"}
             ],
             dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+	function addDocument(id) {
+        var route = '/rrhh-personnel-action-createDocument/'+id;
+        $("#file_modal").load(route, function() {
+            $(this).modal({
+            	backdrop: 'static'
+            });
         });
     }
 

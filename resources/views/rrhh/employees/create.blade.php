@@ -128,8 +128,7 @@
             <label>@lang('rrhh.afp')</label>
             {!! Form::select("afp_id", $afps, null,
             ['id' => 'afp_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.afp'),
-            'style'
-            => 'width: 100%;']) !!}
+            'style' => 'width: 100%;']) !!}
           </div>
         </div>
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -153,7 +152,7 @@
             <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
             {!! Form::select("department_id", $departments, null,
             ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
-            __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+            __('rrhh.department'), 'style' => 'width: 100%;', 'required']) !!}
           </div>
         </div>
 
@@ -162,7 +161,7 @@
             <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
             {!! Form::select("position1_id", $positions, null,
             ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
-            __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+            __('rrhh.position'), 'style' => 'width: 100%;', 'required']) !!}
           </div>
         </div>
 
@@ -171,9 +170,40 @@
             <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
             {!! Form::number("salary", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'), 'id' => 'salary', 'step' =>
-            '0.01', 'min' => '0.01']) !!}
+            '0.01', 'min' => '0.01', 'required']) !!}
           </div>
         </div>
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+              <label>@lang('rrhh.way_to_pay')</label> <span class="text-danger">*</span>
+              {!! Form::select("payment_id", $payments, null,
+              ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2',
+              'placeholder' =>  __('rrhh.way_to_pay'), 'style' => 'width: 100%;', 'required']) !!}
+          </div>
+      </div>
+
+      <div id='bank_information'>
+          <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+              <div class="form-group">
+                  <label>@lang('rrhh.bank')</label> <span class="text-danger">*</span>
+                  {!! Form::select("bank_id", $banks, null,
+                  ['id' => 'bank_id', 'class' => 'form-control form-control-sm select2',
+                  'placeholder' =>
+                  __('rrhh.bank'), 'style' => 'width: 100%;']) !!}
+              </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+              <div class="form-group">
+                  <label>@lang('rrhh.bank_account')</label> <span class="text-danger">*</span>
+                  {!! Form::number("bank_account", null,
+                  ['class' => 'form-control form-control-sm', 'placeholder' =>
+                  __('rrhh.bank_account'), 'id' =>
+                  'bank_account']) !!}
+              </div>
+          </div>
+      </div>
+      
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             {!! Form::label('photo', __('rrhh.photo') . ':') !!}
@@ -323,6 +353,7 @@
   $( document ).ready(function() {
     //$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     //$("#first_name").focus();
+    showBankInformation();
     $('.select2').select2(); 
 
     let dui = document.getElementById("dni");
@@ -445,6 +476,26 @@
       $("#pass_mode").hide();
     }
   }
+
+  function showBankInformation() {
+		selected_option = $( "#payment_id option:selected" ).text();
+
+		if (selected_option == 'Transferencia bancaria') {
+			$('#bank_information').show();
+      $("#bank_account").prop('required', true);
+      $("#bank_id").prop('required', true);
+		} else {
+			$('#bank_information').hide();
+      $("#bank_account").prop('required', false);
+      $("#bank_id").prop('required', false);
+			$('#bank_id').val('').change();
+			$('#bank_account').val('');
+		}
+	}
+
+	$('#payment_id').change(function() {
+		showBankInformation();
+	});
   
 </script>
 @endsection
