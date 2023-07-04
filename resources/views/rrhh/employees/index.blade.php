@@ -16,7 +16,7 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                @can('rrhh_overall_payroll.create')
+                @can('rrhh_employees.create')
                 <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
                         class="fa fa-plus"></i> @lang( 'messages.add' )
                 </a>
@@ -24,18 +24,19 @@
             </div>
         </div>
         <div class="box-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
-                    width="100%">
-                    <thead>
-                        <th>@lang('rrhh.code')</th>
-                        <th>@lang('rrhh.name')</th>
-                        <th>@lang('rrhh.email')</th>
-                        <th>@lang('rrhh.dni')</th>
-                        <th>@lang('rrhh.actions' )</th>
-                    </thead>
-                </table>
-                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
+                        width="100%">
+                        <thead>
+                            <th>@lang('rrhh.name')</th>
+                            <th>@lang('rrhh.email')</th>
+                            <th>@lang('rrhh.dni')</th>
+                            <th width="15%">@lang('rrhh.actions')</th>
+                        </thead>
+                    </table>
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+                </div>
             </div>
         </div>
     </div>
@@ -108,7 +109,6 @@
             serverSide: true,
             ajax: "/rrhh-employees-getEmployees",
             columns: [
-            {data: 'agent_code', name: 'e.agent_code', className: "text-center"},
             {data: 'full_name', name: 'full_name', className: "text-center"},
             {data: 'email', name: 'email', className: "text-center"},
             {data: 'dni', name: 'dni', className: "text-center"},
@@ -116,7 +116,7 @@
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
                 html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
-                @can('rrhh_overall_payroll.update')
+                @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
 
@@ -124,7 +124,7 @@
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.personnel_actions')</a></li>';
 
-                @can('rrhh_overall_payroll.delete')
+                @can('rrhh_employees.delete')
                 html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                 @endcan
                 

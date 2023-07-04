@@ -9,6 +9,7 @@ use App\Positions;
 use App\RrhhSalaryHistory;
 use App\RrhhPositionHistory;
 use App\Bank;
+use App\Business;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class EmployeesController extends Controller
     //Mostrar Lista de Empleados
     public function getEmployees(){
 
-        if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+        if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -62,8 +63,9 @@ class EmployeesController extends Controller
         $employees = DB::table('employees as e')
         ->select('e.id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
-        ->where('deleted_at', null);
+        ->where('e.deleted_at', null);
         
+
         return DataTables::of($employees)->filterColumn('full_name', function($query, $keyword) {
             $sql = "CONCAT(e.first_name, ' ', e.last_name)  like ?";
             $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -77,7 +79,7 @@ class EmployeesController extends Controller
      */
     public function create() 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_employees.create') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
@@ -91,7 +93,8 @@ class EmployeesController extends Controller
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
-
+        $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        
         $countries = DB::table('countries')->pluck('name', 'id');
         
         $roles = DB::table('roles')
@@ -109,6 +112,7 @@ class EmployeesController extends Controller
             'positions',
             'afps',
             'types',
+            'payments',
             'banks',
             'roles'
         ));
@@ -122,7 +126,7 @@ class EmployeesController extends Controller
      */
     public function store(Request $request) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_employees.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -140,7 +144,8 @@ class EmployeesController extends Controller
             'civil_status_id'       => 'required', 
             'department_id'         => 'required',
             'position1_id'          => 'required', 
-            'salary'                => 'required'
+            'salary'                => 'required|numeric|min:1',
+            'payment_id'            => 'required',
         ]);
 
         try {
@@ -152,7 +157,6 @@ class EmployeesController extends Controller
 
                 $pass = $request->input('password');
                 $password_mode = $request->input('rdb_pass_mode');
-                //$user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'location_id', 'password']);
                 $user_details = $request->only(['first_name', 'last_name', 'username', 'email', 'password']);
                 $user_details['business_id'] = $request->session()->get('user.business_id');
                 $user_details['status']      = 'pending';
@@ -214,26 +218,13 @@ class EmployeesController extends Controller
                 'social_security_number',
                 'afp_id',
                 'afp_number',
-                //'department_id',
-                //'position1_id',
-                //'salary'
+                'payment_id',
+                'bank_id',
+                'bank_account'
             ]);
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
-            
-            $mdate = Carbon::parse($input_details['date_admission'])->format('n');
-            $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
-            $last_correlative = DB::table('employees')
-                ->select(DB::raw('MAX(id) as max'))
-                ->first();
-            if ($last_correlative->max != null) {
-                $correlative = $last_correlative->max + 1;
 
-            } else {
-                $correlative = 1;
-            }
-
-            $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
             $input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
@@ -281,16 +272,14 @@ class EmployeesController extends Controller
      */
     public function show($id) {
 
-        if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+        if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $employee = Employees::where('id', $id)->with(
             'afp',
             'civilStatus',
-            'department',
             'nationality',
-            'position',
             'profession',
             'type',
             'bank',
@@ -300,11 +289,20 @@ class EmployeesController extends Controller
         ->first();
 
         if ($employee->photo == '') {
-            $route = 'uploads/img/defualt.png';
+            if($employee->gender == 'F'){
+                $route = 'uploads/img/avatar_F.png';
+            }else{
+                $route = 'uploads/img/avatar_M.png';
+            }
         } else {
             $route = 'uploads/img/'.$employee->photo;
         }
 
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+
+        $positions = RrhhPositionHistory::where('employee_id', $employee->id)->get();
+        $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->get();
         $documents = DB::table('rrhh_documents as document')
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
@@ -313,7 +311,7 @@ class EmployeesController extends Controller
         ->where('document.employee_id', $id)
         ->get();
         
-        return view('rrhh.employees.show', compact('employee', 'route', 'documents'));
+        return view('rrhh.employees.show', compact('employee', 'route', 'documents', 'positions', 'salaries', 'business'));
     }
 
     /**
@@ -324,26 +322,28 @@ class EmployeesController extends Controller
      */
     public function edit($id) {
 
-        if ( !auth()->user()->can('rrhh_overall_payroll.update') ) {
+        if ( !auth()->user()->can('rrhh_employees.update') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $employee = Employees::findOrFail($id);
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
         $business_id = request()->session()->get('user.business_id');
+
         $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id', $employee->country_id)->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $employee->state_id)->pluck('name', 'id');
+        
         $documents = DB::table('rrhh_documents as document')
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
@@ -382,7 +382,9 @@ class EmployeesController extends Controller
             'payments',
             'countries',
             'documents',
-            'type_documents'
+            'type_documents',
+            'position',
+            'salary'
         ));        
     }
 
@@ -394,9 +396,30 @@ class EmployeesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        if ( !auth()->user()->can('rrhh_overall_payroll.update') ) {
+        if ( !auth()->user()->can('rrhh_employees.update') ) {
             abort(403, 'Unauthorized action.');
         }
+        $employee = Employees::findOrFail($id);
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+
+        $requiredDepartment = 'nullable';
+        $requiredPosition = 'nullable';
+        $requiredSalary = 'nullable';
+        $requiredPayment = 'nullable';
+        if(count($position) == 0){
+            $requiredDepartment = 'required';
+            $requiredPosition = 'required';
+        }
+
+        if(count($salary) == 0){
+            $requiredSalary = 'required|numeric|min:1';
+        }
+
+        if($employee->payment_id == null){
+            $requiredPayment = 'required';
+        }
+
         $request->validate([
             'first_name'            => 'required',
             'last_name'             => 'required',
@@ -409,15 +432,49 @@ class EmployeesController extends Controller
             'date_admission'        => 'nullable',
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
-            'department_id'         => 'nullable',
-            'position1_id'          => 'nullable', 
-            'salary'                => 'nullable|numeric',
+            'department_id'         => $requiredDepartment,
+            'position1_id'          => $requiredPosition, 
+            'salary'                => $requiredSalary,
+            'payment_id'            => $requiredPayment,
             'afp_number'            => 'nullable|integer',
             'social_security_number'=> 'nullable|integer',
         ]);
 
         try {
-            $input_details = $request->all();
+            $input_details = $request->only([
+                'first_name', 
+                'last_name', 
+                'username', 
+                'email',
+                'last_name',
+                'gender',
+                'nationality_id',
+                'dni',
+                'tax_number',
+                'civil_status_id',
+                'phone',
+                'mobile',
+                'email',
+                'address',
+                'social_security_number',
+                'afp_id',
+                'afp_number',
+                'payment_id',
+                'bank_id',
+                'bank_account',
+                'date_admission',
+                'photo',
+                'status',
+                'country_id',
+                'profession_id',
+                'type_id',
+                'payment_id',
+                'bank_id',
+                'bank_account',
+                'state_id',
+                'city_id'
+            ]);
+
             if ($request->input('status')) {
                 $input_details['status'] = 1;
             } else {
@@ -430,9 +487,40 @@ class EmployeesController extends Controller
             
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));     
+            if ($employee->payment_id == null){
+                $input_details['payment_id']   = $request->input('payment_id');
+                $input_details['bank_id']      = $request->input('bank_id');
+                $input_details['bank_account'] = $request->input('bank_account');
+            }
 
-            $employee = Employees::findOrFail($id);
+            $mdate = Carbon::parse($input_details['date_admission'])->format('n');
+            $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
+            $last_correlative = DB::table('employees')
+                ->select(DB::raw('MAX(id) as max'))
+                ->first();
+            if ($last_correlative->max != null) {
+                $correlative = $last_correlative->max + 1;
+
+            } else {
+                $correlative = 1;
+            }
+            
+            if($employee->agent_code == null){
+                $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
+            }
             $employee->update($input_details);
+
+            if(count($position) == 0){
+                RrhhPositionHistory::insert(
+                    ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                );
+            }
+
+            if(count($salary) == 0){
+                RrhhSalaryHistory::insert(
+                    ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                );
+            }
 
             $output = [
                 'success' => 1,
@@ -442,7 +530,7 @@ class EmployeesController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
         return redirect('rrhh-employees')->with('status', $output);
@@ -456,7 +544,7 @@ class EmployeesController extends Controller
      */
     public function destroy($id) 
     {
-        if (!auth()->user()->can('rrhh_overall_payroll.delete')) {
+        if (!auth()->user()->can('rrhh_employees.delete')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -518,53 +606,10 @@ class EmployeesController extends Controller
         }
     }
 
-    // public function uploadPhoto(Request $request) {
-
-    //     if (!auth()->user()->can('rrhh_overall_payroll.create')) {
-    //         abort(403, 'Unauthorized action.');
-    //     }
-
-    //     if (request()->ajax()) {
-
-    //         try {
-
-    //             DB::beginTransaction();
-
-    //             if ($request->hasFile('img')) {
-    //                 $file = $request->file('img');
-    //                 $name = time().$file->getClientOriginalName();
-    //                 Storage::disk('uploads/img')->put($name,  \File::get($file));
-    //                 $input_details['photo'] = $name;
-    //             }
-
-    //             $employee = Employees::findOrFail($request->input('employee_id'));
-    //             $employee->update($input_details);
-
-    //             DB::commit();
-                
-    //             $output = [
-    //                 'success' => true,
-    //                 'msg' => __('rrhh.upload_successfully')
-    //             ];
-
-
-    //         } catch (\Exception $e) {
-    //             DB::rollBack();
-    //             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-    //             $output = [
-    //                 'success' => false,
-    //                 'msg' => __('rrhh.error')
-    //             ];
-    //         }
-
-    //         return $output;
-    //     }
-    // }
-
     public function getPhoto($id) {
 
         if($id != null){
-            if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+            if ( !auth()->user()->can('rrhh_employees.view') ) {
                 abort(403, 'Unauthorized action.');
             }
     

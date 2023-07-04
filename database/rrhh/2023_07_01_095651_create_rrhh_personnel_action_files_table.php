@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRrhhSalaryHistoriesTable extends Migration
+class CreateRrhhPersonnelActionFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateRrhhSalaryHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('rrhh_salary_histories', function (Blueprint $table) {
+        Schema::create('rrhh_personnel_action_files', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('salary', 10, 2);
-            $table->boolean('current')->default(false);
-            $table->integer('employee_id')->unsigned();
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('rrhh_personnel_action_id')->unsigned()->nullable();
+            $table->string('file');
+            $table->integer('rrhh_personnel_action_id')->unsigned();
             $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
@@ -32,6 +29,6 @@ class CreateRrhhSalaryHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rrhh_salary_histories');
+        Schema::dropIfExists('rrhh_personnel_action_files');
     }
 }

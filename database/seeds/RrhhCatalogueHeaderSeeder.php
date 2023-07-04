@@ -245,22 +245,22 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         );
 
         Permission::firstOrCreate(
-            ['name' => 'rrhh_overall_payroll.view'],
+            ['name' => 'rrhh_employees.view'],
             ['description' => 'Ver nómina', 'guard_name' => 'web', 'module_id' => $module->id]
         );
       
         Permission::firstOrCreate(
-            ['name' => 'rrhh_overall_payroll.create'],
+            ['name' => 'rrhh_employees.create'],
             ['description' => 'Crear nómina', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'rrhh_overall_payroll.update'],
+            ['name' => 'rrhh_employees.update'],
             ['description' => 'Actualizar nómina', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'rrhh_overall_payroll.delete'],
+            ['name' => 'rrhh_employees.delete'],
             ['description' => 'Eliminar nómina', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 

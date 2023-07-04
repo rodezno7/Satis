@@ -21,8 +21,9 @@
 							<tr class="active">
 								<th>@lang('rrhh.type_personnel_action')</th>
 								<th>@lang('rrhh.employee')</th>
-								<th width="25%">@lang('rrhh.status')</th>
+								<th>@lang('rrhh.status')</th>
 								<th>@lang('rrhh.created_date')</th>
+								<th>@lang('rrhh.authorization_date')</th>
 								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>
@@ -39,6 +40,7 @@
 		</div>
 	</div>
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+	<div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
 </section>
 @endsection
 
@@ -65,23 +67,32 @@
 				{data: 'full_name', name: 'full_name'},
 				{data: 'status', name: 'status'},
 				{data: 'created_at', name: 'created_at'},
+				{data: 'authorization_date', name: 'authorization_date'},
 				{data: null, render: function(data) {
-					html = "";
+					html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
 					@can('rrhh_personnel_action.authorize')
-					if (data.status == 'Autorizada'){
-						html += '<button type="button" class="btn btn-primary btn-xs" disabled><i class="fa fa-check-square"></i></button>';
-					}
-					else{
-						html += '<button type="button" onClick="autorizerPersonnelAction('+data.id+')" class="btn btn-primary btn-xs" title="{{ __('rrhh.authorize') }}"><i class="fa fa-check-square"></i></button>';
+					if (data.status != 'Autorizada'){
+						html += '<li><a href="#" onClick="autorizerPersonnelAction('+data.id+')"><i class="fa fa-check-square"></i></a>{{ __('rrhh.authorize') }}</li>';
 					}
 					@endcan
 
-					html += '<a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>';
+					html += '<li><a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button"><i class="fa fa-file"></i>{{ __('rrhh.download') }}</a></li>';
 
+					html += '<li><a href="#" onClick="addDocument('+data.id+')" type="button"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>';
+					html += '</ul></div>';
 					return html;
 				}, orderable: false, searchable: false, className: "text-center"}
             ],
             dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
+
+	function addDocument(id) {
+        var route = '/rrhh-personnel-action-createDocument/'+id;
+        $("#file_modal").load(route, function() {
+            $(this).modal({
+            	backdrop: 'static'
+            });
         });
     }
 
@@ -112,7 +123,7 @@
 					showLoaderOnConfirm: true,
 					inputValidator: (value) => {
 						if (!value) {
-						return 'El campo de la contraseña es requerido.'
+							return "{{ __('messages.password_required') }}"
 						}
 					},
 				}).then((result) => {
@@ -141,7 +152,8 @@
 								else {
 									Swal.fire
 									({
-										title: result.msg,
+										title: 'Error',
+  										text: result.msg,
 										icon: "error",
 									});
 								}

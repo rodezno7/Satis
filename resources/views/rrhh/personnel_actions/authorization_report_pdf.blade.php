@@ -91,7 +91,7 @@
             @foreach ($actions as $action)
                 @if ($action->rrhh_required_action_id == 2) {{-- Cambiar departamento --}}
                     @php
-                        $len = count($salaries);
+                        $len = count($positions);
                     @endphp
                     @foreach ($positions as $index => $position)
                         @if ($index == $len - 1)
@@ -120,12 +120,24 @@
                         @if ($index == $len - 1)
                         <tr>
                             <th>{{ __('rrhh.previous_salary') }}</th>
-                            <td colspan="3">{{ $salary->salary }}</td>
+                            <td colspan="3">
+                                @if ($business->currency_symbol_placement == 'after')
+                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
+                                @else
+                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
+                                @endif
+                            </td>
                         </tr>
                         @elseif($index == 0)
                         <tr>
                             <th>{{ __('rrhh.new_salary') }}</th>
-                            <td colspan="3">{{ $salary->salary }}</td>
+                            <td colspan="3">
+                                @if ($business->currency_symbol_placement == 'after')
+                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
+                                @else
+                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
+                                @endif
+                            </td>
                         </tr>
                         @endif
                     @endforeach

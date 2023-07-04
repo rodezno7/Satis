@@ -51,6 +51,8 @@
 											@endcan
 
 											<a href="rrhh-personnel-action/{{ $item->id }}/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>
+
+											<a href="#" onClick="addDocument({{ $item->id }})" type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.documents') }}"><i class="fa fa-upload"></i></a>
 										</td>
 									</tr>
 								@endforeach
@@ -63,6 +65,7 @@
 						</tbody>
 					</table>
 					<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+					<div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
 				</div>				
 			</div>
 		</div>
@@ -70,6 +73,15 @@
 </div>
 
 <script type="text/javascript">
+	function addDocument(id) {
+        var route = '/rrhh-personnel-action-createDocument/'+id;
+        $("#file_modal").load(route, function() {
+            $(this).modal({
+            	backdrop: 'static'
+            });
+        });
+    }
+	
 	function viewFile(id) 
 	{
 		$("#modal_content_photo").html('');

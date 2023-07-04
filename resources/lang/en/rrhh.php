@@ -165,7 +165,7 @@ return[
     'created_date' => 'Created date',
     'authorizations' => 'Authorizations',
     'confirm_authorization' => 'Confirm authorization',
-    'message_to_confirm_authorization' => 'To confirm your authorization you must enter your password to validate your identity.',
+    'message_to_confirm_authorization' => 'You must enter your password',
     'authorize' => 'Authorize',
     'wrong_password' => 'You have entered wrong password',
     'personnel_action' => 'Personnel action',
@@ -175,5 +175,12 @@ return[
     'new_position' => 'New position',
     'period' => 'Period',
     'requested_by' => 'Requested by',
-    'approved_by' => 'Approved by'
+    'approved_by' => 'Approved by',
+    'position_history' => 'Position history',
+    'salary_history' => 'Salary history',
+    'effective_date' => 'Effective date',
+    'wrong_password' => 'Wrong password',
+    'attach_file' => 'Attach file',
+    'download' => 'Download file',
+    'authorization_date' => 'Authorization date'
 ];

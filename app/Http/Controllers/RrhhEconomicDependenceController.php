@@ -36,7 +36,7 @@ class RrhhEconomicDependenceController extends Controller
     }
     public function getByEmployee($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+        if ( !auth()->user()->can('rrhh_economic_dependence.view') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
@@ -64,7 +64,7 @@ class RrhhEconomicDependenceController extends Controller
 
     function createEconomicDependence($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_economic_dependence.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -84,7 +84,7 @@ class RrhhEconomicDependenceController extends Controller
      */
     public function store(Request $request) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_economic_dependence.create') ) {
             abort(403, 'Unauthorized action.');
         }
         $request->validate([
@@ -140,7 +140,7 @@ class RrhhEconomicDependenceController extends Controller
      */
     public function edit($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.edit') ) {
+        if ( !auth()->user()->can('rrhh_economic_dependence.edit') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
@@ -164,7 +164,7 @@ class RrhhEconomicDependenceController extends Controller
 
     public function updateEconomicDependence(Request $request) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.edit') ) {
+        if ( !auth()->user()->can('rrhh_economic_dependence.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -216,7 +216,7 @@ class RrhhEconomicDependenceController extends Controller
      */
     public function destroy($id) {
 
-        if (!auth()->user()->can('rrhh_overall_payroll.delete')) {
+        if (!auth()->user()->can('rrhh_economic_dependence.delete')) {
             abort(403, 'Unauthorized action.');
         }
 
