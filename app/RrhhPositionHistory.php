@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RrhhPositionHistory extends Model
 {
-    protected $fillable = ['department_id', 'position1_id', 'employee_id', 'current'];
+    protected $fillable = ['department_id', 'position1_id', 'employee_id', 'current', 'rrhh_personnel_action_id'];
 
     public function department() {
         return $this->belongsTo('App\RrhhData');
@@ -18,5 +18,9 @@ class RrhhPositionHistory extends Model
 
     public function employee() {
         return $this->belongsTo('App\Employees');
+    }
+
+    public function rrhhPersonnelAction() {
+        return $this->belongsTo('App\RrhhPersonnelAction');
     }
 }

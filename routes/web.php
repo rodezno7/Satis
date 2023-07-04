@@ -670,6 +670,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh/getTypePersonnelActionData', 'RrhhTypePersonnelActionController@getTypePersonnelActionData');
     Route::get('rrhh/create-item/{id}', 'RrhhDataController@createItem');
     Route::get('rrhh/edit-item/{id}', 'RrhhDataController@editItem');
+    Route::post('rrhh-type-personnel-action/{id}', 'RrhhTypePersonnelActionController@update');
 
     /** Cost Centers */
     Route::get('cost_centers/get_main_accounts/{cost_center_id}', 'CostCenterController@getMainAccounts');

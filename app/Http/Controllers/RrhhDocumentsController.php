@@ -36,7 +36,7 @@ class RrhhDocumentsController extends Controller
     }
     public function getByEmployee($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.view') ) {
             abort(403, 'Unauthorized action.');
         }
         $employee = Employees::findOrFail($id);
@@ -65,7 +65,7 @@ class RrhhDocumentsController extends Controller
 
     function createDocument($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -100,7 +100,7 @@ class RrhhDocumentsController extends Controller
      */
     public function store(Request $request) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.create') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.create') ) {
             abort(403, 'Unauthorized action.');
         }
         if($request->document_type_id != null){
@@ -192,7 +192,7 @@ class RrhhDocumentsController extends Controller
 
     function viewFile($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.view') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.view') ) {
             abort(403, 'Unauthorized action.');
         }
         $document = RrhhDocuments::findOrFail($id);
@@ -215,7 +215,7 @@ class RrhhDocumentsController extends Controller
      */
     public function edit($id) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.edit') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.edit') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
@@ -242,7 +242,7 @@ class RrhhDocumentsController extends Controller
 
     public function updateDocument(Request $request) 
     {
-        if ( !auth()->user()->can('rrhh_overall_payroll.edit') ) {
+        if ( !auth()->user()->can('rrhh_document_employee.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -330,7 +330,7 @@ class RrhhDocumentsController extends Controller
      */
     public function destroy($id) {
 
-        if (!auth()->user()->can('rrhh_overall_payroll.delete')) {
+        if (!auth()->user()->can('rrhh_document_employee.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

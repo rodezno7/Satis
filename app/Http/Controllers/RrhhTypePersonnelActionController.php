@@ -175,7 +175,7 @@ class RrhhTypePersonnelActionController extends Controller
             $typeAction = RrhhTypePersonnelAction::findOrFail($id);
             $typeAction->update($input_details);
             
-            DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $id)->delete();
+            DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $typeAction->id)->delete();
             $actions = $request->input('action');
 
             foreach ($actions as $key => $action) {

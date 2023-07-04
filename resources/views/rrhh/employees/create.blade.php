@@ -395,7 +395,7 @@
     let valor = $(this).val();
     let route = '/rrhh-employees/verified_document/'+'dni'+'/'+valor;
     $.get(route, function(data, status) {
-      if (data.success == true) {
+      if (data.success == false) {
         Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
       }
     });
@@ -407,7 +407,7 @@
     if(dni != tax_number){
       let route = '/rrhh-employees/verified_document/'+'tax_number'+'/'+tax_number;
       $.get(route, function(data, status) {
-        if (data.success == true) {
+        if (data.success == false) {
           Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
         }
       });

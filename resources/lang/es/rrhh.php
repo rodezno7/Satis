@@ -165,7 +165,7 @@ return[
     'authorizations' => 'Autorizaciones',
     'type_personnel_action' => 'Tipo de acción de personal',
     'confirm_authorization' => 'Confirmar autorización',
-    'message_to_confirm_authorization' => 'Para confirmar su autorización debe ingresar su contraseña para validar su identidad.',
+    'message_to_confirm_authorization' => 'Ingrese su contraseña',
     'authorize' => 'Autorizar',
     'wrong_password' => 'Ha ingresado una contraseña incorrecta',
     'personnel_action' => 'Acción de personal',
@@ -175,5 +175,12 @@ return[
     'new_position' => 'Nuevo cargo',
     'period' => 'Periodo',
     'requested_by' => 'Solicitado por',
-    'approved_by' => 'Aprobado por'
+    'approved_by' => 'Aprobado por',
+    'position_history' => 'Historial de cargos',
+    'salary_history' => 'Historia de salarios',
+    'effective_date' => 'Fecha en vigor',
+    'wrong_password_authorize' => 'Contraseña incorrecta',
+    'attach_file' => 'Adjuntar archivo',
+    'download' => 'Descargar archivo',
+    'authorization_date' => 'Fecha de autorización'
 ];

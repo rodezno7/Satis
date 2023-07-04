@@ -114,7 +114,7 @@
 				({
 					title: "@lang('rrhh.error_list')",
 					icon: "error",
-					html: "<ul>"+ errormessages+ "</ul>",
+					html: "<ul>"+ msj+ "</ul>",
 				});
 			}
 		});

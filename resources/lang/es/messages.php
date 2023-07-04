@@ -60,6 +60,7 @@
     'update_and_process' => 'Actualizar y procesar',
     'clone' => 'Clonar', 
     "edit"=>'Editar',
-    "authorizer_question" => '¿Está seguro que va autorizar esta acción de personal?',
+    "authorizer_question" => '¿Está seguro?',
     'authorizer_content' => 'Recuerde que no podrá revertir esta acción',
+    'password_required' => 'El campo de la contraseña es requerido.',
 ];

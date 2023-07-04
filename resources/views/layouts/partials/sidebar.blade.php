@@ -116,7 +116,7 @@
       {{-- fin modulo de usuarios --}}
 
       {{-- Inicio Recurso humano --}}
-      @if(auth()->user()->can('rrhh_overall_payroll.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
+      @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
       <li
         class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action']) ? 'active active-sub' : '' }}"
         id="tour_step4">
@@ -126,7 +126,7 @@
           </span>
         </a>
         <ul class="treeview-menu" id="rrhh_over">
-          @can('rrhh_overall_payroll.view')
+          @can('rrhh_employees.view')
           <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
             <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
               @lang('rrhh.employee')

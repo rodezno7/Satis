@@ -109,7 +109,7 @@
       </div>
     </div>
 
-    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" id="div_authorizer">
+    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-xs-12" id="div_authorizer">
       <div class="form-group">
         <label>@lang('rrhh.authorizer')</label> <span class="text-danger">*</span> @show_tooltip(__('rrhh.message_authorizer'))
         <select name="user_id[]" id="user_id" class="form-control form-control-sm select2" 
@@ -218,11 +218,15 @@
 					$('#div_position_history').show();
           $("#department_id").prop('required', true);
 					$("#position1_id").prop('required', true);
+          $('#div_effective_date').show();
+					$("#effective_date").prop('required', true);
 				}
 
         if(action.rrhh_required_action_id == 3){ // Cambiar salario
 				  $('#div_salary_history').show();
 					$("#new_salary").prop('required', true);
+          $('#div_effective_date').show();
+					$("#effective_date").prop('required', true);
 				}
 
         if(action.rrhh_required_action_id == 4){ // Seleccionar un periodo en específico
@@ -276,6 +280,7 @@
       
 
   $("#btn_add_personnel_action").click(function() {
+    $('#btn_add_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action";    
     token = $("#token").val();
       
