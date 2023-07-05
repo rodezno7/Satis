@@ -18,7 +18,7 @@ class CreateRrhhEconomicDependencesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->date('birthdate');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->boolean('status');
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');

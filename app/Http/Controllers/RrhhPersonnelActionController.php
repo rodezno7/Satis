@@ -65,15 +65,18 @@ class RrhhPersonnelActionController extends Controller
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
             ->join('rrhh_personnel_action_authorizers as personnel_action_authorizer', 'personnel_action_authorizer.rrhh_personnel_action_id', '=', 'personnel_action.id')
             ->join('employees as employees', 'employees.id', '=', 'personnel_action.employee_id')
-            ->select('personnel_action.id as id', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"), 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as 	authorization_date', 'type.name as type', 'personnel_action.status as status')
+            ->select('personnel_action.id as id', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"), 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as 	authorization_date', 'type.name as type', 'personnel_action.status as status', 'personnel_action_authorizer.authorized as authorized')
             ->where('personnel_action_authorizer.user_id', $user_id)
             ->get();
         
         return DataTables::of($data)->editColumn('created_at', '{{ @format_date($created_at) }} {{ @format_time($created_at) }}')
         ->editColumn('authorization_date', function ($data) {
             return ($data->authorization_date != null)? $this->transactionUtil->format_date($data->authorization_date): '---';
-        })
-        ->toJson();
+        })->addColumn('authorizations', function ($data) {
+            $authorizations = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $data->id)->where('authorized', 1)->get();
+            $authorize = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $data->id)->get();
+            return count($authorizations).' '.__('rrhh.of').' '.count($authorize);
+        })->toJson();
     }
 
     public function getByEmployee($id)

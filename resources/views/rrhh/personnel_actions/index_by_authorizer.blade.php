@@ -22,8 +22,9 @@
 								<th>@lang('rrhh.type_personnel_action')</th>
 								<th>@lang('rrhh.employee')</th>
 								<th>@lang('rrhh.status')</th>
-								<th>@lang('rrhh.created_date')</th>
 								<th>@lang('rrhh.authorization_date')</th>
+								<th>@lang('rrhh.authorizations')</th>
+								<th>@lang('rrhh.created_date')</th>
 								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>
@@ -66,13 +67,14 @@
 				{data: 'type', name: 'type'},
 				{data: 'full_name', name: 'full_name'},
 				{data: 'status', name: 'status'},
-				{data: 'created_at', name: 'created_at'},
 				{data: 'authorization_date', name: 'authorization_date'},
+				{data: 'authorizations', name: 'authorizations'},
+				{data: 'created_at', name: 'created_at'},
 				{data: null, render: function(data) {
 					html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
 					@can('rrhh_personnel_action.authorize')
-					if (data.status != 'Autorizada'){
-						html += '<li><a href="#" onClick="autorizerPersonnelAction('+data.id+')"><i class="fa fa-check-square"></i></a>{{ __('rrhh.authorize') }}</li>';
+					if (data.authorized == 0){
+						html += '<li><a href="#" onClick="autorizerPersonnelAction('+data.id+')"><i class="fa fa-check-square"></i>{{ __('rrhh.authorize') }}</a></li>';
 					}
 					@endcan
 
