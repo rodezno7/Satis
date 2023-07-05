@@ -33,28 +33,28 @@
     div#header div#customer {
         position: absolute;
         left: 1.7cm;
-        top: 0.85cm;
+        top: 0.65cm;
         width: 8.5cm;
     }
 
     div#header div#address {
         position: absolute;
         left: 1.7cm;
-        top: 1.45cm;
+        top: 1.25cm;
         width: 8.5cm;
     }
 
     div#header div#city {
         position: absolute;
         left: 1.7cm;
-        top: 2.0cm;
+        top: 1.8cm;
         width: 8.5cm;
     }
 
     div#header div#state {
         position: absolute;
         left: 2.5cm;
-        top: 2.55cm;
+        top: 2.35cm;
         width: 7.7cm;
     }
 
@@ -68,21 +68,21 @@
     div#header div#date-day {
         position: absolute;
         left: 12.8cm;
-        top: 0.35cm;
+        top: 0.15cm;
         width: 1.0cm;
     }
 
     div#header div#date-month {
         position: absolute;
         left: 14.7cm;
-        top: 0.35cm;
+        top: 0.15cm;
         width: 2.3cm;
     }
 
     div#header div#date-year {
         position: absolute;
         left: 18.0cm;
-        top: 0.35cm;
+        top: 0.15cm;
         width: 1.0cm;
     }
 
@@ -95,15 +95,15 @@
 
     div#header div#nit {
         position: absolute;
-        left: 12.4cm;
-        top: 1.45cm;
+        left: 12.6cm;
+        top: 1.25cm;
         width: 6.2cm;
     }
 
     div#header div#business-activity {
         position: absolute;
         left: 12.4cm;
-        top: 2.05cm;
+        top: 1.85cm;
         width: 6.2cm;
     }
 
@@ -214,7 +214,7 @@
 
     div#footer div#total-letters {
 		position: absolute;
-        left: 0.05cm;
+        left: 0.25cm;
 		top: 0.65cm;
 		width: 11.0cm;
 	}
@@ -222,7 +222,7 @@
     div#footer div#sums {
 		position: absolute;
         left: 17.0cm;
-		top: 0.25cm;
+		top: 0.15cm;
 		width: 2.0cm;
         text-align: right;
 	}
@@ -230,7 +230,7 @@
     div#footer div#iva {
 		position: absolute;
         left: 17.0cm;
-		top: 0.85cm;
+		top: 0.65cm;
 		width: 2.0cm;
         text-align: right;
 	}
@@ -238,7 +238,7 @@
     div#footer div#subtotal {
 		position: absolute;
         left: 17.0cm;
-		top: 1.3cm;
+		top: 1.1cm;
 		width: 2.0cm;
         text-align: right;
 	}
@@ -246,7 +246,7 @@
     div#footer div#iva-withheld {
 		position: absolute;
         left: 17.0cm;
-		top: 1.8cm;
+		top: 1.4cm;
 		width: 2.0cm;
         text-align: right;
 	}
@@ -278,7 +278,7 @@
     div#footer div#total {
 		position: absolute;
         left: 17.0cm;
-		top: 3.75cm;
+		top: 3.55cm;
 		width: 2.0cm;
         text-align: right;
 	}
