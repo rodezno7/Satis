@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHumanResourcesDatasTable extends Migration
+class CreateRrhhDatasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateHumanResourcesDatasTable extends Migration
      */
     public function up()
     {
-        Schema::create('human_resources_datas', function (Blueprint $table) {
+        Schema::create('rrhh_datas', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('code')->nullable();
@@ -22,8 +22,8 @@ class CreateHumanResourcesDatasTable extends Migration
             $table->boolean('status');
             $table->boolean('date_required')->nullable();
 
-            $table->integer('human_resources_header_id')->unsigned();
-            $table->foreign('human_resources_header_id')->references('id')->on('human_resources_headers')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('rrhh_header_id')->unsigned();
+            $table->foreign('rrhh_header_id')->references('id')->on('rrhh_headers')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
             $table->timestamps();
@@ -38,6 +38,6 @@ class CreateHumanResourcesDatasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('human_resources_datas');
+        Schema::dropIfExists('rrhh_datas');
     }
 }
