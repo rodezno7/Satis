@@ -17,7 +17,7 @@ class CreateRrhhPersonnelActionAuthorizersTable extends Migration
             $table->increments('id');
             $table->boolean('authorized')->default(false);
             $table->integer('rrhh_personnel_action_id')->unsigned();
-            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_paa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

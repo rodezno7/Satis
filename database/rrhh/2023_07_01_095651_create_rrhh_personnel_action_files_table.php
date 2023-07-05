@@ -17,7 +17,7 @@ class CreateRrhhPersonnelActionFilesTable extends Migration
             $table->increments('id');
             $table->string('file');
             $table->integer('rrhh_personnel_action_id')->unsigned();
-            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_paf_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

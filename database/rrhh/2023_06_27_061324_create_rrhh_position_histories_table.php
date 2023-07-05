@@ -22,7 +22,7 @@ class CreateRrhhPositionHistoriesTable extends Migration
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('rrhh_personnel_action_id')->unsigned()->nullable();
-            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_ph_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->boolean('current')->default(false);
             $table->timestamps();
         });
