@@ -42,13 +42,14 @@
 											{{ @format_date($item->created_at) }}
 										</td>
 										<td>
-											@can('rrhh_personnel_action.update')
+											<button type="button" onClick='viewPersonnelAction({{ $item->id }})' class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+											{{-- @can('rrhh_personnel_action.update')
 												<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
 											@endcan
 
 											@can('rrhh_personnel_action.delete')
 												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-											@endcan
+											@endcan --}}
 
 											<a href="rrhh-personnel-action/{{ $item->id }}/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>
 
@@ -82,16 +83,16 @@
         });
     }
 	
-	function viewFile(id) 
+	function viewPersonnelAction(id) 
 	{
-		$("#modal_content_photo").html('');
-		var url = "{!!URL::to('/rrhh-documents-viewFile/:id')!!}";
+		$("#modal_content_personnel_action").html('');
+		var url = "{!!URL::to('/rrhh-personnel-action-view/:id')!!}";
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
-			$("#modal_content_photo").html(data);
-			$('#modal_photo').modal({backdrop: 'static'});
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({backdrop: 'static'});
 		});
-		$('#document_modal').modal('hide').data('bs.modal', null);
+		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
 	function editDocument(id) 

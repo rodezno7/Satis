@@ -192,5 +192,7 @@ return[
     'add_absence_inability' => 'Agregar ausencia o incapacidad',
     'of' => 'de',
     'history' => 'Historial',
-    'personal_data' => 'Datos personales'
+    'personal_data' => 'Datos personales',
+    'employee_status' => 'Estado del empleado',
+    'user' => 'Usuario'
 ];

@@ -54,17 +54,18 @@
                 <th>{{ __('rrhh.type_personnel_action') }}</th>
                 <td>{{ $personnelAction[0]->type }}</td>
                 <th width="15%">{{ __('rrhh.status') }}</th>
-                <td width="20%">{{ $personnelAction[0]->status }}</td>
+                <td width="20%">
+                    {{ $personnelAction[0]->status }}
+                    @if ($personnelAction[0]->status == 'Autorizada')
+                        {{ @format_date($personnelAction[0]->authorization_date) }}
+                    @endif
+                </td>
             </tr>
             <tr>
                 <th width="23%">{{ __('rrhh.requested_by') }}</th>
                 <td>{{ $personnelAction[0]->first_name }} {{ $personnelAction[0]->last_name }}</td>
                 <th width="15%">{{ __('rrhh.created_date') }}</th>
                 <td width="20%">{{ @format_date($personnelAction[0]->created_at) }}</td>
-            </tr>
-            <tr>
-                <th>{{ __('rrhh.description') }}</th>
-                <td colspan="3">{{ $personnelAction[0]->description }}</td>
             </tr>
         </tbody>
     </table>
@@ -79,7 +80,7 @@
             <tr>
                 <th width="23%">{{ __('rrhh.employee') }}</th>
                 <td>{{ $employee->first_name }} {{ $employee->last_name }}</td>
-                <th width="15%">{{ __('rrhh.status') }}</th>
+                <th width="15%">{{ __('rrhh.employee_status') }}</th>
                 <td width="20%">
                     @if ($employee->status == 1)
                     <span>Activo</span>
@@ -198,6 +199,10 @@
                 </tr>
                 @endif
             @endforeach
+            <tr>
+                <th>{{ __('rrhh.description') }}</th>
+                <td colspan="3">{{ $personnelAction[0]->description }}</td>
+            </tr>
         </tbody>
     </table>
     <table style="border: hidden">
