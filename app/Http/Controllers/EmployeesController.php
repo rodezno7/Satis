@@ -10,6 +10,7 @@ use App\RrhhSalaryHistory;
 use App\RrhhPositionHistory;
 use App\Bank;
 use App\Business;
+use App\RrhhAbsenceInability;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class EmployeesController extends Controller
      */
     public function index() 
     {
-        if(!auth()->user()->can('employees.view') && !auth()->user()->can('employees.create')){
+        if(!auth()->user()->can('rrhh_employees.view') && !auth()->user()->can('employees.create')){
             abort(403, "Unauthorized action.");
         }
         return view('rrhh.employees.index');
@@ -60,15 +61,19 @@ class EmployeesController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $employees = DB::table('employees as e')
-        ->select('e.id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        $data = DB::table('employees as e')
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
-        ->where('e.deleted_at', null);
+        ->where('e.deleted_at', null)
+        ->get();
         
 
-        return DataTables::of($employees)->filterColumn('full_name', function($query, $keyword) {
-            $sql = "CONCAT(e.first_name, ' ', e.last_name)  like ?";
-            $query->whereRaw($sql, ["%{$keyword}%"]);
+        return DataTables::of($data)->editColumn('department', function ($data) {
+            $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
+            return (!empty($position)) ? $position->department->value : __('rrhh.no_department');
+        })->editColumn('position', function ($data) {
+            $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
+            return (!empty($position)) ? $position->position1->value : __('rrhh.no_position');
         })->toJson();
     }
 
@@ -301,8 +306,8 @@ class EmployeesController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $business = Business::where('id', $business_id)->first();
 
-        $positions = RrhhPositionHistory::where('employee_id', $employee->id)->get();
-        $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->get();
+        $positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
+        $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $documents = DB::table('rrhh_documents as document')
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
@@ -310,8 +315,24 @@ class EmployeesController extends Controller
         ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $id)
         ->get();
-        
-        return view('rrhh.employees.show', compact('employee', 'route', 'documents', 'positions', 'salaries', 'business'));
+
+        $economicDependences = DB::table('rrhh_economic_dependences as economicDependence')
+        ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
+        ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
+        ->select('economicDependence.id as id', 'type.value as type', 'economicDependence.name as name', 'economicDependence.birthdate as birthdate', 'economicDependence.phone as phone', 'economicDependence.status as status')
+        ->where('economicDependence.employee_id', $employee->id)
+        ->where('type.rrhh_header_id', 15)
+        ->get();
+
+        $absenceInabilities = RrhhAbsenceInability::where('employee_id', $employee->id)->get();
+
+        $personnelActions = DB::table('rrhh_personnel_actions as personnel_action')
+            ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'type.name as type', 'type.required_authorization as required_authorization', 'personnel_action.status as status')
+            ->where('personnel_action.employee_id', $employee->id)
+            ->get();
+
+        return view('rrhh.employees.show', compact('employee', 'route', 'documents', 'positions', 'salaries', 'business', 'economicDependences', 'absenceInabilities', 'personnelActions'));
     }
 
     /**

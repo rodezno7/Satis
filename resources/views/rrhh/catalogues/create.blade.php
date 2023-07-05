@@ -77,7 +77,7 @@
 					$("#types_studies-table").DataTable().ajax.reload(null, false);
 					$("#types_personnel_actions-table").DataTable().ajax.reload(null, false);
 					$("#types_income_discounts-table").DataTable().ajax.reload(null, false);
-					$("#types_disabilities-table").DataTable().ajax.reload(null, false);
+					$("#types_inabilities-table").DataTable().ajax.reload(null, false);
 					$("#types_relationships-table").DataTable().ajax.reload(null, false);
 
 					$('#modal').modal('hide');

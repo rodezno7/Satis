@@ -136,7 +136,7 @@ class RrhhDataController extends Controller
             break;
             
             case 14:
-            $type_item = __('rrhh.types_disabilities');
+            $type_item = __('rrhh.types_inabilities');
             break;
 
             case 15:
@@ -317,7 +317,7 @@ class RrhhDataController extends Controller
             break;
             
             case 14:
-            $type_item = __('rrhh.types_disabilities');
+            $type_item = __('rrhh.types_inabilities');
             break;
 
             case 15:
