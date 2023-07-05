@@ -29,10 +29,12 @@
                     <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
                         width="100%">
                         <thead>
-                            <th>@lang('rrhh.name')</th>
+                            <th width="22%">@lang('rrhh.name')</th>
                             <th>@lang('rrhh.email')</th>
                             <th>@lang('rrhh.dni')</th>
-                            <th width="15%">@lang('rrhh.actions')</th>
+                            <th>@lang('rrhh.department')</th>
+                            <th>@lang('rrhh.position')</th>
+                            <th width="12%">@lang('rrhh.actions')</th>
                         </thead>
                     </table>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -112,6 +114,8 @@
             {data: 'full_name', name: 'full_name', className: "text-center"},
             {data: 'email', name: 'email', className: "text-center"},
             {data: 'dni', name: 'dni', className: "text-center"},
+            {data: 'department', name: 'department', className: "text-center"},
+            {data: 'position', name: 'position', className: "text-center"},
             {data: null, render: function(data) {
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
                 html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
@@ -122,7 +126,8 @@
 
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
-                html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.personnel_actions')</a></li>';
+                html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
+                html += '<li> <a href="#" onClick="addAbsenceInhability('+data.id+')"><i class="fa fa-id-badge"></i>@lang('rrhh.absence_inability')</a></li>';
 
                 @can('rrhh_employees.delete')
                 html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
@@ -207,6 +212,16 @@
     function addPesonnelAction(id){
         $("#modal_action").html('');
         var route = '/rrhh-personnel-action-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
+        });
+    }
+
+    function addAbsenceInhability(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-absence-inability-getByEmployee/'+id;
         $("#modal_action").load(route, function() {
             $(this).modal({
             backdrop: 'static'

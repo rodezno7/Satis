@@ -11,11 +11,12 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					@if (count($types) > count($documents))
 					<div class="form-group">
-						<button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
-						style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
-						<i class="fa fa-plus"></i>
-						@lang('rrhh.add_document')
-						</button>
+						@can('rrhh_document_employee.update')
+							<button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
+								style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
+								<i class="fa fa-plus"></i> @lang('rrhh.add')
+							</button>
+						@endcan
 					</div>
 					@endif
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
@@ -59,11 +60,17 @@
 										@if(!isset($route))
 										<td>
 											@if ($item->file != '')
+											@can('rrhh_document_employee.update')
 												<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
-											@endif
-											<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-											<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-										</td>
+											@endcan
+												@endif
+											@can('rrhh_document_employee.update')
+												<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+											@endcan
+											@can('rrhh_document_employee.delete')
+												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+											@endcan
+											</td>
 										@endif
 									</tr>
 								@endforeach

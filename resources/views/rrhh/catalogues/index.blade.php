@@ -32,7 +32,7 @@
                         <a href="#" class="list-group-item text-center">@lang('rrhh.employee_classification')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_studies')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_absences')</a>
-                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_disabilities')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_inabilities')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_relationships')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_income_discounts')</a>
 
@@ -102,7 +102,7 @@
                     <!-- tab 13 end -->
 
                     <!-- tab 14 start -->
-                    @include('rrhh.catalogues.types_disabilities.index')
+                    @include('rrhh.catalogues.types_inabilities.index')
                     <!-- tab 14 end -->
                     
                     <!-- tab 15 start -->
@@ -177,7 +177,7 @@
         loadTypesPersonnelActions();
         loadTypesIncomeDiscounts();
         loadTypesAbsences();
-        loadTypesDisabilities();
+        loadTypesinabilities();
         loadKinshipTypes();
 
         loadTypesWages();
@@ -607,10 +607,10 @@
         });
     }
 
-    function loadTypesDisabilities() {
-        var table5 = $("#types_disabilities-table").DataTable();
+    function loadTypesinabilities() {
+        var table5 = $("#types_inabilities-table").DataTable();
         table5.destroy();
-        var table5 = $("#types_disabilities-table").DataTable({
+        var table5 = $("#types_inabilities-table").DataTable({
 
             deferRender: true,
             processing: true,
@@ -893,7 +893,7 @@
     }
 
 
-    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_income_discounts, #add_types_absences, #add_types_disabilities, #add_types_relationships").click(function(){
+    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_income_discounts, #add_types_absences, #add_types_inabilities, #add_types_relationships").click(function(){
         $("#modal_content").html('');
         catalogue_id = $(this).val();
         var url = '{!!URL::to('/rrhh/create-item/:catalogue_id')!!}';

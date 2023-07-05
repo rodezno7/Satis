@@ -60,7 +60,7 @@ class PersonnelActionNotification extends Notification
         ->greeting('Hola '.$this->userFirstName.' '.$this->userLastName.'')
         ->line('Se requiere de su autorización para la acción de personal '.$this->type.' para el empleado '.$this->employeeFirstName.' '.$this->employeeLastName.'.')
         ->line('Te invitamos a que ingreses al sistema')
-        ->action('Iniciar sesión', url(config('app.url')));
+        ->action('Iniciar sesión', url('http://satis.test'));
     }
     /**
      * Get the array representation of the notification.

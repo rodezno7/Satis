@@ -13,7 +13,7 @@
 							<button type="button" class="btn btn-info btm-sm" id='btn_add_personnel_actions'
 							style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 							<i class="fa fa-plus"></i>
-							{{ __('rrhh.add_personnel_action') }}
+							{{ __('rrhh.add') }}
 							</button>
 						@endcan
 					</div>
@@ -58,7 +58,7 @@
 								@endforeach
 							@else
 								<tr>
-									<td colspan="3" class="text-center">@lang('lang_v1.no_records')</td>
+									<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
 									
 								</tr>
 							@endif

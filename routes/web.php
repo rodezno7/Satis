@@ -656,11 +656,17 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('rrhh-personnel-action-update', 'RrhhPersonnelActionController@updatePersonnelAction');
     Route::get('rrhh-personnel-action', 'RrhhPersonnelActionController@index');
     Route::get('rrhh-personnel-action-getByAuthorizer', 'RrhhPersonnelActionController@getByAuthorizer');
-    // Route::get('rrhh-personnel-action/{password}/validateAuthorization', 'RrhhPersonnelActionController@validateAuthorization');
     Route::post('rrhh-personnel-action/{id}/confirmAuthorization', 'RrhhPersonnelActionController@confirmAuthorization');
     Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport');
     Route::get('rrhh-personnel-action-createDocument/{id}', 'RrhhPersonnelActionController@createDocument');
     Route::post('rrhh-personnel-action-storeDocument', 'RrhhPersonnelActionController@storeDocument');
+
+
+    //Rutas economic dependencies by employees
+    Route::resource('rrhh-absence-inability', 'RrhhAbsenceInabilityController');
+    Route::get('rrhh-absence-inability-getByEmployee/{id}', 'RrhhAbsenceInabilityController@getByEmployee');
+    Route::get('rrhh-absence-inability-create/{id}', 'RrhhAbsenceInabilityController@createAbsenceInability');
+    Route::post('rrhh-absence-inability-update', 'RrhhAbsenceInabilityController@updateAbsenceInability');
 
     //Rutas catalogos RRHH
     Route::resource('rrhh-catalogues', 'RrhhHeaderController');

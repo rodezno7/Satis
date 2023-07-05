@@ -3,15 +3,15 @@
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">@lang('rrhh.economic_dependencies')</h4>
+            <h4 class="modal-title">@lang('rrhh.absence_inability')</h4>
         </div>
         <div class="modal-body">
             <div class="row">
 				
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="form-group">
-						@can('rrhh_economic_dependence.create')
-							<button type="button" class="btn btn-info btm-sm" id='btn_add_economic_dependencies'
+						@can('rrhh_absence_inability.create')
+							<button type="button" class="btn btn-info btm-sm" id='btn_add_absence_inabilities'
 								style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 								<i class="fa fa-plus"></i> @lang('rrhh.add')
 							</button>
@@ -20,48 +20,57 @@
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
 						<thead>
 							<tr class="active">
-								<th>@lang('rrhh.name')</th>
-								<th>@lang('rrhh.relationships')</th>
-								<th>@lang('rrhh.birthdate')</th>
-								<th width="12%">@lang('rrhh.phone')</th>
-								<th width="10%">@lang('rrhh.status')</th>
+								<th>@lang('rrhh.option')</th>
+								<th>@lang('rrhh.type')</th>
+								<th>@lang('rrhh.date')</th>
+								<th>@lang('rrhh.amount')</th>
 								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>
 						<tbody id="referencesItems">
-							@if (count($economicDependences) > 0)
-								@foreach($economicDependences as $item)
+							@if (count($absenceInabilities) > 0)
+								@foreach($absenceInabilities as $item)
 									<tr>
 										<td>{{ $item->type }}</td>
-										<td>{{ $item->name }}</td>
 										<td>
-											@if ($item->birthdate != null)
-											{{ @format_date($item->birthdate) }}
+											@if ($item->type == 'Ausencia')
+											{{ $item->typeAbsence->value }}
 											@else
-												N/A
-											@endif
-										</td>
-										<td>{{ $item->phone }}</td>
-										<td>
-											@if ($item->status == 1)
-												{{ __('rrhh.active') }}
-											@else
-											{{ __('rrhh.inactive') }}
+											{{ $item->typeInability->value }}
 											@endif
 										</td>
 										<td>
-											@can('rrhh_economic_dependence.update')
-												<button type="button" onClick='editEconomicDependence({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+											@if ($item->type == 'Ausencia')
+											{{ @format_date($item->start_date) }}
+											@else
+											{{ @format_date($item->start_date) }} - {{ @format_date($item->end_date) }}
+											@endif
+										</td>
+										<td>
+											@if ($item->type == 'Ausencia')
+											{{ $item->amount }} Horas
+											@else
+											@php
+												$fecha1= new DateTime($item->start_date);
+												$fecha2= new DateTime($item->end_date);
+												$diff = $fecha1->diff($fecha2);
+											@endphp
+											{{ $diff->days }} Días
+											@endif
+										</td>
+										<td>
+											@can('rrhh_absence_inability.update')
+												<button type="button" onClick='editAbsenceInability({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
 											@endcan
-											@can('rrhh_economic_dependence.delete')
-												<button type="button" onClick='deleteEconomicDependence({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+											@can('rrhh_absence_inability.delete')
+												<button type="button" onClick='deleteAbsenceInability({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
 											@endcan
 										</td>
 									</tr>
 								@endforeach
 							@else
 								<tr>
-									<td colspan="6" class="text-center">@lang('lang_v1.no_records')</td>
+									<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
 								</tr>
 							@endif
 						</tbody>
@@ -75,10 +84,10 @@
 
 
 <script type="text/javascript">
-	function editEconomicDependence(id) 
+	function editAbsenceInability(id) 
 	{
 		$("#modal_content_edit_document").html('');
-		var url = "{!!URL::to('/rrhh-economic-dependence/:id/edit')!!}";
+		var url = "{!!URL::to('/rrhh-absence-inability/:id/edit')!!}";
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
 			$("#modal_content_edit_document").html(data);
@@ -87,7 +96,7 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
-	function deleteEconomicDependence(id) 
+	function deleteAbsenceInability(id) 
 	{
 		Swal.fire({
             title: LANG.sure,
@@ -117,7 +126,7 @@
 						showConfirmButton: false,
 					});
 
-					getEconomicDependence($('#_employee_id').val());
+					getAbsenceInability($('#_employee_id').val());
 
 					} else {
 					Swal.fire
@@ -132,10 +141,10 @@
         });
 	}
 
-	$("#btn_add_economic_dependencies").click(function() 
+	$("#btn_add_absence_inabilities").click(function() 
     {
         $("#modal_content_document").html('');
-        var url = "{!!URL::to('/rrhh-economic-dependence-create/:id')!!}";
+        var url = "{!!URL::to('/rrhh-absence-inability-create/:id')!!}";
         id = $('#_employee_id').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
@@ -147,9 +156,9 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
     });
 
-	function getEconomicDependence(id){
+	function getAbsenceInability(id){
 		$("#modal_action").html('');
-		var route = '/rrhh-economic-dependence-getByEmployee/'+id;
+		var route = '/rrhh-absence-inability-getByEmployee/'+id;
 		$.get(route, function(data) {
 			$("#modal_action").html(data);
 			$('#modal_action').modal({

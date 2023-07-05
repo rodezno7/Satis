@@ -39,7 +39,7 @@
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('rrhh.phone')</label>
+        <label>@lang('rrhh.phone')</label> <span class="text-danger">*</span>
         {!! Form::text("phone", null,
         ['class' => 'form-control form-control-sm', 'placeholder' => '0000-0000', 'id' => 'phone']) !!}
       </div>

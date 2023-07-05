@@ -301,7 +301,6 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['description' => 'Eliminar dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-
         Permission::firstOrCreate(
             ['name' => 'rrhh_personnel_action.view'],
             ['description' => 'Ver acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
@@ -325,6 +324,26 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         Permission::firstOrCreate(
             ['name' => 'rrhh_personnel_action.authorize'],
             ['description' => 'Autorizar acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_absence_inability.view'],
+            ['description' => 'Ver ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+      
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_absence_inability.create'],
+            ['description' => 'Crear ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_absence_inability.update'],
+            ['description' => 'Actualizar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_absence_inability.delete'],
+            ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
         );
         
     }
