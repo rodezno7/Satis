@@ -33,28 +33,28 @@
     div#header div#customer {
         position: absolute;
         left: 1.7cm;
-        top: 0.65cm;
+        top: 0.8cm;
         width: 8.5cm;
     }
 
     div#header div#address {
         position: absolute;
         left: 1.7cm;
-        top: 1.25cm;
+        top: 1.4cm;
         width: 8.5cm;
     }
 
     div#header div#city {
         position: absolute;
         left: 1.7cm;
-        top: 1.8cm;
+        top: 2.0cm;
         width: 8.5cm;
     }
 
     div#header div#state {
         position: absolute;
         left: 2.5cm;
-        top: 2.35cm;
+        top: 2.50cm;
         width: 7.7cm;
     }
 
@@ -246,7 +246,7 @@
     div#footer div#iva-withheld {
 		position: absolute;
         left: 17.0cm;
-		top: 1.4cm;
+		top: 1.6cm;
 		width: 2.0cm;
         text-align: right;
 	}
