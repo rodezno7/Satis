@@ -976,6 +976,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/reports/account-statement', 'ReportController@getAccountStatement');
     Route::post('/reports/account-statement', 'ReportController@postAccountStatement');
 
+    // Collections report
+    Route::get('collections', 'ReportController@getCollections');
+    Route::get('post-collections', 'ReportController@postCollections');
+
     // Mail routes
     Route::post('/balances_customer/send-account-statement', 'MailController@sendAccountStatement');
 

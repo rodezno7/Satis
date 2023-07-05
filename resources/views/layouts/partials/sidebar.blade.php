@@ -888,17 +888,18 @@
       {{-- Inicio Cuentas por cobrar --}}
       @if (auth()->user()->can('cxc.access'))
       <li class="treeview {{ in_array($request->segment(1), [
-    'crm-settings',
-    'customer-group',
-    'balances_customer',
-    'accounts-receivable',
-    'portfolios',
-    'credit-documents',
-    'business_types',
-    'payment-terms',
-    'sdocs',
-    'customers'
-    ]) ? 'active active-sub' : ''}}">
+        'crm-settings',
+        'customer-group',
+        'balances_customer',
+        'accounts-receivable',
+        'collections',
+        'portfolios',
+        'credit-documents',
+        'business_types',
+        'payment-terms',
+        'sdocs',
+        'customers'
+        ]) ? 'active active-sub' : ''}}">
         <a href="#">
           <i class="fa fa-usd"></i>
           <span class="title">@lang('lang_v1.credits_and_payments')</span>
@@ -907,17 +908,22 @@
           </span>
         </a>
         <ul class="treeview-menu">
-          @can('customer.view')
-          <li class="{{ $request->segment(1) == 'balances_customer' ? 'active' : '' }}"><a
+            @can('customer.view')
+            <li class="{{ $request->segment(1) == 'balances_customer' ? 'active' : '' }}"><a
               href="{{action('CustomerController@indexBalancesCustomer')}}"><i class="fa fa-star"></i>
               @lang('customer.customer_balances')</a></li></a>
-      </li>
-      @endcan
-      @can('cxc.access')
-      <li class="{{ $request->segment(1) == 'accounts-receivable' ? 'active' : '' }}">
-        <a href="{{action('CustomerController@accountsReceivable')}}"><i class="fa fa-money"></i> @lang('cxc.cxc')</a>
-      </li>
-      @endcan
+            </li>
+            @endcan
+            @can('cxc.access')
+            <li class="{{ $request->segment(1) == 'accounts-receivable' ? 'active' : '' }}">
+                <a href="{{action('CustomerController@accountsReceivable')}}"><i class="fa fa-money"></i> @lang('cxc.cxc')</a>
+            </li>
+            @endcan
+            @can('cxc.collections')
+            <li class="{{ $request->segment(1) == 'collections' ? 'active' : '' }}">
+                <a href="{{action('ReportController@getCollections')}}"><i class="fa fa-money"></i> @lang('cxc.collections')</a>
+            </li>
+            @endcan
 
       @can('crm_settings.view')
       <li class="{{ in_array($request->segment(1), [
