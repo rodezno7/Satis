@@ -351,7 +351,7 @@
                                 </thead>
                                 <tbody id="referencesItems">
                                     @if (count($positions) > 0)
-                                    @foreach($positions as $item)
+                                    @foreach($positions as $index => $item)
                                     <tr>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
@@ -374,7 +374,7 @@
                                             Vigente
                                             @else
                                             No vigente
-                                            @if ($item->rrhhPersonnelAction != null)
+                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
                                             <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
                                             @endif
@@ -401,7 +401,7 @@
                                 </thead>
                                 <tbody id="referencesItems">
                                     @if (count($salaries) > 0)
-                                    @foreach($salaries as $item)
+                                    @foreach($salaries as $index => $item)
                                     <tr>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
@@ -429,7 +429,7 @@
                                             Vigente
                                             @else
                                             No vigente
-                                            @if ($item->rrhhPersonnelAction != null)
+                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
                                             <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
                                             @endif
@@ -446,9 +446,6 @@
         </div>
         <div class="tab-pane" id="documents">
             <div class="boxform_u box-solid_u" style="border-top: 0px solid #d2d6de !important; border-radius: 0px !important;">
-                {{-- <div class="box-header">
-                    <h3 class="box-title">@lang( 'rrhh.documents' )</h3>
-                </div> --}}
                 <div class="box-body">
                     <div class="row">
                         <div class="col-lg-12">
@@ -473,7 +470,7 @@
                                             <td>{{ $item->number }}</td>
                                             <td>
                                                 <button type="button" onClick="viewFile({{ $item->id }})"
-                                                    class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+                                                    class="btn btn-info btn-xs">{{ __('rrhh.view_file') }}</button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -591,9 +588,6 @@
             </div>
         </div>
     </div>
-
-
-
 
     <div class="modal fade" id="modal_photo" tabindex="-1">
         <div class="modal-dialog">

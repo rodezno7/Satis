@@ -187,10 +187,12 @@ return[
     'no_department' => 'No department',
     'no_position' => 'No position',
     'date' => 'Date',
-    'amount' => 'Amount',
+    'amount' => 'Amount (Hours)',
     'option' => 'Option',
     'add_absence_inability' => 'Add absence or inability',
     'of' => 'of',
     'history' => 'History',
-    'personal_data' => 'Personal data'
+    'personal_data' => 'Personal data',
+    'employee_status' => 'Employee status',
+    'user' => 'User'
 ];

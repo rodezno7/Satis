@@ -7,7 +7,6 @@
         </div>
         <div class="modal-body">
             <div class="row">
-				
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					@if (count($types) > count($documents))
 					<div class="form-group">

@@ -82,9 +82,27 @@ class RrhhAbsenceInabilityController extends Controller
         if ( !auth()->user()->can('rrhh_absence_inability.create') ) {
             abort(403, 'Unauthorized action.');
         }
+        $requiredStartDate = 'nullable';
+        $requiredEndDate = 'nullable';
+        $requiredTypeAbsence = 'nullable';
+        $requiredTypeInability = 'nullable';
+        $requiredAmount = 'nullable';
+
+        if($request->input('type') == 1){
+            $requiredTypeAbsence = 'required';
+            $requiredAmount = 'required';
+        }else{
+            $requiredEndDate = 'required';
+            $requiredTypeInability = 'required';
+        }
         $request->validate([
             'type' => 'required',
-            'description'                 => 'required',
+            'description' => 'required',
+            'start_date' => 'required',
+            'end_date' => $requiredEndDate,
+            'amount' => $requiredAmount,
+            'type_absence_id' => $requiredTypeAbsence,
+            'type_inability_id' => $requiredTypeInability,
         ]);
 
         try {

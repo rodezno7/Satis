@@ -355,7 +355,45 @@ class RrhhPersonnelActionController extends Controller
      */
     public function show(RrhhPersonnelAction $rrhhPersonnelAction)
     {
-        //
+
+    }
+
+    public function viewPersonnelAction(RrhhPersonnelAction $rrhhPersonnelAction, $id)
+    {
+        $user_id = auth()->user()->id;
+        $personnelAction = DB::table('rrhh_personnel_actions as personnel_action')
+            ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
+            ->join('users as user', 'user.id', '=', 'personnel_action.user_id')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
+            ->where('personnel_action.id', $id)
+            ->get();
+
+        $payment = DB::table('rrhh_datas as payment')
+            ->join('rrhh_personnel_actions as personnel_action', 'payment.id', '=', 'personnel_action.payment_id')
+            ->select('payment.value as name')
+            ->where('personnel_action.id', $id)
+            ->where('payment.rrhh_header_id', 8)
+            ->get();
+
+        $bank = DB::table('banks as bank')
+            ->join('rrhh_personnel_actions as personnel_action', 'bank.id', '=', 'personnel_action.bank_id')
+            ->select('bank.name as name')
+            ->where('personnel_action.id', $id)
+            ->get();
+
+        $employee = Employees::findOrFail($personnelAction[0]->employee_id);
+        $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get(); 
+          
+        $positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get();
+        $users = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction[0]->id)->get();
+        $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $personnelAction[0]->type_id)->orderBy('id', 'DESC')->get();
+                    
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::find($business_id);
+        
+        return view('rrhh.personnel_actions.view',
+            compact('personnelAction', 'salaries', 'positions', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
+        
     }
 
     /** Authorizer personnel action */
@@ -452,7 +490,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelAction = DB::table('rrhh_personnel_actions as personnel_action')
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
             ->join('users as user', 'user.id', '=', 'personnel_action.user_id')
-            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
             ->where('personnel_action.id', $id)
             ->get();
 
@@ -468,8 +506,7 @@ class RrhhPersonnelActionController extends Controller
             ->select('bank.name as name')
             ->where('personnel_action.id', $id)
             ->get();
-
-        \Log::emergency($personnelAction); 
+ 
         $employee = Employees::findOrFail($personnelAction[0]->employee_id);
         $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get(); 
           

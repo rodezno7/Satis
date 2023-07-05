@@ -297,7 +297,10 @@ return [
         'position1_id' => 'puesto',
         'start_date' => 'Fecha de inicio',
         'end_date' => 'Fecha fin',
-        'effective_date' => 'Fecha en vigor'
+        'effective_date' => 'Fecha en vigor',
+        'amount' => 'cantidad (Horas)',
+        'type_absence_id' => 'tipo de ausencia',
+        'type_inability_id' => 'tipo de incapacidad',
     ),
 
 ];
