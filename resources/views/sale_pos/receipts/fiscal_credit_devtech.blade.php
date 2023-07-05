@@ -501,11 +501,10 @@
 
         <div id="reference">
             <div id="reference-text">
-                Referencia <br>
-                Usuario Final LIC CSP ABRIL <br>
-                Puede hacer depósito a las siguientes cuentas: <br>
-                Banco Cuscatlán: 043303000005969 <br>
-                Banco de América Central: 201073350 <br>
+                Puede hacer depósito a la siguiente cuenta: <br>
+                Banco Agrícola: 5400097636 <br>
+                Cuenta corriente: Devtech SA de CV <br>
+                O cheque a nombre de: Devtech SA de CV
             </div>
         </div>
 
