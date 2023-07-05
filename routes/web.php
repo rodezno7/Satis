@@ -634,22 +634,48 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
-    Route::get('/rrhh-employeesverified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
-    Route::get('rrhh-documents-getByEmployee/{id}', 'HumanResourceDocumentsController@getByEmployee');
-    Route::get('rrhh-documents-createDocument/{id}', 'HumanResourceDocumentsController@createDocument');
-    Route::get('rrhh-documents-viewFile/{id}', 'HumanResourceDocumentsController@viewFile');
-    Route::post('rrhh-documents-updateDocument', 'HumanResourceDocumentsController@updateDocument');
-    Route::resource('rrhh-documents', 'HumanResourceDocumentsController');
+    Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
+
+    //Rutas documents by employees
+    Route::get('rrhh-documents-getByEmployee/{id}', 'RrhhDocumentsController@getByEmployee');
+    Route::get('rrhh-documents-createDocument/{id}', 'RrhhDocumentsController@createDocument');
+    Route::get('rrhh-documents-viewFile/{id}', 'RrhhDocumentsController@viewFile');
+    Route::post('rrhh-documents-updateDocument', 'RrhhDocumentsController@updateDocument');
+    Route::resource('rrhh-documents', 'RrhhDocumentsController');
+
+    //Rutas economic dependencies by employees
+    Route::resource('rrhh-economic-dependence', 'RrhhEconomicDependenceController');
+    Route::get('rrhh-economic-dependence-getByEmployee/{id}', 'RrhhEconomicDependenceController@getByEmployee');
+    Route::get('rrhh-economic-dependence-create/{id}', 'RrhhEconomicDependenceController@createEconomicDependence');
+    Route::post('rrhh-economic-dependence-update', 'RrhhEconomicDependenceController@updateEconomicDependence');
+
+    //Rutas personnel action by employees
+    Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController');
+    Route::get('rrhh-personnel-action-getByEmployee/{id}', 'RrhhPersonnelActionController@getByEmployee');
+    Route::get('rrhh-personnel-action-create/{id}', 'RrhhPersonnelActionController@createPersonnelAction');
+    Route::post('rrhh-personnel-action-update', 'RrhhPersonnelActionController@updatePersonnelAction');
+    Route::get('rrhh-personnel-action', 'RrhhPersonnelActionController@index');
+    Route::get('rrhh-personnel-action-getByAuthorizer', 'RrhhPersonnelActionController@getByAuthorizer');
+    // Route::get('rrhh-personnel-action/{password}/validateAuthorization', 'RrhhPersonnelActionController@validateAuthorization');
+    Route::post('rrhh-personnel-action/{id}/confirmAuthorization', 'RrhhPersonnelActionController@confirmAuthorization');
+    Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport');
+    Route::get('rrhh-personnel-action-createDocument/{id}', 'RrhhPersonnelActionController@createDocument');
+    Route::post('rrhh-personnel-action-storeDocument', 'RrhhPersonnelActionController@storeDocument');
 
     //Rutas catalogos RRHH
-    Route::resource('rrhh-catalogues', 'HumanResourcesHeaderController');
-    Route::resource('rrhh-catalogues-data', 'HumanResourcesDataController');
+    Route::resource('rrhh-catalogues', 'RrhhHeaderController');
+    Route::resource('rrhh-catalogues-data', 'RrhhDataController');
     Route::resource('rrhh-banks', 'HumanResourceBanksController');
+    Route::resource('rrhh-type-wages', 'RrhhTypeWageController');
+    Route::resource('rrhh-type-personnel-action', 'RrhhTypePersonnelActionController');
     
-    Route::get('rrhh/getCataloguesData/{id}', 'HumanResourcesDataController@getCatalogueData');
+    Route::get('rrhh/getCataloguesData/{id}', 'RrhhDataController@getCatalogueData');
     Route::get('rrhh/getBanksData', 'HumanResourceBanksController@getBanksData');
-    Route::get('rrhh/create-item/{id}', 'HumanResourcesDataController@createItem');
-    Route::get('rrhh/edit-item/{id}', 'HumanResourcesDataController@editItem');
+    Route::get('rrhh/getTypeWagesData', 'RrhhTypeWageController@getTypeWagesData');
+    Route::get('rrhh/getTypePersonnelActionData', 'RrhhTypePersonnelActionController@getTypePersonnelActionData');
+    Route::get('rrhh/create-item/{id}', 'RrhhDataController@createItem');
+    Route::get('rrhh/edit-item/{id}', 'RrhhDataController@editItem');
+    Route::post('rrhh-type-personnel-action/{id}', 'RrhhTypePersonnelActionController@update');
 
     /** Cost Centers */
     Route::get('cost_centers/get_main_accounts/{cost_center_id}', 'CostCenterController@getMainAccounts');
@@ -977,6 +1003,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     // Account statement
     Route::get('/reports/account-statement', 'ReportController@getAccountStatement');
     Route::post('/reports/account-statement', 'ReportController@postAccountStatement');
+
+    // Collections report
+    Route::get('collections', 'ReportController@getCollections');
+    Route::get('post-collections', 'ReportController@postCollections');
 
     // Mail routes
     Route::post('/balances_customer/send-account-statement', 'MailController@sendAccountStatement');

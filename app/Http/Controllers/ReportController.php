@@ -34,6 +34,7 @@ use App\CashierClosure;
 use App\ExpenseCategory;
 use App\BusinessLocation;
 use App\Customer;
+use App\CustomerPortfolio;
 use App\Exports\AccountStatementExport;
 use App\SellingPriceGroup;
 use App\Utils\ProductUtil;
@@ -4800,6 +4801,30 @@ class ReportController extends Controller
         $result = $result->sortBy('date');
 
         return $result;
+    }
+
+    /**
+     * 
+     */
+    public function getCollections() {
+        if (!auth()->user()->can('cxc.collections')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = auth()->user()->business_id;
+
+        // Locations
+        $locations = BusinessLocation::forDropdown($business_id, true);
+        $sellers = CustomerPortfolio::pluck('name', 'id');
+
+        return view('report.collections', compact('locations', 'sellers'));
+    }
+
+    /**
+     * 
+     */
+    public function postCollections() {
+
     }
 
     /**

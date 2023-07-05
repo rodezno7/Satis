@@ -30,4 +30,5 @@
     "custodian_added" => "Custodio asignado exitosamente.",
     "show_cdocs" => "Ver Registro Documento de Crédito",
     "rec_cus_docs" => "Recepción y Custodio de Documentos",
+    "collections" => "Cobros",
 ];

@@ -280,6 +280,14 @@ return [
         'reg_number'    => 'NRC',
         'tax_number'    => 'NIT',
         'business_line' => 'business line',
+        'user_id' => 'user who authorize the personnel action',
+        'new_salary' => 'new salary',
+        'description' => 'description',
+        'department_id' => 'department',
+        'position1_id' => 'position',
+        'start_date' => 'start date',
+        'end_date' => 'end date',
+        'effective_date' => 'effective date'
     ),
 'custom-messages' => [
     'quantity_not_available' => 'Only :qty :unit available',

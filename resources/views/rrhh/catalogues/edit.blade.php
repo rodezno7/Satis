@@ -11,7 +11,7 @@
 			<label>@lang('rrhh.name')</label>
 			<input type="text" name='value' id='value' class="form-control" value='{{ $item->value }}' placeholder="@lang('rrhh.name')">
 
-			@if ($item->human_resources_header_id == 9)
+			@if ($item->rrhh_header_id == 9)
 			<br>
 			<label>
                 <input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
@@ -19,17 +19,13 @@
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-			<input type="hidden" name="human_resources_header_id" value="{{ $item->human_resources_header_id }}" id="human_resources_header_id">
+			<input type="hidden" name="rrhh_header_id" value="{{ $item->rrhh_header_id }}" id="rrhh_header_id">
 		</div>
 
 		<div class="form-group">
 			<label>@lang('rrhh.status')</label>
-			
-
 			{!! Form::select('status', [1 => __('rrhh.active'), 2 => __('rrhh.inactive')], $item->status, ['class' => 'form-control select2', 'id' => 'status', 'required', 'style' => 'width: 100%;' ]) !!}
-
 		</div>
-
 
 	</form>	
 </div>

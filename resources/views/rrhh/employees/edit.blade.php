@@ -136,8 +136,7 @@
                                         <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
                                         {!! Form::text("address", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.address'),
-                                        'id' => 'address'])
-                                        !!}
+                                        'id' => 'address', 'required']) !!}
                                     </div>
                                 </div>
 
@@ -146,8 +145,7 @@
                                         <label>@lang('rrhh.social_security_number')</label>
                                         {!! Form::text("social_security_number", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' =>
-                                        __('rrhh.social_security_number'), 'id'
-                                        => 'social_security_number']) !!}
+                                        __('rrhh.social_security_number'), 'id' => 'social_security_number']) !!}
                                     </div>
                                 </div>
 
@@ -156,8 +154,7 @@
                                         <label>@lang('rrhh.afp')</label>
                                         {!! Form::select("afp_id", $afps, $employee->afp_id,
                                         ['id' => 'afp_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.afp'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.afp'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
@@ -166,46 +163,60 @@
                                         <label>@lang('rrhh.afp_number')</label>
                                         {!! Form::text("afp_number", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' =>
-                                        __('rrhh.afp_number'), 'id' =>
-                                        'afp_number']) !!}
+                                        __('rrhh.afp_number'), 'id' =>  'afp_number']) !!}
                                     </div>
                                 </div>
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.date_admission')</label>
+                                        <label>@lang('rrhh.date_admission')</label>        
                                         {!! Form::text("date_admission", @format_date($employee->date_admission),
                                         ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($position) != 0) style="display: none" @endif>
                                     <div class="form-group">
-                                        <label>@lang('rrhh.department')</label>
-                                        {!! Form::select("department_id", $departments, $employee->department_id,
-                                        ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+                                        <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
+                                        @if (count($position) != 0)
+                                            {!! Form::select("department_id", $departments, $employee->department_id,
+                                            ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required']) !!}
+                                        @else
+                                            {!! Form::select("department_id", $departments, $employee->department_id,
+                                            ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+                                        @endif
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($position) != 0) style="display: none" @endif>
                                     <div class="form-group">
-                                        <label>@lang('rrhh.position')</label>
-                                        {!! Form::select("position1_id", $positions, $employee->position1_id,
-                                        ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+                                        <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
+                                        @if (count($position) != 0)
+                                            {!! Form::select("position1_id", $positions, $employee->position1_id,
+                                            ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required']) !!}
+                                        @else
+                                            {!! Form::select("position1_id", $positions, $employee->position1_id,
+                                            ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+                                        @endif
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) != null) style="display: none" @endif>
                                     <div class="form-group">
-                                        <label>@lang('rrhh.salary')</label>
-                                        {!! Form::number("salary", null,
-                                        ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary',
-                                        'step' => '0.01', 'min' => '0.01']) !!}
+                                        <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
+                                        @if (count($salary) != 0)
+                                            {!! Form::number("salary", null,
+                                            ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
+                                            'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
+                                        @else
+                                            {!! Form::number("salary", $employee->salary,
+                                            ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
+                                            'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
+                                        @endif
                                     </div>
                                 </div>
 
@@ -214,8 +225,7 @@
                                         <label>@lang('rrhh.country')</label>
                                         {!! Form::select("country_id", $countries, $employee->country_id,
                                         ['id' => 'country_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.country'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.country'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
@@ -224,8 +234,7 @@
                                         <label>@lang('rrhh.state')</label>
                                         {!! Form::select("state_id", $states, $employee->state_id,
                                         ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.state'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
@@ -234,8 +243,7 @@
                                         <label>@lang('rrhh.city')</label>
                                         {!! Form::select("city_id", $cities, $employee->city_id,
                                         ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.city'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
@@ -244,49 +252,50 @@
                                         <label>@lang('rrhh.profession_occupation')</label>
                                         {!! Form::select("profession_id", $professions, $employee->profession_id,
                                         ['id' => 'profession_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' =>  __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.type')</label>
+                                        <label>@lang('rrhh.type_employee')</label>
                                         {!! Form::select("type_id", $types, $employee->type_id,
                                         ['id' => 'type_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.type'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.type_employee'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if ($employee->payment_id != null) style="display: none" @endif>
                                     <div class="form-group">
-                                        <label>@lang('rrhh.way_to_pay')</label>
-                                        {!! Form::select("payment_id", $payments, $employee->payment_id,
-                                        ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' =>
-                                        __('rrhh.way_to_pay'), 'style' => 'width: 100%;']) !!}
+                                        <label>@lang('rrhh.way_to_pay')</label> <span class="text-danger">*</span>
+                                        @if ($employee->payment_id == null) 
+                                            {!! Form::select("payment_id", $payments, null,
+                                            ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.way_to_pay'), 'style' => 'width: 100%;', 'required']) !!}
+                                        @else
+                                            {!! Form::select("payment_id", $payments, $employee->payment_id,
+                                            ['id' => 'payment_id', 'class' => 'form-control form-control-sm select2',
+                                            'placeholder' => __('rrhh.way_to_pay'), 'style' => 'width: 100%;']) !!}
+                                        @endif
                                     </div>
                                 </div>
 
                                 <div id='bank_information'>
-                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if ($employee->bank_id != null) style="display: none" @endif>
                                         <div class="form-group">
-                                            <label>@lang('rrhh.bank')</label>
+                                            <label>@lang('rrhh.bank')</label> <span class="text-danger">*</span>
                                             {!! Form::select("bank_id", $banks, $employee->bank_id,
                                             ['id' => 'bank_id', 'class' => 'form-control form-control-sm select2',
-                                            'placeholder' =>
-                                            __('rrhh.bank'), 'style' => 'width: 100%;']) !!}
+                                            'placeholder' => __('rrhh.bank'), 'style' => 'width: 100%;']) !!}
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if ($employee->bank_account != null) style="display: none" @endif>
                                         <div class="form-group">
-                                            <label>@lang('rrhh.bank_account')</label>
+                                            <label>@lang('rrhh.bank_account')</label> <span class="text-danger">*</span>
                                             {!! Form::number("bank_account", null,
                                             ['class' => 'form-control form-control-sm', 'placeholder' =>
-                                            __('rrhh.bank_account'), 'id' =>
-                                            'bank_account']) !!}
+                                            __('rrhh.bank_account'), 'id' => 'bank_account']) !!}
                                         </div>
                                     </div>
                                 </div>
@@ -295,8 +304,7 @@
                                         <br>
                                         <div class="checkbox" style="margin-top: 0;">
                                             <label>
-                                                {!! Form::checkbox('status', 1, $employee->status, ['id' => 'status'])
-                                                !!}
+                                                {!! Form::checkbox('status', 1, $employee->status, ['id' => 'status']) !!}
                                                 <strong>@lang('rrhh.status')</strong>
                                             </label>
                                         </div>
@@ -548,8 +556,6 @@
     $.get(route, function(data, status) {
       if (data.success == true) {
         Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
-      } else {
-        Swal.fire({ title: data.msg, icon: "success", timer:3000, });
       }
     });
   });
@@ -561,8 +567,6 @@
     $.get(route, function(data, status) {
       if (data.success == true) {
         Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
-      } else {
-        Swal.fire({ title: data.msg, icon: "success", timer:3000, });
       }
     });
   });
@@ -709,14 +713,17 @@
 		});
 	}
 
-	function showBankInformation() 
-  {
+	function showBankInformation() {
 		selected_option = $( "#payment_id option:selected" ).text();
 
 		if (selected_option == 'Transferencia bancaria') {
-			$('#bank_information').show();
-		} else {
-			$('#bank_information').hide();
+            $('#bank_information').show();
+            $("#bank_account").prop('required', true);
+            $("#bank_id").prop('required', true);
+        } else {
+            $('#bank_information').hide();
+            $("#bank_account").prop('required', false);
+            $("#bank_id").prop('required', false);
 			$('#bank_id').val('').change();
 			$('#bank_account').val('');
 		}

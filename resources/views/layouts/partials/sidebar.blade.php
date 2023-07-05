@@ -116,9 +116,9 @@
       {{-- fin modulo de usuarios --}}
 
       {{-- Inicio Recurso humano --}}
-      @if(auth()->user()->can('rrhh_overall_payroll.view') || auth()->user()->can('rrhh_catalogues.view') )
+      @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
       <li
-        class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues']) ? 'active active-sub' : '' }}"
+        class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action']) ? 'active active-sub' : '' }}"
         id="tour_step4">
         <a href="#" id="tour_step4_menu"><i class="fa fa-user" aria-hidden="true"></i><span>RRHH</span>
           <span class="pull-right-container">
@@ -126,16 +126,23 @@
           </span>
         </a>
         <ul class="treeview-menu" id="rrhh_over">
-          @can('rrhh_overall_payroll.view')
+          @can('rrhh_employees.view')
           <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
             <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
               @lang('rrhh.employee')
             </a>
           </li>
           @endcan
+          @can('rrhh_personnel_action.authorize')
+          <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
+            <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>
+              @lang('rrhh.authorizations')
+            </a>
+          </li>
+          @endcan
           @can('rrhh_catalogues.view')
           <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-            <a href="{{action('HumanResourcesHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+            <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
               @lang('rrhh.catalogues')
             </a>
           </li>
@@ -888,17 +895,18 @@
       {{-- Inicio Cuentas por cobrar --}}
       @if (auth()->user()->can('cxc.access'))
       <li class="treeview {{ in_array($request->segment(1), [
-    'crm-settings',
-    'customer-group',
-    'balances_customer',
-    'accounts-receivable',
-    'portfolios',
-    'credit-documents',
-    'business_types',
-    'payment-terms',
-    'sdocs',
-    'customers'
-    ]) ? 'active active-sub' : ''}}">
+        'crm-settings',
+        'customer-group',
+        'balances_customer',
+        'accounts-receivable',
+        'collections',
+        'portfolios',
+        'credit-documents',
+        'business_types',
+        'payment-terms',
+        'sdocs',
+        'customers'
+        ]) ? 'active active-sub' : ''}}">
         <a href="#">
           <i class="fa fa-usd"></i>
           <span class="title">@lang('lang_v1.credits_and_payments')</span>
@@ -907,17 +915,22 @@
           </span>
         </a>
         <ul class="treeview-menu">
-          @can('customer.view')
-          <li class="{{ $request->segment(1) == 'balances_customer' ? 'active' : '' }}"><a
+            @can('customer.view')
+            <li class="{{ $request->segment(1) == 'balances_customer' ? 'active' : '' }}"><a
               href="{{action('CustomerController@indexBalancesCustomer')}}"><i class="fa fa-star"></i>
               @lang('customer.customer_balances')</a></li></a>
-      </li>
-      @endcan
-      @can('cxc.access')
-      <li class="{{ $request->segment(1) == 'accounts-receivable' ? 'active' : '' }}">
-        <a href="{{action('CustomerController@accountsReceivable')}}"><i class="fa fa-money"></i> @lang('cxc.cxc')</a>
-      </li>
-      @endcan
+            </li>
+            @endcan
+            @can('cxc.access')
+            <li class="{{ $request->segment(1) == 'accounts-receivable' ? 'active' : '' }}">
+                <a href="{{action('CustomerController@accountsReceivable')}}"><i class="fa fa-money"></i> @lang('cxc.cxc')</a>
+            </li>
+            @endcan
+            @can('cxc.collections')
+            <li class="{{ $request->segment(1) == 'collections' ? 'active' : '' }}">
+                <a href="{{action('ReportController@getCollections')}}"><i class="fa fa-money"></i> @lang('cxc.collections')</a>
+            </li>
+            @endcan
 
       @can('crm_settings.view')
       <li class="{{ in_array($request->segment(1), [

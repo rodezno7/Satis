@@ -49,42 +49,42 @@ class HumanResourceEmployee extends Model {
 
     public function afp() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function civilStatus() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function department() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function nationality() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function position() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function profession() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function type() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function payment() {
 
-        return $this->belongsTo('App\HumanResourcesData');
+        return $this->belongsTo('App\RrhhData');
     }
 
     public function bank() {

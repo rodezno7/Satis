@@ -29,6 +29,7 @@ task('deploy:vendors', function () {
     run('composer dump-autoload');
 });
 
+/** Override artisan config:cache task */
 task('artisan:config:cache', function () {
     /** Copy .env file */
     cd('{{deploy_path}}');

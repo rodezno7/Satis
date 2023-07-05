@@ -76,7 +76,7 @@
     $datepicker_date_format = str_replace('d', 'dd', $business_date_format);
     $datepicker_date_format = str_replace('m', 'mm', $datepicker_date_format);
     $datepicker_date_format = str_replace('Y', 'yyyy', $datepicker_date_format);
-
+ 
     $moment_date_format = str_replace('d', 'DD', $business_date_format);
     $moment_date_format = str_replace('m', 'MM', $moment_date_format);
     $moment_date_format = str_replace('Y', 'YYYY', $moment_date_format);
