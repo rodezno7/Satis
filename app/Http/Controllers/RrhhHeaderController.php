@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\HumanResourcesHeader;
+use App\RrhhHeader;
 use Illuminate\Http\Request;
 
-class HumanResourcesHeaderController extends Controller {
+class RrhhHeaderController extends Controller {
 
     /**
      * Display a listing of the resource.
@@ -45,10 +45,10 @@ class HumanResourcesHeaderController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  \App\HumanResourcesHeader  $humanResourcesHeader
+     * @param  \App\RrhhHeader  $rrhhHeader
      * @return \Illuminate\Http\Response
      */
-    public function show(HumanResourcesHeader $humanResourcesHeader)
+    public function show(RrhhHeader $rrhhHeader)
     {
         //
     }
@@ -56,10 +56,10 @@ class HumanResourcesHeaderController extends Controller {
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\HumanResourcesHeader  $humanResourcesHeader
+     * @param  \App\RrhhHeader  $rrhhHeader
      * @return \Illuminate\Http\Response
      */
-    public function edit(HumanResourcesHeader $humanResourcesHeader)
+    public function edit(RrhhHeader $rrhhHeader)
     {
         //
     }
@@ -68,10 +68,10 @@ class HumanResourcesHeaderController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\HumanResourcesHeader  $humanResourcesHeader
+     * @param  \App\RrhhHeader  $rrhhHeader
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, HumanResourcesHeader $humanResourcesHeader)
+    public function update(Request $request, RrhhHeader $rrhhHeader)
     {
         //
     }
@@ -79,10 +79,10 @@ class HumanResourcesHeaderController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\HumanResourcesHeader  $humanResourcesHeader
+     * @param  \App\RrhhHeader  $rrhhHeader
      * @return \Illuminate\Http\Response
      */
-    public function destroy(HumanResourcesHeader $humanResourcesHeader)
+    public function destroy(RrhhHeader $rrhhHeader)
     {
         //
     }

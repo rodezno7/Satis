@@ -23,7 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'username', 'email', 'password', 'business_id', 'cmmsn_percent', 'is_cmmsn_agnt', 'contact_no', 'address', 'language', 'status'
+        'first_name', 'last_name', 'username', 'email', 'password', 'business_id', 'cmmsn_percent', 'is_cmmsn_agnt', 'contact_no', 'address', 'language', 'status', 'deleted_at'
     ];
 
     /**
@@ -78,6 +78,8 @@ class User extends Authenticatable
 
         return $user;
     }
+
+
 
     /**
      * Gives locations permitted for the logged in user
@@ -305,5 +307,12 @@ class User extends Authenticatable
         }
 
         return $custodians;
+    }
+
+    public static function getUser($user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        return $user;
     }
 }

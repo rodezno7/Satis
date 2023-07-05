@@ -106,7 +106,7 @@
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
 			$("#modal_content_edit_document").html(data);
-			$('#modal_edit_document').modal({backdrop: 'static'});
+			$('#modal_edit_action').modal({backdrop: 'static'});
 		});
 		$('#document_modal').modal('hide').data('bs.modal', null);
 	}

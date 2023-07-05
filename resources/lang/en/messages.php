@@ -68,5 +68,8 @@ return [
     'hide' => 'Hide',
     'view'=>'View',
     "edit"=>'Edit',
-    "wrong_password" => 'Incorrect password'
+    "wrong_password" => 'Incorrect password',
+    "authorizer_question" => 'Are you sure?',
+    'authorizer_content' => 'Remember that you will not be able to reverse this action',
+    'password_required' => 'The password field is required.'
 ];
