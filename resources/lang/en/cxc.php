@@ -30,4 +30,5 @@
     "custodian_added" => "Custodian assigned successfully",
     "show_cdocs" => "See credit documents record",
     "rec_cus_docs" => "Reception and custody of documents",
+    "collections" => "Collections",
 ];

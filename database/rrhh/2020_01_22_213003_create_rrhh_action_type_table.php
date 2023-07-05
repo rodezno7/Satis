@@ -20,7 +20,7 @@ class CreateRrhhActionTypeTable extends Migration
             $table->integer('rrhh_required_action_id')->unsigned()->nullable();
             $table->foreign('rrhh_required_action_id')->references('id')->on('rrhh_required_actions')->onDelete('cascade');
             $table->integer('rrhh_class_personnel_action_id')->unsigned()->nullable();
-            $table->foreign('rrhh_class_personnel_action_id', 'rrhh_cpa_id_foreign')->references('id')->on('rrhh_class_personnel_actions')->onDelete('cascade');
+            $table->foreign('rrhh_class_personnel_action_id', 'rrhh_cpa_at_id_foreign')->references('id')->on('rrhh_class_personnel_actions')->onDelete('cascade');
             $table->timestamps();
         });
     }
