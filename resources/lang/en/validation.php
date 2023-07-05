@@ -287,7 +287,10 @@ return [
         'position1_id' => 'position',
         'start_date' => 'start date',
         'end_date' => 'end date',
-        'effective_date' => 'effective date'
+        'effective_date' => 'effective date',
+        'amount' => 'amount (Hours)',
+        'type_absence_id' => 'type of absence',
+        'type_inability_id' => 'type of inability',
     ),
 'custom-messages' => [
     'quantity_not_available' => 'Only :qty :unit available',

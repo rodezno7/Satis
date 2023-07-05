@@ -187,7 +187,7 @@ return[
     'no_department' => 'Sin departamento',
     'no_position' => 'Sin puesto',
     'date' => 'Fecha',
-    'amount' => 'Cantidad',
+    'amount' => 'Cantidad (Horas)',
     'option' => 'Opción',
     'add_absence_inability' => 'Agregar ausencia o incapacidad',
     'of' => 'de',

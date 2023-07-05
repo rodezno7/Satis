@@ -351,7 +351,7 @@
                                 </thead>
                                 <tbody id="referencesItems">
                                     @if (count($positions) > 0)
-                                    @foreach($positions as $item)
+                                    @foreach($positions as $index => $item)
                                     <tr>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
@@ -374,7 +374,7 @@
                                             Vigente
                                             @else
                                             No vigente
-                                            @if ($item->rrhhPersonnelAction != null)
+                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
                                             <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
                                             @endif
@@ -401,7 +401,7 @@
                                 </thead>
                                 <tbody id="referencesItems">
                                     @if (count($salaries) > 0)
-                                    @foreach($salaries as $item)
+                                    @foreach($salaries as $index => $item)
                                     <tr>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
@@ -429,7 +429,7 @@
                                             Vigente
                                             @else
                                             No vigente
-                                            @if ($item->rrhhPersonnelAction != null)
+                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
                                             <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
                                             @endif
