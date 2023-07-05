@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\BankTransaction;
-use App\Contact;
-use App\AccountingEntrie;
-use App\AccountingPeriod;
-use App\AccountingEntriesDetail;
-use App\BankAccount;
-use App\BankCheckbook;
-use App\TypeBankTransaction;
-use App\Business;
-use App\BusinessLocation;
-use App\Catalogue;
-use App\Transaction;
-use App\TypeEntrie;
-use App\TransactionPayment;
-use App\Utils\TransactionUtil;
-use Illuminate\Http\Request;
-
-use DB;
 use Excel;
 use Validator;
 use DataTables;
+use App\Contact;
+use App\Business;
+use App\Catalogue;
 use Carbon\Carbon;
+use App\TypeEntrie;
+use App\BankAccount;
+use App\Transaction;
+use App\BankCheckbook;
+use App\BankTransaction;
+use App\AccountingEntrie;
+use App\AccountingPeriod;
+use App\BusinessLocation;
+use App\TransactionPayment;
+
+use App\TypeBankTransaction;
+use Illuminate\Http\Request;
+use App\Utils\TransactionUtil;
+use App\AccountingEntriesDetail;
+use Illuminate\Support\Facades\DB;
 
 use App\Exports\BankReconciliationReportExport;
 
@@ -2167,6 +2167,280 @@ class BankTransactionController extends Controller {
         $pdf->setPaper('letter');
 
         return $pdf->stream('check.pdf');
+    }
+
+    /**
+     * Print out transfers 
+     * 
+     * @param  int  $id
+     * @param  int  $print
+     * @return \Illuminate\Http\Response
+     */
+    public function printTransferFormat($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+        
+        $transaction = BankTransaction::findOrFail($id);
+        
+        $entrie_type = mb_strtoupper($transaction->entrie->type->description);
+        $entrie_no = $transaction->entrie->correlative == 0 ? $transaction->entrie->number : $transaction->entrie->correlative;
+        
+        $bank = BankAccount::findOrFail($transaction->bank_account_id);
+        
+        $bank_name = $bank->bank->name;
+        
+        $account = Catalogue::findOrFail($bank->catalogue_id);
+        
+        $amount_check_q = DB::table('accounting_entries_details')
+            ->select('accounting_entries_details.credit')
+            ->where('entrie_id', $transaction->accounting_entrie_id)
+            ->where('account_id', $account->id)
+            ->first();
+
+        $format = $bank->bank->print_format;
+        
+        $place = mb_strtoupper($business->state->name) . ', ';
+
+        $date = Carbon::parse($transaction->date);
+
+        $months = array(
+            __('accounting.january'),
+            __('accounting.february'),
+            __('accounting.march'),
+            __('accounting.april'),
+            __('accounting.may'),
+            __('accounting.june'),
+            __('accounting.july'),
+            __('accounting.august'),
+            __('accounting.september'),
+            __('accounting.october'),
+            __('accounting.november'),
+            __('accounting.december')
+        );
+
+        $day = mb_strtoupper($date->format('d')) . ' ';
+        $of = mb_strtoupper(__('accounting.of')) . ' ';
+        $month = mb_strtoupper($months[($date->format('n')) - 1]) . ' ';
+        $year = $date->format('Y');
+        $sub_year = substr($year, -2);
+
+        $place_date = $place . $day . $of . $month . $year;
+
+        $amount = number_format($amount_check_q->credit, 2);
+        $person = mb_strtoupper($transaction->headline);
+
+
+        $description = $transaction->description;
+        $reference = $transaction->reference;
+
+        # ----- ENTRIE -----
+
+        $business_name = mb_strtoupper($business->business_full_name);
+        $accountant = mb_strtoupper($business->accountant);
+        $enable_description_line = $business->enable_description_line_entries_report;
+
+        $numero = 0;
+
+        $entries = DB::table('accounting_entries as ae')
+            ->leftJoin('type_entries as te', 'ae.type_entrie_id', 'te.id')
+            ->select('ae.id', 'ae.correlative', 'ae.date', 'ae.description', 'te.name as type_entrie')
+            ->where('ae.id', $transaction->accounting_entrie_id)
+            ->orderBy('ae.correlative', 'asc')
+            ->get();
+
+        $entrie_details = DB::table('accounting_entries_details as detalle')
+            ->join('catalogues as cuenta', 'detalle.account_id', '=', 'cuenta.id')
+            ->join('accounting_entries as partida', 'partida.id', '=', 'detalle.entrie_id')
+            ->select('detalle.entrie_id', 'detalle.account_id', 'detalle.debit', 'detalle.credit', 'detalle.description', 'cuenta.code', 'cuenta.name')
+            ->where('partida.id', $transaction->accounting_entrie_id)
+            ->orderBy('cuenta.code', 'asc')
+            ->get();
+
+        $grupos = array();
+        $elementos = array();
+        $detalles = array();
+
+
+        $digits = $business->ledger_digits;
+
+        foreach ($entrie_details as $detail) {
+
+            $mayor = substr($detail->code, 0, $digits);
+            $id_partida = $detail->entrie_id;
+
+            if ($detail->debit != 0) {
+                $columna = "D";
+            }
+
+            if ($detail->credit != 0) {
+                $columna = "H";
+            }
+
+            $elemento_grupos = $columna . '.' . $id_partida . '.' . $mayor;
+
+            if (!in_array($elemento_grupos, $grupos)) {
+
+                array_push($grupos, $elemento_grupos);
+
+                $debe = 0;
+                $haber = 0;
+
+                $cuenta = DB::table('catalogues')
+                ->select('name')
+                ->where('code', $mayor)
+                ->first();
+
+                $nombre = $cuenta->name;
+
+                if (($id_partida == $detail->entrie_id)) {
+
+                    $valor = $this->getHigherEntrieBalance($id_partida, $mayor);
+                    $debe = $valor->debe;
+                    $haber = $valor->haber;
+                }
+
+                $item_elemento = array(
+
+                    'partida' => $id_partida,
+                    'mayor' => $mayor,
+                    'nombre' => $nombre,
+                    'columna' => $columna,
+                    'debe' => $debe,
+                    'haber' => $haber,
+                );
+
+                array_push($elementos, $item_elemento);
+            }
+
+            $item_detalle = array(
+                'entrie_id' => $detail->entrie_id,
+                'debe' => $detail->debit,
+                'haber' => $detail->credit,
+                'mayor' => $mayor,
+                'code' => $detail->code,
+                'name' => $detail->name,
+                'description' => $detail->description,
+            );
+
+            array_push($detalles, $item_detalle);
+        }
+
+        $elements = json_decode(json_encode($elementos), FALSE);
+        $details = json_decode(json_encode($detalles), FALSE);
+        $partidas = array();
+
+        foreach ($entries as $entrie) {
+
+            $grupos_debe = array();
+            $grupos_haber = array();
+            $total_debe = 0;
+            $total_haber = 0;
+
+            foreach ($elements as $elemento) {
+
+                $items_debe = array();
+                $items_haber = array();
+
+                foreach ($details as $detalle) {
+
+                    if (($entrie->id == $detalle->entrie_id) && ($elemento->partida == $detalle->entrie_id) && ($elemento->mayor == $detalle->mayor)) {
+
+                        if ($detalle->debe != 0 && $elemento->columna == "D") {
+
+                            $elemento_items_debe = array(
+
+
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->debe,
+                                'description_line' => $detalle->description,
+                            );
+
+                            array_push($items_debe, $elemento_items_debe);
+                        }
+
+                        if ($detalle->haber != 0 && $elemento->columna == "H") {
+
+                            $elemento_items_haber = array(
+                                'code' => $detalle->code,
+                                'name' => $detalle->name,
+                                'valor' => $detalle->haber,
+                                'description_line' => $detalle->description,
+                            );
+
+                            array_push($items_haber, $elemento_items_haber);
+                        }
+                    }
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "D")) {
+
+                    $elemento_grupo_debe = array(
+                        'mayor' => $elemento->mayor,
+                        'nombre' => $elemento->nombre,
+                        'debe' => $elemento->debe,
+                        'items' => $items_debe,
+                    );
+
+                    array_push($grupos_debe, $elemento_grupo_debe);
+
+                    $total_debe = $total_debe + $elemento->debe;
+                }
+
+                if (($entrie->id == $elemento->partida) && ($elemento->columna == "H")) {
+
+                    $elemento_grupo_haber = array(
+
+                        'mayor' => $elemento->mayor,
+                        'nombre' => $elemento->nombre,
+                        'haber' => $elemento->haber,
+                        'items' => $items_haber,
+                    );
+
+                    array_push($grupos_haber, $elemento_grupo_haber);
+
+                    $total_haber = $total_haber + $elemento->haber;
+                }
+            }
+
+            $elemento_partidas = array(
+
+                'id' => $entrie->id,
+                'correlative' => $entrie->correlative,
+                'date' => $entrie->date,
+                'total_debe' => $total_debe,
+                'total_haber' => $total_haber,
+                'description' => $entrie->description,
+                'grupos_debe' => $grupos_debe,
+                'grupos_haber' => $grupos_haber,
+                'accountant' => $accountant,
+                'type_entrie' => $entrie->type_entrie,
+            );
+
+            array_push($partidas, $elemento_partidas);
+        }
+
+        $datos = json_decode(json_encode($partidas), FALSE);
+
+        $pdf = \PDF::loadView('banks.receipts.transfer', compact(
+            'place_date',
+            'amount',
+            'person',
+            'description',
+            'enable_description_line',
+            'datos',
+            'numero',
+            'business_name',
+            'bank_name',
+            'entrie_type',
+            'entrie_no',
+            'reference'
+        ));
+
+        $pdf->setPaper('letter');
+
+        return $pdf->stream('transfer.pdf');
     }
 
     /**

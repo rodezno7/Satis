@@ -22,7 +22,6 @@
         {!! $sells_chart_3->html() !!}
         
         @include('layouts.partials.javascripts')
-        <script src="{{ asset('js/home.js?v=' . $asset_v) }}"></script>
         <script src="{{ asset('plugins\chart\highchart\highcharts.js?v=' . $asset_v) }}"></script>
         <!-- {!! Charts::assets(['highcharts']) !!} -->
         {!! $sells_chart_3->script() !!}

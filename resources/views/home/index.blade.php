@@ -90,7 +90,6 @@
 			<img src="{{asset('img/envex-erp-banner.png')}}" class="img-responsive display-block" alt="EnvexERPBanner" style="height: 100%; width: 100%;">
 		</div>
 	</div> -->
-
 	<div class="row" style="@if ($images->isEmpty()) {{'display:none !important;'}} @endif">
 		<div class="col-md-12">
 		<div id="carousel1" class="carousel slide" data-ride="carousel">
@@ -110,11 +109,11 @@
 	@foreach ($images as $image)
 		@if ($loop->first)
 		<div class="item active">
-			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="{{!is_null($image->link) ? '_blank' : ''}}"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
 		</div>
 		@else
 		<div class="item">
-			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="_blank"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
+			<a href="{{!is_null($image->link) ? $image->link : '#'}}" target="{{!is_null($image->link) ? '_blank' : ''}}"><img src="{{asset('uploads/slides/'.$image->path)}}" class="img-responsive display-block" alt="EnvexERPBanner" style="width: 100%;"></a>
 		</div>
 		@endif
 	@endforeach
@@ -283,9 +282,9 @@
 	
 
 	  <div class="row">
-		@if(session('business.enable_product_expiry') == 1)
+		{{-- @if(session('business.enable_product_expiry') == 1) --}}
 		{{-- Expire alerts --}}
-		<div class="col-md-3 col-sm-6 col-xs-12">	
+		{{-- <div class="col-md-3 col-sm-6 col-xs-12">	
 			<a href="{{ config('app.business') == 'optics' ? action('Optics\ProductController@index') : action('ProductController@index') }}"
 				class="small-box-footer" style="color: white"
 				title="{{ __('lang_v1.more_information') }}">			
@@ -303,8 +302,8 @@
 					</div>
 				</div>
 			</a>
-		</div>
-		  @endif
+		</div> --}}
+		  {{-- @endif --}}
     	<!-- /.col -->
 
 		{{-- Total stock --}}
@@ -617,6 +616,7 @@
 				$('input[name="date-filter"]:checked').attr('checked', false);
 
 				$('#range-date-filter').addClass('active');
+				console.log('datepicker')
 
 				update_statistics(start, end, location_id);
 			});
