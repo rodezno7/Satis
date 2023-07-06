@@ -184,8 +184,7 @@ return[
     'download' => 'Descargar archivo',
     'authorization_date' => 'Fecha de autorización',
     'absence_inability' => 'Ausencia o Incapacidad',
-    'no_department' => 'Sin departamento',
-    'no_position' => 'Sin puesto',
+    'not_assigned' => 'No asignado',
     'date' => 'Fecha',
     'amount' => 'Cantidad (Horas)',
     'option' => 'Opción',
@@ -194,5 +193,6 @@ return[
     'history' => 'Historial',
     'personal_data' => 'Datos personales',
     'employee_status' => 'Estado del empleado',
-    'user' => 'Usuario'
+    'user' => 'Usuario',
+    'unauthorized_action' => 'Acción no autorizada',
 ];

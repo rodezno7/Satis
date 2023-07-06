@@ -429,9 +429,9 @@
                                             Vigente
                                             @else
                                             No vigente
-                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
-                                            <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
+                                            @if ($item->rrhhPersonnelAction != null)
+                                            <br>{{ $item->rrhhPersonnelAction->status }}
                                             @endif
                                         </td>
                                     </tr>

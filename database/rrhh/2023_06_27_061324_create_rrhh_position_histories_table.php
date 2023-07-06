@@ -25,6 +25,7 @@ class CreateRrhhPositionHistoriesTable extends Migration
             $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->boolean('current')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

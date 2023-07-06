@@ -184,8 +184,7 @@ return[
     'download' => 'Download file',
     'authorization_date' => 'Authorization date',
     'absence_inability' => 'Permission or inability',
-    'no_department' => 'No department',
-    'no_position' => 'No position',
+    'not_assigned' => 'Not assigned',
     'date' => 'Date',
     'amount' => 'Amount (Hours)',
     'option' => 'Option',
@@ -194,5 +193,6 @@ return[
     'history' => 'History',
     'personal_data' => 'Personal data',
     'employee_status' => 'Employee status',
-    'user' => 'User'
+    'user' => 'User',
+    'unauthorized_action' => 'Unauthorized action',
 ];

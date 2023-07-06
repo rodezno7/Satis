@@ -62,7 +62,7 @@ class EmployeesController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('employees as e')
-        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
         ->where('e.deleted_at', null)
         ->get();
@@ -70,10 +70,16 @@ class EmployeesController extends Controller
 
         return DataTables::of($data)->editColumn('department', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->department->value : __('rrhh.no_department');
+            return (!empty($position)) ? $position->department->value : __('rrhh.not_assigned');
         })->editColumn('position', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->position1->value : __('rrhh.no_position');
+            return (!empty($position)) ? $position->position1->value : __('rrhh.not_assigned');
+        })->editColumn('status', function ($data) {
+            if($data->status == 1){
+                return __('rrhh.active');
+            }else{
+                return __('rrhh.inactive');
+            }
         })->toJson();
     }
 

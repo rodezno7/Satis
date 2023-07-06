@@ -31,9 +31,9 @@
                         <thead>
                             <th width="22%">@lang('rrhh.name')</th>
                             <th>@lang('rrhh.email')</th>
-                            <th>@lang('rrhh.dni')</th>
                             <th>@lang('rrhh.department')</th>
                             <th>@lang('rrhh.position')</th>
+                            <th>@lang('rrhh.status')</th>
                             <th width="12%">@lang('rrhh.actions')</th>
                         </thead>
                     </table>
@@ -113,9 +113,9 @@
             columns: [
             {data: 'full_name', name: 'full_name', className: "text-center"},
             {data: 'email', name: 'email', className: "text-center"},
-            {data: 'dni', name: 'dni', className: "text-center"},
             {data: 'department', name: 'department', className: "text-center"},
             {data: 'position', name: 'position', className: "text-center"},
+            {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
                 html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';

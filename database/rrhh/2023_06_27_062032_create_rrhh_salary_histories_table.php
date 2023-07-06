@@ -22,6 +22,7 @@ class CreateRrhhSalaryHistoriesTable extends Migration
             $table->integer('rrhh_personnel_action_id')->unsigned()->nullable();
             $table->foreign('rrhh_personnel_action_id', 'rrhh_pa_id_foreign')->references('id')->on('rrhh_personnel_actions')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
