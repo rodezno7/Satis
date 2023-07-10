@@ -63,8 +63,6 @@
                     <tbody>
                         {{-- Fiscal credits --}}
                         @php
-                            $flag = 0;
-                            $trans_id = 0;
                             $row_counts = 0;
                             $ccf_cash = 0;
                             $ccf_card = 0;
@@ -84,10 +82,6 @@
                             @foreach ($transactions as $t)
                                 @if ($t->doc_type == 'CCF')
                                     @php
-                                        if($t->payment_count <= 1 && $trans_id != $t->id){
-                                            $flag = 0;
-                                        }
-
                                         switch ($t->pay_method) {
                                             case 'cash':
                                                 $ccf_cash += $t->payment_amount;
@@ -105,7 +99,6 @@
                                                 $ccf_credit += $t->payment_amount;
                                                 break;
                                         }
-                                        if($flag == 1){ continue; }
 
                                         $subtotal_ccf += floatval($t->subtotal);
                                         $discount_amount_ccf += floatval($t->discount_amount);
@@ -134,12 +127,6 @@
                                         <td class="_text-right">{{ "$ 0.00" }}</td>
                                         <td class="_text-right">{{ "$ " . round($t->final_total, 2) }}</td>
                                     </tr>
-                                    @php
-                                        if($t->payment_count > 1){
-                                            $flag = 1;
-                                        }
-                                        $trans_id = $t->id;
-                                    @endphp
                                 @endif
                             @endforeach
                             <tr id="totals">
@@ -154,8 +141,6 @@
                         @endif
                         {{-- Invoices --}}
                         @php
-                            $flag = 0;
-                            $trans_id = 0;
                             $fcf_cash = 0;
                             $fcf_card = 0;
                             $fcf_check = 0;
@@ -175,10 +160,6 @@
                             @foreach ($transactions as $t)
                                 @if ($t->doc_type == 'FCF')
                                     @php
-                                        if($t->payment_count <= 1 && $trans_id != $t->id){
-                                            $flag = 0;
-                                        }
-
                                         switch ($t->pay_method) {
                                             case 'cash':
                                                 $fcf_cash += $t->payment_amount;
@@ -197,7 +178,6 @@
                                                 break;
                                         }
 
-                                        if($flag == 1){ continue; }
 
                                         $subtotal_fcf += floatval($t->subtotal);
                                         $discount_amount_fcf += floatval($t->discount_amount);
@@ -226,12 +206,6 @@
                                         <td class="_text-right">{{ "$ 0.00" }}</td>
                                         <td class="_text-right">{{ "$ " . round($t->final_total, 2) }}</td>
                                     </tr>
-                                    @php
-                                        if($t->payment_count > 1){
-                                            $flag = 1;
-                                        }
-                                        $trans_id = $t->id;
-                                    @endphp
                                 @endif
                             @endforeach
                             <tr id="totals">
@@ -246,8 +220,6 @@
                         @endif
                         {{-- Tickets --}}
                         @php
-                            $flag = 0;
-                            $trans_id = 0;
                             $row_counts = 0;
                             $ticket_cash = 0;
                             $ticket_card = 0;
@@ -267,10 +239,6 @@
                             @foreach ($transactions as $t)
                                 @if ($t->doc_type == 'Ticket')
                                     @php
-                                        if($t->payment_count <= 1 && $trans_id != $t->id){
-                                            $flag = 0;
-                                        }
-
                                         switch ($t->pay_method) {
                                             case 'cash':
                                                 $ticket_cash += $t->payment_amount;
@@ -288,7 +256,6 @@
                                                 $ticket_credit += $t->payment_amount;
                                                 break;
                                         }
-                                        if($flag == 1){ continue; }
 
                                         $subtotal_ticket += floatval($t->subtotal);
                                         $discount_amount_ticket += floatval($t->discount_amount);
@@ -317,12 +284,6 @@
                                         <td class="_text-right">{{ "$ 0.00" }}</td>
                                         <td class="_text-right">{{ "$ " . round($t->final_total, 2) }}</td>
                                     </tr>
-                                    @php
-                                        if($t->payment_count > 1){
-                                            $flag = 1;
-                                        }
-                                        $trans_id = $t->id;
-                                    @endphp
                                 @endif
                             @endforeach
                             <tr id="totals">
@@ -337,8 +298,6 @@
                         @endif
                         {{-- Export invoices --}}
                         @php
-                            $flag = 0;
-                            $trans_id = 0;
                             $exp_cash = 0;
                             $exp_card = 0;
                             $exp_check = 0;
@@ -357,10 +316,6 @@
                             @foreach ($transactions as $t)
                                 @if ($t->doc_type == 'EXP')
                                     @php
-                                        if($t->payment_count <= 1 && $trans_id != $t->id){
-                                            $flag = 0;
-                                        }
-
                                         switch ($t->pay_method) {
                                             case 'cash':
                                                 $exp_cash += $t->payment_amount;
@@ -378,7 +333,6 @@
                                                 $exp_credit += $t->payment_amount;
                                                 break;
                                         }
-                                        if($flag == 1){ continue; }
 
                                         $subtotal_exp += floatval($t->subtotal);
                                         $discount_amount_exp += floatval($t->discount_amount);
@@ -407,12 +361,6 @@
                                         <td class="_text-right">{{ "$ 0.00" }}</td>
                                         <td class="_text-right">{{ "$ " . round($t->final_total, 2) }}</td>
                                     </tr>
-                                    @php
-                                        if($t->payment_count > 1){
-                                            $flag = 1;
-                                        }
-                                        $trans_id = $t->id;
-                                    @endphp
                                 @endif
                             @endforeach
                             <tr id="totals">
