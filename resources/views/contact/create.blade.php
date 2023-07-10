@@ -66,12 +66,10 @@
                         <div class="form-check">
                             {!! Form::checkbox('is_supplier', true, true, [
                                 'class' => 'form-check-input is_supplier',
-                                'id' => 'is_supplier',
-                                'required' => 'required',
+                                'id' => 'is_supplier'
                             ]) !!}
                             {!! Form::label('is_supplier', __('contact.is_supplier'), [
-                                'class' => 'form-check-label',
-                                'required' => 'required',
+                                'class' => 'form-check-label'
                             ]) !!}
                         </div>
                         <div class="form-check">
