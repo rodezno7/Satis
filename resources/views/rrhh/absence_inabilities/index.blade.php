@@ -24,7 +24,7 @@
 								<th width="30%">@lang('rrhh.type')</th>
 								<th width="30%">@lang('rrhh.date')</th>
 								<th width="20%">@lang('rrhh.amount')</th>
-								{{-- <th width="15%" id="dele">@lang('rrhh.actions' )</th> --}}
+								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>
 						<tbody id="referencesItems">
@@ -58,14 +58,14 @@
 											{{ $diff->days }} Días
 											@endif
 										</td>
-										{{-- <td>
+										<td>
 											@can('rrhh_absence_inability.update')
 												<button type="button" onClick='editAbsenceInability({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
 											@endcan
 											@can('rrhh_absence_inability.delete')
 												<button type="button" onClick='deleteAbsenceInability({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
 											@endcan
-										</td> --}}
+										</td>
 									</tr>
 								@endforeach
 							@else
@@ -109,7 +109,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/rrhh-economic-dependence/'+id;
+                route = '/rrhh-absence-inability/'+id;
 				token = $("#token").val();
 				$.ajax({
 				url: route,
@@ -156,7 +156,8 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
     });
 
-	function getAbsenceInability(id){
+	function getAbsenceInability(id)
+	{
 		$("#modal_action").html('');
 		var route = '/rrhh-absence-inability-getByEmployee/'+id;
 		$.get(route, function(data) {
