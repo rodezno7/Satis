@@ -187,10 +187,12 @@ return[
     'no_department' => 'Sin departamento',
     'no_position' => 'Sin puesto',
     'date' => 'Fecha',
-    'amount' => 'Cantidad',
+    'amount' => 'Cantidad (Horas)',
     'option' => 'Opción',
     'add_absence_inability' => 'Agregar ausencia o incapacidad',
     'of' => 'de',
     'history' => 'Historial',
-    'personal_data' => 'Datos personales'
+    'personal_data' => 'Datos personales',
+    'employee_status' => 'Estado del empleado',
+    'user' => 'Usuario'
 ];

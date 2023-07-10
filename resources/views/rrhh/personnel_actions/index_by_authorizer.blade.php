@@ -20,12 +20,12 @@
 						<thead>
 							<tr class="active">
 								<th>@lang('rrhh.type_personnel_action')</th>
-								<th>@lang('rrhh.employee')</th>
-								<th>@lang('rrhh.status')</th>
-								<th>@lang('rrhh.authorization_date')</th>
-								<th>@lang('rrhh.authorizations')</th>
-								<th>@lang('rrhh.created_date')</th>
-								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
+								<th width="27%">@lang('rrhh.employee')</th>
+								<th width="15%">@lang('rrhh.status')</th>
+								<th width="12%">@lang('rrhh.authorization_date')</th>
+								<th width="10%">@lang('rrhh.authorizations')</th>
+								{{-- <th width="8%">@lang('rrhh.created_date')</th> --}}
+								<th width="10%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>
 					</table>
@@ -69,7 +69,7 @@
 				{data: 'status', name: 'status'},
 				{data: 'authorization_date', name: 'authorization_date'},
 				{data: 'authorizations', name: 'authorizations'},
-				{data: 'created_at', name: 'created_at'},
+				// {data: 'created_at', name: 'created_at'},
 				{data: null, render: function(data) {
 					html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
 					@can('rrhh_personnel_action.authorize')

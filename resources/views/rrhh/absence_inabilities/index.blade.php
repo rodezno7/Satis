@@ -20,11 +20,11 @@
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
 						<thead>
 							<tr class="active">
-								<th>@lang('rrhh.option')</th>
-								<th>@lang('rrhh.type')</th>
-								<th>@lang('rrhh.date')</th>
-								<th>@lang('rrhh.amount')</th>
-								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
+								<th width="20%">@lang('rrhh.option')</th>
+								<th width="30%">@lang('rrhh.type')</th>
+								<th width="30%">@lang('rrhh.date')</th>
+								<th width="20%">@lang('rrhh.amount')</th>
+								{{-- <th width="15%" id="dele">@lang('rrhh.actions' )</th> --}}
 							</tr>
 						</thead>
 						<tbody id="referencesItems">
@@ -58,19 +58,19 @@
 											{{ $diff->days }} Días
 											@endif
 										</td>
-										<td>
+										{{-- <td>
 											@can('rrhh_absence_inability.update')
 												<button type="button" onClick='editAbsenceInability({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
 											@endcan
 											@can('rrhh_absence_inability.delete')
 												<button type="button" onClick='deleteAbsenceInability({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
 											@endcan
-										</td>
+										</td> --}}
 									</tr>
 								@endforeach
 							@else
 								<tr>
-									<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
+									<td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
 								</tr>
 							@endif
 						</tbody>
