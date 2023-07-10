@@ -15,7 +15,8 @@ class CreateRrhhSalaryHistoriesTable extends Migration
     {
         Schema::create('rrhh_salary_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('salary', 10, 2);
+            $table->decimal('previous_salary', 10, 2)->nullable();
+            $table->decimal('new_salary', 10, 2);
             $table->boolean('current')->default(false);
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');

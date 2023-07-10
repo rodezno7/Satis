@@ -154,6 +154,7 @@ return[
     'in_force_from' => 'En vigor a partir de',
     'previous_salary' => 'Salario anterior',
     'new_salary' => 'Nuevo salario',
+    'current_salary' => 'Salario actual',
     'required_authorization' => '¿Requiere autorización?',
     'authorization' => 'Autorización',
     'message_authorization' => 'Seleccione únicamente si el tipo de acción de personal a crear requiere autorización o no.',
@@ -195,4 +196,5 @@ return[
     'employee_status' => 'Estado del empleado',
     'user' => 'Usuario',
     'unauthorized_action' => 'Acción no autorizada',
+    
 ];

@@ -118,7 +118,7 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.social_security_number')</label>
-            {!! Form::text("social_security_number", null,
+            {!! Form::number("social_security_number", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.social_security_number'), 'id' =>
             'social_security_number']) !!}
           </div>
@@ -134,7 +134,7 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.afp_number')</label>
-            {!! Form::text("afp_number", null,
+            {!! Form::number("afp_number", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.afp_number'), 'id' => 'afp_number'])
             !!}
           </div>

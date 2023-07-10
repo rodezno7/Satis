@@ -21,17 +21,18 @@
     <div id="div_salary_history">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
-          <label>@lang('rrhh.previous_salary')</label>
-          {!! Form::number("previous_salary", $previousSalary->salary,
+          <label>@lang('rrhh.previous_salary')</label> <span class="text-danger">*</span>
+          {!! Form::number("previous_salary", ($salary != null) ? $salary->previous_salary : null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.previous_salary'), 'id' =>
             'previous_salary', 'step' => '0.01', 'min' => '0.01', 'disabled' => true]) !!}
+            <input type="hidden" name="previous_salary" id="previous_salary" value="{{ ($salary != null) ? $salary->previous_salary : null }}">
         </div>
       </div>
   
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
           <label>@lang('rrhh.new_salary')</label> <span class="text-danger">*</span>
-          {!! Form::number("new_salary", $newSalary->salary,
+          {!! Form::number("new_salary", $salary->new_salary,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.new_salary'), 'id' => 'new_salary', 'step'
             => '0.01', 'min' => '0.01']) !!}
         </div>
@@ -65,6 +66,45 @@
     <div id="div_position_history">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
+          <label>@lang('rrhh.previous_department')</label> <span class="text-danger">*</span>
+          {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->previous_department_id : null,
+          ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.department'), 'style' => 'width: 100%;', 'disabled' => true]) !!}
+          <input type="hidden" name="previous_department_id" id="previous_department_id" value="{{ ($positionHistory != null) ? $positionHistory->previous_department_id : null }}">
+        </div>
+      </div>
+  
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <label>@lang('rrhh.previous_position')</label> <span class="text-danger">*</span>
+          {!! Form::select("position1_id", $positions, ($positionHistory != null) ? $positionHistory->previous_position1_id : null,
+          ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.position'), 'style' => 'width: 100%;', 'disabled' => true]) !!}
+          <input type="hidden" name="previous_position1_id" id="previous_position1_id" value="{{ ($positionHistory != null) ? $positionHistory->position1_id : null }}">
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <label>@lang('rrhh.new_department')</label> <span class="text-danger">*</span>
+          {!! Form::select("new_department_id", $departments, ($positionHistory != null) ? $positionHistory->new_department_id : null,
+          ['id' => 'new_department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+        </div>
+      </div>
+  
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <label>@lang('rrhh.new_position')</label> <span class="text-danger">*</span>
+          {!! Form::select("new_position1_id", $positions, ($positionHistory != null) ? $positionHistory->new_position1_id : null,
+          ['id' => 'new_position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+        </div>
+      </div>
+    </div>
+
+    {{-- <div id="div_position_history">
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
           <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
           {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->department_id : null,
           ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
@@ -78,7 +118,7 @@
           ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
         </div>
       </div>
-    </div>
+    </div> --}}
 
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" id="div_payment">
       <div class="form-group">
@@ -319,7 +359,7 @@
           $('#modal_personnel_action').modal('hide').data( 'bs.modal', null );
         }
         else {
-          $('#btn_edit_personnel_action').removeAttr('disabled');
+          $('#btn_edit_personnel_action').prop('disabled', false);
           Swal.fire
           ({
             title: result.msg,
@@ -328,7 +368,7 @@
         }
       },
       error:function(msj){
-        $('#btn_edit_personnel_action').removeAttr('disabled');
+        $('#btn_edit_personnel_action').prop('disabled', false);
         errormessages = "";
         $.each(msj.responseJSON.errors, function(i, field){
           errormessages+="<li>"+field+"</li>";

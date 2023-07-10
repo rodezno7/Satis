@@ -155,6 +155,7 @@ return[
     'in_force_from' => 'In force from',
     'previous_salary' => 'Previous salary',
     'new_salary' => 'New salary',
+    'current_salary' => 'Current salary',
     'required_authorization' => 'Does it require authorization?',
     'authorization' => 'Authorization',
     'message_authorization' => 'Select only if the type of personnel action to create requires authorization or not',
@@ -171,8 +172,10 @@ return[
     'personnel_action' => 'Personnel action',
     'previous_department' => 'Previous department',
     'new_department' => 'New department',
+    'current_department' => 'Current department',
     'previous_position' => 'Previous position',
     'new_position' => 'New position',
+    'current_position' => 'Current position',
     'period' => 'Period',
     'requested_by' => 'Requested by',
     'approved_by' => 'Approved by',
@@ -195,4 +198,5 @@ return[
     'employee_status' => 'Employee status',
     'user' => 'User',
     'unauthorized_action' => 'Unauthorized action',
+
 ];

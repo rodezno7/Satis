@@ -17,28 +17,26 @@
             <h3 class="box-title"></h3>
             <div class="box-tools">
                 @can('rrhh_employees.create')
-                <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
+                    <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
                         class="fa fa-plus"></i> @lang( 'messages.add' )
-                </a>
+                    </a>
                 @endcan
             </div>
         </div>
         <div class="box-body">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
-                        width="100%">
-                        <thead>
-                            <th width="22%">@lang('rrhh.name')</th>
-                            <th>@lang('rrhh.email')</th>
-                            <th>@lang('rrhh.department')</th>
-                            <th>@lang('rrhh.position')</th>
-                            <th>@lang('rrhh.status')</th>
-                            <th width="12%">@lang('rrhh.actions')</th>
-                        </thead>
-                    </table>
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-                </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
+                    width="100%">
+                    <thead>
+                        <th width="22%">@lang('rrhh.name')</th>
+                        <th>@lang('rrhh.email')</th>
+                        <th>@lang('rrhh.department')</th>
+                        <th>@lang('rrhh.position')</th>
+                        <th>@lang('rrhh.status')</th>
+                        <th width="12%">@lang('rrhh.actions')</th>
+                    </thead>
+                </table>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
             </div>
         </div>
     </div>
@@ -87,9 +85,6 @@
 <script>
     $(document).ready(function() 
     {
-        $(document).on("preInit.dt", function(){
-            $(".dataTables_filter input[type='search']").attr("size", 7);
-        });
         loadEmployees();      
         $.fn.dataTable.ext.errMode = 'none';      
 

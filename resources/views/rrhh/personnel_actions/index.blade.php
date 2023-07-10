@@ -55,7 +55,9 @@
 													}
 												}
 											@endphp
+											
 											<li><a href="#" onClick='viewPersonnelAction({{ $item->id }})'><i class="fa fa-eye"></i>{{ __('messages.view') }}</a></li>
+											
 											@can('rrhh_personnel_action.update')
 												@if ($item->status != 'Autorizada' && $usersAuthorized == $users)
 													<li><a href="#" onClick='editPersonnelAction({{ $item->id }})'><i class="glyphicon glyphicon-edit"></i>{{ __('messages.edit') }}</a></li>

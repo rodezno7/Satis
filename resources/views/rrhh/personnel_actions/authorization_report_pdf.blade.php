@@ -93,36 +93,16 @@
                 @if ($action->rrhh_required_action_id == 2) {{-- Cambiar departamento --}}
                     <tr>
                         <th>{{ __('rrhh.previous_department') }}</th>
-                        <td>{{ $previousPosition->department->value }}</td>
+                        <td>{{ $position->previousDepartment->value }}</td>
                         <th>{{ __('rrhh.previous_position') }}</th>
-                        <td>{{ $previousPosition->position1->value }}</td>
+                        <td>{{ $position->previousPosition1->value }}</td>
                     </tr>
                     <tr>
                         <th>{{ __('rrhh.new_department') }}</th>
-                        <td>{{ $newPosition->department->value }}</td>
+                        <td>{{ $position->newDepartment->value }}</td>
                         <th>{{ __('rrhh.new_position') }}</th>
-                        <td>{{ $newPosition->position1->value }}</td>
-                    </tr>    
-                    {{-- @php
-                        $len = count($positions);
-                    @endphp
-                    @foreach ($positions as $index => $position)
-                        @if ($index == $len - 1)
-                        <tr>
-                            <th>{{ __('rrhh.previous_department') }}</th>
-                            <td>{{ $position->department->value }}</td>
-                            <th>{{ __('rrhh.previous_position') }}</th>
-                            <td>{{ $position->position1->value }}</td>
-                        </tr>
-                        @elseif($index == 0)
-                        <tr>
-                            <th>{{ __('rrhh.new_department') }}</th>
-                            <td>{{ $position->department->value }}</td>
-                            <th>{{ __('rrhh.new_position') }}</th>
-                            <td>{{ $position->position1->value }}</td>
-                        </tr>
-                        @endif
-                    @endforeach --}}
+                        <td>{{ $position->newPosition1->value }}</td>
+                    </tr>  
                 @endif
 
                 @if ($action->rrhh_required_action_id == 3) {{-- Cambiar salario --}}
@@ -130,9 +110,9 @@
                         <th>{{ __('rrhh.previous_salary') }}</th>
                         <td colspan="3">
                             @if ($business->currency_symbol_placement == 'after')
-                                {{ @num_format($previousSalary->salary) }} {{ $business->currency->symbol }}
+                                {{ @num_format($salary->previous_salary) }} {{ $business->currency->symbol }}
                             @else
-                                {{ $business->currency->symbol }} {{ @num_format($previousSalary->salary) }}
+                                {{ $business->currency->symbol }} {{ @num_format($salary->previous_salary) }}
                             @endif
                         </td>
                     </tr>
@@ -140,40 +120,12 @@
                         <th>{{ __('rrhh.new_salary') }}</th>
                         <td colspan="3">
                             @if ($business->currency_symbol_placement == 'after')
-                                {{ @num_format($newSalary->salary) }} {{ $business->currency->symbol }}
+                                {{ @num_format($salary->new_salary) }} {{ $business->currency->symbol }}
                             @else
-                                {{ $business->currency->symbol }} {{ @num_format($newSalary->salary) }}
+                                {{ $business->currency->symbol }} {{ @num_format($salary->new_salary) }}
                             @endif
                         </td>
-                    </tr>    
-                    {{-- @php
-                        $len = count($salaries);
-                    @endphp
-                    @foreach ($salaries as $index => $salary)
-                        @if ($index == $len - 1)
-                        <tr>
-                            <th>{{ __('rrhh.previous_salary') }}</th>
-                            <td colspan="3">
-                                @if ($business->currency_symbol_placement == 'after')
-                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                @else
-                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                @endif
-                            </td>
-                        </tr>
-                        @elseif($index == 0)
-                        <tr>
-                            <th>{{ __('rrhh.new_salary') }}</th>
-                            <td colspan="3">
-                                @if ($business->currency_symbol_placement == 'after')
-                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                @else
-                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                @endif
-                            </td>
-                        </tr>
-                        @endif
-                    @endforeach --}}
+                    </tr>
                 @endif
 
                 @if ($action->rrhh_required_action_id == 4) {{-- Cambiar cuenta bancaria --}}

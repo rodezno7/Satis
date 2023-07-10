@@ -70,10 +70,10 @@ class EmployeesController extends Controller
 
         return DataTables::of($data)->editColumn('department', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->department->value : __('rrhh.not_assigned');
+            return (!empty($position)) ? $position->newDepartment->value : __('rrhh.not_assigned');
         })->editColumn('position', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->position1->value : __('rrhh.not_assigned');
+            return (!empty($position)) ? $position->newPosition1->value : __('rrhh.not_assigned');
         })->editColumn('status', function ($data) {
             if($data->status == 1){
                 return __('rrhh.active');
@@ -242,11 +242,11 @@ class EmployeesController extends Controller
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
-                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
             );
 
             RrhhSalaryHistory::insert(
-                ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
             );
 
             DB::commit();
@@ -539,13 +539,13 @@ class EmployeesController extends Controller
 
             if(count($position) == 0){
                 RrhhPositionHistory::insert(
-                    ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                    ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                 );
             }
 
             if(count($salary) == 0){
                 RrhhSalaryHistory::insert(
-                    ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                    ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
                 );
             }
 

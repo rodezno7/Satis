@@ -218,8 +218,11 @@ class RrhhPersonnelActionController extends Controller
             'rrhh_type_personnel_action_id' => 'required',
             'description'                   => 'required',
             'user_id'                       => $requiredUser,
-            'department_id'                 => $requiredDepartment,
-            'position1_id'                  => $requiredPosition,
+            'previous_department_id'        => $requiredDepartment,
+            'previous_position1_id'         => $requiredPosition,
+            'new_department_id'             => $requiredDepartment,
+            'new_position1_id'              => $requiredPosition,
+            'previous_salary'               => $requiredSalary,
             'new_salary'                    => $requiredSalary,
             'start_date'                    => $requiredStartDate,
             'end_date'                      => $requiredEndDate,
@@ -249,12 +252,12 @@ class RrhhPersonnelActionController extends Controller
                         if ($type->required_authorization == 0) {
                             RrhhPositionHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                             $positionHistory = RrhhPositionHistory::create(
-                                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                                ['previous_department_id' => $request->input('previous_department_id'), 'previous_position1_id' => $request->input('previous_position1_id'), 'new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                             );
                         }
                         else{
                             $positionHistory = RrhhPositionHistory::create(
-                                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
+                                ['previous_department_id' => $request->input('previous_department_id'), 'previous_position1_id' => $request->input('previous_position1_id'), 'new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id]
                             );
                         }
                         $input_details['effective_date'] = $this->moduleUtil->uf_date($request->input('effective_date'));
@@ -264,11 +267,11 @@ class RrhhPersonnelActionController extends Controller
                         if ($type->required_authorization == 0) {
                             RrhhSalaryHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                             $salaryHistory = RrhhSalaryHistory::create(
-                                ['employee_id' => $employee->id, 'salary' => $request->input('new_salary'), 'current' => 1]
+                                ['employee_id' => $employee->id, 'previous_salary' => $request->input('previous_salary'), 'new_salary' => $request->input('new_salary'), 'current' => 1]
                             );
                         }else{
                             $salaryHistory = RrhhSalaryHistory::create(
-                                ['employee_id' => $employee->id, 'salary' => $request->input('new_salary')]
+                                ['employee_id' => $employee->id, 'previous_salary' => $request->input('previous_salary'), 'new_salary' => $request->input('new_salary')]
                             );
                         }
                         $input_details['effective_date'] = $this->moduleUtil->uf_date($request->input('effective_date'));
@@ -392,13 +395,9 @@ class RrhhPersonnelActionController extends Controller
 
         $employee = Employees::findOrFail($personnelAction[0]->employee_id);
 
-        $previousSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
-        $newSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
- 
-        $previousPosition = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
-        $newPosition = RrhhPositionHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
- 
-        //$positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first();     
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
+    
         $users = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction[0]->id)->get();
         $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $personnelAction[0]->type_id)->orderBy('id', 'DESC')->get();
                     
@@ -406,7 +405,7 @@ class RrhhPersonnelActionController extends Controller
         $business = Business::find($business_id);
         
         return view('rrhh.personnel_actions.view',
-            compact('personnelAction', 'previousSalary', 'newSalary', 'previousPosition', 'newPosition', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
+            compact('personnelAction', 'salary', 'position', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
     }
 
     /**
@@ -450,10 +449,10 @@ class RrhhPersonnelActionController extends Controller
         
         $positionHistory = RrhhPositionHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first();
         
-        $previousSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
-        $newSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
+        //$previousSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
 
-        return view('rrhh.personnel_actions.edit', compact('actions', 'personnelAction', 'employee', 'positionHistory', 'previousSalary', 'newSalary', 'departments', 'positions', 'payments', 'banks', 'users', 'authorizers'));
+        return view('rrhh.personnel_actions.edit', compact('actions', 'personnelAction', 'employee', 'positionHistory', 'salary', 'departments', 'positions', 'payments', 'banks', 'users', 'authorizers'));
     }
 
     /**
@@ -531,17 +530,20 @@ class RrhhPersonnelActionController extends Controller
             }
 
             $request->validate([
-                'description'                   => 'required',
-                'user_id'                       => $requiredUser,
-                'department_id'                 => $requiredDepartment,
-                'position1_id'                  => $requiredPosition,
-                'new_salary'                    => $requiredSalary,
-                'start_date'                    => $requiredStartDate,
-                'end_date'                      => $requiredEndDate,
-                'bank_account'                  => $requiredBankAccount,
-                'payment_id'                    => $requiredPayment,
-                'bank_id'                       => $requiredBank,
-                'effective_date'                => $requiredEffectiveDate,
+                'description'            => 'required',
+                'user_id'                => $requiredUser,
+                'previous_department_id' => $requiredDepartment,
+                'previous_position1_id'  => $requiredPosition,
+                'new_department_id'      => $requiredDepartment,
+                'new_position1_id'       => $requiredPosition,
+                'previous_salary'        => $requiredSalary,
+                'new_salary'             => $requiredSalary,
+                'start_date'             => $requiredStartDate,
+                'end_date'               => $requiredEndDate,
+                'bank_account'           => $requiredBankAccount,
+                'payment_id'             => $requiredPayment,
+                'bank_id'                => $requiredBank,
+                'effective_date'         => $requiredEffectiveDate,
             ]);
 
             try {
@@ -566,24 +568,24 @@ class RrhhPersonnelActionController extends Controller
                             if($positionHistory != null){
                                 if ($type->required_authorization == 0) {
                                     $positionHistory->update(
-                                        ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                                        ['new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                                     );
                                 }
                                 else{
                                     $positionHistory->update(
-                                        ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
+                                        ['new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id]
                                     );
                                 }
                             }else{
                                 if ($type->required_authorization == 0) {
                                     RrhhPositionHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                                     $positionHistory = RrhhPositionHistory::create(
-                                        ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                                        ['previous_department_id' => $request->input('previous_department_id'), 'previous_position1_id' => $request->input('previous_position1_id'), 'new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                                     );
                                 }
                                 else{
                                     $positionHistory = RrhhPositionHistory::create(
-                                        ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id]
+                                        ['previous_department_id' => $request->input('previous_department_id'), 'previous_position1_id' => $request->input('previous_position1_id'), 'new_department_id' => $request->input('new_department_id'), 'new_position1_id' => $request->input('new_position1_id'), 'employee_id' => $employee->id]
                                     );
                                 }
                             }
@@ -595,22 +597,22 @@ class RrhhPersonnelActionController extends Controller
                             if($salaryHistory != null){
                                 if ($type->required_authorization == 0) {
                                     $salaryHistory->update(
-                                        ['employee_id' => $employee->id, 'salary' => $request->input('new_salary'), 'current' => 1]
+                                        ['employee_id' => $employee->id, 'new_salary' => $request->input('new_salary'), 'current' => 1]
                                     );
                                 }else{
                                     $salaryHistory->update(
-                                        ['employee_id' => $employee->id, 'salary' => $request->input('new_salary')]
+                                        ['employee_id' => $employee->id, 'new_salary' => $request->input('new_salary')]
                                     );
                                 }
                             }else{
                                 if ($type->required_authorization == 0) {
                                     RrhhSalaryHistory::where('employee_id', $employee->id)->update(['current' => 0]);
                                     $salaryHistory = RrhhSalaryHistory::create(
-                                        ['employee_id' => $employee->id, 'salary' => $request->input('new_salary'), 'current' => 1]
+                                        ['employee_id' => $employee->id, 'previous_salary' => $request->input('previous_salary'), 'new_salary' => $request->input('new_salary'), 'current' => 1]
                                     );
                                 }else{
                                     $salaryHistory = RrhhSalaryHistory::create(
-                                        ['employee_id' => $employee->id, 'salary' => $request->input('new_salary')]
+                                        ['employee_id' => $employee->id, 'previous_salary' => $request->input('previous_salary'), 'new_salary' => $request->input('new_salary')]
                                     );
                                 }
                             }
@@ -736,12 +738,12 @@ class RrhhPersonnelActionController extends Controller
         
                         if ($action->rrhh_required_action_id == 2) { // Cambiar departamento/puesto
                             RrhhPositionHistory::where('employee_id', $employee->id)->update(['current' => 0]);
-                            $lastPosition = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                            $lastPosition = RrhhPositionHistory::where('rrhh_personnel_action_id', $personnelAction->id)->where('employee_id', $employee->id)->orderBy('id', 'DESC')->update(['current' => 1]);
                         }
         
                         if ($action->rrhh_required_action_id == 3) { // Cambiar salario
                             RrhhSalaryHistory::where('employee_id', $employee->id)->update(['current' => 0]);
-                            $lastSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(1)->update(['current' => 1]);
+                            $lastSalary = RrhhSalaryHistory::where('rrhh_personnel_action_id', $personnelAction->id)->where('employee_id', $employee->id)->orderBy('id', 'DESC')->update(['current' => 1]);
                         }
         
                         if ($action->rrhh_required_action_id == 5) { // Cambiar cuenta bancaria
@@ -818,14 +820,8 @@ class RrhhPersonnelActionController extends Controller
             ->get();
  
         $employee = Employees::findOrFail($personnelAction[0]->employee_id);
-        $previousSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
-        $newSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
- 
-        $previousPosition = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->first(); 
-        $newPosition = RrhhPositionHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
- 
-        //$salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get(); 
-        //$positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->take(2)->get();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first();     
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('rrhh_personnel_action_id', $personnelAction[0]->id)->first(); 
 
         $users = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $personnelAction[0]->id)->get();
         $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $personnelAction[0]->type_id)->orderBy('id', 'DESC')->get();
@@ -834,7 +830,7 @@ class RrhhPersonnelActionController extends Controller
         $business = Business::find($business_id);
         
         $pdf = \PDF::loadView('rrhh.personnel_actions.authorization_report_pdf',
-            compact('personnelAction', 'previousSalary', 'newSalary', 'previousPosition', 'newPosition', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
+            compact('personnelAction', 'salary', 'position', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
         
         $pdf->setPaper('letter', 'portrait');
         return $pdf->download(__('rrhh.personnel_action') . '.pdf');

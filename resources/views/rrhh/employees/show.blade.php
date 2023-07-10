@@ -360,8 +360,8 @@
                                             {{ @format_date($employee->date_admission) }}
                                             @endif
                                         </td>
-                                        <td>{{ $item->department->value }}</td>
-                                        <td>{{ $item->position1->value }}</td>
+                                        <td>{{ $item->newDepartment->value }}</td>
+                                        <td>{{ $item->newPosition1->value }}</td> 
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
                                             {{ $item->rrhhPersonnelAction->description }}
@@ -371,12 +371,12 @@
                                         </td>
                                         <td>
                                             @if ($item->current == 1)
-                                            Vigente
+                                                <span class="badge" style="background: #367FA9">Vigente</span>
                                             @else
-                                            No vigente
-                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
-                                            <br>{{ $item->rrhhPersonnelAction->status }}
-                                            @endif
+                                            <span class="badge">No vigente</span>
+                                            {{-- @if ($item->rrhhPersonnelAction != null && $index == 0)
+                                                <br>{{ $item->rrhhPersonnelAction->status }}
+                                            @endif --}}
                                             @endif
                                         </td>
                                     </tr>
@@ -412,9 +412,9 @@
                                         </td>
                                         <td>
                                             @if ($business->currency_symbol_placement == 'after')
-                                            {{ @num_format($item->salary) }} {{ $business->currency->symbol }}
+                                            {{ @num_format($item->new_salary) }} {{ $business->currency->symbol }}
                                             @else
-                                            {{ $business->currency->symbol }} {{ @num_format($item->salary) }}
+                                            {{ $business->currency->symbol }} {{ @num_format($item->new_salary) }}
                                             @endif
                                         </td>
                                         <td>
@@ -426,13 +426,13 @@
                                         </td>
                                         <td>
                                             @if ($item->current == 1)
-                                            Vigente
+                                                <span class="badge" style="background: #367FA9">Vigente</span>
                                             @else
-                                            No vigente
+                                            <span class="badge">No vigente</span>
                                             @endif
-                                            @if ($item->rrhhPersonnelAction != null)
+                                            {{-- @if ($item->rrhhPersonnelAction != null)
                                             <br>{{ $item->rrhhPersonnelAction->status }}
-                                            @endif
+                                            @endif --}}
                                         </td>
                                     </tr>
                                     @endforeach
