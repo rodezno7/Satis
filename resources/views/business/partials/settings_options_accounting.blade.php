@@ -195,5 +195,21 @@
                     $business->sale_accounting_entry_mode, ['class' => 'form-control select2', 'style' => 'width: 100%;']) !!}
             </div>
         </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                {!! Form::label('purchase_accounting_entry_mode', __('accounting.purchase_accounting_entry_mode')) !!}
+                {!! Form::select('purchase_accounting_entry_mode',
+                    ['daily' => __('accounting.daily'), 'transaction' => __('accounting.transaction')],
+                    $business->purchase_accounting_entry_mode, ['class' => 'form-control select2', 'style' => 'width: 100%;']) !!}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                {!! Form::label('expense_accounting_entry_mode', __('accounting.expense_accounting_entry_mode')) !!}
+                {!! Form::select('expense_accounting_entry_mode',
+                    ['daily' => __('accounting.daily'), 'transaction' => __('accounting.transaction')],
+                    $business->expense_accounting_entry_mode, ['class' => 'form-control select2', 'style' => 'width: 100%;']) !!}
+            </div>
+        </div>
     </div>
 </div>

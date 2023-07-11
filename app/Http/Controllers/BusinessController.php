@@ -968,6 +968,8 @@ public function postAccountingSettings(Request $request)
                 'check_format_kit',
                 'ledger_digits',
                 'sale_accounting_entry_mode',
+                'purchase_accounting_entry_mode',
+                'expense_accounting_entry_mode',
                 'accounting_withheld_id'
             ]);
 
