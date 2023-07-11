@@ -8,19 +8,20 @@
 <div class="modal-body">
 	<form id="form_edit" method="post">
 		<div class="row">
-			<div class="col-sm-8">
+			<div class="col-lg-7 col-md-7 col-sm-12">
 				<div class="form-group">
 					<label>@lang('rrhh.name')</label>
 					<input type="text" name='name' id='name' class="form-control" placeholder="@lang('rrhh.name')" value="{{ $item->name }}">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 				</div>
 			</div>
-			<div class="col-sm-4">
+			<div class="col-lg-5 col-md-5 col-sm-12">
 				<div class="form-group">
+					<input type="checkbox" name='required_authorization' id='required_authorization' onclick="requiredAuthorization()">
+					<label for="required_authorization"> {{ __('rrhh.required_authorization') }} @show_tooltip(__('rrhh.message_authorization'))</label>
 					<br>
-					<label> 
-						<input type="checkbox" name='required_authorization' id='required_authorization' onclick="requiredAuthorization()" value="{{ $item->required_authorization }}"> {{ __('rrhh.required_authorization') }} @show_tooltip(__('rrhh.message_authorization'))
-					</label>
+					<input type="checkbox" name='apply_to_many' id='apply_to_many' onclick="applyMany()" value="{{ $item->apply_to_many }}">
+					<label for="apply_to_many"> {{ __('rrhh.apply_to_many') }} @show_tooltip(__('rrhh.message_apply_to_many'))</label>
 				</div>
 			</div>
 			@foreach ($clases as $class)
@@ -65,16 +66,22 @@
 <script>
 	$( document ).ready(function() {	
 
-		let required_authorization = $("#required_authorization").val();
+		let required_authorization = {{ $item->required_authorization }};
 		if (required_authorization == 1) {
 			$("#required_authorization").prop("checked", true);
 		} else {
 			$("#required_authorization").prop("checked", false);
 		}
+
+		let apply_to_many = $("#apply_to_many").val();
+		if (apply_to_many == 1) {
+			$("#apply_to_many").prop("checked", true);
+		} else {
+			$("#apply_to_many").prop("checked", false);
+		}
 	});
 
 	$("#btn_edit_type_personnel_action").click(function() {
-		console.log($('#action').val());
 		id = {{ $item->id }}
 		route = "/rrhh-type-personnel-action/"+id;
 		datastring = $("#form_edit").serialize();
@@ -123,11 +130,18 @@
 
 	function requiredAuthorization() {
 		if ($("#required_authorization").is(":checked")) {
-		$("#required_authorization").val('1');
-		console.log('1');
+			$("#required_authorization").val('1');
 		} else {
-		$("#required_authorization").val('0');
-		console.log('0');
+			$("#required_authorization").val('0');
+		}
+	}
+
+	function applyMany() {
+		console.log($("#apply_to_many").val());
+		if ($("#apply_to_many").is(":checked")) {
+			$("#apply_to_many").val('1');
+		} else {
+			$("#apply_to_many").val('0');
 		}
 	}
 

@@ -744,6 +744,7 @@
             columns: [
             {data: 'name'},
             {data: 'required_authorization'},
+            {data: 'apply_to_many'},
             {data: null, render: function(data){
 
                 html = "";

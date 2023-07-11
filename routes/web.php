@@ -651,6 +651,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController');
     Route::get('rrhh-personnel-action-getByEmployee/{id}', 'RrhhPersonnelActionController@getByEmployee');
     Route::get('rrhh-personnel-action-create/{id}', 'RrhhPersonnelActionController@createPersonnelAction');
+    Route::get('rrhh-personnel-action-createAll', 'RrhhPersonnelActionController@createAll');
+    Route::post('rrhh-personnel-action-storeAll', 'RrhhPersonnelActionController@storeAll');
     Route::get('rrhh-personnel-action-view/{id}', 'RrhhPersonnelActionController@viewPersonnelAction');
     Route::post('rrhh-personnel-action-update', 'RrhhPersonnelActionController@updatePersonnelAction');
     Route::get('rrhh-personnel-action', 'RrhhPersonnelActionController@index');

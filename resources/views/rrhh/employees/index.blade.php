@@ -16,9 +16,16 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
+                @can('rrhh_personnel_action.create')
+                    <button type="button" class="btn btn-info btm-sm" id='btn_add_actions'
+						style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
+						<i class="fa fa-plus"></i>
+						{{ __('rrhh.personnel_actions_massive') }}
+					</button>
+                @endcan
                 @can('rrhh_employees.create')
                     <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
-                        class="fa fa-plus"></i> @lang( 'messages.add' )
+                        class="fa fa-plus"></i> @lang('messages.add')
                     </a>
                 @endcan
             </div>
@@ -94,6 +101,20 @@
 			})
 		})
 	});
+
+    $("#btn_add_actions").click(function() 
+    {
+        $("#modal_content_personnel_action").html('');
+        var url = "{!!URL::to('/rrhh-personnel-action-createAll')!!}";
+        id = $('#_employee_id').val();
+        url = url.replace(':id', id);
+        $.get(url, function(data) {
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({
+            	backdrop: 'static'
+            });
+        });
+    });
 
     function loadEmployees() 
     {

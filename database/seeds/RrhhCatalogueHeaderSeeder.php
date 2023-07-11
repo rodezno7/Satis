@@ -25,7 +25,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         $tiposEmpleado = ['Permanente'];
         $nacionalidades = ['Salvadoreño', 'Guatemalteco', 'Hondureño', 'Costarricense', 'Panameño'];
         $profesiones = ['Ingeniero', 'Licenciado'];
-        $formasPago = ['Transferencia bancaria'];
+        $formasPago = ['Transferencia bancaria', 'Pago en cheque'];
         $tiposDocumento = ['DUI', 'NIT'];
         $capacidadesEspeciales = ['Perdida de la vista en un ojo', 'Perdida de una mano', 'Perdida de un pie', 'Perdida de audicion en un oído'];
         $clasificacionesEmpleado = ['Profesional', 'Técnico'];

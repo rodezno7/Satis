@@ -192,11 +192,22 @@ return[
     'amount' => 'Amount (Hours)',
     'option' => 'Option',
     'add_absence_inability' => 'Add absence or inability',
+    'add_personnel_action' => 'Add personnel action',
     'of' => 'of',
     'history' => 'History',
     'personal_data' => 'Personal data',
     'employee_status' => 'Employee status',
     'user' => 'User',
     'unauthorized_action' => 'Unauthorized action',
-
+    'change_by_percentage' => 'change by percentage',
+    'apply_to' => 'Apply to',
+    'all_active_employees' => 'All active employees',
+    'all_department' => 'All department',
+    'all_position' => 'Everyone in the position',
+    'apply_to_many' => 'Can apply to multiple employees?',
+    'message_apply_to_many' => 'Select only if the type of personnel action to create can be applied to more than one employee at the same time',
+    'to_the_department_of' => 'To the department of',
+    'to_the_position_of' => 'To the position of',
+    'personnel_actions_massive' => 'Personnel actions massive',
+    'incomplete_information' => 'You must fill in the information of the employees'
 ];

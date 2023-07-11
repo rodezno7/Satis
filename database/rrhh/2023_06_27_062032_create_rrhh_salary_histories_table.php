@@ -18,6 +18,7 @@ class CreateRrhhSalaryHistoriesTable extends Migration
             $table->decimal('previous_salary', 10, 2)->nullable();
             $table->decimal('new_salary', 10, 2);
             $table->boolean('current')->default(false);
+            $table->decimal('percentage', 10, 2);
             $table->integer('employee_id')->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('rrhh_personnel_action_id')->unsigned()->nullable();

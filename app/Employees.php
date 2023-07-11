@@ -93,7 +93,7 @@ class Employees extends Model
 
     public function type() {
 
-        return $this->belongsTo('App\RrhhData');
+        return $this->belongsTo('App\RrhhTypeWage');
     }
 
     public function payment() {
@@ -119,6 +119,16 @@ class Employees extends Model
     public function city() {
 
         return $this->belongsTo('App\City');
+    }
+
+    public function positionHistories(){
+
+        return $this->hasMany('App\RrhhPositionHistory');
+    }
+
+    public function salaryHistories(){
+
+        return $this->hasMany('App\RrhhSalaryHistory');
     }
     
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)

@@ -45,6 +45,16 @@ class RrhhTypePersonnelActionController extends Controller
                 }
                 return $html;
             }
+        )->addColumn(
+            'apply_to_many',
+            function ($row) {
+                if ($row->apply_to_many == 1) {
+                    $html = 'Si';
+                } else {
+                    $html = 'No';
+                }
+                return $html;
+            }
         )->toJson();
     }
 
@@ -84,7 +94,7 @@ class RrhhTypePersonnelActionController extends Controller
         ]);
 
         try {
-            $input_details = $request->only(['name', 'required_authorization']);
+            $input_details = $request->only(['name', 'required_authorization', 'apply_to_many']);
             $input_details['business_id'] =  request()->session()->get('user.business_id');
             $typeAction =  RrhhTypePersonnelAction::create($input_details);
             
@@ -171,7 +181,19 @@ class RrhhTypePersonnelActionController extends Controller
         ]);
 
         try {
-            $input_details = $request->only(['name', 'required_authorization']);
+            $input_details = $request->only(['name']);
+            if($request->required_authorization == 1){
+                $input_details['required_authorization'] = true;
+            }else{
+                $input_details['required_authorization'] = false;
+            }
+
+            if($request->apply_to_many == 1){
+                $input_details['apply_to_many'] = true;
+            }else{
+                $input_details['apply_to_many'] = false;
+            }
+            
             $typeAction = RrhhTypePersonnelAction::findOrFail($id);
             $typeAction->update($input_details);
             
@@ -197,7 +219,7 @@ class RrhhTypePersonnelActionController extends Controller
             
             $output = [
                 'success' => true,
-                'msg' => __('rrhh.added_successfully')
+                'msg' => __('rrhh.updated_successfully')
             ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());

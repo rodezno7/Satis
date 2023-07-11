@@ -142,6 +142,33 @@
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
+                                        <label>@lang('rrhh.country')</label>
+                                        {!! Form::select("country_id", $countries, $employee->country_id,
+                                        ['id' => 'country_id', 'class' => 'form-control form-control-sm select2',
+                                        'placeholder' => __('rrhh.country'), 'style' => 'width: 100%;']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.state')</label>
+                                        {!! Form::select("state_id", $states, $employee->state_id,
+                                        ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
+                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.city')</label>
+                                        {!! Form::select("city_id", $cities, $employee->city_id,
+                                        ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
+                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
                                         <label>@lang('rrhh.social_security_number')</label>
                                         {!! Form::number("social_security_number", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' =>
@@ -205,6 +232,18 @@
                                     </div>
                                 </div>
 
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.type_employee')</label>
+                                        <select name="type_id" id="type_id" class="form-control form-control-sm select2" placeholder="{{ __('rrhh.type_employee') }}" style="width: : 100%">
+                                            <option value="">{{ __('rrhh.type_employee') }}</option>
+                                            @foreach ($types as $type)
+                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) != null) style="display: none" @endif>
                                     <div class="form-group">
                                         <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
@@ -222,46 +261,10 @@
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.country')</label>
-                                        {!! Form::select("country_id", $countries, $employee->country_id,
-                                        ['id' => 'country_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.country'), 'style' => 'width: 100%;']) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>@lang('rrhh.state')</label>
-                                        {!! Form::select("state_id", $states, $employee->state_id,
-                                        ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;']) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>@lang('rrhh.city')</label>
-                                        {!! Form::select("city_id", $cities, $employee->city_id,
-                                        ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;']) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
                                         <label>@lang('rrhh.profession_occupation')</label>
                                         {!! Form::select("profession_id", $professions, $employee->profession_id,
                                         ['id' => 'profession_id', 'class' => 'form-control form-control-sm select2',
                                         'placeholder' =>  __('rrhh.profession_occupation'), 'style' => 'width: 100%;']) !!}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>@lang('rrhh.type_employee')</label>
-                                        {!! Form::select("type_id", $types, $employee->type_id,
-                                        ['id' => 'type_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.type_employee'), 'style' => 'width: 100%;']) !!}
                                     </div>
                                 </div>
 

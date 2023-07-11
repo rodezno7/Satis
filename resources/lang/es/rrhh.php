@@ -196,5 +196,16 @@ return[
     'employee_status' => 'Estado del empleado',
     'user' => 'Usuario',
     'unauthorized_action' => 'Acción no autorizada',
+    'change_by_percentage' => 'Cambio por porcentaje',
+    'apply_to' => 'Aplicar a',
+    'all_active_employees' => 'Todos los empleados activos',
+    'all_department' => 'Todo el departamento',
+    'all_position' => 'Todos los del puesto',
+    'apply_to_many' => '¿Puede aplicarse a varios empleados?',
+    'message_apply_to_many' => 'Seleccione únicamente si el tipo de acción de personal a crear se puede aplicar a más de un empleado al mismo tiempo.',
+    'to_the_department_of' => 'Al departamento de',
+    'to_the_position_of' => 'Al puesto de',
+    'personnel_actions_massive' => 'Acciones de personal masivas',
+    'incomplete_information' => 'Debe completar la información de los empleados',
     
 ];

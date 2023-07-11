@@ -61,7 +61,7 @@ class AddColumnsToEmployeesTable extends Migration
             $table->foreign('profession_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('type_id')->unsigned()->nullable()->after('profession_id');
-            $table->foreign('type_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('type_id')->references('id')->on('rrhh_type_wages')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('payment_id')->unsigned()->nullable()->after('type_id');
             $table->foreign('payment_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
