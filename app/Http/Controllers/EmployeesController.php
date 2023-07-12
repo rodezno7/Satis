@@ -67,7 +67,6 @@ class EmployeesController extends Controller
         ->where('e.deleted_at', null)
         ->get();
         
-
         return DataTables::of($data)->editColumn('department', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
             return (!empty($position)) ? $position->newDepartment->value : __('rrhh.not_assigned');

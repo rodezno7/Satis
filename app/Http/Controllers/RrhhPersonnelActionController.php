@@ -1022,6 +1022,63 @@ class RrhhPersonnelActionController extends Controller
         return $output;
     }
 
+
+    public function createDocument($id)
+    {
+        if (!auth()->user()->can('rrhh_personnel_action.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $personnelAction = RrhhPersonnelAction::findOrFail($id);
+
+        return view('rrhh.personnel_actions.file', compact('personnelAction'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeDocument(Request $request)
+    {
+        if (!auth()->user()->can('rrhh_personnel_action.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $request->validate([
+            'file' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $name = time() . $file->getClientOriginalName();
+                Storage::disk('flags')->put($name,  \File::get($file));
+                $input_details['file'] = $name;
+                $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
+
+                RrhhPersonnelActionFile::create($input_details);
+
+                $output = [
+                    'success' => 1,
+                    'msg' => __('rrhh.added_successfully')
+                ];
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' => __('rrhh.error')
+            ];
+        }
+
+        return $output;
+    }
+
     /** Authorizer personnel action */
     function confirmAuthorization(Request $request, $id)
     {
@@ -1149,63 +1206,6 @@ class RrhhPersonnelActionController extends Controller
 
         $pdf->setPaper('letter', 'portrait');
         return $pdf->download(__('rrhh.personnel_action') . '.pdf');
-    }
-
-
-    public function createDocument($id)
-    {
-        if (!auth()->user()->can('rrhh_personnel_action.create')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $personnelAction = RrhhPersonnelAction::findOrFail($id);
-
-        return view('rrhh.personnel_actions.file', compact('personnelAction'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeDocument(Request $request)
-    {
-        if (!auth()->user()->can('rrhh_personnel_action.create')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $request->validate([
-            'file' => 'required',
-        ]);
-
-        try {
-            DB::beginTransaction();
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $name = time() . $file->getClientOriginalName();
-                Storage::disk('flags')->put($name,  \File::get($file));
-                $input_details['file'] = $name;
-                $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
-
-                RrhhPersonnelActionFile::create($input_details);
-
-                $output = [
-                    'success' => 1,
-                    'msg' => __('rrhh.added_successfully')
-                ];
-            }
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-            $output = [
-                'success' => 0,
-                'msg' => __('rrhh.error')
-            ];
-        }
-
-        return $output;
     }
 
 

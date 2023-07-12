@@ -3,7 +3,7 @@
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">@lang('rrhh.personnel_actions')</h4>
+            <h4 class="modal-title">@lang('rrhh.personnel_actions'): <span style="color: gray">{{ $employee->first_name }} {{ $employee->last_name }}</span></h4> 
         </div>
         <div class="modal-body">
             <div class="row">
@@ -66,7 +66,7 @@
 
 											<li><a href="rrhh-personnel-action/{{ $item->id }}/authorization-report"><i class="fa fa-file"></i>{{ __('rrhh.download') }}</a></li>
 
-											<li><a href="#" onClick="addDocument({{ $item->id }})"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>
+											<li><a href="#" onClick="addFile({{ $item->id }})"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>
 
 											@can('rrhh_personnel_action.delete')
 												@if ($item->status != 'Autorizada' && $usersAuthorized == $users)
@@ -92,7 +92,7 @@
 </div>
 
 <script type="text/javascript">
-	function addDocument(id) 
+	function addFile(id) 
 	{
 		$("#modal_content_document").html('');
 		var url = "{!!URL::to('/rrhh-personnel-action-createDocument/:id')!!}";
