@@ -116,39 +116,41 @@
       {{-- fin modulo de usuarios --}}
 
       {{-- Inicio Recurso humano --}}
-      @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
-      <li
-        class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action']) ? 'active active-sub' : '' }}"
-        id="tour_step4">
-        <a href="#" id="tour_step4_menu"><i class="fa fa-user" aria-hidden="true"></i><span>RRHH</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu" id="rrhh_over">
-          @can('rrhh_employees.view')
-          <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
-            <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
-              @lang('rrhh.employee')
-            </a>
-          </li>
-          @endcan
-          @can('rrhh_personnel_action.authorize')
-          <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
-            <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>
-              @lang('rrhh.authorizations')
-            </a>
-          </li>
-          @endcan
-          @can('rrhh_catalogues.view')
-          <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-            <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
-              @lang('rrhh.catalogues')
-            </a>
-          </li>
-          @endcan
-        </ul>
-      </li>
+      @if(in_array('module_rrhh', $enabled_modules))
+        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
+        <li
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action']) ? 'active active-sub' : '' }}"
+          id="tour_step4">
+          <a href="#" id="tour_step4_menu"><i class="fa fa-user" aria-hidden="true"></i><span>RRHH</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" id="rrhh_over">
+            @can('rrhh_employees.view')
+            <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
+              <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
+                @lang('rrhh.employee')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_personnel_action.authorize')
+            <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
+              <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>
+                @lang('rrhh.authorizations')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_catalogues.view')
+            <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
+              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+                @lang('rrhh.catalogues')
+              </a>
+            </li>
+            @endcan
+          </ul>
+        </li>
+        @endif
       @endif
       {{-- Fin Recurso humano --}}
 
@@ -2019,7 +2021,7 @@
       </ul>
     </li>
     @endif
-
+  
     @can('backup')
     <li class="treeview {{  in_array( $request->segment(1), ['backup']) ? 'active active-sub' : '' }}">
       <a href="{{action('BackUpController@index')}}"><i class="fa fa-dropbox"></i> <span>@lang('lang_v1.backup')</span>

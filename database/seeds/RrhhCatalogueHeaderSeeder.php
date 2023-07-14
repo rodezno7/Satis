@@ -223,7 +223,14 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['name' => 'Recursos humanos'],
             ['description' => 'Gestión de recursos humanos', 'status' => 1]
         );
+
+        $moduleConfiguration = Module::where('name', 'Configuraciones')->first();
         
+        Permission::firstOrCreate(
+            ['name' => 'business_settings.access_module'],
+            ['description' => 'Activar/descativar módulo', 'guard_name' => 'web', 'module_id' => $moduleConfiguration->id]
+        );
+
         Permission::firstOrCreate(
             ['name' => 'rrhh_catalogues.view'],
             ['description' => 'Ver catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
