@@ -69,4 +69,7 @@ return [
     '90_days' => '61 a 90 días',
     '120_days' => '91 a 120 días',
     'more_than_120' => 'Más de 120 días',
+    'paid' => 'Pagado',
+    'partial' => 'Parcial',
+    'due' => 'Debido'
 ];

@@ -35,4 +35,7 @@ return [
     '90_days' => '61 to 90 days',
     '120_days' => '91 to 120 days',
     'more_than_120' => 'More than 120 days',
+    'paid' => 'Paid',
+    'partial' => 'Partial',
+    'due' => 'Due'
 ];

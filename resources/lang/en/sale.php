@@ -105,5 +105,7 @@ return [
     'edit_export_expenses' => 'Edit export expenses',
     'fob' => 'FOB',
     'freight' => 'Freight',
-    'insurance' => 'Inserance'
+    'insurance' => 'Inserance',
+    'price_inc_vat' => 'Price inc VAT',
+    'price_exc_vat' => 'Price exc VAT',
 ];

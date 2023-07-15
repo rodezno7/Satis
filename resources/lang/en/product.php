@@ -205,4 +205,5 @@ return [
     'enable_imei' => 'Enable IMEI?',
     'anti_reflective' => 'Anti-reflective',
     'image_length' => 'The image name exceeds the maximum number of characters',
+    'product_balance' => 'Product balance',
 ];

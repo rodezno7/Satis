@@ -1013,7 +1013,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     // Collections report
     Route::get('collections', 'ReportController@getCollections');
-    Route::get('post-collections', 'ReportController@postCollections');
+    Route::post('post-collections', 'ReportController@postCollections');
 
     // Mail routes
     Route::post('/balances_customer/send-account-statement', 'MailController@sendAccountStatement');
