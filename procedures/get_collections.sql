@@ -71,11 +71,11 @@ BEGIN
 	ORDER BY DATE(p.transaction_date);
 
 	DROP TEMPORARY TABLE IF EXISTS payments;
-	DROP TEMPORARY TABLE IF EXISTS balance;
+	DROP TEMPORARY TABLE IF EXISTS balance; 
 END; $$
 DELIMITER ;
 
-CALL get_collections(3, 0, '2023-07-07', '2023-07-30');
+CALL get_collections(3, 0, '2023-06-14', '2023-06-14');
 
 
 DROP PROCEDURE IF EXISTS get_collection_transactions;

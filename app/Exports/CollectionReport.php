@@ -133,73 +133,80 @@ class CollectionReport implements WithEvents, WithTitle
                     $payments = $this->collections
                         ->where('transaction_id', $t);
                     
+                    $withheld = 0;
+                    if (!empty($collect->withheld)) {
+                        $withheld = $collect->withheld;
+                    }
+
                     $balance = 0;
                     if (!empty($collect->balance)) {
-                        $balance = $collect->balance; 
+                        $balance = $collect->balance + $withheld;
+
+                        $withheld = 0;
                     }
 
                     $remaining = 0;
                     foreach ($lines as $l) {
-                        start_again:
-                        $event->sheet->setCellValue('A'. $row, $this->transactionUtil->format_date($l->transaction_date));
-                        $event->sheet->setCellValue('B'. $row, $l->correlative);
-                        $event->sheet->setCellValue('C'. $row, $l->customer);
-                        $event->sheet->setCellValue('D'. $row, $l->sku);
-                        $event->sheet->setCellValue('E'. $row, $l->product);
-                        $event->sheet->setCellValue('F'. $row, $l->quantity);
-                        $event->sheet->setCellValue('G'. $row, $l->unit_price_exc_tax);
-                        $event->sheet->setCellValue('H'. $row, $l->unit_price_inc_tax);
-    
-                        $event->sheet->setCellValue('M'. $row, mb_strtoupper(__('payment.'.$l->payment_status)));
-                        $event->sheet->setCellValue('N'. $row, mb_strtoupper($l->seller));
-                        $event->sheet->setCellValue('O'. $row, mb_strtoupper($l->portfolio));
-                        $event->sheet->setCellValue('P'. $row, mb_strtoupper($l->city));
-                        $event->sheet->setCellValue('Q'. $row, mb_strtoupper($l->state));
+                        $this->setCommonValues($event, $l, $row);
 
                         if (($balance >= $l->unit_price_inc_tax) && ($l->unit_price_inc_tax > 0)) {
-                            $event->sheet->setCellValue('K'. $row, $l->unit_price_inc_tax);
+                            $event->sheet->setCellValue('K'. $row, "0");
                             
                             $balance -= $l->unit_price_inc_tax;
                             $row ++;
                             
-                            goto start_again;
+                            \Log::info("Inside balance: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax);
+                            continue;
                         }
 
                         if ($balance > 0) {
                             $remaining = $l->unit_price_inc_tax - $balance;
                             $event->sheet->setCellValue('K'. $row, $remaining);
 
+                            \Log::info("Inside remaining: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax);
+
                             $balance = 0;
                         }
 
+                        $pay_left = 0;
                         foreach ($payments as $p) {
+                            $pay_left = $remaining + $p->amount;
+
+                            if ($withheld > 0) {
+                                $pay_left += $withheld;
+                                $p->amount += $withheld;
+                                $withheld = 0;
+                            }
+
                             $event->sheet->setCellValue('I'. $row, $p->amount);
                             $event->sheet->setCellValue('J'. $row, $this->transactionUtil->format_date($p->transaction_date));
+                            
+                            if ($pay_left >= $l->unit_price_inc_tax && ($l->unit_price_inc_tax > 0)) {
+                                $event->sheet->setCellValue('K'. $row, "0");
+
+                                $pay_left -= $p->amount;
+                                $row ++;
+
+                                $this->setCommonValues($event, $l, $row);
+                                continue;
+                            }
+
+                            if ($pay_left > 0) {
+                                $left =
+                                    ($l->unit_price_inc_tax - $pay_left) > 0.01
+                                        ? ($l->unit_price_inc_tax - $pay_left) : "0";
+
+                                $event->sheet->setCellValue('K'. $row, $left);
+
+                                $pay_left = 0;
+                            }
+
+                            \Log::info("Inside payments: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax ." payment_amount ". $p->amount ." date ". $this->transactionUtil->format_date($p->transaction_date));
+                            $row ++;
                         }
 
                         $row ++;
                     }
-
-                    /*if ($transaction_id != $l->transaction_id) {
-                        $final_total = $this->collection_transactions->where('transaction_id', $l->transaction_id)->sum('unit_price_inc_tax');
-                        $payment_amount = $this->collections->where('transaction_id', $l->transaction_id)->sum('amount');
-                        
-                    
-                        if (!empty($collect->withheld)) {
-                            $payment_amount += $collect->withheld;
-                        }
-    
-
-
-                        $remaining = $payment_amount;
-                    }
-
-
-                    /*foreach ($payments as $p) {
-
-                        $event->sheet->setCellValue('K'. $row, ($l->unit_price_inc_tax - $balance));
-                        $balance = 0;
-                    }*/
                 }
                 $row --;
 
@@ -216,5 +223,31 @@ class CollectionReport implements WithEvents, WithTitle
                 $event->sheet->setFontFamily('A1:Q'. $row, 'Calibri');
             },
         ];
+    }
+
+    /**
+     * Set common values
+     * 
+     * @param Object $event
+     * @param Object $record
+     * @param string $row
+     * 
+     * @return void
+     */
+    private function setCommonValues($event, $record, $row) {
+        $event->sheet->setCellValue('A'. $row, $this->transactionUtil->format_date($record->transaction_date));
+        $event->sheet->setCellValue('B'. $row, $record->correlative);
+        $event->sheet->setCellValue('C'. $row, $record->customer);
+        $event->sheet->setCellValue('D'. $row, $record->sku);
+        $event->sheet->setCellValue('E'. $row, $record->product);
+        $event->sheet->setCellValue('F'. $row, $record->quantity);
+        $event->sheet->setCellValue('G'. $row, $record->unit_price_exc_tax);
+        $event->sheet->setCellValue('H'. $row, $record->unit_price_inc_tax);
+
+        $event->sheet->setCellValue('M'. $row, mb_strtoupper(__('payment.'.$record->payment_status)));
+        $event->sheet->setCellValue('N'. $row, mb_strtoupper($record->seller));
+        $event->sheet->setCellValue('O'. $row, mb_strtoupper($record->portfolio));
+        $event->sheet->setCellValue('P'. $row, mb_strtoupper($record->city));
+        $event->sheet->setCellValue('Q'. $row, mb_strtoupper($record->state));
     }
 }
