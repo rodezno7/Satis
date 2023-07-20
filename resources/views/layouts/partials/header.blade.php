@@ -33,6 +33,10 @@
           </button>
         @endif
 
+        <a href="http://satisassistance.test" title="{{ __('rrhh.mark_assistance') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
+          <strong><i class="fa fa-list"></i>&nbsp; @lang("rrhh.mark_assistance")</strong>
+        </a>
+
         <a href="{{ action('BusinessController@getChangeBusiness')}}" title="{{ __('home.conected_business') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10 btn_business_modal">
             <strong><i class="fa fa-briefcase"></i>&nbsp; @lang("business.change_business")</strong>
         </a>

@@ -228,7 +228,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         
         Permission::firstOrCreate(
             ['name' => 'business_settings.access_module'],
-            ['description' => 'Activar/descativar módulo', 'guard_name' => 'web', 'module_id' => $moduleConfiguration->id]
+            ['description' => 'Activar/desactivar módulo', 'guard_name' => 'web', 'module_id' => $moduleConfiguration->id]
         );
 
         Permission::firstOrCreate(
@@ -352,6 +352,10 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['name' => 'rrhh_absence_inability.delete'],
             ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
         );
-        
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_assistance.view'],
+            ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
     }
 }

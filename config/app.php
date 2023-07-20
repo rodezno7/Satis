@@ -268,5 +268,7 @@ return [
     'disable_sql_req_pk' => env('DISABLE_SQL_REQ_PK', false),
 
     // App Version
-    'app_version' => env('APP_VERSION', 11.22)
+    'app_version' => env('APP_VERSION', 11.22),
+
+    'assistance_employee_url' => 'http://127.0.0.1:8000/'
 ];

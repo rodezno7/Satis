@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __('rrhh.rrhh'))
+@section('title', __('rrhh.employee'))
 @section('content')
 
 <!-- Content Header (Page header) -->
