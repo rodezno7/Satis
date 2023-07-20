@@ -38,7 +38,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
      */
     public function title(): string
     {
-    	return __('report.all_sales_with_utility_report');
+    	return __('rrhh.employee_assistance_report');
     }
 
     /**
@@ -55,41 +55,40 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
 
                 /** General setup */
     			$event->sheet->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
-    			//event->sheet->setFontFamily('A1:C'.$items, 'Calibri');
-    			//$event->sheet->setFontSize('A1:C'.$items, 10);
 
                 /** Columns style */
                 $event->sheet->columnWidth('A', 25); // employee
-                $event->sheet->columnWidth('B', 15); // date
+                $event->sheet->columnWidth('B', 35); // date
                 $event->sheet->columnWidth('C', 25); // time worked
                 $event->sheet->setFormat('A5:C' . $items, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
-                //$event->sheet->setFormat('F5:H' . $items, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_ACCOUNTING_USD);
 
                 /** Business name */
                 $event->sheet->horizontalAlign('A1:C1', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->getDelegate()->getStyle('A1:C1')->getFont()->setBold(true);
-                $event->sheet->getDelegate()->getStyle('A1:C1')->getFont()->setSize(12);
+                $event->sheet->getDelegate()->getStyle('A1:C1')->getFont()->setSize(15);
     			$event->sheet->mergeCells('A1:C1');
                 $event->sheet->setCellValue('A1', mb_strtoupper($this->business->name));
 
                 /** Report name */
-                $event->sheet->horizontalAlign('A2:C2', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getDelegate()->getStyle('A2:C2')->getFont()->setBold(true);
-    			$event->sheet->mergeCells('A2:C2');
+                $event->sheet->mergeCells('A2:C2');
+                $event->sheet->horizontalAlign('A3:C3', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $event->sheet->getDelegate()->getStyle('A3:C3')->getFont()->setBold(true);
+                $event->sheet->getDelegate()->getStyle('A3:C3')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A3:C3');
-                $event->sheet->setCellValue('A2', mb_strtoupper(__('rrhh.assistance_summary')));
+                $event->sheet->setCellValue('A3', mb_strtoupper(__('rrhh.assistance_summary')));
 
                 /** table head */
                 $event->sheet->horizontalAlign('A4:C4', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->getDelegate()->getStyle('A4:C4')->getFont()->setBold(true);
                 $event->sheet->setCellValue('A4', mb_strtoupper(__('rrhh.employee')));
-                $event->sheet->setCellValue('B4', mb_strtoupper(__('rrhh.date')));
+                $event->sheet->setCellValue('B4', mb_strtoupper(__('rrhh.schedule')));
                 $event->sheet->setCellValue('C4', mb_strtoupper(__('rrhh.time_worked')));
 
 
                 /** table body */
                 $count = 5;
                 foreach($assistanceSummary as $s){
+                    $event->sheet->horizontalAlign('B'. $count.':C'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $event->sheet->setCellValue('A'. $count, $s->employee);
                     $event->sheet->setCellValue('B'. $count, $s->date);
                     $event->sheet->setCellValue('C'. $count, $s->time_worked);
@@ -98,7 +97,8 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                 }
 
                 $count = $count + 1;
-                // /** table footer */
+
+                /** Columns style */
                 $event->sheet->columnWidth('D', 15); // country
                 $event->sheet->columnWidth('E', 20); // city
                 $event->sheet->columnWidth('F', 15); // latitude
@@ -109,8 +109,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                 /** Report name */
                 $event->sheet->horizontalAlign('A' . $count . ':H' . $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->getDelegate()->getStyle('A' . $count . ':H' . $count)->getFont()->setBold(true);
-                $event->sheet->mergeCells('A' . $count . ':H' . $count);
-                $count = $count+1;
+                $event->sheet->getDelegate()->getStyle('A' . $count . ':H' . $count)->getFont()->setSize(13);
                 $event->sheet->mergeCells('A' . $count . ':H' . $count);
                 $event->sheet->setCellValue('A' . $count, mb_strtoupper(__('rrhh.employee_assistance_detail')));
 
@@ -128,11 +127,12 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                 $event->sheet->setCellValue('H'.$count, mb_strtoupper(__('rrhh.type')));
 
                 /** table body */
-                $count = $count+2;
+                $count = $count+1;
                 $assistances = $this->assistances;
                 foreach($assistances as $s){
+                    $event->sheet->horizontalAlign('B'. $count.':H'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $event->sheet->setCellValue('A'. $count, $s->employee->first_name.' '.$s->employee->last_name);
-                    $event->sheet->setCellValue('B'. $count, $s->date);
+                    $event->sheet->setCellValue('B'. $count, $this->transactionUtil->format_date($s->date).' '.$this->transactionUtil->format_time($s->time));
                     $event->sheet->setCellValue('C'. $count, $s->ip);
                     $event->sheet->setCellValue('D'. $count, $s->country);
                     $event->sheet->setCellValue('E'. $count, $s->city);
@@ -142,15 +142,6 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
 
                     $count++;
                 }
-
-
-                // $event->sheet->getDelegate()->getStyle('A' . $count . ':E' . $count)->getFont()->setBold(true);
-                // $event->sheet->setFormat('A' . $count, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
-                // $event->sheet->setFormat('F' . $count . ':H' . $count, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_ACCOUNTING_USD);
-                // $event->sheet->setCellValue('A' . $count, mb_strtoupper(__('accounting.totals')));
-                // $event->sheet->setcellValue('F'. $count, $cost_total);
-                // $event->sheet->setCellValue('G'. $count, $final_total);
-                // $event->sheet->setCellValue('H'. $count, $utility_total);
             },
         ];
     }

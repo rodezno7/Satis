@@ -25,10 +25,10 @@
                         </thead>
                         <tbody id="referencesItems">
                             @if (count($assistances) > 0)
-                                @foreach ($assistances as $item)
+                                @foreach ($assistances as $key => $item)
                                     <tr>
                                         <td class="text-center">
-                                            <img alt="" id="imagen-{{ $item->id }}" width="100%" height="100%">
+                                            <img alt="" id="imagen-{{ $assistancesIds[$key]->id }}" width="100%" height="100%">
                                         </td>
                                         <td>
                                             {{ @format_date($item->date) }} {{ @format_time($item->time) }}
@@ -67,12 +67,10 @@
     });
 
     function loadImage(){
-        var assistances = {!! json_encode($assistances) !!};
-
-
+        var assistances = {!! json_encode($assistancesIds) !!};
+        var apiAssistance = {!! json_encode($apiAssistance) !!};
         assistances.forEach(function(assistance) {
-            console.log(assistance.id);
-            let response1 = fetch("http://127.0.0.1:8000/api/image-assistance/"+assistance.id)
+            let response1 = fetch(apiAssistance+""+assistance.id)
             .then(response => {
                 const codes = response.url;
                 if (response.status === 200) {
@@ -87,8 +85,6 @@
             });
         });
     }
-
-    
 
     function viewFile(id) {
         $("#modal_content_photo").html('');

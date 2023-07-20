@@ -270,5 +270,5 @@ return [
     // App Version
     'app_version' => env('APP_VERSION', 11.22),
 
-    'assistance_employee_url' => 'http://127.0.0.1:8000/'
+    'assistance_employee_url' => 'http://127.0.0.1:8000/api/image-assistance/'
 ];

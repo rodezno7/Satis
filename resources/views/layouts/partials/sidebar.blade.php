@@ -117,7 +117,7 @@
 
       {{-- Inicio Recurso humano --}}
       @if(in_array('module_rrhh', $enabled_modules))
-        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view'))
+        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
         <li
           class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action', 'rrhh-assistances', 'rrhh-setting']) ? 'active active-sub' : '' }}"
           id="tour_step4">
@@ -143,19 +143,19 @@
             @endcan
             @can('rrhh_catalogues.view')
             <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-table"></i>
                 @lang('rrhh.catalogues')
               </a>
             </li>
             @endcan
             @can('rrhh_assistance.view')
             <li class="{{ $request->segment(1) == 'rrhh-assistances' ? 'active' : '' }}">
-              <a href="{{action('AssistanceEmployeeController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+              <a href="{{action('AssistanceEmployeeController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
                 @lang('rrhh.assistance')
               </a>
             </li>
             @endcan
-            @can('rrhh_assistance.view')
+            @can('rrhh_setting.access')
             <li class="{{ $request->segment(1) == 'rrhh-setting' ? 'active' : '' }}">
               <a href="{{action('SettingController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
                 @lang('rrhh.settings')

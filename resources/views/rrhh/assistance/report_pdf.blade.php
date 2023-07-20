@@ -38,17 +38,43 @@
             padding: 3px 5px;
         }
 
+        @page{
+            margin-bottom: 75px;
+        }
+        #header,
+        #footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            color: #000000;
+            font-size: 0.9em;
+        }
+        #header {
+            top: 0;
+            border-bottom: 0.1pt solid #aaa;
+        }
+        #footer {
+            bottom: 0;
+            border-top: 0.1pt solid #aaa;
+        }
+        .page-number:before {
+            content: "Página " counter(page);
+        }
+
     </style>
 </head>
 
 <body>
+    <div id="footer">
+        <div class="page-number"></div>
+    </div>
     <h2 class="text-center">{{ mb_strtoupper($business->name) }}</h2>
     <h3>{{ mb_strtoupper(__('rrhh.assistance_summary')) }}</h3>
     <table style="width: 100%;">
         <thead>
             <tr>
                 <th>{{ __('rrhh.employee') }}</th>
-                <th>{{ __('rrhh.date') }}</th>
+                <th>{{ __('rrhh.schedule') }}</th>
                 <th>{{ __('rrhh.time_worked') }}</th>
             </tr>
         </thead>
@@ -59,7 +85,7 @@
                         {{ $item->employee }}
                     </td>
                     <td>
-                        {{ @format_date($item->date) }}
+                        {{ $item->date }}
                     </td>
                     <td>
                         {{ $item->time_worked }}
@@ -104,7 +130,6 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+    </table> 
 </body>
-
 </html>

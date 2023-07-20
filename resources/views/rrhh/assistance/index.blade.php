@@ -12,6 +12,7 @@
 
     <!-- Main content -->
     <section class="content">
+        @can('rrhh_assistance.generate')
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-default" id="accordion">
@@ -94,6 +95,8 @@
                 </div>
             </div>
         </div>
+        @endcan
+        
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
@@ -147,66 +150,9 @@
                 }
             );
 
-            // On click of button_report div
             $(document).on('click', '#button_report', function(e) {
                 $('form#form_assistance').submit();
-                //loadAssistances();
-                //assistances_table.ajax.reload();
             });
-
-            // var assistances_table = $("#assistances-table").DataTable({
-            //     deferRender: true,
-            //     processing: true,
-            //     serverSide: true,
-            //     //ajax: "/rrhh-assistances-getAssistances",
-            //     ajax: {
-            //         url: "/rrhh-assistances-getAssistances",
-            //         data: function (d) {
-            //             d.start_date = $('#start_date').val();
-            //             d.end_date = $('#end_date').val();
-            //             d.select_employee = $("input#select_employee").val();
-            //         }
-            //     },
-            //     columns: [
-            //         {
-            //             data: 'employee',
-            //             name: 'employee',
-            //             className: "text-center"
-            //         },
-            //         {
-            //             data: 'schedule',
-            //             name: 'schedule',
-            //             className: "text-center"
-            //         },
-            //         {
-            //             data: 'number_of_hours',
-            //             name: 'number_of_hours',
-            //             className: "text-center"
-            //         },
-            //         {
-            //             data: 'status',
-            //             name: 'status',
-            //             className: "text-center"
-            //         },
-            //         // {
-            //         //     data: null,
-            //         //     render: function(data) {
-            //         //         html =
-            //         //             '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang('messages.actions') <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-            //         //         html += '</ul></div>';
-
-            //         //         return html;
-            //         //     },
-            //         //     orderable: false,
-            //         //     searchable: false,
-            //         //     className: "text-center"
-            //         // }
-            //     ],
-            //     order: [
-            //         [1, 'desc']
-            //     ],
-            //     dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
-            // });
         });
 
         function loadAssistances() {
@@ -261,90 +207,13 @@
         }
 
         function viewDetail(id) {
-            var route = '/rrhh-assistances-getByAssistances/'+id;
+            var route = '/rrhh-assistances-show/'+id;
             $("#assistance_modal").load(route, function() {
                 $(this).modal({
-                backdrop: 'static'
+                    backdrop: 'static'
                 });
             });
         }
-        /**
-         * Get report in Excel format.
-         * 
-         * @param  array  data
-         * @return void
-        */
-        function export_excel(data) {
-            var wb = XLSX.utils.book_new();
-
-            wb.Props = {
-                Title: LANG.all_sales_report
-            };
-
-            wb.SheetNames.push(LANG.all_sales_report);
-
-            var ws_data = data;
-            var ws = XLSX.utils.aoa_to_sheet(ws_data);
-
-            /** Set number format */
-            let data_length = data.length + 1;
-            for (let i = 5; i < data_length; i++) {
-                ws["H"+i].t = "n";
-                ws["H"+i].z = "0.0000";
-                ws["I"+i].t = "n";
-                ws["I"+i].z = "0.0000";
-                ws["J"+i].t = "n";
-                ws["J"+i].z = "0.0000";
-                ws["K"+i].t = "n";
-                ws["K"+i].z = "0.0000";
-            }
-
-            wb.Sheets[LANG.all_sales_report] = ws;
-
-            var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-
-            saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), LANG.all_sales_report + '.xlsx');
-        }
-
-        /**
-         * Convert string to array buffer.
-         * 
-         * @param  workbook  s
-         * @return void
-        */
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-
-        /**
-         * Get report in PDF format.
-         * 
-         * @param  array  data
-         * @param  array  header_data
-         * @param  array  headers
-         * @return void
-        */
-        function export_pdf(data, header_data, headers) {
-            window.jsPDF = window.jspdf.jsPDF;
-
-            var doc = new jsPDF('l', 'mm', 'a4');
-
-            doc.setFontSize(8);
-            doc.text(header_data.business_name, doc.internal.pageSize.getWidth() / 2, 14, null, null, 'center');
-            doc.text(header_data.report_name, doc.internal.pageSize.getWidth() / 2, 20, null, null, 'center');
-
-            doc.autoTable({
-                styles: { fontSize: 7 },
-                head: headers,
-                body: data,
-                startY: 24,
-                theme: 'plain'
-            });
-
-            doc.save(LANG.all_sales_report + '.pdf');
-        }
+        
     </script>
 @endsection

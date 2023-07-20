@@ -232,4 +232,5 @@ return[
     'assistance_detail' => 'Assistance detail',
     'time_worked' => 'Time worked',
     'ip_address' => 'Ip address',
+    'employee_assistance_report' => 'Employee assistance report',
 ];

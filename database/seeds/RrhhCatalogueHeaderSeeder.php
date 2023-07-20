@@ -357,5 +357,15 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['name' => 'rrhh_assistance.view'],
             ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
         );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_assistance.generate'],
+            ['description' => 'Generar reporte de asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_setting.access'],
+            ['description' => 'Cofiguracion del módulo de RRHH', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
     }
 }

@@ -229,4 +229,5 @@ return[
     'assistance_detail' => 'Detalle de asistencia',
     'time_worked' => 'Tiempo trabajado',
     'ip_address' => 'Dirección ip',
+    'employee_assistance_report' => 'Reporte de Asistencia de empleados',
 ];
