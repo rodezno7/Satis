@@ -233,4 +233,5 @@ return[
     'time_worked' => 'Time worked',
     'ip_address' => 'Ip address',
     'employee_assistance_report' => 'Employee assistance report',
+    'photo' => 'Photo',
 ];

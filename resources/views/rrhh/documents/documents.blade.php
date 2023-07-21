@@ -10,7 +10,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					@if (count($types) > count($documents))
 					<div class="form-group">
-						@can('rrhh_document_employee.update')
+						@can('rrhh_document_employee.create')
 							<button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
 								style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 								<i class="fa fa-plus"></i> @lang('rrhh.add')
@@ -59,7 +59,7 @@
 										@if(!isset($route))
 										<td>
 											@if ($item->file != '')
-											@can('rrhh_document_employee.update')
+											@can('rrhh_document_employee.view')
 												<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
 											@endcan
 												@endif

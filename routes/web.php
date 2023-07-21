@@ -641,6 +641,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-assistances-getAssistances', 'AssistanceEmployeeController@getAssistances');
     Route::post('/rrhh-assistances-report', 'AssistanceEmployeeController@postAssistancesReport');
     Route::get('rrhh-assistances-show/{id}', 'AssistanceEmployeeController@show');
+    Route::get('rrhh-assistances-viewImage/{id}', 'AssistanceEmployeeController@viewImage');
 
     //Rutas documents by employees
     Route::get('rrhh-documents-getByEmployee/{id}', 'RrhhDocumentsController@getByEmployee');

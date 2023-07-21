@@ -369,8 +369,20 @@ class AssistanceEmployeeController extends Controller
             ];
         }
 
-        $apiAssistance = config('app.assistance_employee_url');
+        $routeApi = config('app.assistance_employee_url');
 
-        return view('rrhh.assistance.show', compact('assistances', 'employee', 'assistancesIds', 'apiAssistance'));
+        return view('rrhh.assistance.show', compact('assistances', 'employee', 'assistancesIds', 'routeApi'));
+    }
+
+    public function viewImage($id){
+        $business_id = request()->session()->get('user.business_id');
+        $assistance = AssistanceEmployee::where('id', $id)
+            ->where('business_id', $business_id)
+            ->first();
+        $employee = Employees::where('id', $assistance->employee_id)->where('business_id', $business_id)->first();
+        $idAssistance = Crypt::encrypt($assistance->id);
+
+        $routeApi = config('app.assistance_employee_url');
+        return view('rrhh.assistance.photo', compact('idAssistance', 'routeApi', 'employee'));
     }
 }

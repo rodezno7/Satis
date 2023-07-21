@@ -121,6 +121,18 @@
     </section>
     <div tabindex="-1" class="modal fade" id="assistance_modal" role="dialog" aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content" id="modal_content_assistance">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal_photo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal_content_photo">
+    
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -207,9 +219,12 @@
         }
 
         function viewDetail(id) {
-            var route = '/rrhh-assistances-show/'+id;
-            $("#assistance_modal").load(route, function() {
-                $(this).modal({
+            $("#modal_content_assistance").html('');
+            var url = "{!! URL::to('/rrhh-assistances-show/:id') !!}";
+            url = url.replace(':id', id);
+            $.get(url, function(data) {
+                $("#modal_content_assistance").html(data);
+                $('#assistance_modal').modal({
                     backdrop: 'static'
                 });
             });
