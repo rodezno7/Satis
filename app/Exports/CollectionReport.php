@@ -121,6 +121,7 @@ class CollectionReport implements WithEvents, WithTitle
                     ->unique('transaction_id')
                     ->pluck('transaction_id');
 
+                $pays_proccesed = [];
                 foreach($transactions as $t) {
                     $lines = $this->collection_transactions
                         ->where('transaction_id', $t)
@@ -130,6 +131,10 @@ class CollectionReport implements WithEvents, WithTitle
                         ->where('transaction_id', $t)
                         ->first();
 
+                    $final_total = $this->collections
+                        ->where('transaction_id', $t)
+                        ->sum('amount');
+
                     $payments = $this->collections
                         ->where('transaction_id', $t);
                     
@@ -138,16 +143,24 @@ class CollectionReport implements WithEvents, WithTitle
                         $withheld = $collect->withheld;
                     }
 
+                    $sell_return = 0;
+                    if (!empty($collect->sell_return)) {
+                        $sell_return = $collect->sell_return;
+                    }
+
                     $balance = 0;
                     if (!empty($collect->balance)) {
-                        $balance = $collect->balance + $withheld;
+                        $balance = $collect->balance + $withheld + $sell_return;
 
                         $withheld = 0;
+                        $sell_return = 0;
                     }
 
                     $remaining = 0;
+                    $unit_price_inc_tax = 0;
                     foreach ($lines as $l) {
                         $this->setCommonValues($event, $l, $row);
+                        $unit_price_inc_tax = $l->unit_price_inc_tax;
 
                         if (($balance >= $l->unit_price_inc_tax) && ($l->unit_price_inc_tax > 0)) {
                             $event->sheet->setCellValue('K'. $row, "0");
@@ -161,44 +174,59 @@ class CollectionReport implements WithEvents, WithTitle
 
                         if ($balance > 0) {
                             $remaining = $l->unit_price_inc_tax - $balance;
-                            $event->sheet->setCellValue('K'. $row, $remaining);
+                            $unit_price_inc_tax -= $balance;
+                            $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
 
+                            \Log::info("remaining ". $remaining ."  ");
                             \Log::info("Inside remaining: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax);
 
                             $balance = 0;
                         }
 
-                        $pay_left = 0;
+                        $pays_left = 0;
+                        $payments = $payments->whereNotIn('id', $pays_proccesed);
                         foreach ($payments as $p) {
-                            $pay_left = $remaining + $p->amount;
+                            $pays_left = $remaining + $p->amount;
+                            \Log::info("remaining ". $remaining);
+                            $remaining = 0;
+                            array_push($pays_proccesed, $p->id);
 
                             if ($withheld > 0) {
-                                $pay_left += $withheld;
-                                $p->amount += $withheld;
+                                $pays_left += $withheld;
+                                //$p->amount += $withheld;
                                 $withheld = 0;
                             }
 
                             $event->sheet->setCellValue('I'. $row, $p->amount);
                             $event->sheet->setCellValue('J'. $row, $this->transactionUtil->format_date($p->transaction_date));
                             
-                            if ($pay_left >= $l->unit_price_inc_tax && ($l->unit_price_inc_tax > 0)) {
-                                $event->sheet->setCellValue('K'. $row, "0");
+                            if ($pays_left >= $l->unit_price_inc_tax && ($l->unit_price_inc_tax > 0)) {
+                                $pays_left -= $l->unit_price_inc_tax;
+                                $event->sheet->setCellValue('K'. $row, $pays_left);
 
-                                $pay_left -= $p->amount;
                                 $row ++;
-
                                 $this->setCommonValues($event, $l, $row);
+                                \Log::info("Inside pays_left >= unit_price_inc_tax: correlative ". $l->correlative ." unit_price_inc ". $unit_price_inc_tax ." pays_left ". $pays_left);
+                                continue;
+
+                            } else if ($l->unit_price_inc_tax > $pays_left) {
+                                $unit_price_inc_tax -= $pays_left;
+                                $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
+
+                                $row ++;
+                                $this->setCommonValues($event, $l, $row);
+                                \Log::info("Inside unit_price_inc_tax > pays_left: correlative ". $l->correlative ." unit_price_inc ". $unit_price_inc_tax ." pays_left ". $pays_left);
                                 continue;
                             }
 
-                            if ($pay_left > 0) {
+                            if ($pays_left > 0) {
                                 $left =
-                                    ($l->unit_price_inc_tax - $pay_left) > 0.01
-                                        ? ($l->unit_price_inc_tax - $pay_left) : "0";
+                                    ($l->unit_price_inc_tax - $pays_left) > 0.01
+                                        ? ($l->unit_price_inc_tax - $pays_left) : "0";
 
                                 $event->sheet->setCellValue('K'. $row, $left);
 
-                                $pay_left = 0;
+                                $pays_left = 0;
                             }
 
                             \Log::info("Inside payments: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax ." payment_amount ". $p->amount ." date ". $this->transactionUtil->format_date($p->transaction_date));
@@ -207,6 +235,8 @@ class CollectionReport implements WithEvents, WithTitle
 
                         $row ++;
                     }
+
+                    $pays_proccesed = [];
                 }
                 $row --;
 

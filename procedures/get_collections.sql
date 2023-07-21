@@ -29,6 +29,7 @@ BEGIN
 			AND DATE(tp.paid_on) BETWEEN start_date AND end_date
 			AND (ISNULL(t.payment_condition) OR t.payment_condition = 'credit')
 			AND t.status = 'final'
+			AND t.id IN (4612, 5775, 6612)
 		GROUP BY tp.id, tp.transaction_id, tp.`method`;
 	
 	/** Get sell returns */
@@ -75,7 +76,7 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL get_collections(3, 0, '2023-06-14', '2023-06-14');
+CALL get_collections(3, 0, '2023-06-01', '2023-06-30');
 
 
 DROP PROCEDURE IF EXISTS get_collection_transactions;
@@ -102,6 +103,7 @@ BEGIN
 			AND DATE(tp.paid_on) BETWEEN start_date AND end_date
 			AND (ISNULL(t.payment_condition) OR t.payment_condition = 'credit')
 			AND t.status = 'final'
+			AND t.id IN (4612, 5775, 6612)
 		GROUP BY tp.transaction_id;
 	
 	SELECT
@@ -141,6 +143,6 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL get_collection_transactions(3, 0, 0, '2023-07-01', '2023-07-13');
+CALL get_collection_transactions(3, 0, 0, '2023-06-01', '2023-06-30');
 
 
