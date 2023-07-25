@@ -167,8 +167,6 @@ class CollectionReport implements WithEvents, WithTitle
                             
                             $balance -= $l->unit_price_inc_tax;
                             $row ++;
-                            
-                            \Log::info("Inside balance: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax);
                             continue;
                         }
 
@@ -176,60 +174,41 @@ class CollectionReport implements WithEvents, WithTitle
                             $remaining = $l->unit_price_inc_tax - $balance;
                             $unit_price_inc_tax -= $balance;
                             $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
-
-                            \Log::info("remaining ". $remaining ."  ");
-                            \Log::info("Inside remaining: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax);
-
+                            
                             $balance = 0;
                         }
 
                         $pays_left = 0;
                         $payments = $payments->whereNotIn('id', $pays_proccesed);
+                        $remaining += ($balance + $withheld + $sell_return);
                         foreach ($payments as $p) {
-                            $pays_left = $remaining + $p->amount;
-                            \Log::info("remaining ". $remaining);
-                            $remaining = 0;
+                            $remaining += $p->amount;
+                            \Log::info('unit_price '. $unit_price_inc_tax .' p->amount '. $p->amount .' remaining '. $remaining);
                             array_push($pays_proccesed, $p->id);
-
-                            if ($withheld > 0) {
-                                $pays_left += $withheld;
-                                //$p->amount += $withheld;
-                                $withheld = 0;
-                            }
 
                             $event->sheet->setCellValue('I'. $row, $p->amount);
                             $event->sheet->setCellValue('J'. $row, $this->transactionUtil->format_date($p->transaction_date));
-                            
-                            if ($pays_left >= $l->unit_price_inc_tax && ($l->unit_price_inc_tax > 0)) {
-                                $pays_left -= $l->unit_price_inc_tax;
-                                $event->sheet->setCellValue('K'. $row, $pays_left);
+
+                            if ($remaining > $unit_price_inc_tax) {
+                                $unit_price_inc_tax -= $remaining;
+                                $remaining -= $l->unit_price_inc_tax;
+
+                                $this->setCommonValues($event, $l, $row);
+                                
+                                if ($unit_price_inc_tax < 0) {
+                                    break;
+                                }
 
                                 $row ++;
-                                $this->setCommonValues($event, $l, $row);
-                                \Log::info("Inside pays_left >= unit_price_inc_tax: correlative ". $l->correlative ." unit_price_inc ". $unit_price_inc_tax ." pays_left ". $pays_left);
-                                continue;
-
-                            } else if ($l->unit_price_inc_tax > $pays_left) {
-                                $unit_price_inc_tax -= $pays_left;
-                                $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
-
-                                $row ++;
-                                $this->setCommonValues($event, $l, $row);
-                                \Log::info("Inside unit_price_inc_tax > pays_left: correlative ". $l->correlative ." unit_price_inc ". $unit_price_inc_tax ." pays_left ". $pays_left);
                                 continue;
                             }
 
-                            if ($pays_left > 0) {
-                                $left =
-                                    ($l->unit_price_inc_tax - $pays_left) > 0.01
-                                        ? ($l->unit_price_inc_tax - $pays_left) : "0";
-
-                                $event->sheet->setCellValue('K'. $row, $left);
-
-                                $pays_left = 0;
+                            if ($remaining > 0) {
+                                $unit_price_inc_tax -= $remaining;
+                                $remaining -= $l->unit_price_inc_tax;
+                                $this->setCommonValues($event, $l, $row);
                             }
 
-                            \Log::info("Inside payments: correlative ". $l->correlative ." unit_price_inc ". $l->unit_price_inc_tax ." payment_amount ". $p->amount ." date ". $this->transactionUtil->format_date($p->transaction_date));
                             $row ++;
                         }
 
