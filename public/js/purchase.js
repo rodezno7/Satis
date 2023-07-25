@@ -165,7 +165,7 @@ $(function() {
     // Validate purchase date on change of transaction_date input.
     $(document).on('change', 'input#transaction_date', function() {
         var date = $(this).val();
-        $("input#document_date").val(date);
+        $("input#document_date").datepicker('setDate', date);
 
         $.ajax({
             type: 'post',
