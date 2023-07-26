@@ -121,6 +121,7 @@ class CollectionReport implements WithEvents, WithTitle
                     ->unique('transaction_id')
                     ->pluck('transaction_id');
 
+                /** Process transactions */
                 $pays_proccesed = [];
                 foreach($transactions as $t) {
                     $lines = $this->collection_transactions
@@ -148,54 +149,51 @@ class CollectionReport implements WithEvents, WithTitle
                         $sell_return = $collect->sell_return;
                     }
 
-                    $balance = 0;
-                    if (!empty($collect->balance)) {
-                        $balance = $collect->balance + $withheld + $sell_return;
-
-                        $withheld = 0;
-                        $sell_return = 0;
-                    }
-
-                    $remaining = 0;
+                    $balance = $collect->balance + $withheld + $sell_return;
                     $unit_price_inc_tax = 0;
+                    $due = $collect->final_total - $collect->balance - $sell_return;
+
+                    /** Process each transaction line */
                     foreach ($lines as $l) {
-                        $this->setCommonValues($event, $l, $row);
                         $unit_price_inc_tax = $l->unit_price_inc_tax;
+                        $this->setCommonValues($event, $l, $row);
+                        $event->sheet->setCellValue('L'. $row, $due);
+                        $event->sheet->setCellValue('K'. $row, "0");
 
                         if (($balance >= $l->unit_price_inc_tax) && ($l->unit_price_inc_tax > 0)) {
-                            $event->sheet->setCellValue('K'. $row, "0");
-                            
                             $balance -= $l->unit_price_inc_tax;
                             $row ++;
                             continue;
                         }
 
-                        if ($balance > 0) {
-                            $remaining = $l->unit_price_inc_tax - $balance;
-                            $unit_price_inc_tax -= $balance;
-                            $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
-                            
-                            $balance = 0;
-                        }
-
+                        /** Process payments */
                         $pays_left = 0;
                         $payments = $payments->whereNotIn('id', $pays_proccesed);
-                        $remaining += ($balance + $withheld + $sell_return);
                         foreach ($payments as $p) {
-                            $remaining += $p->amount;
-                            \Log::info('unit_price '. $unit_price_inc_tax .' p->amount '. $p->amount .' remaining '. $remaining);
+                            $balance += $p->amount;
+                            $due -= $p->amount;
                             array_push($pays_proccesed, $p->id);
+
+                            if ($due < 0.01) {
+                                $due = 0;
+                            }
 
                             $event->sheet->setCellValue('I'. $row, $p->amount);
                             $event->sheet->setCellValue('J'. $row, $this->transactionUtil->format_date($p->transaction_date));
+                            $event->sheet->setCellValue('L'. $row, $due);
 
-                            if ($remaining > $unit_price_inc_tax) {
-                                $unit_price_inc_tax -= $remaining;
-                                $remaining -= $l->unit_price_inc_tax;
+                            if ($balance > $unit_price_inc_tax) {
+                                $unit_price_inc_tax -= $balance;
+                                $balance -= $l->unit_price_inc_tax;
 
+                                if ($unit_price_inc_tax <= 0) {
+                                    $unit_price_inc_tax = 0;
+                                }
+                                
+                                $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
                                 $this->setCommonValues($event, $l, $row);
                                 
-                                if ($unit_price_inc_tax < 0) {
+                                if ($unit_price_inc_tax == 0) {
                                     break;
                                 }
 
@@ -203,13 +201,23 @@ class CollectionReport implements WithEvents, WithTitle
                                 continue;
                             }
 
-                            if ($remaining > 0) {
-                                $unit_price_inc_tax -= $remaining;
-                                $remaining -= $l->unit_price_inc_tax;
+                            if ($balance > 0) {
+                                $unit_price_inc_tax -= $balance;
+                                $balance = 0;
+
+                                if ($unit_price_inc_tax < 0.01) {
+                                    $unit_price_inc_tax = 0;
+                                }
+
+                                $event->sheet->setCellValue('K'. $row, $unit_price_inc_tax);
                                 $this->setCommonValues($event, $l, $row);
+                                
+                                $row ++;
                             }
 
-                            $row ++;
+                            if ($p->id == $payments->last()->id) {
+                                $row --;
+                            }
                         }
 
                         $row ++;
@@ -221,13 +229,11 @@ class CollectionReport implements WithEvents, WithTitle
 
                 /** set font size and family, set borders */
     			$event->sheet->setFontSize('A3:Q'. $row, 10);
-                /*$event->sheet->horizontalAlign('B4:I'. $row, 'right');
+                //$event->sheet->horizontalAlign('B4:I'. $row, 'right');
                 $event->sheet->setFormat('A4:A'. $row, '@');
-                $event->sheet->setFormat('B4:C'. $row, '0.00000000');
-                $event->sheet->setFormat('D4:E'. $row, 'h:mm:ss');
-                $event->sheet->setFormat('F4:G'. $row, '0.00');
-                $event->sheet->setFormat('H4:H'. $row, '0.000000');
-                $event->sheet->setFormat('I4:I'. $row, 'h:mm:ss');*/
+                $event->sheet->setFormat('G4:F'. $row, '0');
+                $event->sheet->setFormat('F4:I'. $row, '0.00');
+                $event->sheet->setFormat('K4:L'. $row, '0.00');
                 $event->sheet->setAllBorders('A3:Q'. $row, 'thin');
                 $event->sheet->setFontFamily('A1:Q'. $row, 'Calibri');
             },

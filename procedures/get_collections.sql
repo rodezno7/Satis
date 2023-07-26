@@ -19,6 +19,7 @@ BEGIN
 			tp.transaction_id,
 			tp.paid_on AS transaction_date,
 			t.tax_amount AS withheld,
+			t.final_total,
 			tp.`method`,
 			SUM(IF(tp.is_return = 0, tp.amount, tp.amount * -1)) AS amount
 		FROM transactions AS t
@@ -29,8 +30,6 @@ BEGIN
 			AND DATE(tp.paid_on) BETWEEN start_date AND end_date
 			AND (ISNULL(t.payment_condition) OR t.payment_condition = 'credit')
 			AND t.status = 'final'
-			AND t.id IN (4612)
-			-- AND t.id IN (4612, 5775, 6612)
 		GROUP BY tp.id, tp.transaction_id, tp.`method`;
 	
 	/** Get sell returns */
@@ -66,7 +65,8 @@ BEGIN
 		p.amount,
 		p.withheld,
 		b.amount AS balance,
-		sr.final_total AS sell_return
+		sr.final_total AS sell_return,
+		p.final_total
 	FROM payments AS p
 	LEFT JOIN balance AS b ON p.transaction_id = b.transaction_id
 	LEFT JOIN sell_returns AS sr ON p.transaction_id = sr.id
@@ -104,8 +104,6 @@ BEGIN
 			AND DATE(tp.paid_on) BETWEEN start_date AND end_date
 			AND (ISNULL(t.payment_condition) OR t.payment_condition = 'credit')
 			AND t.status = 'final'
-			AND t.id IN (4612)
-			-- AND t.id IN (4612, 5775, 6612)
 		GROUP BY tp.transaction_id;
 	
 	SELECT
