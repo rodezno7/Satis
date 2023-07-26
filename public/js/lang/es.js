@@ -208,4 +208,5 @@ LANG = {
     'parent_correlative_required': 'El documento padre es requerido para una devolución',
     'search_supplier': 'Buscar proveedor',
     'search_customer': 'Buscar cliente',
+    'search_invoices': 'Buscar facturas',
 };

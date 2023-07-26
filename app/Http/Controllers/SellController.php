@@ -822,6 +822,39 @@ class SellController extends Controller
     }
 
     /**
+     * Get transactions due by customer
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param int $customer_id
+     * @return json
+     * 
+     */
+    public function getTransDueByCustomer(Request $request, $customer_id) {
+        $q = $request->get('q');
+        $business_id = auth()->user()->business_id;
+
+        $data = [];
+        if (!empty($q)) {
+            $data = Transaction::join('customers as c', 'transactions.customer_id', 'c.id')
+                ->select(
+                    'transactions.id',
+                    'transactions.transaction_date',
+                    DB::raw("(transactions.final_total - transactions.payment_balance) as balance"),
+                    DB::raw("DATE_FORMAT(transactions.transaction_date, '%d/%m/%Y') as transaction_date"),
+                    DB::raw("CONCAT('#', transactions.correlative, ' - ', DATE_FORMAT(transactions.transaction_date, '%d/%m/%Y'), ' - $', ROUND(transactions.final_total)) as text"),
+                )
+                ->where('c.id', $customer_id)
+                ->where('transactions.business_id', $business_id)
+                ->where('transactions.type', 'sell')
+                ->whereIn('transactions.payment_status', ['partial', 'due'])
+                ->where('transactions.correlative', 'LIKE', "{$q}%")
+                ->get();
+        }
+
+        return response()->json($data, 200);
+    }
+
+    /**
      * Send the datatable response for draft or quotations.
      *
      * @return \Illuminate\Http\Response

@@ -37,5 +37,6 @@ return [
     'more_than_120' => 'More than 120 days',
     'paid' => 'Paid',
     'partial' => 'Partial',
-    'due' => 'Due'
+    'due' => 'Due',
+    'multi_payments' => 'Multi payments',
 ];

@@ -202,4 +202,5 @@ LANG = {
     'parent_correlative_required': 'Parent document is required for a sell return',
     'search_supplier': 'Search supplier',
     'search_customer': 'Search customer',
+    'search_invoices': 'Search invoices',
 };

@@ -882,6 +882,28 @@ class TransactionPaymentController extends Controller
             return json_encode($output);
         }
     }
+    
+    /**
+     * Get multipayment view
+     * 
+     * @return \Illuminate\Http\Response 
+     */
+    public function multiPayments() {
+        //TODO
+
+        return view('transaction_payment.multi_payments');
+    }
+
+    /**
+     * Store multi payments
+     * 
+     * @param \Illuminate\Http\Request
+     * @return json
+     */
+    public function storeMultiPayments() {
+        //TODO
+
+    }
 
     /**
      * Shows contact's payment due modal
