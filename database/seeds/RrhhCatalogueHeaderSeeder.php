@@ -353,6 +353,28 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.create'],
+            ['description' => 'Crear contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.update'],
+            ['description' => 'Actualizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.delete'],
+            ['description' => 'Eliminar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.generate'],
+            ['description' => 'Generar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+
         Permission::firstOrCreate(
             ['name' => 'rrhh_assistance.view'],
             ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]

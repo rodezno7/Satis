@@ -57,29 +57,54 @@ class AssistanceEmployeeController extends Controller
         })->editColumn('date', function ($data) {
             return $this->transactionUtil->format_date($data->date);
         })->editColumn('schedule', function ($data) {
-            $firstTime = Carbon::now()
+            // $firstTime = Carbon::now()
+            //     ->timezone($data->business->time_zone)
+            //     ->format('H:i:s');
+            // $lastTime = Carbon::now()
+            //     ->timezone($data->business->time_zone)
+            //     ->format('H:i:s');
+            $currrentDate = Carbon::now()
                 ->timezone($data->business->time_zone)
-                ->format('H:i:s');
-            $lastTime = Carbon::now()
-                ->timezone($data->business->time_zone)
-                ->format('H:i:s');
+                ->format('Y-m-d H:i:s');
             $assistances = AssistanceEmployee::where('employee_id', $data->employee_id)
                 ->where('date', $data->date)
                 ->where('business_id', $data->business_id)
                 ->orderBy('id', 'ASC')
                 ->get();
+    
+            $keyAssitance = count($assistances) - 1;
+            if($assistances[$keyAssitance]->type == 'Entrada'){
+                $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                    ->where('id', '>', $assistances[$keyAssitance]->id)
+                    ->where('business_id', $data->business_id)
+                    ->orderBy('id', 'ASC')
+                    ->first();
+                if($lastAssistanceEmployee){
+                    $assistances->add($lastAssistanceEmployee);
+                }
+            }
+                
             foreach ($assistances as $key => $assistance) {
-                if ($key === 0) {
-                    $firstTime = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                    $lastTime = Carbon::now()
-                        ->timezone($data->business->time_zone)
-                        ->format('H:i:s');
+                $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                if ($assistances[0]->type == 'Entrada'){
+                    if ($key === 0) {
+                        $firstTime = $currentDateAssistanceEmployee;
+                        $lastTime = $currrentDate;
+                    }
                 }
 
-                if (count($assistances) > 1) {
-                    if ($key === count($assistances) - 1) {
-                        $lastTime = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+
+                if($assistances[0]->type == 'Salida'){
+                    if ($key === 1 && $assistances[1]->type == 'Entrada') {
+                        $firstTime = $currentDateAssistanceEmployee;
+                        $lastTime = $currrentDate;
                     }
+                }
+
+                if($assistances[count($assistances) - 1]->type == 'Entrada'){
+                    $lastTime = $currrentDate;
+                }else{
+                    $lastTime = $currentDateAssistanceEmployee;
                 }
             }
             return $this->transactionUtil->format_date($firstTime, true) . ' - ' . $this->transactionUtil->format_date($lastTime, true);
@@ -94,32 +119,79 @@ class AssistanceEmployeeController extends Controller
                 ->where('business_id', $data->business_id)
                 ->orderBy('id', 'ASC')
                 ->get();
-            foreach ($assistancesEmployeeData as $key => $assistance) {
-                $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                if ($key === 0) {
-                    $firstTime = $currentDateAssistanceEmployee;
-                    $lastTime = $currrentDate;
-                }
 
-                if ($key > 0) {
-                    if ($key < count($assistancesEmployeeData) - 1) {
-                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
-
-                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
-                        }
-                    }
-                    if ($key === count($assistancesEmployeeData) - 1) {
-                        $lastTime = $currentDateAssistanceEmployee;
-                    }
-
-                    if ($assistance->type == 'Entrada') {
-                        $time += $time;
-                        $minutes += $minutes;
-                    }
+            $keyAssitance = count($assistancesEmployeeData) - 1;
+            if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+                $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                    ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
+                    ->where('business_id', $data->business_id)
+                    ->orderBy('id', 'ASC')
+                    ->first();
+                if($lastAssistanceEmployee){
+                    $assistancesEmployeeData->add($lastAssistanceEmployee);
                 }
             }
+
+            foreach ($assistancesEmployeeData as $key => $assistance) {
+                if ($assistancesEmployeeData[0]->type == 'Entrada'){
+                    $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                    if ($key === 0) {
+                        $firstTime = $currentDateAssistanceEmployee;
+                        $lastTime = $currrentDate;
+                    }
+
+                    if ($key > 0) {
+                        if ($key < count($assistancesEmployeeData) - 1) {
+                            if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+
+                                $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                            }
+                        }
+
+                        if ($key === count($assistancesEmployeeData) - 1) {
+                            if($assistancesEmployeeData[$key]->type == 'Entrada'){
+                                $lastTime = $currrentDate;
+                            }else{
+                                $lastTime = $currentDateAssistanceEmployee;
+                            }
+                        }
+
+                        if ($assistance->type == 'Entrada') {
+                            $time += $time;
+                            $minutes += $minutes;
+                        }
+                    }
+                }else{
+                    $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                    if ($key === 1) {
+                        $firstTime = $currentDateAssistanceEmployee;
+                        $lastTime = $currrentDate;
+                    }
+
+                    if ($key > 1) {
+                        if ($key < count($assistancesEmployeeData) - 1) {
+                            if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+
+                                $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                            }
+                        }
+                        if ($key === count($assistancesEmployeeData) - 1) {
+                            $lastTime = $currentDateAssistanceEmployee;
+                        }
+
+                        if ($assistance->type == 'Entrada') {
+                            $time += $time;
+                            $minutes += $minutes;
+                        }
+                    }
+                }
+                
+            }
+
             $timeTotal = $firstTime->diffInHours($lastTime);
             $minutesTotal = $firstTime->diffInMinutes($lastTime);
 
@@ -137,7 +209,21 @@ class AssistanceEmployeeController extends Controller
                 ->where('business_id', $data->business_id)
                 ->orderBy('id', 'DESC')
                 ->first();
-            return $assistance->status;
+
+                if($assistance->type == 'Salida'){
+                    return $assistance->status;
+                }else{
+                    $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                        ->where('id', '>', $assistance->id)
+                        ->where('business_id', $data->business_id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if($lastAssistanceEmployee){
+                        return $lastAssistanceEmployee->status;
+                    }else{
+                        return $assistance->status;
+                    }
+                }
         })->toJson();
     }
 
@@ -181,7 +267,20 @@ class AssistanceEmployeeController extends Controller
                         ->where('business_id', $business_id)
                         ->orderBy('id', 'ASC')
                         ->get();
-
+                    
+                    $keyAssitance = count($assistancesEmployeeData) - 1;
+                    if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+                        $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                            ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
+                            ->where('date', '>', $data->date)
+                            ->where('business_id', $business_id)
+                            ->orderBy('id', 'ASC')
+                            ->first();
+                        if($lastAssistanceEmployee){
+                            $assistancesEmployeeData->add($lastAssistanceEmployee);
+                        }
+                    }
+                    
                     $currrentDate = Carbon::now()
                         ->timezone($data->business->time_zone)
                         ->format('Y-m-d H:i:s');
@@ -193,31 +292,66 @@ class AssistanceEmployeeController extends Controller
                     $lastTime = $currrentDate;
 
                     foreach ($assistancesEmployeeData as $key => $assistance) {
+                        $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
                         if ($data->date == $assistance->date) {
-                            $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                            if ($key === 0) {
-                                $firstTime = $currentDateAssistanceEmployee;
-                                $lastTime = $currrentDate;
-                            }
-
-                            if ($key > 0) {
-                                if ($key < count($assistancesEmployeeData) - 1) {
-                                    if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                        $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
-
-                                        $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                        $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                            if ($assistancesEmployeeData[0]->type == 'Entrada'){
+                                if ($key === 0) {
+                                    $firstTime = $currentDateAssistanceEmployee;
+                                    $lastTime = $currrentDate;
+                                }
+    
+                                if ($key > 0) {
+                                    if ($key < count($assistancesEmployeeData) - 1) {
+                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+    
+                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                        }
+                                    }
+                                    if ($key === count($assistancesEmployeeData) - 1) {
+                                        if($assistancesEmployeeData[$key]->type == 'Entrada'){
+                                            $lastTime = $currrentDate;
+                                        }else{
+                                            $lastTime = $currentDateAssistanceEmployee;
+                                        }
+                                    }
+    
+                                    if ($assistance->type == 'Entrada') {
+                                        $time += $time;
+                                        $minutes += $minutes;
                                     }
                                 }
-                                if ($key === count($assistancesEmployeeData) - 1) {
-                                    $lastTime = $currentDateAssistanceEmployee;
+                            }else{
+                                if ($key === 1) {
+                                    $firstTime = $currentDateAssistanceEmployee;
+                                    $lastTime = $currrentDate;
                                 }
-
-                                if ($assistance->type == 'Entrada') {
-                                    $time += $time;
-                                    $minutes += $minutes;
+    
+                                if ($key > 1) {
+                                    if ($key < count($assistancesEmployeeData) - 1) {
+                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+    
+                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                        }
+                                    }
+                                    if ($key === count($assistancesEmployeeData) - 1) {
+                                        $lastTime = $currentDateAssistanceEmployee;
+                                    }
+    
+                                    if ($assistance->type == 'Entrada') {
+                                        $time += $time;
+                                        $minutes += $minutes;
+                                    }
                                 }
                             }
+                            
+                        }
+
+                        if($data->date != $assistance->date){ ///Para evaluar el final si hace falta unoooo
+                            $lastTime = $currentDateAssistanceEmployee;
                         }
                     }
 
@@ -233,7 +367,8 @@ class AssistanceEmployeeController extends Controller
 
                     $assistanceSummary[$data->id] = (object) [
                         'employee' => $data->employee->first_name . ' ' . $data->employee->last_name,
-                        'date' => $this->transactionUtil->format_date($firstTime, true) . ' - ' . $this->transactionUtil->format_date($lastTime, true),
+                        'start_date' => $this->transactionUtil->format_date($firstTime, true),
+                        'end_date' => $this->transactionUtil->format_date($lastTime, true),
                         'time_worked' => $timeTotal . ' horas con ' . $minutesTotal . ' minutos'
                     ];
                 }
@@ -254,12 +389,6 @@ class AssistanceEmployeeController extends Controller
                     ->orderBy('employee_id', 'ASC')
                     ->groupBy('date')
                     ->get();
-                $assistancesEmployeeData = AssistanceEmployee::where('employee_id', $request->select_employee)
-                    ->where('date', '>=', $request->start_date)
-                    ->where('date', '<=', $request->end_date)
-                    ->where('business_id', $business_id)
-                    ->orderBy('id', 'ASC')
-                    ->get();
 
                 foreach ($assistancesEmployee as $data) {
                     $currrentDate = Carbon::now()->timezone($data->business->time_zone)->format('Y-m-d H:i:s');
@@ -268,35 +397,95 @@ class AssistanceEmployeeController extends Controller
                     $minutes = 0;
                     $firstTime = $currrentDate;
                     $lastTime = $currrentDate;
-                    foreach ($assistancesEmployeeData as $key => $assistance) {
-                        if ($data->date == $assistance->date) {
-                            $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                            if ($key === 0) {
-                                $firstTime = $currentDateAssistanceEmployee;
-                                $lastTime = $currrentDate;
-                            }
 
-                            if ($key > 0) {
-                                if ($key < count($assistancesEmployeeData) - 1) {
-                                    if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                        $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
 
-                                        $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                        $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
-                                        $seconds = $previousDateAssistanceEmployee->diffInSeconds($currentDateAssistanceEmployee);
-                                    }
-                                }
-                                if ($key === count($assistancesEmployeeData) - 1) {
-                                    $lastTime = $currentDateAssistanceEmployee;
-                                }
+                    $assistancesEmployeeData = AssistanceEmployee::where('employee_id', $data->employee_id)
+                        ->where('date', $data->date)
+                        ->where('business_id', $business_id)
+                        ->orderBy('id', 'ASC')
+                        ->get();
 
-                                if ($assistance->type == 'Entrada') {
-                                    $time += $time;
-                                    $minutes += $minutes;
-                                }
-                            }
+                    $keyAssitance = count($assistancesEmployeeData) - 1;
+                    if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+                        $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                            ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
+                            ->where('date', '>', $data->date)
+                            ->where('business_id', $business_id)
+                            ->orderBy('id', 'ASC')
+                            ->first();
+                        if($lastAssistanceEmployee){
+                            $assistancesEmployeeData->add($lastAssistanceEmployee);
                         }
                     }
+
+                    foreach ($assistancesEmployeeData as $key => $assistance) {
+                        $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                        if ($data->date == $assistance->date) {
+                            if ($assistancesEmployeeData[0]->type == 'Entrada'){
+                                if ($key === 0) {
+                                    $firstTime = $currentDateAssistanceEmployee;
+                                    $lastTime = $currrentDate;
+                                }
+
+                                if ($key > 0) {
+                                    if ($key < count($assistancesEmployeeData) - 1) {
+                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+
+                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                            \Log::emergency("mens ".$minutes);
+                                        }
+                                    }
+
+                                    if ($key === count($assistancesEmployeeData) - 1) {
+                                        if($assistancesEmployeeData[$key]->type == 'Entrada'){
+                                            $lastTime = $currrentDate;
+                                        }else{
+                                            $lastTime = $currentDateAssistanceEmployee;
+                                        }
+                                    }
+
+                                    if ($assistance->type == 'Entrada') {
+                                        $time += $time;
+                                        $minutes += $minutes;
+                                    }
+                                }
+                            }else{
+                                $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                                if ($key === 1) {
+                                    $firstTime = $currentDateAssistanceEmployee;
+                                    $lastTime = $currrentDate;
+                                }
+
+                                if ($key > 1) {
+                                    if ($key < count($assistancesEmployeeData) - 1) {
+                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+
+                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
+                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                        }
+                                    }
+                                    if ($key === count($assistancesEmployeeData) - 1) {
+                                        $lastTime = $currentDateAssistanceEmployee;
+                                    }
+
+                                    if ($assistance->type == 'Entrada') {
+                                        $time += $time;
+                                        $minutes += $minutes;
+                                    }
+                                    
+                                }
+                                
+                            }
+                        }
+                        if($data->date != $assistance->date){ ///Para evaluar el final si hace falta unoooo
+                            $lastTime = $currentDateAssistanceEmployee;
+                        }
+                    }
+                
+
                     $timeTotal = $firstTime->diffInHours($lastTime);
                     $minutesTotal = $firstTime->diffInMinutes($lastTime);
 
@@ -310,7 +499,8 @@ class AssistanceEmployeeController extends Controller
 
                     $assistanceSummary[$data->id] = (object) [
                         'employee' => $data->employee->first_name . ' ' . $data->employee->last_name,
-                        'date' => $this->transactionUtil->format_date($firstTime, true) . ' - ' . $this->transactionUtil->format_date($lastTime, true),
+                        'start_date' => $this->transactionUtil->format_date($firstTime, true),
+                        'end_date' => $this->transactionUtil->format_date($lastTime, true),
                         'time_worked' => $timeTotal . ' horas con ' . $minutesTotal . ' minutos'
                     ];
                 }
@@ -346,6 +536,7 @@ class AssistanceEmployeeController extends Controller
         return $output;
     }
 
+    //Show employee assistance detail
     public function show($id)
     {
         if (!auth()->user()->can('rrhh_assistance.view')) {
@@ -360,7 +551,20 @@ class AssistanceEmployeeController extends Controller
         $employee = Employees::findOrFail($assistance->employee_id);
         $assistances = AssistanceEmployee::where('employee_id', $assistance->employee_id)
             ->where('date', $assistance->date)
+            ->orderBy('id', 'ASC')
             ->get();
+
+        $keyAssitance = count($assistances) - 1;
+        if($assistances[$keyAssitance]->type == 'Entrada'){
+            $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $assistance->employee_id)
+                ->where('id', '>', $assistances[$keyAssitance]->id)
+                ->where('business_id', $business_id)
+                ->orderBy('id', 'ASC')
+                ->first();
+            if($lastAssistanceEmployee){
+                $assistances->add($lastAssistanceEmployee);
+            }
+        }
 
         $assistancesIds = [];
         foreach ($assistances as $key => $assistance) {
@@ -374,6 +578,8 @@ class AssistanceEmployeeController extends Controller
         return view('rrhh.assistance.show', compact('assistances', 'employee', 'assistancesIds', 'routeApi'));
     }
 
+
+    //Show the employee's photo in a larger way in the assitance detail
     public function viewImage($id){
         $business_id = request()->session()->get('user.business_id');
         $assistance = AssistanceEmployee::where('id', $id)

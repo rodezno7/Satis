@@ -296,6 +296,9 @@ return [
         'amount' => 'amount (Hours)',
         'type_absence_id' => 'type of absence',
         'type_inability_id' => 'type of inability',
+        'rrhh_type_contract_id' => 'type of contract',
+        'rrhh_type_personnel_action_id' => 'type personnel action',
+
     ),
 'custom-messages' => [
     'quantity_not_available' => 'Only :qty :unit available',

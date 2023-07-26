@@ -58,40 +58,43 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
 
                 /** Columns style */
                 $event->sheet->columnWidth('A', 25); // employee
-                $event->sheet->columnWidth('B', 35); // date
-                $event->sheet->columnWidth('C', 25); // time worked
-                $event->sheet->setFormat('A5:C' . $items, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
+                $event->sheet->columnWidth('B', 20); // start date
+                $event->sheet->columnWidth('C', 20); // end date
+                $event->sheet->columnWidth('D', 25); // time worked
+                $event->sheet->setFormat('A5:D' . $items, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
                 /** Business name */
-                $event->sheet->horizontalAlign('A1:C1', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getDelegate()->getStyle('A1:C1')->getFont()->setBold(true);
-                $event->sheet->getDelegate()->getStyle('A1:C1')->getFont()->setSize(15);
-    			$event->sheet->mergeCells('A1:C1');
+                $event->sheet->horizontalAlign('A1:D1', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $event->sheet->getDelegate()->getStyle('A1:D1')->getFont()->setBold(true);
+                $event->sheet->getDelegate()->getStyle('A1:D1')->getFont()->setSize(15);
+    			$event->sheet->mergeCells('A1:D1');
                 $event->sheet->setCellValue('A1', mb_strtoupper($this->business->name));
 
                 /** Report name */
-                $event->sheet->mergeCells('A2:C2');
-                $event->sheet->horizontalAlign('A3:C3', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getDelegate()->getStyle('A3:C3')->getFont()->setBold(true);
-                $event->sheet->getDelegate()->getStyle('A3:C3')->getFont()->setSize(13);
-                $event->sheet->mergeCells('A3:C3');
+                $event->sheet->mergeCells('A2:D2');
+                $event->sheet->horizontalAlign('A3:D3', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $event->sheet->getDelegate()->getStyle('A3:D3')->getFont()->setBold(true);
+                $event->sheet->getDelegate()->getStyle('A3:D3')->getFont()->setSize(13);
+                $event->sheet->mergeCells('A3:D3');
                 $event->sheet->setCellValue('A3', mb_strtoupper(__('rrhh.assistance_summary')));
 
                 /** table head */
-                $event->sheet->horizontalAlign('A4:C4', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $event->sheet->getDelegate()->getStyle('A4:C4')->getFont()->setBold(true);
+                $event->sheet->horizontalAlign('A4:D4', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $event->sheet->getDelegate()->getStyle('A4:D4')->getFont()->setBold(true);
                 $event->sheet->setCellValue('A4', mb_strtoupper(__('rrhh.employee')));
+                $event->sheet->mergeCells('B4:C4');
                 $event->sheet->setCellValue('B4', mb_strtoupper(__('rrhh.schedule')));
-                $event->sheet->setCellValue('C4', mb_strtoupper(__('rrhh.time_worked')));
+                $event->sheet->setCellValue('D4', mb_strtoupper(__('rrhh.time_worked')));
 
 
                 /** table body */
                 $count = 5;
                 foreach($assistanceSummary as $s){
-                    $event->sheet->horizontalAlign('B'. $count.':C'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $event->sheet->horizontalAlign('B'. $count.':D'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $event->sheet->setCellValue('A'. $count, $s->employee);
-                    $event->sheet->setCellValue('B'. $count, $s->date);
-                    $event->sheet->setCellValue('C'. $count, $s->time_worked);
+                    $event->sheet->setCellValue('B'. $count, $s->start_date);
+                    $event->sheet->setCellValue('C'. $count, $s->end_date);
+                    $event->sheet->setCellValue('D'. $count, $s->time_worked);
 
                     $count++;
                 }
@@ -99,7 +102,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                 $count = $count + 1;
 
                 /** Columns style */
-                $event->sheet->columnWidth('D', 15); // country
+                //$event->sheet->columnWidth('D', 15); // country
                 $event->sheet->columnWidth('E', 20); // city
                 $event->sheet->columnWidth('F', 15); // latitude
                 $event->sheet->columnWidth('G', 15); // longitude

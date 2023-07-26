@@ -137,7 +137,6 @@
 	}
 
 	function applyMany() {
-		console.log($("#apply_to_many").val());
 		if ($("#apply_to_many").is(":checked")) {
 			$("#apply_to_many").val('1');
 		} else {

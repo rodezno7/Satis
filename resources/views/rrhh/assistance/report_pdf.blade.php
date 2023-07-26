@@ -85,7 +85,7 @@
                         {{ $item->employee }}
                     </td>
                     <td>
-                        {{ $item->date }}
+                        {{ $item->start_date }} - {{ $item->end_date }}
                     </td>
                     <td>
                         {{ $item->time_worked }}

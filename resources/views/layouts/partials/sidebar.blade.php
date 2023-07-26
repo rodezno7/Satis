@@ -141,17 +141,17 @@
               </a>
             </li>
             @endcan
-            @can('rrhh_catalogues.view')
-            <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-table"></i>
-                @lang('rrhh.catalogues')
-              </a>
-            </li>
-            @endcan
             @can('rrhh_assistance.view')
             <li class="{{ $request->segment(1) == 'rrhh-assistances' ? 'active' : '' }}">
               <a href="{{action('AssistanceEmployeeController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
                 @lang('rrhh.assistance')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_catalogues.view')
+            <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
+              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-table"></i>
+                @lang('rrhh.catalogues')
               </a>
             </li>
             @endcan

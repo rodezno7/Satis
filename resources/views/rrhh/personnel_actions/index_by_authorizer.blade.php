@@ -146,7 +146,7 @@
 						var route = "{!!URL::to('/rrhh-personnel-action/:id/confirmAuthorization')!!}";
 						route = route.replace(':id', id);   
 						token = $("#token").val();
-						console.log(result.value);
+						
 						$.ajax({
 							url: route,
 							headers: {'X-CSRF-TOKEN': token},

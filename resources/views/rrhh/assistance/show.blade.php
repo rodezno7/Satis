@@ -24,6 +24,7 @@
                 <tbody id="referencesItems">
                     @if (count($assistances) > 0)
                         @foreach ($assistances as $key => $item)
+                            @if ($assistances[0]->type == 'Entrada')
                             <tr>
                                 <td class="text-center">
                                     <img alt="" id="imagen-{{ $assistancesIds[$key]->id }}" width="100%"
@@ -44,7 +45,32 @@
                                 <td>
                                     {{ $item->type }}
                                 </td>
-                            </tr>
+                            </tr> 
+                            @else
+                                @if ($key > 0)
+                                <tr>
+                                    <td class="text-center">
+                                        <img alt="" id="imagen-{{ $assistancesIds[$key]->id }}" width="100%"
+                                            height="100%" onClick="viewFile({{ $item->id }})">
+                                    </td>
+                                    <td>
+                                        {{ @format_date($item->date) }} {{ @format_time($item->time) }}
+                                    </td>
+                                    <td>
+                                        {{ $item->ip }}
+                                    </td>
+                                    <td>
+                                        <b>{{ __('rrhh.country') }}:</b> {{ $item->country }} <br>
+                                        <b>{{ __('rrhh.city') }}:</b> {{ $item->city }} <br>
+                                        <b>{{ __('rrhh.latitude') }}:</b> {{ $item->latitude }} <br>
+                                        <b>{{ __('rrhh.longitude') }}:</b> {{ $item->longitude }}
+                                    </td>
+                                    <td>
+                                        {{ $item->type }}
+                                    </td>
+                                </tr>
+                                @endif
+                            @endif                       
                         @endforeach
                     @else
                         <tr>

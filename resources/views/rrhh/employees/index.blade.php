@@ -90,8 +90,7 @@
 
 @section('javascript')
 <script>
-    $(document).ready(function() 
-    {
+    $(document).ready(function() {
         loadEmployees();      
         $.fn.dataTable.ext.errMode = 'none';      
 
@@ -102,8 +101,7 @@
 		})
 	});
 
-    $("#btn_add_actions").click(function() 
-    {
+    $("#btn_add_actions").click(function(){
         $("#modal_content_personnel_action").html('');
         var url = "{!!URL::to('/rrhh-personnel-action-createAll')!!}";
         id = $('#_employee_id').val();
@@ -139,7 +137,7 @@
                 @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
-
+                html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
@@ -203,6 +201,16 @@
                     
                 });
             }
+        });
+    }
+
+    function addContract(id) {
+        $("#modal_action").html('');
+        var route = '/rrhh-contracts-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
         });
     }
 

@@ -384,7 +384,7 @@ class RrhhDataController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('human_resource_employees')
+                $count = DB::table('employees')
                 ->where('afp_id', $id)
                 ->orWhere('civil_status_id', $id)
                 ->orWhere('department_id', $id)

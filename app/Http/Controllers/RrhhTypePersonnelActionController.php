@@ -133,10 +133,10 @@ class RrhhTypePersonnelActionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\RrhhTypePersonnelAction  $humanResourceBanks
+     * @param  \App\RrhhTypePersonnelAction  $rrhhTypePersonnelAction
      * @return \Illuminate\Http\Response
      */
-    public function show(RrhhTypePersonnelAction $humanResourceBanks)
+    public function show(RrhhTypePersonnelAction $rrhhTypePersonnelAction)
     {
         //
     }
@@ -144,7 +144,7 @@ class RrhhTypePersonnelActionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\RrhhTypePersonnelAction  $humanResourceBanks
+     * @param  \App\RrhhTypePersonnelAction  $rrhhTypePersonnelAction
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -168,7 +168,7 @@ class RrhhTypePersonnelActionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\RrhhTypePersonnelAction  $humanResourceBanks
+     * @param  \App\RrhhTypePersonnelAction  $rrhhTypePersonnelAction
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
@@ -234,7 +234,7 @@ class RrhhTypePersonnelActionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\RrhhTypePersonnelAction  $humanResourceBanks
+     * @param  \App\RrhhTypePersonnelAction  $rrhhTypePersonnelAction
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -245,8 +245,8 @@ class RrhhTypePersonnelActionController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('human_resource_employees')
-                ->where('bank_id', $id)               
+                $count = DB::table('rrhh_personnel_actions')
+                ->where('rrhh_type_personnel_action_id', $id)               
                 ->count();
 
                 if ($count > 0) {

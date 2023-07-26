@@ -306,6 +306,8 @@ return [
         'amount' => 'cantidad (Horas)',
         'type_absence_id' => 'tipo de ausencia',
         'type_inability_id' => 'tipo de incapacidad',
+        'rrhh_type_contract_id' => 'tipo de contrato',
+        'rrhh_type_personnel_action_id' => 'tipo de acción de personal',
     ),
 
 ];
