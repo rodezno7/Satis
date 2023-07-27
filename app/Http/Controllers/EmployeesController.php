@@ -220,7 +220,6 @@ class EmployeesController extends Controller
                 'nationality_id',
                 'dni',
                 'approved',
-                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -231,7 +230,7 @@ class EmployeesController extends Controller
                 'afp_number',
                 'payment_id',
                 'bank_id',
-                'bank_account'
+                'bank_account',
             ]);
             if($request->approved){
                 $input_details['approved'] = 1;
@@ -371,7 +370,6 @@ class EmployeesController extends Controller
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        //$types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
@@ -461,7 +459,7 @@ class EmployeesController extends Controller
             'gender'                => 'required',
             'birth_date'            => 'required',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            'tax_number'            => 'required',
+            //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'nullable',
@@ -485,7 +483,7 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -509,6 +507,13 @@ class EmployeesController extends Controller
                 'state_id',
                 'city_id'
             ]);
+            if($request->approved){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
 
             if ($request->input('status')) {
                 $input_details['status'] = 1;

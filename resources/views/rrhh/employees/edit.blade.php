@@ -84,12 +84,32 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                {{-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
                                         {!! Form::text("tax_number", null,
                                         ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])
                                         !!}
+                                    </div>
+                                </div> --}}
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.tax_number')</label> <label id="text-approved" 
+                                        @if ($employee->approved == 0)
+                                            disabled
+                                        @endif>(Homologado)</label> <span class="text-danger">*</span>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                              {!! Form::checkbox('approved', 1, $employee->approved, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                                            </span>
+                                            @if ($employee->approved == 0)
+                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required'])!!}
+                                            @else
+                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required', 'disabled'])!!}
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
@@ -303,8 +323,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if ($employee->
-                                        bank_account != null) style="display: none" @endif>
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if ($employee->bank_account != null) style="display: none" @endif>
                                         <div class="form-group">
                                             <label>@lang('rrhh.bank_account')</label> <span class="text-danger">*</span>
                                             {!! Form::number("bank_account", null,
@@ -527,16 +546,34 @@
         fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         $('#birth_date').datepicker({
-        autoclose: true,
-        format: datepicker_date_format,
-        startDate: fechaMinima,
-        endDate: fechaMaxima,
+            autoclose: true,
+            format: datepicker_date_format,
+            startDate: fechaMinima,
+            endDate: fechaMaxima,
         });
 
         $('#date_admission').datepicker({
-        autoclose: true,
-        format: datepicker_date_format
+            autoclose: true,
+            format: datepicker_date_format
         });
+
+        console.log({{ $employee->approved }});
+        let approved = {{ $employee->approved }};
+		if (approved == 1) {
+			$("#approved").prop("checked", true);
+            $("#text-approved").show();
+            
+		} else {
+			$("#approved").prop("checked", false);
+            $("#text-approved").hide();
+		}
+
+        if ($("#approved").is(":checked")) {
+            $("#dni").keyup(function () {
+                var value = $(this).val();
+                $("#tax_number").val(value);
+            });
+        }
     });
 
     function getDocuments() {
@@ -725,6 +762,21 @@
 			});
 		});
 	}
+
+    function dniApproved() {
+        if ($("#approved").is(":checked")) {
+        var dni = $("#dni").val();
+        $("#approved").val('1');
+        $("#tax_number").prop('disabled', true);
+        $("#tax_number").val(dni);
+        $("#text-approved").show();
+        } else {
+        $("#approved").val('0');
+        $("#tax_number").prop('disabled', false);
+        $("#tax_number").val('');
+        $("#text-approved").hide();
+        }
+    }
 
 	function showBankInformation() {
 		selected_option = $( "#payment_id option:selected" ).text();

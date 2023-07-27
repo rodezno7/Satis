@@ -61,12 +61,6 @@
             <label>@lang('rrhh.dni')</label> <span class="text-danger">*</span>
             {!! Form::text("dni", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni', 'required']) !!}
-            {{-- <div class="checkbox" style="margin-top: 0;">
-              <label>
-                  {!! Form::checkbox('approved', 1, true, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
-                  <strong>DUI Homologado</strong>
-              </label>
-          </div> --}}
           </div>
         </div>
         <div class="col-sm-3 col-md-3 col-lg-3 col-xs-12">
