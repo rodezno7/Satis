@@ -638,6 +638,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
+    //Route::get('rrhh-employees/{id}/show', 'EmployeesController@show');
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
     Route::resource('rrhh-assistances', 'AssistanceEmployeeController');
@@ -659,6 +660,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-contracts-generate/{id}', 'RrhhContractController@generate');
     Route::post('rrhh-contracts-update', 'RrhhContractController@updateContract');
     Route::resource('rrhh-contracts', 'RrhhContractController');
+    Route::get('rrhh-contracts-masive', 'RrhhContractController@createMassive');
+    Route::post('rrhh-contracts-masive-1', 'RrhhContractController@storeMassive');
 
     //Routes economic dependencies by employees
     Route::resource('rrhh-economic-dependence', 'RrhhEconomicDependenceController');

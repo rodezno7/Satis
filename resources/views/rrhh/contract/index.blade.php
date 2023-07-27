@@ -11,19 +11,19 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="form-group">
 						@can('rrhh_contract.create')
-							@if (count($contracts) > 0)
-								@if ($contracts[count($contracts) - 1]->status == 0)
+							{{-- @if (count($contracts) > 0)
+								@if ($contracts[count($contracts) - 1]->status == 1)
 									<button type="button" class="btn btn-info btm-sm" id='btn_add_contract'
 										style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 										<i class="fa fa-plus"></i> @lang('rrhh.add')
 									</button>
 								@endif
-							@else
+							@else --}}
 								<button type="button" class="btn btn-info btm-sm" id='btn_add_contract'
 									style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 									<i class="fa fa-plus"></i> @lang('rrhh.add')
 								</button>
-							@endif
+							{{-- @endif --}}
 						@endcan
 					</div>
 					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
@@ -45,13 +45,13 @@
 										<td>{{ @format_date($item->contract_end_date) }}</td>
 										<td>
 											@if ($item->status == 1)
-												{{ __('rrhh.current') }}
+												<span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
 											@else
-												{{ __('rrhh.defeated') }}
+												<span class="badge" style="background: #C9302C">{{ __('rrhh.defeated') }}</span>
 											@endif
 										</td>
 										<td>
-											@if ($item->status == 1)
+											{{-- @if ($item->status == 1)
 												@can('rrhh_contract.update')
 													<button type="button" onClick='editContract({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
 												@endcan
@@ -65,9 +65,9 @@
 												@can('rrhh_contract.delete')
 													<button type="button" class="btn btn-danger btn-xs" disabled><i class="glyphicon glyphicon-trash"></i></button>
 												@endcan
-											@endif
+											@endif --}}
 											
-											<a href="/rrhh-contracts-generate/{{ $item->id }}"  title="{{ __('rrhh.generate') }}" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-file-text"></i></a>
+											<a href="/rrhh-contracts-generate/{{ $item->id }}"  title="{{ __('rrhh.generate') }}" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-file-pdf-o"></i></a>
 										</td>
 									</tr>
 								@endforeach

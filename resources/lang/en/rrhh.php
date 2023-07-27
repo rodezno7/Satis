@@ -1,7 +1,7 @@
 <?php 
 return[
 	'rrhh' => 'RRHH',
-	'overall_payroll' => 'Overall payroll',
+	'general_payroll' => 'General payroll',
 	'catalogues' => 'Catalogues',
 	'manage_your_catalogues' => 'Manage your catalogues',
 	'marital_statuses' => 'Marital statuses',
@@ -245,4 +245,9 @@ return[
     'defeated' => 'Defeated',
     'current' => 'Current',
     'message_parameter_name' => 'The name of the parameter must be written exactly as shown in the list.',
+    'massive_contract' => 'Massive contract',
+    'alert_massive_contract' => 'When executing this action new contracts will be generated for the selected employees (active) with the dates that you establish. You must take into account that if the employee has a current contract, it will be automatically terminated and the one created in this process will take effect.',
+    'important' => 'Important!',
+    'employee_massive_contract' => 'The action would apply to all active employees if you do not select any employees.',
+    'expired' =>'Expired',
 ];

@@ -219,7 +219,8 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                'approved',
+                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -232,6 +233,13 @@ class EmployeesController extends Controller
                 'bank_id',
                 'bank_account'
             ]);
+            if($request->approved){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
 
@@ -280,7 +288,7 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $humanResourceEmployee
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
 
         if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');

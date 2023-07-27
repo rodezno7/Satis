@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', __('rrhh.type_contract'))
 
+@section('css')
+    <link href="{{ asset('plugins/ckeditor5-decoupled-document/css/style.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -112,39 +116,39 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>name_employee</td>
+                                    <td>employee_name</td>
                                     <td>Obtiene el nombre del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>age_employee</td>
+                                    <td>employee_age</td>
                                     <td>Obtiene la edad del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>dni_employee</td>
+                                    <td>employee_dni</td>
                                     <td>Obtiene el DUI del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>tax_number_employee</td>
+                                    <td>employee_tax_number</td>
                                     <td>Obtiene el NIT del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>state_employee</td>
+                                    <td>employee_state</td>
                                     <td>Obtiene el municipio de residencia del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>city_employee</td>
+                                    <td>employee_city</td>
                                     <td>Obtiene el departamento de residencia del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>salary_employee</td>
+                                    <td>employee_salary</td>
                                     <td>Obtiene el salario actual del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>department_employee</td>
+                                    <td>employee_department</td>
                                     <td>Obtiene el departamento del empleado.</td>
                                 </tr>
                                 <tr>
-                                    <td>position_employee</td>
+                                    <td>employee_position</td>
                                     <td>Obtiene el cargo del empleado.</td>
                                 </tr>
                             </tbody>
@@ -161,11 +165,11 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>name_business</td>
+                                    <td>business_name</td>
                                     <td>Obtiene el nombre de la empresa.</td>
                                 </tr>
                                 <tr>
-                                    <td>tax_number_business</td>
+                                    <td>business_tax_number</td>
                                     <td>Obtiene el NIT de la empresa.</td>
                                 </tr>
                                 {{-- <tr>
@@ -173,7 +177,7 @@
                                     <td>Obtiene el municipio donde está ubicada la empresa.</td>
                                 </tr> --}}
                                 <tr>
-                                    <td>state_business</td>
+                                    <td>business_state</td>
                                     <td>Obtiene el departamento donde está ubicada la empresa.</td>
                                 </tr>
                                 <tr>
@@ -223,6 +227,6 @@
             if ($("form#form_add").valid()) {
                 $("form#form_add").submit();
             }
-        });
+        });        
     </script>
 @endsection

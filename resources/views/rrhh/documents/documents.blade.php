@@ -51,9 +51,9 @@
 										<td>{{ $item->number }}</td>
 										<td>
 											@if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d'))
-											<span class="badge" style="background: #449D44">Vigente</span>
+											<span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
 											@else
-											<span class="badge" style="background: #C9302C">Expirado</span>
+											<span class="badge" style="background: #C9302C">{{ __('rrhh.expired') }}</span>
 											@endif
 										  </td>
 										@if(!isset($route))

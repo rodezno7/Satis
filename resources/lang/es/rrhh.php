@@ -1,7 +1,7 @@
 <?php 
 return[
 	'rrhh' => 'RRHH',
-	'overall_payroll' => 'Nómina general',
+	'general_payroll' => 'Nómina general',
 	'catalogues' => 'Catálogos',
 	'manage_your_catalogues' => 'Administra tus catálogos',
 	'marital_statuses' => 'Estados civiles',
@@ -243,4 +243,9 @@ return[
     'defeated' => 'Vencido',
     'current' => 'Vigente',
     'message_parameter_name' => 'El nombre del parámetro debe escribirlo exactamente como se muestra en el listado.',
+    'massive_contract' => 'Contratos masivos',
+    'alert_massive_contract' => 'Al ejecutar esta acción se generarán nuevos contratos a los empleados (activos) seleccionados con las fechas que usted establezca. Debe tener en cuenta que si el empleado tiene un contrato vigente, será automáticamente finalizado y entrará en vigencia el que se cree en este proceso.',
+    'important' => 'Importante!',
+    'employee_massive_contract' => 'La acción se aplicaría a todos los empleados activos si no selecciona ningún empleado.',
+    'expired' =>'Expirado',
 ];

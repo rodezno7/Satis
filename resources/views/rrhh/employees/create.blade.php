@@ -61,14 +61,24 @@
             <label>@lang('rrhh.dni')</label> <span class="text-danger">*</span>
             {!! Form::text("dni", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni', 'required']) !!}
+            {{-- <div class="checkbox" style="margin-top: 0;">
+              <label>
+                  {!! Form::checkbox('approved', 1, true, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                  <strong>DUI Homologado</strong>
+              </label>
+          </div> --}}
           </div>
         </div>
-
-        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-sm-3 col-md-3 col-lg-3 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.tax_number')</label></label> <span class="text-danger">*</span>
-            {!! Form::text("tax_number", null,
-            ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])!!}
+            <label>@lang('rrhh.tax_number')</label> <label id="text-approved">(Homologado)</label> <span class="text-danger">*</span>
+              <div class="input-group">
+                  <span class="input-group-addon">
+                    {!! Form::checkbox('approved', 1, true, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                  </span>
+                  {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                  'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required', 'disabled'])!!}
+              </div>
           </div>
         </div>
 
@@ -381,10 +391,12 @@
       format: datepicker_date_format
     });
 
-    $("#dni").keyup(function () {
-      var value = $(this).val();
-      $("#tax_number").val(value);
-    });
+    if ($("#approved").is(":checked")) {
+      $("#dni").keyup(function () {
+        var value = $(this).val();
+        $("#tax_number").val(value);
+      });
+    }
 
     showUserOption();
     commision_enable();
@@ -440,6 +452,20 @@
 	};
   $("#upload_image").fileinput(img_fileinput_setting);
 
+  function dniApproved() {
+    if ($("#approved").is(":checked")) {
+      var dni = $("#dni").val();
+      $("#approved").val('1');
+      $("#tax_number").prop('disabled', true);
+      $("#tax_number").val(dni);
+      $("#text-approved").show();
+    } else {
+      $("#approved").val('0');
+      $("#tax_number").prop('disabled', false);
+      $("#tax_number").val('');
+      $("#text-approved").hide();
+    }
+  }
 
   function showUserOption() {
     if ($("#chk_has_user").is(":checked")) {

@@ -39,6 +39,7 @@ class Employees extends Model
         'fired_date', 
         'birth_date',
         'dni',
+        'approved',
         'tax_number',
         'social_security_number',
         'afp_id',
@@ -68,69 +69,62 @@ class Employees extends Model
         'created_by',
         'business_id',
         'user_id', 
-        'short_name'
+        'short_name',
+        'deleted_at'
     ];
 
     public function afp() {
-
         return $this->belongsTo('App\RrhhData');
     }
 
     public function civilStatus() {
-
         return $this->belongsTo('App\RrhhData');
     }
 
     public function nationality() {
-
         return $this->belongsTo('App\RrhhData');
     }
 
     public function profession() {
-
         return $this->belongsTo('App\RrhhData');
     }
 
     public function type() {
-
         return $this->belongsTo('App\RrhhTypeWage');
     }
 
     public function payment() {
-
         return $this->belongsTo('App\RrhhData');
     }
 
     public function bank() {
-
         return $this->belongsTo('App\Bank');
     }
     
     public function country() {
-
         return $this->belongsTo('App\Country');
     }
 
     public function state() {
-
         return $this->belongsTo('App\State');
     }
 
     public function city() {
-
         return $this->belongsTo('App\City');
     }
 
     public function positionHistories(){
-
         return $this->hasMany('App\RrhhPositionHistory');
     }
 
     public function salaryHistories(){
-
         return $this->hasMany('App\RrhhSalaryHistory');
     }
     
+    public function rrhhContracts(){
+        return $this->hasMany('App\RrhhContract');
+    }
+
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)
     {
 
