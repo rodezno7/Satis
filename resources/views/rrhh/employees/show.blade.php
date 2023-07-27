@@ -24,8 +24,7 @@
                                 <table class="table table-bordered table-condensed" width="100%">
                                     <tr class="text-center">
                                         <td>
-                                            <img src="{{ asset($route) }}" width="125px" height="150px"
-                                                alt="@lang('employees.employee_photo')">
+                                            <img src="{{ asset($route) }}" width="125px" height="150px" alt="@lang('employees.employee_photo')">
                                         </td>
                                     </tr>
                                     <tr>
@@ -237,8 +236,8 @@
                                         <td>
                                             <strong>@lang('rrhh.type_employee'):</strong><br>
                                             @if( !empty($employee->type_id))
-                                            @if( isset($employee->type->value))
-                                            {{ $employee->type->value }}
+                                            @if( isset($employee->type->name))
+                                            {{ $employee->type->name }}
                                             @else
                                             N/A
                                             @endif
@@ -360,8 +359,8 @@
                                             {{ @format_date($employee->date_admission) }}
                                             @endif
                                         </td>
-                                        <td>{{ $item->department->value }}</td>
-                                        <td>{{ $item->position1->value }}</td>
+                                        <td>{{ $item->newDepartment->value }}</td>
+                                        <td>{{ $item->newPosition1->value }}</td> 
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
                                             {{ $item->rrhhPersonnelAction->description }}
@@ -371,12 +370,12 @@
                                         </td>
                                         <td>
                                             @if ($item->current == 1)
-                                            Vigente
+                                                <span class="badge" style="background: #367FA9">Vigente</span>
                                             @else
-                                            No vigente
-                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
-                                            <br>{{ $item->rrhhPersonnelAction->status }}
-                                            @endif
+                                            <span class="badge">No vigente</span>
+                                            {{-- @if ($item->rrhhPersonnelAction != null && $index == 0)
+                                                <br>{{ $item->rrhhPersonnelAction->status }}
+                                            @endif --}}
                                             @endif
                                         </td>
                                     </tr>
@@ -405,33 +404,30 @@
                                     <tr>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
-                                            {{ @format_date($item->rrhhPersonnelAction->effective_date) }}
+                                                {{ @format_date($item->rrhhPersonnelAction->effective_date) }}
                                             @else
-                                            {{ @format_date($employee->date_admission) }}
+                                                {{ @format_date($employee->date_admission) }}
                                             @endif
                                         </td>
                                         <td>
                                             @if ($business->currency_symbol_placement == 'after')
-                                            {{ @num_format($item->salary) }} {{ $business->currency->symbol }}
+                                                {{ @num_format($item->new_salary) }} {{ $business->currency->symbol }}
                                             @else
-                                            {{ $business->currency->symbol }} {{ @num_format($item->salary) }}
+                                                {{ $business->currency->symbol }} {{ @num_format($item->new_salary) }}
                                             @endif
                                         </td>
                                         <td>
                                             @if ($item->rrhhPersonnelAction != null)
-                                            {{ $item->rrhhPersonnelAction->description }}
+                                                {{ $item->rrhhPersonnelAction->description }}
                                             @else
-                                            N/A
+                                                N/A
                                             @endif
                                         </td>
                                         <td>
                                             @if ($item->current == 1)
-                                            Vigente
+                                                <span class="badge" style="background: #367FA9">Vigente</span>
                                             @else
-                                            No vigente
-                                            @if ($item->rrhhPersonnelAction != null && $index == 0)
-                                            <br>{{ $item->rrhhPersonnelAction->status }}
-                                            @endif
+                                                <span class="badge">No vigente</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -557,6 +553,7 @@
                                         <th>@lang('rrhh.description')</th>
                                         <th>@lang('rrhh.status')</th>
                                         <th>@lang('rrhh.created_date')</th>
+                                        <th>@lang('rrhh.actions')</th>
                                     </tr>
                                 </thead>
                                 <tbody id="referencesItems">
@@ -573,6 +570,9 @@
                                                 <td>
                                                     {{ @format_date($item->created_at) }}
                                                 </td>
+                                                <td>
+                                                    <button onClick="viewPersonnelAction({{ $item->id }})" class="btn-sm btn-primary" title="{{ __('messages.view') }}"><i class="fa fa-eye"></i></button>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @else
@@ -588,6 +588,15 @@
             </div>
         </div>
     </div>
+    <div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
+
+	<div class="modal fade" id="modal_personnel_action" tabindex="-1">
+		<div class="modal-dialog modal-lg" role="document">
+		  <div class="modal-content" id="modal_content_personnel_action">
+	
+		  </div>
+		</div>
+	</div>
 
     <div class="modal fade" id="modal_photo" tabindex="-1">
         <div class="modal-dialog">
@@ -608,6 +617,17 @@
 		$.get(url, function(data) {
 			$("#modal_content_photo").html(data);
 			$('#modal_photo').modal({backdrop: 'static'});
+		});
+	}
+
+    function viewPersonnelAction(id) 
+	{
+		$("#modal_content_personnel_action").html('');
+		var url = "{!!URL::to('/rrhh-personnel-action-view/:id')!!}";
+		url = url.replace(':id', id);
+		$.get(url, function(data) {
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({backdrop: 'static'});
 		});
 	}
 </script>

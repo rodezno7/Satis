@@ -210,4 +210,5 @@ return [
 	'enable_imei' => '¿Habilitar IMEI?',
 	'anti_reflective' => 'Antireflejante',
 	'image_length' => 'El nombre de la imagen excede la cantidad máxima de caracteres',
+    'product_balance' => 'Saldo del producto',
 ];

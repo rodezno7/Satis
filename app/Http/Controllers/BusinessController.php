@@ -68,24 +68,28 @@ class BusinessController extends Controller
         $this->taxUtil = $taxUtil;
 
         $this->avlble_modules = [
-            'tables' => [
-                'name' => __('restaurant.tables'),
-                'tooltip' => __('restaurant.tooltip_tables')
-            ],
-            'modifiers' => [
-                'name' => __('restaurant.modifiers'),
-                'tooltip' => __('restaurant.tooltip_modifiers')
-            ],
-            'service_staff' => [
-                'name' => __('restaurant.service_staff'),
-                'tooltip' => __('restaurant.tooltip_service_staff')
-            ],
-            'kitchen' => [
-                'name' => __('restaurant.kitchen_for_restaurant')
-            ],
-            'account' => [
-                'name' => __('lang_v1.account')
+            // 'tables' => [
+            //     'name' => __('restaurant.tables'),
+            //     'tooltip' => __('restaurant.tooltip_tables')
+            // ],
+            // 'modifiers' => [
+            //     'name' => __('restaurant.modifiers'),
+            //     'tooltip' => __('restaurant.tooltip_modifiers')
+            // ],
+            // 'service_staff' => [
+            //     'name' => __('restaurant.service_staff'),
+            //     'tooltip' => __('restaurant.tooltip_service_staff')
+            // ],
+            // 'kitchen' => [
+            //     'name' => __('restaurant.kitchen_for_restaurant')
+            // ],
+            // 'account' => [
+            //     'name' => __('lang_v1.account')
+            // ]
+            'module_rrhh' => [
+                'name' => __('lang_v1.module_rrhh')
             ]
+
         ];
 
         $this->theme_colors = [
@@ -847,7 +851,7 @@ class BusinessController extends Controller
 
             $business_details['sale_settings'] = json_encode($sale_settings);
 
-            // Expense settings
+            // Expense settings 
             $expense_settings = $request->input('expense_settings');
 
             $default_expense_settings = $this->businessUtil->defaultExpenseSettings();
@@ -968,6 +972,8 @@ public function postAccountingSettings(Request $request)
                 'check_format_kit',
                 'ledger_digits',
                 'sale_accounting_entry_mode',
+                'purchase_accounting_entry_mode',
+                'expense_accounting_entry_mode',
                 'accounting_withheld_id'
             ]);
 

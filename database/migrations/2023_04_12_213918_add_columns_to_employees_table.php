@@ -23,7 +23,8 @@ class AddColumnsToEmployeesTable extends Migration
             $table->foreign('nationality_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->string('dni')->nullable()->after('nationality_id');
-            $table->string('tax_number')->nullable()->after('dni');
+            $table->boolean('approved')->default(1)->after('dni');
+            $table->string('tax_number')->nullable()->after('approved');
 
             $table->integer('civil_status_id')->unsigned()->nullable()->after('tax_number');
             $table->foreign('civil_status_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
@@ -61,7 +62,7 @@ class AddColumnsToEmployeesTable extends Migration
             $table->foreign('profession_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('type_id')->unsigned()->nullable()->after('profession_id');
-            $table->foreign('type_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('type_id')->references('id')->on('rrhh_type_wages')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('payment_id')->unsigned()->nullable()->after('type_id');
             $table->foreign('payment_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');

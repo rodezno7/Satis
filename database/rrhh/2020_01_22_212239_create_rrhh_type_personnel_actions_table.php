@@ -16,6 +16,7 @@ class CreateRrhhTypePersonnelActionsTable extends Migration
         Schema::create('rrhh_type_personnel_actions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->boolean('apply_to_many')->default(false);
             $table->boolean('required_authorization')->default(false);
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');

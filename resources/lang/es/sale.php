@@ -97,5 +97,7 @@
     'edit_export_expenses' => 'Editar gastos de exportación',
     'fob' => 'FOB',
     'freight' => 'Flete',
-    'insurance' => 'Seguro'
+    'insurance' => 'Seguro',
+    'price_inc_vat' => 'Precio con IVA',
+    'price_exc_vat' => 'Precio sin IVA',
 ];

@@ -23,10 +23,11 @@
     <div id="div_salary_history">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
-          <label>@lang('rrhh.previous_salary')</label>
-          {!! Form::number("previous_salary", ($salaryHistory != null) ? $salaryHistory->salary : null,
+          <label>@lang('rrhh.previous_salary')</label> <span class="text-danger">*</span>
+          {!! Form::number("salary", ($salaryHistory != null) ? $salaryHistory->new_salary : null,
           ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.previous_salary'), 'id' =>
-          'previous_salary', 'step' => '0.01', 'min' => '0.01', 'disabled' => true]) !!}
+          'salary', 'step' => '0.01', 'min' => '0.01', 'disabled' => true]) !!}
+          <input type="hidden" name="previous_salary" id="previous_salary" value="{{ ($salaryHistory != null) ? $salaryHistory->new_salary : null }}">
         </div>
       </div>
   
@@ -67,18 +68,37 @@
     <div id="div_position_history">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
-          <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
-          {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->department_id : null,
+          <label>@lang('rrhh.previous_department')</label> <span class="text-danger">*</span>
+          {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->new_department_id : null,
           ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.department'), 'style' => 'width: 100%;', 'disabled' => true]) !!}
+          <input type="hidden" name="previous_department_id" id="previous_department_id" value="{{ ($positionHistory != null) ? $positionHistory->new_department_id : null }}">
+        </div>
+      </div>
+  
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <label>@lang('rrhh.previous_position')</label> <span class="text-danger">*</span>
+          {!! Form::select("position1_id", $positions, ($positionHistory != null) ? $positionHistory->new_position1_id : null,
+          ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          __('rrhh.position'), 'style' => 'width: 100%;', 'disabled' => true]) !!}
+          <input type="hidden" name="previous_position1_id" id="previous_position1_id" value="{{ ($positionHistory != null) ? $positionHistory->new_position1_id : null }}">
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <label>@lang('rrhh.new_department')</label> <span class="text-danger">*</span>
+          {!! Form::select("new_department_id", $departments, null,
+          ['id' => 'new_department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
           __('rrhh.department'), 'style' => 'width: 100%;']) !!}
         </div>
       </div>
   
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
-          <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
-          {!! Form::select("position1_id", $positions, ($positionHistory != null) ? $positionHistory->position1_id : null,
-          ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
+          <label>@lang('rrhh.new_position')</label> <span class="text-danger">*</span>
+          {!! Form::select("new_position1_id", $positions, null,
+          ['id' => 'new_position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
           __('rrhh.position'), 'style' => 'width: 100%;']) !!}
         </div>
       </div>
@@ -115,7 +135,8 @@
         <select name="user_id[]" id="user_id" class="form-control form-control-sm select2" 
           style="width: 100%;" multiple>
           @foreach ($users as $user)
-            <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+            {{-- <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option> --}}
+            <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}</option>
           @endforeach
         </select>
       </div>
@@ -312,6 +333,7 @@
             title: result.msg,
             icon: "error",
           });
+          $('#btn_add_personnel_action').prop('disabled', false);
         }
       },
       error:function(msj){
@@ -325,6 +347,7 @@
           icon: "error",
           html: "<ul>"+ errormessages+ "</ul>",
         });
+        $('#btn_add_personnel_action').prop('disabled', false);
       }
     });
   });

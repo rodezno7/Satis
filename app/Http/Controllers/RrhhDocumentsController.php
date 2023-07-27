@@ -112,7 +112,7 @@ class RrhhDocumentsController extends Controller
                     'city_id'               => 'required',
                     'number'                => 'required',
                     'date_expedition'       => 'required',
-                    'date_expiration'       => 'required|after:date_expedition',
+                    'date_expiration'       => 'required',
                     'file'                  => 'required',
                 ]);
             }else{
@@ -140,7 +140,9 @@ class RrhhDocumentsController extends Controller
             $input_details = $request->all();
             $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
             $input_details['date_expedition'] = $this->moduleUtil->uf_date($request->input('date_expedition'));
-            if($input_details['date_expedition'] < $input_details['date_expiration'])
+            $date_expiration = strtotime($input_details['date_expiration']);
+            $date_expedition = strtotime($input_details['date_expedition']);
+            if($date_expedition < $date_expiration)
             {
                 DB::beginTransaction();
     
@@ -172,7 +174,7 @@ class RrhhDocumentsController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
 

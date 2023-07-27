@@ -144,7 +144,7 @@ class CityController extends Controller
             try{
                 $city = City::findOrFail($id);
 
-                $employees = DB::table('human_resource_employees')
+                $employees = DB::table('employees')
                 ->where('city_id', $id)               
                 ->count();
 

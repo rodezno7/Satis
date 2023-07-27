@@ -1002,6 +1002,7 @@ class TransactionUtil extends Util
         $output['customer_business_name'] = $customer->business_name;
         $output['customer_phone'] = $customer->telphone;
         $output['customer_id'] = $customer->id;
+        $output['customer_is_exempt'] = $customer->is_exempt;
         $output['customer_seller'] = $this->getOrderSeller($transaction_id);
         
         // first name and lastname for ticket
@@ -2185,8 +2186,8 @@ class TransactionUtil extends Util
 
                 'sell_line_note' => !empty($line->sell_line_note) ? $line->sell_line_note : '',
 
-                'unit_price_exc' => $this->num_f($line->unit_price_before_discount, false, $precision),
-                'unit_price' => $this->num_f($line->unit_price, false, $precision),
+                'unit_price_exc' => $this->num_f($line->unit_price_before_discount, false, 4),
+                'unit_price' => $this->num_f($line->unit_price, false, 4),
                 'tax_amount' => $this->num_f($line->tax_amount, false, $precision),
                 'tax_unformatted' => $line->item_tax,
                 'tax_name' => !empty($tax_details) ? $tax_details->name : null,

@@ -62,18 +62,23 @@ class EmployeesController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('employees as e')
-        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
         ->where('e.deleted_at', null)
         ->get();
         
-
         return DataTables::of($data)->editColumn('department', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->department->value : __('rrhh.no_department');
+            return (!empty($position)) ? $position->newDepartment->value : __('rrhh.not_assigned');
         })->editColumn('position', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->position1->value : __('rrhh.no_position');
+            return (!empty($position)) ? $position->newPosition1->value : __('rrhh.not_assigned');
+        })->editColumn('status', function ($data) {
+            if($data->status == 1){
+                return __('rrhh.active');
+            }else{
+                return __('rrhh.inactive');
+            }
         })->toJson();
     }
 
@@ -96,7 +101,7 @@ class EmployeesController extends Controller
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         
@@ -214,7 +219,7 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                'approved',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -225,8 +230,15 @@ class EmployeesController extends Controller
                 'afp_number',
                 'payment_id',
                 'bank_id',
-                'bank_account'
+                'bank_account',
             ]);
+            if($request->approved){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
 
@@ -236,11 +248,11 @@ class EmployeesController extends Controller
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
-                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
             );
 
             RrhhSalaryHistory::insert(
-                ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
             );
 
             DB::commit();
@@ -275,7 +287,7 @@ class EmployeesController extends Controller
      * @param  \App\Employees  $humanResourceEmployee
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
 
         if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');
@@ -358,7 +370,7 @@ class EmployeesController extends Controller
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
@@ -447,7 +459,7 @@ class EmployeesController extends Controller
             'gender'                => 'required',
             'birth_date'            => 'required',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            'tax_number'            => 'required',
+            //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'nullable',
@@ -471,7 +483,7 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -495,6 +507,13 @@ class EmployeesController extends Controller
                 'state_id',
                 'city_id'
             ]);
+            if($request->approved){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
 
             if ($request->input('status')) {
                 $input_details['status'] = 1;
@@ -533,13 +552,13 @@ class EmployeesController extends Controller
 
             if(count($position) == 0){
                 RrhhPositionHistory::insert(
-                    ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                    ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                 );
             }
 
             if(count($salary) == 0){
                 RrhhSalaryHistory::insert(
-                    ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                    ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
                 );
             }
 

@@ -3,7 +3,7 @@
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">@lang('rrhh.economic_dependencies')</h4>
+            <h4 class="modal-title">@lang('rrhh.economic_dependencies'): <span style="color: gray">{{ $employee->first_name }} {{ $employee->last_name }}</span></h4>
         </div>
         <div class="modal-body">
             <div class="row">

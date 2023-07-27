@@ -50,6 +50,7 @@ use App\Exports\AllSalesReportExport;
 use App\Exports\SalesTrackingReportExport;
 use App\Exports\SalesAdjustmentsReportExport;
 use App\Exports\AllSalesWithUtilityReportExport;
+use App\Exports\CollectionReport;
 use App\Exports\ConnectReport;
 use App\Exports\InputOutput;
 use App\Exports\DetailedCommissionsReportExport;
@@ -4804,7 +4805,10 @@ class ReportController extends Controller
     }
 
     /**
+     * Get collections
      * 
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response | Json
      */
     public function getCollections() {
         if (!auth()->user()->can('cxc.collections')) {
@@ -4812,6 +4816,29 @@ class ReportController extends Controller
         }
 
         $business_id = auth()->user()->business_id;
+
+        if (request()->ajax()) {
+            $location_id = request()->input('location') ? request()->input('location') : 0;
+            $seller_id = request()->input('seller') ? request()->input('seller') : 0;
+            $start_date = request()->input('start_date');
+            $end_date = request()->input('end_date');
+
+            $collections = collect(DB::select('CALL get_collection_transactions(?, ?, ?, ?, ?)',
+                [$business_id, $location_id, $seller_id, $start_date, $end_date]));
+
+            return Datatables::of($collections)
+                ->editColumn('transaction_date', '{{ @format_date($transaction_date) }}')
+                ->addColumn(
+                    'quantity',
+                    '<span class="display_currency" data-currency_symbol="false" data-precision="0">{{ $quantity }}</span>'
+                )
+                ->addColumn(
+                    'price_inc_tax',
+                    '<span class="display_currency" data-currency_symbol="true">{{ $unit_price_inc_tax * $quantity }}</span>'
+                )
+                ->rawColumns(['quantity', 'price_inc_tax'])
+                ->toJson();
+        }
 
         // Locations
         $locations = BusinessLocation::forDropdown($business_id, true);
@@ -4821,10 +4848,34 @@ class ReportController extends Controller
     }
 
     /**
+     * Post collections
      * 
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
      */
     public function postCollections() {
+        if (!auth()->user()->can('cxc.collections')) {
+            abort(403, 'Unauthorized action.');
+        }
 
+        $business_id = auth()->user()->business_id;
+        $location_id = request()->input('location') ? request()->input('location') : 0;
+        $seller_id = request()->input('seller') ? request()->input('seller') : 0;
+        $start_date = request()->input('start_date');
+        $end_date = request()->input('end_date');
+
+        $collection_transactions = collect(DB::select('CALL get_collection_transactions(?, ?, ?, ?, ?)',
+            [$business_id, $location_id, $seller_id, $start_date, $end_date]));
+
+        $collections = collect(DB::select('CALL get_collections(?, ?, ?, ?)',
+            [$business_id, $location_id, $start_date, $end_date]));
+
+        $business_name = Business::find($business_id)->business_full_name;
+        $start_date = $this->transactionUtil->format_date($start_date);
+        $end_date = $this->transactionUtil->format_date($end_date);
+
+        return Excel::download(new CollectionReport($collection_transactions, $collections, $business_name, $start_date, $end_date, $this->transactionUtil),
+            __('cxc.collections') . '.xlsx');
     }
 
     /**

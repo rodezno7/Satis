@@ -12,14 +12,14 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::label('name', __('business.social_reason') . ':') !!}&nbsp;<span class="text-danger">*</span>
+                    {!! Form::label('supplier_business_name', __('business.social_reason') . ':') !!}&nbsp;<span class="text-danger">*</span>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="fa fa-user"></i>
                         </span>
-                        {!! Form::text('name', $contact->name, [
+                        {!! Form::text('supplier_business_name', $contact->supplier_business_name, [
                             'class' => 'form-control',
-                            'placeholder' => __('contact.name'),
+                            'placeholder' => __('business.social_reason'),
                             'required',
                         ]) !!}
                     </div>
@@ -27,12 +27,12 @@
             </div>
             <div class="col-md-6 supplier_fields">
                 <div class="form-group">
-                    {!! Form::label('supplier_business_name', __('business.business_name') . ':') !!}&nbsp;<span class="text-danger">*</span>
+                    {!! Form::label('name', __('business.business_name') . ':') !!}&nbsp;<span class="text-danger">*</span>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="fa fa-briefcase"></i>
                         </span>
-                        {!! Form::text('supplier_business_name', $contact->supplier_business_name, [
+                        {!! Form::text('name', $contact->name, [
                             'class' => 'form-control',
                             'required',
                             'placeholder' => __('business.business_name'),

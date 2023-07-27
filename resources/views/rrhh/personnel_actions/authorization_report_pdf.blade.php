@@ -91,57 +91,41 @@
             </tr>
             @foreach ($actions as $action)
                 @if ($action->rrhh_required_action_id == 2) {{-- Cambiar departamento --}}
-                    @php
-                        $len = count($positions);
-                    @endphp
-                    @foreach ($positions as $index => $position)
-                        @if ($index == $len - 1)
-                        <tr>
-                            <th>{{ __('rrhh.previous_department') }}</th>
-                            <td>{{ $position->department->value }}</td>
-                            <th>{{ __('rrhh.previous_position') }}</th>
-                            <td>{{ $position->position1->value }}</td>
-                        </tr>
-                        @elseif($index == 0)
-                        <tr>
-                            <th>{{ __('rrhh.new_department') }}</th>
-                            <td>{{ $position->department->value }}</td>
-                            <th>{{ __('rrhh.new_position') }}</th>
-                            <td>{{ $position->position1->value }}</td>
-                        </tr>
-                        @endif
-                    @endforeach
+                    <tr>
+                        <th>{{ __('rrhh.previous_department') }}</th>
+                        <td>{{ $position->previousDepartment->value }}</td>
+                        <th>{{ __('rrhh.previous_position') }}</th>
+                        <td>{{ $position->previousPosition1->value }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ __('rrhh.new_department') }}</th>
+                        <td>{{ $position->newDepartment->value }}</td>
+                        <th>{{ __('rrhh.new_position') }}</th>
+                        <td>{{ $position->newPosition1->value }}</td>
+                    </tr>  
                 @endif
 
                 @if ($action->rrhh_required_action_id == 3) {{-- Cambiar salario --}}
-                    @php
-                        $len = count($salaries);
-                    @endphp
-                    @foreach ($salaries as $index => $salary)
-                        @if ($index == $len - 1)
-                        <tr>
-                            <th>{{ __('rrhh.previous_salary') }}</th>
-                            <td colspan="3">
-                                @if ($business->currency_symbol_placement == 'after')
-                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                @else
-                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                @endif
-                            </td>
-                        </tr>
-                        @elseif($index == 0)
-                        <tr>
-                            <th>{{ __('rrhh.new_salary') }}</th>
-                            <td colspan="3">
-                                @if ($business->currency_symbol_placement == 'after')
-                                    {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                @else
-                                    {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                @endif
-                            </td>
-                        </tr>
-                        @endif
-                    @endforeach
+                    <tr>
+                        <th>{{ __('rrhh.previous_salary') }}</th>
+                        <td colspan="3">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($salary->previous_salary) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($salary->previous_salary) }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>{{ __('rrhh.new_salary') }}</th>
+                        <td colspan="3">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($salary->new_salary) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($salary->new_salary) }}
+                            @endif
+                        </td>
+                    </tr>
                 @endif
 
                 @if ($action->rrhh_required_action_id == 4) {{-- Cambiar cuenta bancaria --}}
@@ -158,7 +142,7 @@
                         <th>{{ __('rrhh.bank_account') }}</th>
                         <td colspan="3">{{ $personnelAction[0]->bank_account }}</td>
                     </tr>
-                    @elseif ($personnelAction[0]->status == 'Autorizada')
+                    @elseif ($personnelAction[0]->status == 'Autorizada' || $personnelAction[0]->status == 'No requiere autorización')
                     <tr>
                         <th>{{ __('rrhh.bank_account') }}</th>
                         <td colspan="3">{{ $employee->bank_account }}</td>
@@ -167,28 +151,28 @@
                 @endif
 
                 @if ($action->rrhh_required_action_id == 6) {{-- Cambiar forma de pago --}}
-                    @if ($personnelAction[0]->status == 'No autorizada (En tramite)')
-                    <tr>
-                        <th>{{ __('rrhh.way_to_pay') }}</th>
-                        <td colspan="3">{{ $payment[0]->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('rrhh.bank') }}</th>
-                        <td>{{ $bank[0]->name }}</td>
-                        <th>{{ __('rrhh.bank_account') }}</th>
-                        <td>{{ $personnelAction[0]->bank_account }}</td>
-                    </tr>
-                    @elseif ($personnelAction[0]->status == 'Autorizada')
-                    <tr>
-                        <th>{{ __('rrhh.way_to_pay') }}</th>
-                        <td colspan="3">{{ $employee->payment->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>{{ __('rrhh.bank') }}</th>
-                        <td>{{ $employee->bank->name }}</td>
-                        <th>{{ __('rrhh.bank_account') }}</th>
-                        <td>{{ $employee->bank_account }}</td>
-                    </tr>
+                    @if ($personnelAction[0]->status == 'No autorizada (En tramite)' )
+                        <tr>
+                            <th>{{ __('rrhh.way_to_pay') }}</th>
+                            <td colspan="3">{{ $payment[0]->name }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('rrhh.bank') }}</th>
+                            <td>{{ $bank[0]->name }}</td>
+                            <th>{{ __('rrhh.bank_account') }}</th>
+                            <td>{{ $personnelAction[0]->bank_account }}</td>
+                        </tr>
+                    @elseif ($personnelAction[0]->status == 'Autorizada' || $personnelAction[0]->status == 'No requiere autorización')
+                        <tr>
+                            <th>{{ __('rrhh.way_to_pay') }}</th>
+                            <td colspan="3">{{ $employee->payment->value }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ __('rrhh.bank') }}</th>
+                            <td>{{ $employee->bank->name }}</td>
+                            <th>{{ __('rrhh.bank_account') }}</th>
+                            <td>{{ $employee->bank_account }}</td>
+                        </tr>
                     @endif
                 @endif
 

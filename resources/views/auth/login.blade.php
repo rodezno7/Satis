@@ -2,7 +2,6 @@
 @section('title', __('lang_v1.login'))
 
 @section('content')
-<div class="bg-auth-side bg-primary"></div>
 <div class="auth-content">
     <div class="card border-0">
         <div class="row align-items-center text-start">
@@ -60,13 +59,13 @@
                     </form>
                 </div>
             </div>
-            <div class="col-xl-6 img-card-side">
-                <div class="auth-img-content">
-                    <img src="../img/img-auth-3.svg" alt="" class="img-fluid" />
+            <div class="col-xl-6 auth-img-content">
+                <img src="../img/erp_login_img.png" alt="" class="img-fluid" />
+                <!--div class="auth-img-content">
                     <h3 class="text-white mb-4 mt-5">Attention is the new currency</h3>
                     <p class="text-white">The more effortless the writing looks, the more effort the
                         writer actually put into the process.</p>
-                </div>
+                </div-->
             </div>
         </div>
     </div>

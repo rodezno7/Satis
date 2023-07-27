@@ -101,7 +101,6 @@
 
 	$('#file').on('change', function() {
 		extension = this.files[0].type.split('/')[1];
-		//console.log(this.files[0].type);
 
 		if(validExt.indexOf(extension) == -1){
 			$('#file').val('');
