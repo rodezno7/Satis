@@ -838,10 +838,11 @@ class SellController extends Controller
             $data = Transaction::join('customers as c', 'transactions.customer_id', 'c.id')
                 ->select(
                     'transactions.id',
-                    'transactions.transaction_date',
-                    DB::raw("(transactions.final_total - transactions.payment_balance) as balance"),
+                    'transactions.correlative',
                     DB::raw("DATE_FORMAT(transactions.transaction_date, '%d/%m/%Y') as transaction_date"),
-                    DB::raw("CONCAT('#', transactions.correlative, ' - ', DATE_FORMAT(transactions.transaction_date, '%d/%m/%Y'), ' - $', ROUND(transactions.final_total)) as text"),
+                    DB::raw("(transactions.final_total - transactions.payment_balance) as balance"),
+                    'transactions.final_total',
+                    DB::raw("CONCAT(DATE_FORMAT(transactions.transaction_date, '%d/%m/%Y'), ' - #', transactions.correlative, ' - $', ROUND(transactions.final_total)) as text")
                 )
                 ->where('c.id', $customer_id)
                 ->where('transactions.business_id', $business_id)

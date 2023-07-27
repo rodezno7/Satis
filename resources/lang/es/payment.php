@@ -1,5 +1,6 @@
 <?php
 return [
+    'payment' => 'Pago',
     'card_holder_name' => 'Titular de la tarjeta',
     'payment_method' => 'Método de pago',
     'paid_on' => 'Pagado el',

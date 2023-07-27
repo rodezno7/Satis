@@ -1,5 +1,6 @@
 <?php
 return [
+    'payment' => 'Payment',
     'payment_method' => 'Payment method',
     'paid_on' => 'Paid on',
     'amount' => 'Amount',
