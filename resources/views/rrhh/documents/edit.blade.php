@@ -98,7 +98,6 @@
 
 	$('#file').on('change', function() {
 		extension = this.files[0].type.split('/')[1];
-		console.log(this.files[0].type);
 
 		if(validExt.indexOf(extension) == -1){
 			$('#file').val('');
@@ -159,8 +158,6 @@
 	$("#btn_edit_document").click(function() {
 		var form = $("#form_edit");
 		var formData = new FormData(form[0]);
-		console.log(formData);
-		// document_id = $('#_document_id').val();
 		
 		route = '/rrhh-documents-updateDocument';    
 		token = $("#token").val();

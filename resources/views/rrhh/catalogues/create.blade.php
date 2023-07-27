@@ -72,7 +72,6 @@
 					$("#employee_classification-table").DataTable().ajax.reload(null, false);
 					//$("#cost_center-table").DataTable().ajax.reload(null, false);
 					//$("#types_contracts-table").DataTable().ajax.reload(null, false);
-					//$("#types_clause_contracts-table").DataTable().ajax.reload(null, false);
 					$("#types_professions_occupations-table").DataTable().ajax.reload(null, false);
 					$("#types_studies-table").DataTable().ajax.reload(null, false);
 					$("#types_personnel_actions-table").DataTable().ajax.reload(null, false);

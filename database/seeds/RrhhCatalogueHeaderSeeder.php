@@ -25,7 +25,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         $tiposEmpleado = ['Permanente'];
         $nacionalidades = ['Salvadoreño', 'Guatemalteco', 'Hondureño', 'Costarricense', 'Panameño'];
         $profesiones = ['Ingeniero', 'Licenciado'];
-        $formasPago = ['Transferencia bancaria'];
+        $formasPago = ['Transferencia bancaria', 'Pago en cheque'];
         $tiposDocumento = ['DUI', 'NIT'];
         $capacidadesEspeciales = ['Perdida de la vista en un ojo', 'Perdida de una mano', 'Perdida de un pie', 'Perdida de audicion en un oído'];
         $clasificacionesEmpleado = ['Profesional', 'Técnico'];
@@ -223,7 +223,14 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['name' => 'Recursos humanos'],
             ['description' => 'Gestión de recursos humanos', 'status' => 1]
         );
+
+        $moduleConfiguration = Module::where('name', 'Configuraciones')->first();
         
+        Permission::firstOrCreate(
+            ['name' => 'business_settings.access_module'],
+            ['description' => 'Activar/desactivar módulo', 'guard_name' => 'web', 'module_id' => $moduleConfiguration->id]
+        );
+
         Permission::firstOrCreate(
             ['name' => 'rrhh_catalogues.view'],
             ['description' => 'Ver catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
@@ -345,6 +352,42 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
             ['name' => 'rrhh_absence_inability.delete'],
             ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
         );
-        
+
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.create'],
+            ['description' => 'Crear contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.update'],
+            ['description' => 'Actualizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.delete'],
+            ['description' => 'Eliminar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.generate'],
+            ['description' => 'Generar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_assistance.view'],
+            ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_assistance.generate'],
+            ['description' => 'Generar reporte de asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_setting.access'],
+            ['description' => 'Cofiguracion del módulo de RRHH', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
     }
 }

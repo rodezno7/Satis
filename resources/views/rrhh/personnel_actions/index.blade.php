@@ -3,7 +3,7 @@
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">@lang('rrhh.personnel_actions')</h4>
+            <h4 class="modal-title">@lang('rrhh.personnel_actions'): <span style="color: gray">{{ $employee->first_name }} {{ $employee->last_name }}</span></h4> 
         </div>
         <div class="modal-body">
             <div class="row">
@@ -42,25 +42,43 @@
 											{{ @format_date($item->created_at) }}
 										</td>
 										<td>
-											<button type="button" onClick='viewPersonnelAction({{ $item->id }})' class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
-											{{-- @can('rrhh_personnel_action.update')
-												<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+											<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">
+											@php
+												$usersAuthorized = 0;
+												$users = 0;
+												foreach($personnelActionAuthorizers as $personnelActionAuthorizer){
+													if($personnelActionAuthorizer->rrhh_personnel_action_id == $item->id){
+														if($personnelActionAuthorizer->authorizer == 0){
+															$usersAuthorized++;
+														}
+														$users++;
+													}
+												}
+											@endphp
+											
+											<li><a href="#" onClick='viewPersonnelAction({{ $item->id }})'><i class="fa fa-eye"></i>{{ __('messages.view') }}</a></li>
+											
+											@can('rrhh_personnel_action.update')
+												@if ($item->status != 'Autorizada' && $usersAuthorized == $users)
+													<li><a href="#" onClick='editPersonnelAction({{ $item->id }})'><i class="glyphicon glyphicon-edit"></i>{{ __('messages.edit') }}</a></li>
+												@endif
 											@endcan
 
+											<li><a href="rrhh-personnel-action/{{ $item->id }}/authorization-report"><i class="fa fa-file"></i>{{ __('rrhh.download') }}</a></li>
+
+											<li><a href="#" onClick="addFile({{ $item->id }})"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>
+
 											@can('rrhh_personnel_action.delete')
-												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-											@endcan --}}
-
-											<a href="rrhh-personnel-action/{{ $item->id }}/authorization-report" type="button" class="btn btn-primary btn-xs"><i class="fa fa-file"></i></a>
-
-											<a href="#" onClick="addDocument({{ $item->id }})" type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.documents') }}"><i class="fa fa-upload"></i></a>
+												@if ($item->status != 'Autorizada' && $usersAuthorized == $users)
+													<li><a href="#" onClick='deletePersonnelAction({{ $item->id }})'><i class="glyphicon glyphicon-trash"></i>{{ __('rrhh.delete') }}</a></li>
+												@endif
+											@endcan
 										</td>
 									</tr>
 								@endforeach
 							@else
 								<tr>
 									<td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
-									
 								</tr>
 							@endif
 						</tbody>
@@ -74,13 +92,16 @@
 </div>
 
 <script type="text/javascript">
-	function addDocument(id) {
-        var route = '/rrhh-personnel-action-createDocument/'+id;
-        $("#file_modal").load(route, function() {
-            $(this).modal({
-            	backdrop: 'static'
-            });
-        });
+	function addFile(id) 
+	{
+		$("#modal_content_document").html('');
+		var url = "{!!URL::to('/rrhh-personnel-action-createDocument/:id')!!}";
+		url = url.replace(':id', id);
+		$.get(url, function(data) {
+			$("#modal_content_document").html(data);
+			$('#modal_doc').modal({backdrop: 'static'});
+		});
+		$('#modal_action').modal('hide').data('bs.modal', null);
     }
 	
 	function viewPersonnelAction(id) 
@@ -95,19 +116,19 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
-	function editDocument(id) 
+	function editPersonnelAction(id) 
 	{
-		$("#modal_content_edit_document").html('');
-		var url = "{!!URL::to('/rrhh-documents/:id/edit')!!}";
+		$("#modal_content_personnel_action").html('');
+		var url = "{!!URL::to('/rrhh-personnel-action/:id/edit')!!}";
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
-			$("#modal_content_edit_document").html(data);
-			$('#modal_edit_action').modal({backdrop: 'static'});
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({backdrop: 'static'});
 		});
-		$('#document_modal').modal('hide').data('bs.modal', null);
+		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
-	function deleteDocument(id) 
+	function deletePersonnelAction(id) 
 	{
 		Swal.fire({
             title: LANG.sure,
@@ -120,7 +141,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/rrhh-documents/'+id;
+                route = '/rrhh-personnel-action/'+id;
 				token = $("#token").val();
 				$.ajax({
 				url: route,

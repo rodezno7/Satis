@@ -3,14 +3,14 @@
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">@lang('rrhh.documents')</h4>
+            <h4 class="modal-title">@lang('rrhh.documents'): <span style="color: gray">{{ $employee->first_name }} {{ $employee->last_name }}</span></h4>
         </div>
         <div class="modal-body">
             <div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					@if (count($types) > count($documents))
 					<div class="form-group">
-						@can('rrhh_document_employee.update')
+						@can('rrhh_document_employee.create')
 							<button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
 								style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 								<i class="fa fa-plus"></i> @lang('rrhh.add')
@@ -51,15 +51,15 @@
 										<td>{{ $item->number }}</td>
 										<td>
 											@if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d'))
-											<span class="badge" style="background: #449D44">Vigente</span>
+											<span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
 											@else
-											<span class="badge" style="background: #C9302C">Expirado</span>
+											<span class="badge" style="background: #C9302C">{{ __('rrhh.expired') }}</span>
 											@endif
 										  </td>
 										@if(!isset($route))
 										<td>
 											@if ($item->file != '')
-											@can('rrhh_document_employee.update')
+											@can('rrhh_document_employee.view')
 												<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
 											@endcan
 												@endif

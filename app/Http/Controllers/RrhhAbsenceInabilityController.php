@@ -95,6 +95,7 @@ class RrhhAbsenceInabilityController extends Controller
             $requiredEndDate = 'required';
             $requiredTypeInability = 'required';
         }
+
         $request->validate([
             'type' => 'required',
             'description' => 'required',
@@ -168,11 +169,12 @@ class RrhhAbsenceInabilityController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
-        $permissionInhability = RrhhAbsenceInability::findOrFail($id);
-        $typeRelationships = DB::table('rrhh_datas')->where('rrhh_header_id', 15)->where('business_id', $business_id)->where('status', 1)->get();
-        $employee_id = $permissionInhability->employee_id;
+        $absenceInability = RrhhAbsenceInability::findOrFail($id);
+        $typeAbsences = RrhhData::where('rrhh_header_id', 13)->where('business_id', $business_id)->where('status', 1)->orderBy('id', 'DESC')->get();
+        $typeInabilities = RrhhData::where('rrhh_header_id', 14)->where('business_id', $business_id)->where('status', 1)->orderBy('id', 'DESC')->get();
+        $employee_id = $absenceInability->employee_id;
 
-        return view('rrhh.absence_inabilities.edit', compact('typeRelationships', 'permissionInhability', 'employee_id'));
+        return view('rrhh.absence_inabilities.edit', compact('absenceInability', 'typeAbsences', 'typeInabilities', 'employee_id'));
     }
 
     /**
@@ -192,27 +194,48 @@ class RrhhAbsenceInabilityController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $absenceInability = RrhhAbsenceInability::findOrFail($request->input('id'));
+        $requiredStartDate = 'nullable';
+        $requiredEndDate = 'nullable';
+        $requiredTypeAbsence = 'nullable';
+        $requiredTypeInability = 'nullable';
+        $requiredAmount = 'nullable';
+
+        if($absenceInability->type == 'Ausencia'){
+            $requiredTypeAbsence = 'required';
+            $requiredAmount = 'required';
+        }else{
+            $requiredEndDate = 'required';
+            $requiredTypeInability = 'required';
+        }
+
         $request->validate([
-            'type_relationship_id' => 'required',
-            'name'                 => 'required',
-            'employee_id'          => 'required',
-            'phone'                => 'required',
-            'birthdate'            => 'required',
-            'status'               => 'required',
+            'description' => 'required',
+            'start_date' => 'required',
+            'end_date' => $requiredEndDate,
+            'amount' => $requiredAmount,
+            'type_absence_id' => $requiredTypeAbsence,
+            'type_inability_id' => $requiredTypeInability,
         ]);
 
         try {
-            $input_details = $request->all();
-            $input_details['birthdate'] = $this->moduleUtil->uf_date($request->input('birthdate'));
-            if($request->input('status') == 1){
-                $input_details['status'] = 1;
+            $input_details = $request->only([
+                'description'
+            ]);
+
+            $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
+
+            if($absenceInability->type == 'Ausencia'){
+                $input_details['type_absence_id'] = $request->input('type_absence_id');
+                $input_details['amount'] = $request->input('amount');
             }else{
-                $input_details['status'] = 0;
+                $input_details['type_inability_id'] = $request->input('type_inability_id');
+                $input_details['end_date'] = $this->moduleUtil->uf_date($request->input('end_date'));
             }
+            
             DB::beginTransaction();
     
-            $item = RrhhAbsenceInability::findOrFail($request->id);
-            $permissionInhability = $item->update($input_details);
+            $absenceInability->update($input_details);
     
             DB::commit();
     
@@ -238,8 +261,8 @@ class RrhhAbsenceInabilityController extends Controller
      * @param  \App\RrhhAbsenceInability  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-
+    public function destroy($id) 
+    {
         if (!auth()->user()->can('rrhh_absence_inability.delete')) {
             abort(403, 'Unauthorized action.');
         }
@@ -259,7 +282,7 @@ class RrhhAbsenceInabilityController extends Controller
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => __('rrhh.error')
+                    'msg' => $e->getMessage()
                 ];
             }
 

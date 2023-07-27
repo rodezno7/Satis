@@ -32,6 +32,11 @@
             <strong><i class="fa fa-window-close fa-lg"></i></strong>
           </button>
         @endif
+        
+        <a href="#" title="{{ __('rrhh.mark_assistance') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10">
+          <strong><i class="fa fa-list"></i>&nbsp; @lang("rrhh.mark_assistance")</strong>
+        </a>
+
         @php
           use App\Business;
           use App\User;

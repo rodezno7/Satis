@@ -15,6 +15,7 @@
 					<thead>
 						<th>@lang('rrhh.name')</th>
 						<th>@lang('rrhh.authorization')</th>
+						<th>@lang('rrhh.apply_to_many')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>
 				</table>

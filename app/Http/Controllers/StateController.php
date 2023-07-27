@@ -157,7 +157,7 @@ class StateController extends Controller
                     ];
                 }
 
-                $employees = DB::table('human_resource_employees')
+                $employees = DB::table('employees')
                 ->where('state_id', $id)               
                 ->count();
 

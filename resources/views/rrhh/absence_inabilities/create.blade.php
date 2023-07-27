@@ -88,6 +88,7 @@
   $( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
+
     $('#start_date').datepicker({
       autoclose: true,
       format: datepicker_date_format,

@@ -737,4 +737,5 @@ return [
     "malformed_file" => "Malformed file",
     "instruction_line7" => "Use the provided template.",
     "enable_sell_delete" => "Enable sell delete",
+    "module_rrhh" => "Module RRHH"
 ];

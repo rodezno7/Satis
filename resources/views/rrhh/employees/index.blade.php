@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('rrhh.overall_payroll')
+    <h1> @lang('rrhh.general_payroll')
         <small></small>
     </h1>
 </section>
@@ -16,29 +16,34 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
+                @can('rrhh_personnel_action.create')
+                    <button type="button" class="btn btn-info btm-sm" id='btn_add_actions'
+						style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
+						<i class="fa fa-plus"></i>
+						{{ __('rrhh.personnel_actions_massive') }}
+					</button>
+                @endcan
                 @can('rrhh_employees.create')
-                <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
-                        class="fa fa-plus"></i> @lang( 'messages.add' )
-                </a>
+                    <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
+                        class="fa fa-plus"></i> @lang('messages.add')
+                    </a>
                 @endcan
             </div>
         </div>
         <div class="box-body">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
-                        width="100%">
-                        <thead>
-                            <th width="22%">@lang('rrhh.name')</th>
-                            <th>@lang('rrhh.email')</th>
-                            <th>@lang('rrhh.dni')</th>
-                            <th>@lang('rrhh.department')</th>
-                            <th>@lang('rrhh.position')</th>
-                            <th width="12%">@lang('rrhh.actions')</th>
-                        </thead>
-                    </table>
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-                </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed table-hover" id="employees-table"
+                    width="100%">
+                    <thead>
+                        <th width="22%">@lang('rrhh.name')</th>
+                        <th>@lang('rrhh.email')</th>
+                        <th>@lang('rrhh.department')</th>
+                        <th>@lang('rrhh.position')</th>
+                        <th>@lang('rrhh.status')</th>
+                        <th width="12%">@lang('rrhh.actions')</th>
+                    </thead>
+                </table>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
             </div>
         </div>
     </div>
@@ -85,11 +90,7 @@
 
 @section('javascript')
 <script>
-    $(document).ready(function() 
-    {
-        $(document).on("preInit.dt", function(){
-            $(".dataTables_filter input[type='search']").attr("size", 7);
-        });
+    $(document).ready(function() {
         loadEmployees();      
         $.fn.dataTable.ext.errMode = 'none';      
 
@@ -99,6 +100,19 @@
 			})
 		})
 	});
+
+    $("#btn_add_actions").click(function(){
+        $("#modal_content_personnel_action").html('');
+        var url = "{!!URL::to('/rrhh-personnel-action-createAll')!!}";
+        id = $('#_employee_id').val();
+        url = url.replace(':id', id);
+        $.get(url, function(data) {
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({
+            	backdrop: 'static'
+            });
+        });
+    });
 
     function loadEmployees() 
     {
@@ -113,17 +127,17 @@
             columns: [
             {data: 'full_name', name: 'full_name', className: "text-center"},
             {data: 'email', name: 'email', className: "text-center"},
-            {data: 'dni', name: 'dni', className: "text-center"},
             {data: 'department', name: 'department', className: "text-center"},
             {data: 'position', name: 'position', className: "text-center"},
+            {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-                html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
+                html += '<li><a href="/rrhh-employees/'+data.id+'/show"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
                 @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
-
+                html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
@@ -187,6 +201,16 @@
                     
                 });
             }
+        });
+    }
+
+    function addContract(id) {
+        $("#modal_action").html('');
+        var route = '/rrhh-contracts-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
         });
     }
 

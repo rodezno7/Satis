@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __('rrhh.rrhh'))
+@section('title', __('rrhh.employee'))
 @section('content')
 
 <!-- Content Header (Page header) -->
@@ -63,12 +63,16 @@
             ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni', 'required']) !!}
           </div>
         </div>
-
-        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-sm-3 col-md-3 col-lg-3 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.tax_number')</label></label> <span class="text-danger">*</span>
-            {!! Form::text("tax_number", null,
-            ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])!!}
+            <label>@lang('rrhh.tax_number')</label> <label id="text-approved">(Homologado)</label> <span class="text-danger">*</span>
+              <div class="input-group">
+                  <span class="input-group-addon">
+                    {!! Form::checkbox('approved', 1, true, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                  </span>
+                  {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                  'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required', 'disabled'])!!}
+              </div>
           </div>
         </div>
 
@@ -118,7 +122,7 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.social_security_number')</label>
-            {!! Form::text("social_security_number", null,
+            {!! Form::number("social_security_number", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.social_security_number'), 'id' =>
             'social_security_number']) !!}
           </div>
@@ -134,7 +138,7 @@
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.afp_number')</label>
-            {!! Form::text("afp_number", null,
+            {!! Form::number("afp_number", null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.afp_number'), 'id' => 'afp_number'])
             !!}
           </div>
@@ -381,10 +385,12 @@
       format: datepicker_date_format
     });
 
-    $("#dni").keyup(function () {
-      var value = $(this).val();
-      $("#tax_number").val(value);
-    });
+    if ($("#approved").is(":checked")) {
+      $("#dni").keyup(function () {
+        var value = $(this).val();
+        $("#tax_number").val(value);
+      });
+    }
 
     showUserOption();
     commision_enable();
@@ -440,6 +446,20 @@
 	};
   $("#upload_image").fileinput(img_fileinput_setting);
 
+  function dniApproved() {
+    if ($("#approved").is(":checked")) {
+      var dni = $("#dni").val();
+      $("#approved").val('1');
+      $("#tax_number").prop('disabled', true);
+      $("#tax_number").val(dni);
+      $("#text-approved").show();
+    } else {
+      $("#approved").val('0');
+      $("#tax_number").prop('disabled', false);
+      $("#tax_number").val('');
+      $("#text-approved").hide();
+    }
+  }
 
   function showUserOption() {
     if ($("#chk_has_user").is(":checked")) {
