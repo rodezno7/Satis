@@ -36,6 +36,8 @@ return [
     'currency_precision' => 2,
 
     'product_img_path' => 'img',
+    
+    'employee_img_path' => 'img/employee',
 
     'image_size_limit' => '500000', //in Bytes
 

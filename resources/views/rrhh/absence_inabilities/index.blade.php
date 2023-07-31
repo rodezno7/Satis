@@ -23,7 +23,7 @@
 								<th width="20%">@lang('rrhh.option')</th>
 								<th width="30%">@lang('rrhh.type')</th>
 								<th width="30%">@lang('rrhh.date')</th>
-								<th width="20%">@lang('rrhh.amount')</th>
+								<th width="20%">@lang('rrhh.amount_')</th>
 								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
 							</tr>
 						</thead>

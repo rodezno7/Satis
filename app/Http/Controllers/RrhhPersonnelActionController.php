@@ -1030,8 +1030,9 @@ class RrhhPersonnelActionController extends Controller
         }
 
         $personnelAction = RrhhPersonnelAction::findOrFail($id);
+        $employee_id = $personnelAction->employee_id;
 
-        return view('rrhh.personnel_actions.file', compact('personnelAction'));
+        return view('rrhh.personnel_actions.file', compact('personnelAction', 'employee_id'));
     }
 
     /**
@@ -1052,10 +1053,16 @@ class RrhhPersonnelActionController extends Controller
 
         try {
             DB::beginTransaction();
+            
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
             if ($request->hasFile('file')) {
+                if (!Storage::disk('employee_personel_actions')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/files/employee_personel_actions/'.$folderName, $mode = 0755, true, true);
+                }
                 $file = $request->file('file');
-                $name = time() . $file->getClientOriginalName();
-                Storage::disk('flags')->put($name,  \File::get($file));
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_personel_actions')->put($folderName.'/'.$name,  \File::get($file));
                 $input_details['file'] = $name;
                 $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
 
@@ -1066,6 +1073,7 @@ class RrhhPersonnelActionController extends Controller
                     'msg' => __('rrhh.added_successfully')
                 ];
             }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -1172,7 +1180,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelAction = DB::table('rrhh_personnel_actions as personnel_action')
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
             ->join('users as user', 'user.id', '=', 'personnel_action.user_id')
-            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'personnel_action.start_date as start_date', 'personnel_action.end_date as end_date', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
             ->where('personnel_action.id', $id)
             ->get();
 

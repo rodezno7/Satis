@@ -146,10 +146,15 @@ class RrhhDocumentsController extends Controller
             {
                 DB::beginTransaction();
     
+                $business_id = request()->session()->get('user.business_id');
+                $folderName = 'business_'.$business_id;
                 if ($request->hasFile('file')) {
+                    if (!Storage::disk('employee_documents')->exists($folderName)) {
+                        \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                    }
                     $file = $request->file('file');
-                    $name = time().$file->getClientOriginalName();
-                    Storage::disk('flags')->put($name,  \File::get($file));
+                    $name = time().'_'.$file->getClientOriginalName();
+                    Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
                     $input_details['file'] = $name;
                 }
     
@@ -202,7 +207,9 @@ class RrhhDocumentsController extends Controller
         $city = DB::table('cities')->where('id', $document->city_id)->first();
         $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('id', $document->document_type_id)->first();
         
-        $route = 'flags/'.$document->file;
+        $business_id = request()->session()->get('user.business_id');
+        $folderName = 'business_'.$business_id;
+        $route = 'uploads/files/employee_documents/'.$folderName.'/'.$document->file;
         $ext = substr($document->file, -3);
 
 
@@ -288,10 +295,15 @@ class RrhhDocumentsController extends Controller
 
                 $item = RrhhDocuments::findOrFail($request->id);
 
+                $business_id = request()->session()->get('user.business_id');
+                $folderName = 'business_'.$business_id;
                 if ($request->hasFile('file')) {
+                    if (!Storage::disk('employee_documents')->exists($folderName)) {
+                        \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                    }
                     $file = $request->file('file');
-                    $name = time().$file->getClientOriginalName();
-                    Storage::disk('flags')->put($name,  \File::get($file));
+                    $name = time().'_'.$file->getClientOriginalName();
+                    Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
                     $input_details['file'] = $name;
                 }
 

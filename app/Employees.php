@@ -48,6 +48,7 @@ class Employees extends Model
         'phone',
         'mobile',
         'email',
+        'institutional_email',
         'address',
         'country_id',
         'state_id',
