@@ -70,6 +70,6 @@ return [
     "edit"=>'Edit',
     "wrong_password" => 'Incorrect password',
     "authorizer_question" => 'Are you sure?',
-    'authorizer_content' => 'Remember that you will not be able to reverse this action',
+    'question_content' => 'Remember that you will not be able to reverse this action',
     'password_required' => 'The password field is required.'
 ];

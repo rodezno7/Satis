@@ -60,6 +60,18 @@ class EmployeeUtil extends Util
         return $numberLetters;
     }
 
+    public function getDate($date){ 
+        $day = Carbon::parse($date)->format('d');
+
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $month = Carbon::parse($date)->format('m');
+        $month = $meses[$month - 1];
+        
+        $year = Carbon::parse($date)->format('Y');
+
+        return strtolower($day.' de '.$month.' de '.$year);
+    }
+
     /**
      * Return date letters
      * @param string

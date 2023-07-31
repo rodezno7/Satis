@@ -114,7 +114,7 @@
 	function autorizerPersonnelAction(id) {
         Swal.fire({
             title: "{{ __('messages.authorizer_question') }}",
-            text: "{{ __('messages.authorizer_content') }}",
+            text: "{{ __('messages.question_content') }}",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

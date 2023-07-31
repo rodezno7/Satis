@@ -100,9 +100,9 @@
                                         @endif>(Homologado)</label> <span class="text-danger">*</span>
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                              {!! Form::checkbox('approved', 1, $employee->approved, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                                              {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
                                             </span>
-                                            @if ($employee->approved == 0)
+                                            @if ($employee->approved == 1)
                                                 {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required'])!!}
                                             @else
@@ -545,6 +545,10 @@
         fechaMinima.setFullYear(fechaMinima.getFullYear() - 99);
         fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
+        var fechaActual = new Date();
+        fechaActual = fechaActual.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+
         $('#birth_date').datepicker({
             autoclose: true,
             format: datepicker_date_format,
@@ -556,9 +560,9 @@
             autoclose: true,
             format: datepicker_date_format
         });
-
-        console.log({{ $employee->approved }});
-        let approved = {{ $employee->approved }};
+        
+        //console.log({{ $employee->approved }});
+        let approved = $("#approved").val();
 		if (approved == 1) {
 			$("#approved").prop("checked", true);
             $("#text-approved").show();
@@ -568,12 +572,12 @@
             $("#text-approved").hide();
 		}
 
-        if ($("#approved").is(":checked")) {
-            $("#dni").keyup(function () {
-                var value = $(this).val();
-                $("#tax_number").val(value);
-            });
-        }
+        // if ($("#approved").is(":checked")) {
+        //     $("#dni").keyup(function () {
+        //         var value = $(this).val();
+        //         $("#tax_number").val(value);
+        //     });
+        // }
     });
 
     function getDocuments() {
@@ -765,16 +769,16 @@
 
     function dniApproved() {
         if ($("#approved").is(":checked")) {
-        var dni = $("#dni").val();
-        $("#approved").val('1');
-        $("#tax_number").prop('disabled', true);
-        $("#tax_number").val(dni);
-        $("#text-approved").show();
+            var dni = $("#dni").val();
+            $("#approved").val('1');
+            $("#tax_number").prop('disabled', true);
+            $("#tax_number").val(dni);
+            $("#text-approved").show();
         } else {
-        $("#approved").val('0');
-        $("#tax_number").prop('disabled', false);
-        $("#tax_number").val('');
-        $("#text-approved").hide();
+            $("#approved").val('0');
+            $("#tax_number").prop('disabled', false);
+            $("#tax_number").val('');
+            $("#text-approved").hide();
         }
     }
 

@@ -31,8 +31,8 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('rrhh.end_date')</label> <span class="text-danger">*</span>
-                {!! Form::text('contract_end_date', null, ['class' => 'form-control form-control-sm', 'id' => 'contract_end_date', 'required']) !!}
+                <label>@lang('rrhh.end_date')</label>
+                {!! Form::text('contract_end_date', null, ['class' => 'form-control form-control-sm', 'id' => 'contract_end_date']) !!}
             </div>
         </div>
     </div>

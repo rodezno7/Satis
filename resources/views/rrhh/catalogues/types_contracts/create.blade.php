@@ -1,10 +1,6 @@
 @extends('layouts.app')
 @section('title', __('rrhh.type_contract'))
 
-@section('css')
-    <link href="{{ asset('plugins/ckeditor5-decoupled-document/css/style.css') }}" rel="stylesheet">
-@endsection
-
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -121,15 +117,51 @@
                                 </tr>
                                 <tr>
                                     <td>employee_age</td>
-                                    <td>Obtiene la edad del empleado.</td>
+                                    <td>Obtiene el edad del empleado.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_gender</td>
+                                    <td>Obtiene el genero del empleado.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_civil_status</td>
+                                    <td>Obtiene el estado civil del empleado.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_nationality</td>
+                                    <td>Obtiene la nacionalidad del empleado.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_profession</td>
+                                    <td>Obtiene la profesión del empleado.</td>
                                 </tr>
                                 <tr>
                                     <td>employee_dni</td>
-                                    <td>Obtiene el DUI del empleado.</td>
+                                    <td>Obtiene el DUI del empleado. El formato será en números, por ejemplo: 02781023-5</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_dni_letters</td>
+                                    <td>Obtiene el DUI del empleado. El formato será en letras, por ejemplo: CERO DOS SIETE OCHO UNO CERO DOS TRES GUIÓN CINCO.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_dni_expedition_date</td>
+                                    <td>Obtiene la fecha de expedición del DUI del empleado.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_dni_expedition_place</td>
+                                    <td>Obtiene el lugar de expedición del DUI del empleado.</td>
                                 </tr>
                                 <tr>
                                     <td>employee_tax_number</td>
-                                    <td>Obtiene el NIT del empleado.</td>
+                                    <td>Obtiene el NIT del empleado. El formato será en números.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_tax_number_letters</td>
+                                    <td>Obtiene el NIT del empleado. El formato será en letras.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_tax_number_approved</td>
+                                    <td>Obtiene si el NIT del empleado está Homologado o no.</td>
                                 </tr>
                                 <tr>
                                     <td>employee_state</td>
@@ -140,8 +172,16 @@
                                     <td>Obtiene el departamento de residencia del empleado.</td>
                                 </tr>
                                 <tr>
+                                    <td>employee_address</td>
+                                    <td>Obtiene la dirección del empleado.</td>
+                                </tr>
+                                <tr>
                                     <td>employee_salary</td>
-                                    <td>Obtiene el salario actual del empleado.</td>
+                                    <td>Obtiene el salario actual del empleado. El formato será en números, por ejemplo: $500.00.</td>
+                                </tr>
+                                <tr>
+                                    <td>employee_salary_letters</td>
+                                    <td>Obtiene el salario actual del empleado. El formato será en letras, por ejemplo: QUINIENTOS 00/100 DOLARES.</td>
                                 </tr>
                                 <tr>
                                     <td>employee_department</td>
@@ -169,28 +209,52 @@
                                     <td>Obtiene el nombre de la empresa.</td>
                                 </tr>
                                 <tr>
+                                    <td>line_of_business</td>
+                                    <td>Obtiene el giro de la empresa.</td>
+                                </tr>
+                                <tr>
                                     <td>business_tax_number</td>
                                     <td>Obtiene el NIT de la empresa.</td>
                                 </tr>
-                                {{-- <tr>
-                                    <td>city_business</td>
-                                    <td>Obtiene el municipio donde está ubicada la empresa.</td>
-                                </tr> --}}
+                                <tr>
+                                    <td>business_tax_number_letters</td>
+                                    <td>Obtiene el NIT de la empresa. El formato será en letras.</td>
+                                </tr>
                                 <tr>
                                     <td>business_state</td>
                                     <td>Obtiene el departamento donde está ubicada la empresa.</td>
                                 </tr>
                                 <tr>
+                                    <td>business_address</td>
+                                    <td>Obtiene la dirección de la empresa.</td>
+                                </tr>
+                                <tr>
+                                    <td>business_legal_representative</td>
+                                    <td>Obtiene el representante legal de la empresa</td>
+                                </tr>
+                                <tr>
                                     <td>contract_start_date</td>
-                                    <td>Obtiene la fecha de inicio del contrato.</td>
+                                    <td>Obtiene la fecha de inicio del contrato. El formato es 12 de Julio de 2023.</td>
+                                </tr>
+                                <tr>
+                                    <td>contract_start_date_letters</td>
+                                    <td>Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: doce de julio de dos mil veintitres.</td>
                                 </tr>
                                 <tr>
                                     <td>contract_end_date</td>
                                     <td>Obtiene la fecha de finalización del contrato.</td>
                                 </tr>
                                 <tr>
+                                    <td>contract_end_date_letters</td>
+                                    <td>Obtiene la fecha de finalización del contrato. El formato es en letras.</td>
+                                </tr>
+                                <tr>
+                                    <td>current_date</td>
+                                    <td>Obtiene la fecha actual.</td>
+                                </tr>
+                                <tr>
                                     <td>current_date_letters</td>
-                                    <td>Obtiene la fecha actual en letras.</td>
+                                    <td>Obtiene la fecha actual. El formato es en letras</td>
                                 </tr>
                             </tbody>
                         </table>

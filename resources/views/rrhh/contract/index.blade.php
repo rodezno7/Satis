@@ -44,30 +44,34 @@
 										<td>{{ @format_date($item->contract_start_date) }}</td>
 										<td>{{ @format_date($item->contract_end_date) }}</td>
 										<td>
-											@if ($item->status == 1)
+											@if ($item->contract_status == 'Vigente')
 												<span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
 											@else
-												<span class="badge" style="background: #C9302C">{{ __('rrhh.defeated') }}</span>
+												@if ($item->contract_status == 'Finalizado')
+													<span class="badge" style="background: #4e58b6">{{ __('rrhh.finalized') }}</span>
+												@else
+													<span class="badge" style="background: #C9302C">{{ __('rrhh.defeated') }}</span>
+												@endif
 											@endif
 										</td>
 										<td>
-											{{-- @if ($item->status == 1)
-												@can('rrhh_contract.update')
-													<button type="button" onClick='editContract({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-												@endcan
-												@can('rrhh_contract.delete')
-													<button type="button" onClick='deleteContract({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-												@endcan
-											@else
-												@can('rrhh_contract.update')
-													<button type="button" class="btn btn-primary btn-xs" disabled><i class="glyphicon glyphicon-edit"></i></button>
-												@endcan
-												@can('rrhh_contract.delete')
-													<button type="button" class="btn btn-danger btn-xs" disabled><i class="glyphicon glyphicon-trash"></i></button>
-												@endcan
-											@endif --}}
-											
+											@can('rrhh_contract.view')
+												<button type="button" onClick="viewFile({{ $item->id }}, {{ $employee->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+											@endcan
+
 											<a href="/rrhh-contracts-generate/{{ $item->id }}"  title="{{ __('rrhh.generate') }}" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-file-pdf-o"></i></a>
+
+											@can('rrhh_contract.uploads')
+												<a href="#" onClick="addDocument({{ $item->id }}, {{ $employee->id }})" type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.attach_file') }}"><i class="fa fa-upload"></i></a>
+											@endcan
+											
+											@can('rrhh_contract.finish')
+												@if($item->contract_status == 'Finalizado')
+													<button type="button" class="btn btn-danger btn-xs" disabled><i class="fa fa-close"></i></button>
+												@else
+													<button type="button" onClick='finishContract({{ $item->id }})' class="btn btn-danger btn-xs" title="{{ __('rrhh.finish_contract') }}"><i class="fa fa-close"></i></button>
+												@endif
+											@endcan
 										</td>
 									</tr>
 								@endforeach
@@ -87,8 +91,19 @@
 
 
 <script type="text/javascript">
-	function editContract(id) 
-	{
+	function viewFile(id, employee_id) {
+		$("#modal_content_edit_document").html('');
+		var url = "{!!URL::to('/rrhh-contracts-show/:id/:employee_id')!!}";
+		url = url.replace(':id', id);
+		url = url.replace(':employee_id', employee_id)
+		$.get(url, function(data) {
+			$("#modal_content_edit_document").html(data);
+			$('#modal_edit_action').modal({backdrop: 'static'});
+		});
+		$('#modal_action').modal('hide').data('bs.modal', null);
+	}
+
+	function editContract(id) {
 		$("#modal_content_edit_document").html('');
 		var url = "{!!URL::to('/rrhh-contracts/:id/edit')!!}";
 		url = url.replace(':id', id);
@@ -99,11 +114,22 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
-	function deleteContract(id) 
-	{
+	function addDocument(id, employee_id) {
+		$("#modal_content_edit_document").html('');
+		var url = "{!!URL::to('/rrhh-contracts-createDocument/:id/:employee_id')!!}";
+		url = url.replace(':id', id);
+		url = url.replace(':employee_id', employee_id)
+		$.get(url, function(data) {
+			$("#modal_content_edit_document").html(data);
+			$('#modal_edit_action').modal({backdrop: 'static'});
+		});
+		$('#modal_action').modal('hide').data('bs.modal', null);
+    }
+
+	function finishContract(id) {
 		Swal.fire({
             title: LANG.sure,
-            text: "{{ __('messages.delete_content') }}",
+            text: "{{ __('messages.question_content') }}",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -112,37 +138,40 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/rrhh-contracts/'+id;
+                route = '/rrhh-contracts-finish/'+id;
 				token = $("#token").val();
+				employee_id = $('#_employee_id').val();
 				$.ajax({
-				url: route,
-				headers: {'X-CSRF-TOKEN': token},
-				type: 'DELETE',
-				dataType: 'json',                       
-				success:function(result){
-					if(result.success == true) {
-					Swal.fire
-					({
-						title: result.msg,
-						icon: "success",
-						timer: 1000,
-						showConfirmButton: false,
-					});
+					url: route,
+					headers: {'X-CSRF-TOKEN': token},
+					type: 'POST',
+					data: {'employee_id': employee_id},
+					dataType: 'json',                       
+					success:function(result){
+						if(result.success == true) {
+							Swal.fire
+							({
+								title: result.msg,
+								icon: "success",
+								timer: 1000,
+								showConfirmButton: false,
+							});
 
-					getContract($('#_employee_id').val());
+							getContract(employee_id);
 
-					} else {
-					Swal.fire
-					({
-						title: result.msg,
-						icon: "error",
-					});
+						} else {
+							Swal.fire
+							({
+								title: result.msg,
+								icon: "error",
+							});
+						}
 					}
-				}
 				});
             }
         });
 	}
+
 
 	$("#btn_add_contract").click(function() 
     {
