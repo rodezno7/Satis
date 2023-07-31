@@ -36,14 +36,14 @@
 										<td>{{ $item->type }}</td>
 										<td>
 											@if ($item->date_expedition != null)
-											{{ @format_date($item->date_expedition) }}
+												{{ @format_date($item->date_expedition) }}
 											@else
 												N/A
 											@endif
 										</td>
 										<td>
 											@if ($item->date_expiration != null)
-											{{ @format_date($item->date_expiration) }}
+												{{ @format_date($item->date_expiration) }}
 											@else
 												N/A
 											@endif
@@ -55,20 +55,19 @@
 											@else
 											<span class="badge" style="background: #C9302C">{{ __('rrhh.expired') }}</span>
 											@endif
-										  </td>
+										</td>
 										@if(!isset($route))
-										<td>
-											@if ($item->file != '')
-											@can('rrhh_document_employee.view')
-												<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
-											@endcan
-												@endif
-											@can('rrhh_document_employee.update')
-												<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-											@endcan
-											@can('rrhh_document_employee.delete')
-												<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-											@endcan
+											<td>
+												@can('rrhh_document_employee.view')
+													<button type="button" onClick="viewFile({{ $item->id }})" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+												@endcan
+													
+												@can('rrhh_document_employee.update')
+													<button type="button" onClick='editDocument({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+												@endcan
+												@can('rrhh_document_employee.delete')
+													<button type="button" onClick='deleteDocument({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+												@endcan
 											</td>
 										@endif
 									</tr>
@@ -95,12 +94,12 @@
 <script type="text/javascript">
 	function viewFile(id) 
 	{
-		$("#modal_content_photo").html('');
-		var url = "{!!URL::to('/rrhh-documents-viewFile/:id')!!}";
+		$("#modal_content_edit_document").html('');
+		var url = "{!!URL::to('/rrhh-documents-files/:id')!!}";
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
-			$("#modal_content_photo").html(data);
-			$('#modal_photo').modal({backdrop: 'static'});
+			$("#modal_content_edit_document").html(data);
+			$('#modal_edit_action').modal({backdrop: 'static'});
 		});
 		$('#document_modal').modal('hide').data('bs.modal', null);
 	}

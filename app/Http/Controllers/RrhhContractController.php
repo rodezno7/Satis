@@ -340,7 +340,7 @@ class RrhhContractController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $business_id = request()->session()->get('user.business_id');
             $folderName = 'business_'.$business_id;
             if ($request->hasFile('file')) {
@@ -361,20 +361,6 @@ class RrhhContractController extends Controller
                 ];
             }
 
-            // if ($request->hasFile('file')) {
-            //     $file = $request->file('file');
-            //     $name = time() . $file->getClientOriginalName();
-            //     Storage::disk('employee_contracts')->put($name,  \File::get($file));
-
-            //     $item = RrhhContract::where('id', $request->id)->where('employee_id', $request->employee_id)->first();
-            //     $item->file = $name;
-            //     $item->update();
-
-            //     $output = [
-            //         'success' => 1,
-            //         'msg' => __('rrhh.added_successfully')
-            //     ];
-            // }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

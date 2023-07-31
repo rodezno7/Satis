@@ -47,7 +47,7 @@
 </div>
 <script>
     function closeModal(){
-		$('#document_modal').modal({backdrop: 'static'});
-		$('#modal_doc').modal( 'hide' ).data( 'bs.modal', null );
+		$('#modal_edit_action').modal({backdrop: 'static'});
+		$('#modal_photo').modal( 'hide' ).data( 'bs.modal', null );
 	}
 </script>

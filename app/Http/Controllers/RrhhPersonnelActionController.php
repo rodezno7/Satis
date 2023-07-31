@@ -1048,31 +1048,34 @@ class RrhhPersonnelActionController extends Controller
         }
 
         $request->validate([
-            'file' => 'required',
+            'files.*' => 'required',
         ]);
 
         try {
-            DB::beginTransaction();
-            
-            $business_id = request()->session()->get('user.business_id');
-            $folderName = 'business_'.$business_id;
-            if ($request->hasFile('file')) {
-                if (!Storage::disk('employee_personel_actions')->exists($folderName)) {
-                    \File::makeDirectory(public_path().'/uploads/files/employee_personel_actions/'.$folderName, $mode = 0755, true, true);
+            DB::beginTransaction();            
+
+            $files = [];
+                if ($request->file('files')){
+                    $business_id = request()->session()->get('user.business_id');
+                    $folderName = 'business_'.$business_id;
+                    foreach($request->file('files') as $file)
+                    {
+                        if (!Storage::disk('employee_personel_actions')->exists($folderName)) {
+                            \File::makeDirectory(public_path().'/uploads/files/employee_personel_actions/'.$folderName, $mode = 0755, true, true);
+                        }
+                        
+                        $name = time().'_'.$file->getClientOriginalName();
+                        Storage::disk('employee_personel_actions')->put($folderName.'/'.$name,  \File::get($file));
+                        $input_details['file'] = $name;
+                        $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
+
+                        RrhhPersonnelActionFile::create($input_details);
+                    }
                 }
-                $file = $request->file('file');
-                $name = time().'_'.$file->getClientOriginalName();
-                Storage::disk('employee_personel_actions')->put($folderName.'/'.$name,  \File::get($file));
-                $input_details['file'] = $name;
-                $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
-
-                RrhhPersonnelActionFile::create($input_details);
-
                 $output = [
                     'success' => 1,
                     'msg' => __('rrhh.added_successfully')
                 ];
-            }
 
             DB::commit();
         } catch (\Exception $e) {
