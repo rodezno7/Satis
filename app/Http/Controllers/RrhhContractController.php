@@ -340,10 +340,16 @@ class RrhhContractController extends Controller
 
         try {
             DB::beginTransaction();
+
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
             if ($request->hasFile('file')) {
+                if (!Storage::disk('employee_contracts')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/files/employee_contracts/'.$folderName, $mode = 0755, true, true);
+                }
                 $file = $request->file('file');
-                $name = time() . $file->getClientOriginalName();
-                Storage::disk('flags')->put($name,  \File::get($file));
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_contracts')->put($folderName.'/'.$name,  \File::get($file));
 
                 $item = RrhhContract::where('id', $request->id)->where('employee_id', $request->employee_id)->first();
                 $item->file = $name;
@@ -354,6 +360,7 @@ class RrhhContractController extends Controller
                     'msg' => __('rrhh.added_successfully')
                 ];
             }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -381,7 +388,9 @@ class RrhhContractController extends Controller
         $contract = RrhhContract::where('id', $id)->where('employee_id', $employee_id)->first();
         
         if($contract->file != null){
-            $route = 'flags/'.$contract->file;
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
+            $route = 'uploads/files/employee_contracts/'.$folderName.'/'.$contract->file;
         }else{
             $route = config('app.url').'/rrhh-contracts-generate/'.$id;
         }

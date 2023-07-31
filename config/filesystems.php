@@ -83,6 +83,22 @@ return [
             'driver' => 'local',
             'root' => public_path().'/uploads/slides/',
         ],
+        'employee_photo' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/files/employee_photo',
+        ],
+        'employee_documents' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/files/employee_documents',
+        ],
+        'employee_contracts' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/files/employee_contracts',
+        ],
+        'employee_personel_actions' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/files/employee_personel_actions',
+        ],
     ],
 
 ];

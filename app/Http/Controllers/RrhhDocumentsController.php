@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Employees;
 use App\RrhhDocuments;
+use App\RrhhDocumentFile;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -45,7 +46,7 @@ class RrhhDocumentsController extends Controller
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->get();
@@ -113,14 +114,14 @@ class RrhhDocumentsController extends Controller
                     'number'                => 'required',
                     'date_expedition'       => 'required',
                     'date_expiration'       => 'required',
-                    'file'                  => 'required',
+                    'files'                 => 'required',
                 ]);
             }else{
                 $request->validate([
                     'state_id'              => 'required',
                     'city_id'               => 'required',
                     'number'                => 'required',
-                    'file'                  => 'required',
+                    'files'                 => 'required',
                     'date_expedition'       => 'required',
                 ]);
             }
@@ -131,7 +132,7 @@ class RrhhDocumentsController extends Controller
                 'state_id'              => 'required',
                 'city_id'               => 'required',
                 'number'                => 'required',
-                'file'                  => 'required',
+                'files'                 => 'required',
                 'date_expedition'       => 'required',
             ]);
         }
@@ -145,22 +146,34 @@ class RrhhDocumentsController extends Controller
             if($date_expedition < $date_expiration)
             {
                 DB::beginTransaction();
-    
-                if ($request->hasFile('file')) {
-                    $file = $request->file('file');
-                    $name = time().$file->getClientOriginalName();
-                    Storage::disk('flags')->put($name,  \File::get($file));
-                    $input_details['file'] = $name;
-                }
-    
+
                 $document = RrhhDocuments::create($input_details);
     
-                DB::commit();
-    
+                $files = [];
+                if ($request->file('files')){
+                    $business_id = request()->session()->get('user.business_id');
+                    $folderName = 'business_'.$business_id;
+                    foreach($request->file('files') as $file)
+                    {
+                        if (!Storage::disk('employee_documents')->exists($folderName)) {
+                            \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                        }
+                        $name = time().'_'.$file->getClientOriginalName();
+                        Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
+                        $input_document['file'] = $name;
+                        $input_document['rrhh_document_id'] = $document->id;
+                        RrhhDocumentFile::create($input_document);
+                    }
+                }
+
                 $output = [
                     'success' => 1,
                     'msg' => __('rrhh.added_successfully')
                 ];
+
+                DB::commit();
+    
+                
             }else
             {
                 $output = [
@@ -192,21 +205,36 @@ class RrhhDocumentsController extends Controller
         //
     }
 
+    function files($id) 
+    {
+        if ( !auth()->user()->can('rrhh_document_employee.view') ) {
+            abort(403, 'Unauthorized action.');
+        }
+        $documentsFile = RrhhDocumentFile::where('rrhh_document_id', $id)->get();
+        $document = RrhhDocuments::where('id', $id)->first();
+        $employee = Employees::where('id', $document->employee_id)->first();
+
+        return view('rrhh.documents.files', compact('documentsFile', 'employee'));
+    }
+
     function viewFile($id) 
     {
         if ( !auth()->user()->can('rrhh_document_employee.view') ) {
             abort(403, 'Unauthorized action.');
         }
-        $document = RrhhDocuments::findOrFail($id);
+        $documentFile = RrhhDocumentFile::findOrFail($id);
+        $document = RrhhDocuments::where('id', $documentFile->rrhh_document_id)->first();
         $state = DB::table('states')->where('id', $document->state_id)->first();
         $city = DB::table('cities')->where('id', $document->city_id)->first();
         $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('id', $document->document_type_id)->first();
         
-        $route = 'flags/'.$document->file;
-        $ext = substr($document->file, -3);
+        $business_id = request()->session()->get('user.business_id');
+        $folderName = 'business_'.$business_id;
+        $route = 'uploads/files/employee_documents/'.$folderName.'/'.$documentFile->file;
+        $ext = substr($documentFile->file, -3);
 
 
-        return view('rrhh.documents.file', compact('route', 'ext', 'document', 'state', 'city', 'type'));
+        return view('rrhh.documents.view', compact('route', 'ext', 'document', 'state', 'city', 'type'));
     }
 
     /**
@@ -288,10 +316,15 @@ class RrhhDocumentsController extends Controller
 
                 $item = RrhhDocuments::findOrFail($request->id);
 
+                $business_id = request()->session()->get('user.business_id');
+                $folderName = 'business_'.$business_id;
                 if ($request->hasFile('file')) {
+                    if (!Storage::disk('employee_documents')->exists($folderName)) {
+                        \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                    }
                     $file = $request->file('file');
-                    $name = time().$file->getClientOriginalName();
-                    Storage::disk('flags')->put($name,  \File::get($file));
+                    $name = time().'_'.$file->getClientOriginalName();
+                    Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
                     $input_details['file'] = $name;
                 }
 

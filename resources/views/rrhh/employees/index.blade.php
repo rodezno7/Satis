@@ -56,7 +56,7 @@
 </div>
 
 <div class="modal fade" id="modal_photo" tabindex="-1">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-dialog-scrollable">
 		<div class="modal-content" id="modal_content_photo">
 
 		</div>

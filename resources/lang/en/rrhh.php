@@ -189,6 +189,7 @@ return[
     'not_assigned' => 'Not assigned',
     'date' => 'Date',
     'amount' => 'Amount (Hours)',
+    'amount_' => 'Amount',
     'option' => 'Option',
     'add_absence_inability' => 'Add absence or inability',
     'add_personnel_action' => 'Add personnel action',
@@ -254,4 +255,6 @@ return[
     'finish_contract_successfully' => 'Contract finalized successfully',
     'finish_contract' => 'Finish contract',
     'validate_contract' => 'The contract cannot be created because there is a current one of the same type.',
+    'personal_email' => 'Personal email',
+    'institutional_email' => 'Institutional email',
 ];

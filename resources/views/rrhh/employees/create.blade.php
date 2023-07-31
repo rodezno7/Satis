@@ -103,10 +103,10 @@
 
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
+            <label>@lang('rrhh.personal_email')</label> <span class="text-danger">*</span>
             @show_tooltip(__('rrhh.tooltip_email'))
             {!! Form::email("email", null,
-            ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.email'), 'id' => 'email', 'required'])
+            ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.personal_email'), 'id' => 'email', 'required'])
             !!}
           </div>
         </div>
@@ -211,7 +211,7 @@
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
             {!! Form::label('photo', __('rrhh.photo') . ':') !!}
-            {!! Form::file('photo', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+            {!! Form::file('photo', ['id' => 'photo', 'accept' => 'image/*']); !!}
             <small class="help-block">@lang('purchase.max_file_size', ['size' =>
               (config('constants.document_size_limit') / 1000000)]).</small>
           </div>
@@ -449,7 +449,7 @@
 			}
 		}
 	};
-  $("#upload_image").fileinput(img_fileinput_setting);
+  $("#photo").fileinput(img_fileinput_setting);
 
   function dniApproved() {
     if ($("#approved").is(":checked")) {

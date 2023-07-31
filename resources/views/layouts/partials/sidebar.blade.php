@@ -159,7 +159,7 @@
                   <a href="{{ action('RrhhContractController@createMassive') }}">
                     <i class="fa fa-file-text"></i>
                     <span class="title">
-                     @lang('rrhh.contracts')
+                     @lang('rrhh.massive_contract')
                     </span>
                   </a>
                 </li>

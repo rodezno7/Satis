@@ -141,17 +141,26 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
-                                        @show_tooltip(__('rrhh.tooltip_email'))
-                                        {!! Form::email("email", null,
-                                        ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.email'),
-                                        'id' => 'email']) !!}
+                                      <label>@lang('rrhh.personal_email')</label> <span class="text-danger">*</span>
+                                      @show_tooltip(__('rrhh.tooltip_email'))
+                                      {!! Form::email("email", null,
+                                      ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.personal_email'), 'id' => 'email', 'required'])
+                                      !!}
                                     </div>
                                 </div>
 
-                                <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.institutional_email')</label>
+                                        {!! Form::email("institutional_email", null,
+                                        ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.institutional_email'),
+                                        'id' => 'institutional_email']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
                                         {!! Form::text("address", null,
@@ -348,7 +357,7 @@
                                 <div class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         {!! Form::label('photo', __('rrhh.photo') . ':') !!}
-                                        {!! Form::file('photo', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+                                        {!! Form::file('photo', ['id' => 'photo', 'accept' => 'image/*']); !!}
                                         <small class="help-block">@lang('purchase.max_file_size', ['size' =>
                                             (config('constants.document_size_limit') / 1000000)]).
                                             @if(!empty($employee->photo)) <br>
@@ -566,11 +575,14 @@
 		if (approved == 1) {
 			$("#approved").prop("checked", true);
             $("#text-approved").show();
+            $("#tax_number").prop('disabled', true);
             
 		} else {
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
+            $("#tax_number").prop('disabled', false);            
 		}
+
 
         // if ($("#approved").is(":checked")) {
         //     $("#dni").keyup(function () {
@@ -817,7 +829,7 @@
 		}
 	};
 
-    $("#upload_image").fileinput(img_fileinput_setting);
+    $("#photo").fileinput(img_fileinput_setting);
 
 </script>
 @endsection

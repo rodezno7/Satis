@@ -651,6 +651,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     //Routes documents by employees
     Route::get('rrhh-documents-getByEmployee/{id}', 'RrhhDocumentsController@getByEmployee');
     Route::get('rrhh-documents-createDocument/{id}', 'RrhhDocumentsController@createDocument');
+    Route::get('rrhh-documents-files/{id}', 'RrhhDocumentsController@files');
     Route::get('rrhh-documents-viewFile/{id}', 'RrhhDocumentsController@viewFile');
     Route::post('rrhh-documents-updateDocument', 'RrhhDocumentsController@updateDocument');
     Route::resource('rrhh-documents', 'RrhhDocumentsController');

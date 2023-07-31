@@ -126,11 +126,18 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <strong>@lang('rrhh.email'):</strong><br>
+                                            <strong>@lang('rrhh.personal_email'):</strong><br>
                                             @if( !empty($employee->email))
                                             {{ $employee->email }}
                                             @else
                                             N/A
+                                            @endif
+                                            <br>
+                                            <strong>@lang('rrhh.institutional_email'):</strong><br>
+                                            @if( !empty($employee->institutional_email))
+                                                {{ $employee->institutional_email }}
+                                            @else
+                                                N/A
                                             @endif
                                         </td>
                                         <td>
@@ -155,7 +162,7 @@
                                             <strong>@lang('rrhh.country'):</strong><br>
                                             @if( !empty($employee->country_id))
                                             @if( isset($employee->country->name))
-                                            {{ $employee->state->name }}
+                                            {{ $employee->country->name }}
                                             @else
                                             N/A
                                             @endif
@@ -373,9 +380,6 @@
                                                 <span class="badge" style="background: #367FA9">Vigente</span>
                                             @else
                                             <span class="badge">No vigente</span>
-                                            {{-- @if ($item->rrhhPersonnelAction != null && $index == 0)
-                                                <br>{{ $item->rrhhPersonnelAction->status }}
-                                            @endif --}}
                                             @endif
                                         </td>
                                     </tr>

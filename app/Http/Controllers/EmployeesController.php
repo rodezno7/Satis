@@ -223,7 +223,7 @@ class EmployeesController extends Controller
                 'civil_status_id',
                 'phone',
                 'mobile',
-                'email',
+                //'email',
                 'address',
                 'social_security_number',
                 'afp_id',
@@ -242,7 +242,26 @@ class EmployeesController extends Controller
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
 
-            $input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+            //$input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.employee_img_path'));
+
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $name = time().$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($name,  \File::get($file));
+                $input_details['photo'] = $name;
+            }
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
+            if ($request->hasFile('photo')) {
+                if (!Storage::disk('employee_photo')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/files/employee_photo/'.$folderName, $mode = 0755, true, true);
+                }
+                $file = $request->file('photo');
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($folderName.'/'.$name,  \File::get($file));
+                $input_details['photo'] = $name;
+            }
+
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
             $employee = Employees::create($input_details);
@@ -305,6 +324,8 @@ class EmployeesController extends Controller
         )
         ->first();
 
+        $business_id = request()->session()->get('user.business_id');
+        $folderName = 'business_'.$business_id;
         if ($employee->photo == '') {
             if($employee->gender == 'F'){
                 $route = 'img/avatar-F.png';
@@ -312,7 +333,7 @@ class EmployeesController extends Controller
                 $route = 'img/avatar-M.png';
             }
         } else {
-            $route = 'uploads/img/'.$employee->photo;
+            $route = 'uploads/files/employee_photo/'.$folderName.'/'.$employee->photo;
         }
 
         $business_id = request()->session()->get('user.business_id');
@@ -432,6 +453,8 @@ class EmployeesController extends Controller
         if ( !auth()->user()->can('rrhh_employees.update') ) {
             abort(403, 'Unauthorized action.');
         }
+
+        //dd($request);
         $employee = Employees::findOrFail($id);
         $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
         $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
@@ -479,6 +502,7 @@ class EmployeesController extends Controller
                 'last_name', 
                 'username', 
                 'email',
+                'institutional_email',
                 'last_name',
                 'gender',
                 'nationality_id',
@@ -487,7 +511,6 @@ class EmployeesController extends Controller
                 'civil_status_id',
                 'phone',
                 'mobile',
-                'email',
                 'address',
                 'social_security_number',
                 'afp_id',
@@ -496,7 +519,7 @@ class EmployeesController extends Controller
                 'bank_id',
                 'bank_account',
                 'date_admission',
-                'photo',
+                //'photo',
                 'status',
                 'country_id',
                 'profession_id',
@@ -521,10 +544,20 @@ class EmployeesController extends Controller
                 $input_details['status'] = 0;
             }
             
+            
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
             if ($request->hasFile('photo')) {
-                $input_details['photo'] = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+                if (!Storage::disk('employee_photo')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/files/employee_photo/'.$folderName, $mode = 0755, true, true);
+                }
+                $file = $request->file('photo');
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($folderName.'/'.$name,  \File::get($file));
+                $input_details['photo'] = $name;
             }
             
+
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));     
             if ($employee->payment_id == null){
@@ -652,14 +685,17 @@ class EmployeesController extends Controller
             if ( !auth()->user()->can('rrhh_employees.view') ) {
                 abort(403, 'Unauthorized action.');
             }
-    
+            
             $employee = Employees::findOrFail($id);
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
+            
             if ($employee->photo == null) {
                 $route = 'uploads/img/defualt.png';
             } else {
-                $route = 'uploads/img/'.$employee->photo;
+                $route = 'uploads/files/employee_photo/'.$folderName.'/'.$employee->photo;
             }
-    
+            
             return view('rrhh.employees.photo', compact('route'));
         }
     }
