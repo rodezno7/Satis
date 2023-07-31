@@ -119,7 +119,7 @@
       @if(in_array('module_rrhh', $enabled_modules))
         @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
         <li
-          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action', 'rrhh-assistances', 'rrhh-setting']) ? 'active active-sub' : '' }}"
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action', 'rrhh-assistances', 'rrhh-setting', 'rrhh-contracts-masive']) ? 'active active-sub' : '' }}"
           id="tour_step4">
           <a href="#" id="tour_step4_menu"><i class="fa fa-address-book" aria-hidden="true"></i><span>RRHH</span>
             <span class="pull-right-container">
@@ -147,14 +147,14 @@
                     </span>
                   </a>
                 </li>
-                <li class="{{ $request->input('type') == 'my_oportunities' ? 'active' : '' }}">
+                {{-- <li class="{{ $request->input('type') == 'my_oportunities' ? 'active' : '' }}">
                   <a href="{{ action('OportunityController@index', ['type' => 'my_oportunities']) }}">
                     <i class="fa fa-drivers-license"></i>
                     <span class="title">
                       @lang('rrhh.personnel_action')
                     </span>
                   </a>
-                </li>
+                </li> --}}
                 <li class="{{ $request->segment(1) == 'rrhh-contracts-masive' ? 'active' : '' }}">
                   <a href="{{ action('RrhhContractController@createMassive') }}">
                     <i class="fa fa-file-text"></i>

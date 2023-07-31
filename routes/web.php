@@ -640,7 +640,6 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
-    //Route::get('rrhh-employees/{id}/show', 'EmployeesController@show');
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
     Route::resource('rrhh-assistances', 'AssistanceEmployeeController');
@@ -661,6 +660,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-contracts-create/{id}', 'RrhhContractController@create');
     Route::get('rrhh-contracts-generate/{id}', 'RrhhContractController@generate');
     Route::post('rrhh-contracts-update', 'RrhhContractController@updateContract');
+    Route::post('rrhh-contracts-finish/{id}', 'RrhhContractController@finishContract');
+    Route::get('rrhh-contracts-show/{id}/{employee_id}', 'RrhhContractController@show');
+    Route::get('rrhh-contracts-createDocument/{id}/{employee_id}', 'RrhhContractController@createDocument');
+    Route::post('rrhh-contracts-storeDocument', 'RrhhContractController@storeDocument');
     Route::resource('rrhh-contracts', 'RrhhContractController');
     Route::get('rrhh-contracts-masive', 'RrhhContractController@createMassive');
     Route::post('rrhh-contracts-masive-1', 'RrhhContractController@storeMassive');

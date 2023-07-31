@@ -24,7 +24,7 @@
                                 <table class="table table-bordered table-condensed" width="100%">
                                     <tr class="text-center">
                                         <td>
-                                            <img src="{{ asset($route) }}" width="125px" height="150px" alt="@lang('employees.employee_photo')">
+                                            <img src="{{ asset($route) }}" width="150px" height="150px" alt="@lang('employees.employee_photo')">
                                         </td>
                                     </tr>
                                     <tr>

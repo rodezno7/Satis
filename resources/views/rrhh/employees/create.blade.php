@@ -371,6 +371,9 @@
     fechaMinima.setFullYear(fechaMinima.getFullYear() - 99);
     fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
+    var fechaActual = new Date();
+    fechaActual = fechaActual.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
     $('#birth_date').datepicker({
       autoclose: true,
       format: datepicker_date_format,
@@ -384,6 +387,8 @@
       autoclose: true,
       format: datepicker_date_format
     });
+
+    $("#date_admission").datepicker("setDate", fechaActual);
 
     if ($("#approved").is(":checked")) {
       $("#dni").keyup(function () {

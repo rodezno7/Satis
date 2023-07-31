@@ -132,7 +132,7 @@
             {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-                html += '<li><a href="/rrhh-employees/'+data.id+'/show"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
+                html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
                 @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';

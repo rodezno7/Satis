@@ -250,4 +250,8 @@ return[
     'important' => 'Important!',
     'employee_massive_contract' => 'The action would apply to all active employees if you do not select any employees.',
     'expired' =>'Expired',
+    'finalized' => 'Finalized',
+    'finish_contract_successfully' => 'Contract finalized successfully',
+    'finish_contract' => 'Finish contract',
+    'validate_contract' => 'The contract cannot be created because there is a current one of the same type.',
 ];

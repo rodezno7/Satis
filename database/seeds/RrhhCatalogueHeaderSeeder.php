@@ -360,18 +360,23 @@ class RrhhCatalogueHeaderSeeder extends Seeder {
         );
 
         Permission::firstOrCreate(
-            ['name' => 'rrhh_contract.update'],
-            ['description' => 'Actualizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['name' => 'rrhh_contract.view'],
+            ['description' => 'Ver contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'rrhh_contract.delete'],
-            ['description' => 'Eliminar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['name' => 'rrhh_contract.uploads'],
+            ['description' => 'Subir contrato firmado del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
             ['name' => 'rrhh_contract.generate'],
             ['description' => 'Generar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_contract.finish'],
+            ['description' => 'Finalizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
 

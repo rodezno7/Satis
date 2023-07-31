@@ -9,7 +9,20 @@ class RrhhPersonnelAction extends Model
 {
     use SoftDeletes;
     
-    protected $fillable = ['description', 'start_date', 'end_date', 'effective_date', 'status', 'rrhh_type_personnel_action_id', 'payment_id', 'bank_id', 'bank_account', 'authorization_date', 'employee_id', 'user_id'];
+    protected $fillable = [
+        'description', 
+        'start_date', 
+        'end_date', 
+        'effective_date', 
+        'status', 
+        'rrhh_type_personnel_action_id', 
+        'payment_id', 
+        'bank_id', 
+        'bank_account', 
+        'authorization_date', 
+        'employee_id', 
+        'user_id'
+    ];
 
     public function employee() {
         return $this->belongsTo('App\Employees');

@@ -307,9 +307,9 @@ class EmployeesController extends Controller
 
         if ($employee->photo == '') {
             if($employee->gender == 'F'){
-                $route = 'uploads/img/avatar_F.png';
+                $route = 'img/avatar-F.png';
             }else{
-                $route = 'uploads/img/avatar_M.png';
+                $route = 'img/avatar-M.png';
             }
         } else {
             $route = 'uploads/img/'.$employee->photo;
@@ -321,20 +321,20 @@ class EmployeesController extends Controller
         $positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $documents = DB::table('rrhh_documents as document')
-        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-        ->join('states as state', 'state.id', '=', 'document.state_id')
-        ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
-        ->where('document.employee_id', $id)
-        ->get();
+            ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
+            ->join('states as state', 'state.id', '=', 'document.state_id')
+            ->join('cities as city', 'city.id', '=', 'document.city_id')
+            ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+            ->where('document.employee_id', $id)
+            ->get();
 
         $economicDependences = DB::table('rrhh_economic_dependences as economicDependence')
-        ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
-        ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
-        ->select('economicDependence.id as id', 'type.value as type', 'economicDependence.name as name', 'economicDependence.birthdate as birthdate', 'economicDependence.phone as phone', 'economicDependence.status as status')
-        ->where('economicDependence.employee_id', $employee->id)
-        ->where('type.rrhh_header_id', 15)
-        ->get();
+            ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
+            ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
+            ->select('economicDependence.id as id', 'type.value as type', 'economicDependence.name as name', 'economicDependence.birthdate as birthdate', 'economicDependence.phone as phone', 'economicDependence.status as status')
+            ->where('economicDependence.employee_id', $employee->id)
+            ->where('type.rrhh_header_id', 15)
+            ->get();
 
         $absenceInabilities = RrhhAbsenceInability::where('employee_id', $employee->id)->get();
 
@@ -507,7 +507,7 @@ class EmployeesController extends Controller
                 'state_id',
                 'city_id'
             ]);
-            if($request->approved){
+            if($request->input('approved')){
                 $input_details['approved'] = 1;
                 $input_details['tax_number'] = $request->input('dni');
             }else{
