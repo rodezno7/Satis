@@ -79,7 +79,7 @@
             startDate: fechaMinima,
         });
 
-        $("#contract_end_date").datepicker("setDate", fechaMaxima);
+        //$("#contract_end_date").datepicker("setDate", fechaMaxima);
     });
 
 

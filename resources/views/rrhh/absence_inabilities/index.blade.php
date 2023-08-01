@@ -17,65 +17,7 @@
 							</button>
 						@endcan
 					</div>
-					<table class="table table-responsive table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
-						<thead>
-							<tr class="active">
-								<th width="20%">@lang('rrhh.option')</th>
-								<th width="30%">@lang('rrhh.type')</th>
-								<th width="30%">@lang('rrhh.date')</th>
-								<th width="20%">@lang('rrhh.amount_')</th>
-								<th width="15%" id="dele">@lang('rrhh.actions' )</th>
-							</tr>
-						</thead>
-						<tbody id="referencesItems">
-							@if (count($absenceInabilities) > 0)
-								@foreach($absenceInabilities as $item)
-									<tr>
-										<td>{{ $item->type }}</td>
-										<td>
-											@if ($item->type == 'Ausencia')
-											{{ $item->typeAbsence->value }}
-											@else
-											{{ $item->typeInability->value }}
-											@endif
-										</td>
-										<td>
-											@if ($item->type == 'Ausencia')
-											{{ @format_date($item->start_date) }}
-											@else
-											{{ @format_date($item->start_date) }} - {{ @format_date($item->end_date) }}
-											@endif
-										</td>
-										<td>
-											@if ($item->type == 'Ausencia')
-											{{ $item->amount }} Horas
-											@else
-											@php
-												$fecha1= new DateTime($item->start_date);
-												$fecha2= new DateTime($item->end_date);
-												$diff = $fecha1->diff($fecha2);
-											@endphp
-											{{ $diff->days }} Días
-											@endif
-										</td>
-										<td>
-											@can('rrhh_absence_inability.update')
-												<button type="button" onClick='editAbsenceInability({{ $item->id }})' class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-											@endcan
-											@can('rrhh_absence_inability.delete')
-												<button type="button" onClick='deleteAbsenceInability({{ $item->id }})' class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-											@endcan
-										</td>
-									</tr>
-								@endforeach
-							@else
-								<tr>
-									<td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
-								</tr>
-							@endif
-						</tbody>
-					</table>
-					<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+					@include('rrhh.economic_dependences.table')
 				</div>				
 			</div>
 		</div>

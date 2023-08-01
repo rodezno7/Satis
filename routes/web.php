@@ -679,16 +679,18 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController');
     Route::get('rrhh-personnel-action-getByEmployee/{id}', 'RrhhPersonnelActionController@getByEmployee');
     Route::get('rrhh-personnel-action-create/{id}', 'RrhhPersonnelActionController@createPersonnelAction');
-    Route::get('rrhh-personnel-action-createAll', 'RrhhPersonnelActionController@createAll');
-    Route::post('rrhh-personnel-action-storeAll', 'RrhhPersonnelActionController@storeAll');
+    Route::get('rrhh-personnel-action-masive', 'RrhhPersonnelActionController@createMasive');
+    Route::post('rrhh-personnel-action-masive', 'RrhhPersonnelActionController@storeMasive');
     Route::get('rrhh-personnel-action-view/{id}', 'RrhhPersonnelActionController@viewPersonnelAction');
     Route::post('rrhh-personnel-action-update', 'RrhhPersonnelActionController@updatePersonnelAction');
     Route::get('rrhh-personnel-action', 'RrhhPersonnelActionController@index');
     Route::get('rrhh-personnel-action-getByAuthorizer', 'RrhhPersonnelActionController@getByAuthorizer');
     Route::post('rrhh-personnel-action/{id}/confirmAuthorization', 'RrhhPersonnelActionController@confirmAuthorization');
-    Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport');
+    Route::get('/rrhh-personnel-action/{id}/authorization-report', 'RrhhPersonnelActionController@authorizationReport')->name('rrhh-personnel-action.authorizationReport');
     Route::get('rrhh-personnel-action-createDocument/{id}', 'RrhhPersonnelActionController@createDocument');
     Route::post('rrhh-personnel-action-storeDocument', 'RrhhPersonnelActionController@storeDocument');
+    Route::get('rrhh-personnel-action-files/{id}', 'RrhhPersonnelActionController@files');
+    Route::get('rrhh-personnel-action-viewFile/{id}', 'RrhhPersonnelActionController@viewFile');
 
     //Routes economic dependencies by employees
     Route::resource('rrhh-absence-inability', 'RrhhAbsenceInabilityController');

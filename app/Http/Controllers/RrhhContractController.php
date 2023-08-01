@@ -102,6 +102,7 @@ class RrhhContractController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+        
         if ( !auth()->user()->can('rrhh_contract.create') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -142,9 +143,13 @@ class RrhhContractController extends Controller
                     } 
                 }
     
+                if($request->contract_end_date != ''){
+                    $input_details['contract_end_date']         = $this->moduleUtil->uf_date($request->input('contract_end_date'));
+                }else{
+                    $input_details['contract_end_date']         = null;
+                }
                 $input_details = $request->all();
                 $input_details['contract_start_date']           = $this->moduleUtil->uf_date($request->input('contract_start_date'));
-                $input_details['contract_end_date']             = $this->moduleUtil->uf_date($request->input('contract_end_date'));
                 $input_details['employee_name']                 = $employee->first_name.' '.$employee->last_name;
                 $input_details['employee_age']                  = $this->employeeUtil->getAge($employee->birth_date);
                 $input_details['employee_gender']               = ($employee->gender != null)? $gender : null;
@@ -188,7 +193,7 @@ class RrhhContractController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
 
@@ -207,10 +212,20 @@ class RrhhContractController extends Controller
         $contract = RrhhContract::where('id', $id)->first();
         $type = RrhhTypeContract::where('id', $contract->rrhh_type_contract_id)->first();
 
-        $contract_start_date           = $this->employeeUtil->getDate($contract->contract_start_date);
-        $contract_start_date_letters   = $this->employeeUtil->getDateLetters($contract->contract_start_date);
-        $contract_end_date             = $this->employeeUtil->getDate($contract->contract_end_date);
-        $contract_end_date_letters     = $this->employeeUtil->getDateLetters($contract->contract_end_date);
+        $contract_end_date             = null;
+        $contract_end_date_letters     = null;
+        if($contract->contract_end_date != ''){
+            $contract_end_date         = $this->employeeUtil->getDate($contract->contract_end_date, true);
+            $contract_end_date_letters = $this->employeeUtil->getDateLetters($contract->contract_end_date, true);
+        }
+        
+        $employee_dni_expedition_date     = null;
+        if($contract->employee_dni_expedition_date != ''){
+            $employee_dni_expedition_date  = $this->employeeUtil->getDate($contract->employee_dni_expedition_date, true);
+        }
+
+        $contract_start_date           = $this->employeeUtil->getDate($contract->contract_start_date, true);
+        $contract_start_date_letters   = $this->employeeUtil->getDateLetters($contract->contract_start_date, true);
         $employee_name                 = $contract->employee_name;
         $employee_age                  = $contract->employee_age;
         $employee_gender               = $contract->employee_gender;
@@ -219,7 +234,7 @@ class RrhhContractController extends Controller
         $employee_civil_status         = $contract->employee_civil_status;
         $employee_profession           = $contract->employee_profession;
         $employee_dni_letters          = $this->employeeUtil->getNumberLetters($contract->employee_dni);
-        $employee_dni_expedition_date  = $this->moduleUtil->format_date($contract->employee_dni_expedition_date);
+        
         $employee_dni_expedition_place = $contract->employee_dni_expedition_place;
         $employee_tax_number           = $contract->employee_tax_number;
         $employee_tax_number_letters   = $this->employeeUtil->getNumberLetters($contract->employee_tax_number);
@@ -238,8 +253,9 @@ class RrhhContractController extends Controller
         $business_tax_number           = $contract->business_tax_number;
         $business_tax_number_letters   = $this->employeeUtil->getNumberLetters($contract->business_tax_number);
         $business_state                = $contract->business_state;
-        $current_date                  = $this->employeeUtil->getDate($contract->getDateLetters);
-        $current_date_letters          = $this->employeeUtil->getDateLetters($contract->getDateLetters);
+        $current_date                  = $this->employeeUtil->getDate($contract->current_date, false);
+        $current_date_letters          = $this->employeeUtil->getDateLetters($contract->current_date, false);
+        
         
         $template = $contract->template;
         $template = str_replace("employee_name", $employee_name, $template);
@@ -253,8 +269,12 @@ class RrhhContractController extends Controller
         $template = str_replace("employee_dni_expedition_place", $employee_dni_expedition_place, $template);
         $template = str_replace("employee_dni", $employee_dni, $template);
         $template = str_replace("employee_tax_number_letters", $employee_tax_number_letters, $template);
-        $template = str_replace("employee_tax_number_approved", $employee_tax_number_approved, $template);
-        $template = str_replace("employee_tax_number", $employee_tax_number, $template);
+        //$template = str_replace("employee_tax_number_approved", $employee_tax_number_approved, $template);
+        if($employee_tax_number_approved == true){
+            $template = str_replace("employee_tax_number", "Homologado", $template);
+        }else{
+            $template = str_replace("employee_tax_number", $employee_tax_number, $template);
+        }
         $template = str_replace("employee_state", $employee_state, $template);
         $template = str_replace("employee_city", $employee_city, $template);
         $template = str_replace("employee_address", $employee_address, $template);
@@ -276,6 +296,7 @@ class RrhhContractController extends Controller
         $template = str_replace("current_date_letters", $current_date_letters, $template);
         $template = str_replace("current_date", $current_date, $template);
 
+        
         $pdf = \PDF::loadView('rrhh.contract.report_pdf', compact('contract', 'template'));
 
         $pdf->setPaper('letter', 'portrait');

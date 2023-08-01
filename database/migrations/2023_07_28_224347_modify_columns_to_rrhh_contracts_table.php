@@ -30,7 +30,6 @@ class ModifyColumnsToRrhhContractsTable extends Migration
             $table->string('line_of_business')->nullable()->after('business_address');
             $table->date('current_date')->nullable()->after('template');
             $table->string('file')->nullable()->after('current_date');
-
         });
     }
 

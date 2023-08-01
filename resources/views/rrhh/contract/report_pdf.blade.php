@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>{{ __('rrhh.contract') }}</title>
     <style>
         @page {
@@ -11,9 +11,8 @@
         }
 
         body {
-            /* font-family: 'Helvetica', 'Arial', sans-serif; */
+            font-family: 'DejaVu Sans', 'Helvetica', 'Arial', sans-serif; 
             color: #000000;
-            /* font-size: 14px; */
             margin-top: {{ $contract->margin_top }};
             margin-bottom: {{ $contract->margin_bottom }};
             margin-left: {{ $contract->margin_left }};
@@ -72,8 +71,8 @@
     <div>  
     {!!  $template  !!}
     </div>
-    <div id="footer">
+    {{-- <div id="footer">
         <div class="page-number"></div>
-    </div>
+    </div> --}}
 </body>
 </html>

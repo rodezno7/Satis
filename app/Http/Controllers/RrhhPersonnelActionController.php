@@ -121,6 +121,7 @@ class RrhhPersonnelActionController extends Controller
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
+
         $users = DB::table('users as user')
             ->join('model_has_roles as user_role', 'user_role.model_id', '=', 'user.id')
             ->join('roles as roles', 'roles.id', '=', 'user_role.role_id')
@@ -357,9 +358,38 @@ class RrhhPersonnelActionController extends Controller
 
         return $output;
     }
+
+    //List uploads files of personnel actions 
+    function files($id) 
+    {
+        if ( !auth()->user()->can('rrhh_personnel_action.view') ) {
+            abort(403, 'Unauthorized action.');
+        }
+        $personnelActionsFile = RrhhPersonnelActionFile::where('rrhh_personnel_action_id', $id)->get();
+        $personnelAction = RrhhPersonnelAction::where('id', $id)->first();
+        $employee = Employees::where('id', $personnelAction->employee_id)->first();
+
+        return view('rrhh.personnel_actions.list_files', compact('personnelActionsFile', 'employee'));
+    }
+
+    //View uploads files of personnel actions 
+    function viewFile($id) 
+    {
+        if ( !auth()->user()->can('rrhh_personnel_action.view') ) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $personnelActionFile = RrhhPersonnelActionFile::findOrFail($id);
+        $business_id = request()->session()->get('user.business_id');
+        $folderName = 'business_'.$business_id;
+        $route = 'uploads/files/employee_personel_actions/'.$folderName.'/'.$personnelActionFile->file;
+        $ext = substr($personnelActionFile->file, -3);
+
+        return view('rrhh.personnel_actions.view_file', compact('route', 'ext'));
+    }
     
 
-    public function createAll()
+    public function createMasive()
     {
         if (!auth()->user()->can('rrhh_personnel_action.create')) {
             abort(403, 'Unauthorized action.');
@@ -389,7 +419,7 @@ class RrhhPersonnelActionController extends Controller
     }
 
  
-    public function storeAll(Request $request)
+    public function storeMasive(Request $request)
     {
         if (!auth()->user()->can('rrhh_personnel_action.create')) {
             abort(403, 'Unauthorized action.');
@@ -673,6 +703,8 @@ class RrhhPersonnelActionController extends Controller
         return $output;
     }
 
+    
+
     /**
      * Display the specified resource.
      *
@@ -690,7 +722,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelAction = DB::table('rrhh_personnel_actions as personnel_action')
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
             ->join('users as user', 'user.id', '=', 'personnel_action.user_id')
-            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
+            ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as authorization_date', 'personnel_action.effective_date as effective_date', 'personnel_action.start_date as start_date', 'personnel_action.end_date as end_date', 'personnel_action.status as status', 'personnel_action.employee_id as employee_id', 'personnel_action.bank_account as bank_account', 'type.name as type', 'type.id as type_id', 'user.first_name as first_name', 'user.last_name as last_name')
             ->where('personnel_action.id', $id)
             ->get();
 
@@ -718,9 +750,7 @@ class RrhhPersonnelActionController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $business = Business::find($business_id);
 
-        return view('rrhh.personnel_actions.view',
-            compact('personnelAction', 'salary', 'position', 'business', 'actions', 'employee', 'users', 'payment', 'bank')
-        );
+        return view('rrhh.personnel_actions.view', compact('personnelAction', 'salary', 'position', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
     }
 
     /**

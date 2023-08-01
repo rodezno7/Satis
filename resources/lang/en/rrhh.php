@@ -209,7 +209,7 @@ return[
     'to_the_department_of' => 'To the department of',
     'to_the_position_of' => 'To the position of',
     'personnel_actions_massive' => 'Personnel actions massive',
-    'incomplete_information' => 'You must fill in the information of the employees',
+    'incomplete_information' => 'You must fill in the information of the employees in the edit option',
     'mark_assistance' => 'Mark assistance',
     'assistance' => 'Assistance',
     'number_of_hours' => 'Number of hours',
@@ -257,4 +257,5 @@ return[
     'validate_contract' => 'The contract cannot be created because there is a current one of the same type.',
     'personal_email' => 'Personal email',
     'institutional_email' => 'Institutional email',
+    'files' => 'Files',
 ];
