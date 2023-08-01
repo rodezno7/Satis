@@ -11,6 +11,7 @@ use App\RrhhPositionHistory;
 use App\Bank;
 use App\Business;
 use App\RrhhAbsenceInability;
+use App\RrhhContract;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -345,7 +346,7 @@ class EmployeesController extends Controller
             ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
             ->join('states as state', 'state.id', '=', 'document.state_id')
             ->join('cities as city', 'city.id', '=', 'document.city_id')
-            ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+            ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
             ->where('document.employee_id', $id)
             ->get();
 
@@ -365,7 +366,27 @@ class EmployeesController extends Controller
             ->where('personnel_action.employee_id', $employee->id)
             ->get();
 
-        return view('rrhh.employees.show', compact('employee', 'route', 'documents', 'positions', 'salaries', 'business', 'economicDependences', 'absenceInabilities', 'personnelActions'));
+        $contracts = RrhhContract::join('rrhh_type_contracts as type', 'type.id', '=', 'rrhh_contracts.rrhh_type_contract_id')
+            ->join('employees as employee', 'employee.id', '=', 'rrhh_contracts.employee_id')
+            ->select('rrhh_contracts.id as id', 'type.name as type', 'rrhh_contracts.contract_start_date as contract_start_date', 'rrhh_contracts.contract_end_date as contract_end_date', 'rrhh_contracts.contract_status as contract_status')
+            ->where('rrhh_contracts.employee_id', $employee->id)
+            ->orderBy('id', 'DESC')
+            ->get();
+    
+        $current_date = Carbon::now()->format('Y-m-d');
+    
+        foreach($contracts as $contract){
+            if($contract->contract_status == 'Vigente'){
+                if($contract->contract_end_date < $current_date){
+                    $contract->contract_status = 'Vencido';
+                    $contract->update();
+                }
+            }
+        }
+
+        $show = true;
+
+        return view('rrhh.employees.show', compact('employee', 'route', 'show', 'documents', 'positions', 'salaries', 'business', 'economicDependences', 'absenceInabilities', 'personnelActions', 'contracts'));
     }
 
     /**
@@ -402,12 +423,11 @@ class EmployeesController extends Controller
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
 
         $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
-        
        
         for ($i=0; $i < count($documents); $i++) { 
             if(isset($type_documents)){

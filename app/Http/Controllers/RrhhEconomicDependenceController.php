@@ -68,7 +68,6 @@ class RrhhEconomicDependenceController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        
         $business_id = request()->session()->get('user.business_id');
         $typeRelationships = DB::table('rrhh_datas')->where('rrhh_header_id', 15)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
         $employee_id = $id;

@@ -18,7 +18,10 @@
                 <tbody id="referencesItems">
                     @foreach ($documentsFile as $item)
                         <tr>
-                            <td>{{ $item->file }}</td>
+                            @php
+                                $name = explode('_', $item->file);
+                            @endphp
+                            <td>{{ $name[1] }}</td>
                             <td>
                                 @can('rrhh_document_employee.view')
                                     <button type="button" onClick="viewFile({{ $item->id }})"

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', __('rrhh.type_contract'))
 
+@section('css')
+<script src="{{ asset('js/ckeditor4/ckeditor.js') }}"></script>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -89,14 +93,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row row-editor">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <label>@lang('rrhh.contract_template')</label> <span class="text-danger">*</span>
-                        <div class="editor-container">
-                            <textarea class="ckeditor form-control" name="template" id="template" required>{{ $type->template }}</textarea>
-                        </div>
-                    </div>
-                </div>
+
+                <textarea name="editor" id="editor" required>{{ $type->template }}</textarea>
 
                 <hr>
                 <div class="row">
@@ -162,10 +160,10 @@
                                     <td>employee_tax_number_letters</td>
                                     <td>Obtiene el NIT del empleado. El formato será en letras.</td>
                                 </tr>
-                                <tr>
+                                {{-- <tr>
                                     <td>employee_tax_number_approved</td>
                                     <td>Obtiene si el NIT del empleado está Homologado o no.</td>
-                                </tr>
+                                </tr> --}}
                                 <tr>
                                     <td>employee_state</td>
                                     <td>Obtiene el municipio de residencia del empleado.</td>
@@ -280,10 +278,9 @@
     </section>
 @endsection
 
-@section('javascript')
-    <script src="{{ asset('js/ckeditor.js') }}"></script>
-    
+@section('javascript') 
     <script type="text/javascript">
+        CKEDITOR.replace('editor');
         // On submit of template form
         $(document).on( 'click', '.submit_type_contract_form', function(e){
             e.preventDefault();

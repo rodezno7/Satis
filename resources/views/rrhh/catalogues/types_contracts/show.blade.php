@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="ISO 8859-1">
     <title>{{ __('rrhh.contract') }}</title>
     <style>
         @page {
@@ -14,10 +14,10 @@
             font-family: 'Helvetica', 'Arial', sans-serif;
             color: #000000;
             font-size: 14px;
-            margin-top: {{  $type->margin_top  }};
-            margin-bottom: {{  $type->margin_bottom  }};
-            margin-left: {{  $type->margin_left  }};
-            margin-right: {{  $type->margin_right  }};
+            margin-top: {{  $type->margin_top  }}px;
+            margin-bottom: {{  $type->margin_bottom  }}px;
+            margin-left: {{  $type->margin_left  }}px;
+            margin-right: {{  $type->margin_right  }}px;
         }
 
         h1 {
@@ -69,9 +69,9 @@
 </head>
 
 <body>
-    <div id="footer">
+    {{-- <div id="footer">
         <div class="page-number"></div>
-    </div>
+    </div> --}}
     {!! $type->template !!}
 </body>
 </html>

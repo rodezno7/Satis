@@ -206,7 +206,7 @@ return[
     'to_the_department_of' => 'Al departamento de',
     'to_the_position_of' => 'Al puesto de',
     'personnel_actions_massive' => 'Acciones de personal masivas',
-    'incomplete_information' => 'Debe completar la información de los empleados',
+    'incomplete_information' => 'Debe completar la información de los empleados en la opción de editar.',
     'mark_assistance' => 'Marcar asistencia',
     'assistance' => 'Asistencia',
     'number_of_hours' => 'Cantidad de horas',
@@ -255,4 +255,5 @@ return[
     'validate_contract' => 'No se puede crear el contrato porque hay uno vigente del mismo tipo.',
     'personal_email' => 'Correo personal',
     'institutional_email' => 'Correo institutional',
+    'files' => 'Archivos',
 ];

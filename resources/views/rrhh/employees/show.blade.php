@@ -9,6 +9,7 @@
         <li class="active"><a href="#details" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.personal_data') }}</a></li>
         <li><a href="#history" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.history') }}</a></li>
         <li><a href="#documents" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.documents') }}</a></li>
+        <li><a href="#contracts" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.contracts') }}</a></li>
         <li><a href="#absence_inability" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.absence_inability') }}</a></li>
         <li><a href="#personnel_action" role="tab" data-toggle="tab" style="font-size: 15px !important;">{{ __('rrhh.personnel_action') }}</a></li>
     </ul>
@@ -293,46 +294,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <h4 class="box-title text-center"><b>{{ __('rrhh.economic_dependencies') }}</b></h4>
-                            <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
-                                <thead>
-                                    <tr class="active">
-                                        <th>@lang('rrhh.name')</th>
-                                        <th>@lang('rrhh.relationships')</th>
-                                        <th>@lang('rrhh.birthdate')</th>
-                                        <th width="12%">@lang('rrhh.phone')</th>
-                                        <th width="10%">@lang('rrhh.status')</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="referencesItems">
-                                    @if (count($economicDependences) > 0)
-                                        @foreach($economicDependences as $item)
-                                            <tr>
-                                                <td>{{ $item->type }}</td>
-                                                <td>{{ $item->name }}</td>
-                                                <td>
-                                                    @if ($item->birthdate != null)
-                                                    {{ @format_date($item->birthdate) }}
-                                                    @else
-                                                        N/A
-                                                    @endif
-                                                </td>
-                                                <td>{{ $item->phone }}</td>
-                                                <td>
-                                                    @if ($item->status == 1)
-                                                        {{ __('rrhh.active') }}
-                                                    @else
-                                                    {{ __('rrhh.inactive') }}
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="6" class="text-center">@lang('lang_v1.no_records')</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                            @include('rrhh.economic_dependences.table')
                         </div>
                     </div>
                 </div>
@@ -449,38 +411,18 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <table class="table table-responsive table-bordered table-condensed table-text-center"
-                                style="font-size: inherit;" id="documents-table">
-                                <thead>
-                                    <tr class="active">
-                                        <th width="20%">@lang('rrhh.document_type')</th>
-                                        <th width="20%">@lang('rrhh.state_expedition')</th>
-                                        <th width="20%">@lang('rrhh.city_expedition')</th>
-                                        <th width="15%">@lang('rrhh.number')</th>
-                                        <th width="15%">@lang('rrhh.file')</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="referencesItems">
-                                    @if (count($documents) > 0)
-                                        @foreach($documents as $item)
-                                        <tr>
-                                            <td>{{ $item->type }}</td>
-                                            <td>{{ $item->state }}</td>
-                                            <td>{{ $item->city }}</td>
-                                            <td>{{ $item->number }}</td>
-                                            <td>
-                                                <button type="button" onClick="viewFile({{ $item->id }})"
-                                                    class="btn btn-info btn-xs">{{ __('rrhh.view_file') }}</button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    @else
-                                    <tr>
-                                        <td colspan="5" class="text-center">@lang('lang_v1.no_records')</td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                            @include('rrhh.documents.table')
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="contracts">
+            <div class="boxform_u box-solid_u" style="border-top: 0px solid #d2d6de !important; border-radius: 0px !important;">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @include('rrhh.contract.table')
                         </div>
                     </div>
                 </div>
@@ -491,55 +433,7 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;" id="types_relationships-table">
-                                <thead>
-                                    <tr class="active">
-                                        <th>@lang('rrhh.option')</th>
-                                        <th>@lang('rrhh.type')</th>
-                                        <th>@lang('rrhh.date')</th>
-                                        <th>@lang('rrhh.amount')</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="referencesItems">
-                                    @if (count($absenceInabilities) > 0)
-                                        @foreach($absenceInabilities as $item)
-                                            <tr>
-                                                <td>{{ $item->type }}</td>
-                                                <td>
-                                                    @if ($item->type == 'Ausencia')
-                                                    {{ $item->typeAbsence->value }}
-                                                    @else
-                                                    {{ $item->typeInability->value }}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($item->type == 'Ausencia')
-                                                    {{ @format_date($item->start_date) }}
-                                                    @else
-                                                    {{ @format_date($item->start_date) }} - {{ @format_date($item->end_date) }}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($item->type == 'Ausencia')
-                                                    {{ $item->amount }} Horas
-                                                    @else
-                                                    @php
-                                                        $fecha1= new DateTime($item->start_date);
-                                                        $fecha2= new DateTime($item->end_date);
-                                                        $diff = $fecha1->diff($fecha2);
-                                                    @endphp
-                                                    {{ $diff->days }} Días
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                            @include('rrhh.absence_inabilities.table')
                         </div>
                     </div>
                 </div>
@@ -550,42 +444,7 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;" id="documents-table">
-                                <thead>
-                                    <tr class="active">
-                                        <th>@lang('rrhh.type_personnel_action')</th>
-                                        <th>@lang('rrhh.description')</th>
-                                        <th>@lang('rrhh.status')</th>
-                                        <th>@lang('rrhh.created_date')</th>
-                                        <th>@lang('rrhh.actions')</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="referencesItems">
-                                    @if (count($personnelActions) > 0)
-                                        @foreach($personnelActions as $item)
-                                            <tr>
-                                                <td>{{ $item->type }}</td>
-                                                <td>
-                                                    {{ $item->description }}
-                                                </td>
-                                                <td>
-                                                    {{ $item->status }}
-                                                </td>
-                                                <td>
-                                                    {{ @format_date($item->created_at) }}
-                                                </td>
-                                                <td>
-                                                    <button onClick="viewPersonnelAction({{ $item->id }})" class="btn-sm btn-primary" title="{{ __('messages.view') }}"><i class="fa fa-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="4" class="text-center">@lang('lang_v1.no_records')</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                            @include('rrhh.personnel_actions.table')
                         </div>
                     </div>
                 </div>
@@ -602,6 +461,14 @@
 		</div>
 	</div>
 
+    <div class="modal fade" id="modal_edit_action" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal_content_edit_document">
+    
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modal_photo" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" id="modal_content_photo">
@@ -610,29 +477,4 @@
         </div>
     </div>
 </section>
-@endsection
-@section('javascript')
-<script type="text/javascript">
-    function viewFile(id) 
-	{
-		$("#modal_content_photo").html('');
-		var url = "{!!URL::to('/rrhh-documents-viewFile/:id')!!}";
-		url = url.replace(':id', id);
-		$.get(url, function(data) {
-			$("#modal_content_photo").html(data);
-			$('#modal_photo').modal({backdrop: 'static'});
-		});
-	}
-
-    function viewPersonnelAction(id) 
-	{
-		$("#modal_content_personnel_action").html('');
-		var url = "{!!URL::to('/rrhh-personnel-action-view/:id')!!}";
-		url = url.replace(':id', id);
-		$.get(url, function(data) {
-			$("#modal_content_personnel_action").html(data);
-			$('#modal_personnel_action').modal({backdrop: 'static'});
-		});
-	}
-</script>
 @endsection

@@ -582,14 +582,6 @@
             $("#text-approved").hide();
             $("#tax_number").prop('disabled', false);            
 		}
-
-
-        // if ($("#approved").is(":checked")) {
-        //     $("#dni").keyup(function () {
-        //         var value = $(this).val();
-        //         $("#tax_number").val(value);
-        //     });
-        // }
     });
 
     function getDocuments() {

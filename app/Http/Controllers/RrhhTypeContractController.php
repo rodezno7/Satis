@@ -47,13 +47,14 @@ class RrhhTypeContractController extends Controller
     }
 
     public function store(Request $request){
+        //dd($request);
         if ( !auth()->user()->can('rrhh_catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
             'name'          => 'required',
-            'template'      => 'required',
+            'editor'      => 'required',
             'margin_top'    => 'required|numeric|between:0.01,3.00',
             'margin_bottom' => 'required|numeric|between:0.01,3.00',
             'margin_left'   => 'required|numeric|between:0.01,3.00',
@@ -63,13 +64,13 @@ class RrhhTypeContractController extends Controller
         try {
             DB::beginTransaction();
             $input_details = $request->only([
-                'name', 
-                'template',
+                'name',
                 'margin_top',
                 'margin_bottom',
                 'margin_left',
                 'margin_right',
             ]);
+            $input_details['template'] = $request->input('editor');
             $input_details['business_id'] = $request->session()->get('user.business_id');
             //dd($input_details);
             RrhhTypeContract::create($input_details);
@@ -111,10 +112,7 @@ class RrhhTypeContractController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $type = RrhhTypeContract::where('id', $id)->where('business_id', $business_id)->first();
         $pdf = \PDF::loadView(
-            'rrhh.catalogues.types_contracts.show',
-            compact([
-                'type',
-            ])
+            'rrhh.catalogues.types_contracts.show', compact(['type'])
         );
 
         $pdf->setPaper('letter', 'portrait');
@@ -149,28 +147,28 @@ class RrhhTypeContractController extends Controller
         if ( !auth()->user()->can('rrhh_catalogues.update') ) {
             abort(403, 'Unauthorized action.');
         }
+        //dd($request);
 
         $request->validate([
             'name'          => 'required',
-            'template'      => 'required',
-            'margin_top'    => 'required|numeric|between:0.01,3.00',
-            'margin_bottom' => 'required|numeric|between:0.01,3.00',
-            'margin_left'   => 'required|numeric|between:0.01,3.00',
-            'margin_right'  => 'required|numeric|between:0.01,3.00',
+            'editor'      => 'required',
+            'margin_top'    => 'required|numeric|between:0.01,50.00',
+            'margin_bottom' => 'required|numeric|between:0.01,50.00',
+            'margin_left'   => 'required|numeric|between:0.01,50.00',
+            'margin_right'  => 'required|numeric|between:0.01,50.00',
         ]);
 
         try {
             DB::beginTransaction();
             $input_details = $request->only([
                 'name', 
-                'template',
                 'margin_top',
                 'margin_bottom',
                 'margin_left',
                 'margin_right',
                 'status',
             ]);
-
+            $input_details['template'] = $request->input('editor');
             $business_id = request()->session()->get('user.business_id');
             $type = RrhhTypeContract::where('id', $id)->where('business_id', $business_id)->first();
             $type->update($input_details);
