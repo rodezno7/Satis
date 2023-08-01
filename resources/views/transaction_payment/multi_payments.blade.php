@@ -29,8 +29,10 @@
 <section class="content">
     <div class="box">
         <div class="box-body">
+            {!! Form::open(['url' => action('TransactionPaymentController@storeMultiPayments'),
+                'method' => 'post', 'id' => 'multi_payments_form', 'files' => true]) !!}
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-lg-6 col-md-8 col-sm-12">
                     <div class="form-group">
                         {!! Form::label('customer', __('customer.customer')) !!} <span class="text-danger">*</span>
                         {!! Form::select('customer', [], null, ['class' => 'form-control', 'id' => 'customer']) !!}
@@ -39,7 +41,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label('amount', __('payment.amount')) !!} <span class="text-danger">*</span>
                         <div class="input-group">
@@ -51,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label('paid_on', __('payment.paid_on')) !!} <span class="text-danger">*</span>
                         <div class="input-group">
@@ -62,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label('method', __('payment.payment_method')) !!} <span class="text-danger">*</span>
                         <div class="input-group">
@@ -73,9 +75,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-3 col-md-4 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('document', __('purchase.attach_document')) !!}
+                        {!! Form::file('document') !!}
+                    </div>
+                </div>
             </div>
             <div class="row payment-details card-method" style="display: none;">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-lg-6 col-md-8 col-sm-12">
                     <div class="form-group">
                         {!! Form::label("card_holder_name", __('payment.card_holder_name')) !!}
                         <div class="input-group">
@@ -87,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("card_authotization_number", __('payment.card_authotization_number')) !!}
                         <div class="input-group">
@@ -99,7 +107,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("card_type", __('payment.card_type')) !!}
                         <div class="input-group">
@@ -112,7 +120,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("card_pos", __('payment.card_pos')) !!}
                         <div class="input-group">
@@ -126,7 +134,7 @@
                 </div>
             </div>
             <div class="row payment-details check-method" style="display: none;">
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("check_number", __('payment.check_number')) !!}
                         <div class="input-group">
@@ -138,7 +146,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("check_account", __('payment.check_account')) !!}
                         <div class="input-group">
@@ -150,7 +158,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("check_bank", __('payment.check_bank')) !!}
                         <div class="input-group">
@@ -162,7 +170,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12">
+                <div class="col-lg-6 col-md-8 col-sm-12">
                     <div class="form-group">
                         {!! Form::label("check_account_owner", __('payment.check_account_owner')) !!}
                         <div class="input-group">
@@ -176,7 +184,7 @@
                 </div>
             </div>
             <div class="row payment-details bank_transfer-method" style="display: none;">
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("transfer_ref_no", __('payment.transfer_ref_no')) !!}
                         <div class="input-group">
@@ -188,7 +196,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("transfer_issuing_bank", __('payment.transfer_issuing_bank')) !!}
                         <div class="input-group">
@@ -200,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4">
                     <div class="form-group">
                         {!! Form::label("transfer_receiving_bank", __('payment.transfer_receiving_bank')) !!}
                         <div class="input-group">
@@ -214,14 +222,14 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="form-group">
                         {!! Form::label('search_invoice', __('sale.search_invoices')) !!}
                         {!! Form::select('search_invoice', [], null, ['class' => 'form-control', 'id' => 'search_invoices', 'disabled']) !!}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row invoices-row">
                 <div class="col-md-12 col-sm-12">
                     <div class="table-responsive">
                         <table class="table table-striped table-sm" id="invoices">
@@ -239,9 +247,9 @@
                                 <!-- Invoinces table records here -->
                             </tbody>
                             <tfoot>
-                                <tr>
+                                <tr> 
                                     <th colspan="2" style="text-align: center;">
-                                        TOTALES
+                                        {{ mb_strtoupper(__('sale.total')) }}
                                     </th>
                                     <th id="total_due" style='text-align: right;'></th>
                                     <th id="total_payment" style='text-align: right;'></th>
@@ -253,10 +261,19 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-right">
+                    <button type="button" id="reset_payments"
+                        class="btn btn-danger btn-flat">@lang('messages.cancel')</button>
+                    <button type="button" id="save_payments"
+                        class="btn btn-primary btn-flat">@lang('messages.save')</button>
+                </div>
+            </div>
+            {!! Form::close() !!}
         </div>
     </div>
 </section>
-    <!-- /.content -->
+<!-- /.content -->
 @stop
 @section('javascript')
     <script>
@@ -295,10 +312,15 @@
                 let id = d.params.data.id;
 
                 if (id) {
+                    let amount = $('input#amount').val();
+
                     $('input#customer_id').val(id);
                     $('table#invoices tbody').empty();
                     updateInvoiceTableTotals();
-                    $('select#search_invoices').removeAttr('disabled');
+
+                    if (amount > 0) {
+                        $('select#search_invoices').removeAttr('disabled');
+                    }
                 }
             });
 
@@ -329,6 +351,7 @@
                 }
             });
 
+            /**  On select invoince */
             $('select#search_invoices').on('select2:select', function (d) {
                 let data = d.params.data;
                 let table = $('table#invoices tbody');
@@ -385,6 +408,7 @@
                 __currency_convert_recursively($('table#invoices'));
             });
 
+            /** On click on delete button */
             $(document).on('click', 'i.fa-times', function () {
                 let tr = $(this).closest('tr');
 
@@ -393,7 +417,7 @@
                     text: LANG.wont_be_able_revert,
                     icon: 'warning',
                     buttons: true,
-                    dangerMode: true,
+                    dangerMode: true
                 }).then((willDelete) => {
                     if (willDelete) {
                         tr.remove();
@@ -404,6 +428,7 @@
                 });
             });
 
+            /** On payment method change */
             $('select#payment_method').on('change', function () {
                 let method = $(this).val();
                 let payment_details = $('div.payment-details');
@@ -415,6 +440,20 @@
                         $(div).hide();
                     }
                 });
+            });
+
+            /** On payment amount change */
+            $('input#amount').on('change', function () {
+                let amount = $(this).val();
+                let customer = $('select#customer').val();
+                let search_invoices = $('select#search_invoices');
+
+                if (amount > 0 && customer) {
+                    search_invoices.removeAttr('disabled');
+
+                } else {
+                    search_invoices.attr('disabled', true);
+                }
             });
 
             /**
