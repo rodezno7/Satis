@@ -74,10 +74,10 @@ class EmployeeUtil extends Util
         }else{
             if($day == '01'){
                 \Log::info(mb_strtolower('Al primer día del mes de '.$month.' de '.$year));
-                return mb_strtolower('Al primer día del mes de '.$month.' de '.$year);
+                return 'Al'.mb_strtolower('primer día del mes de '.$month.' de '.$year);
                 
             }else{
-                return mb_strtolower('A los '. $day.' días del mes de '.$month.' de '.$year);
+                return 'A'.mb_strtolower('los '. $day.' días del mes de '.$month.' de '.$year);
             } 
         }
     }
@@ -105,9 +105,9 @@ class EmployeeUtil extends Util
             return strtolower($day.' de '.$month.' de '.$year);
         }else{
             if($day == '01'){
-                return strtolower('Al primer día del mes de '.$month.' de '.$year);
+                return 'Al '.strtolower('primer día del mes de '.$month.' de '.$year);
             }else{
-                return strtolower('A los '. $day.' días del mes de '.$month.' de '.$year);
+                return 'A '.strtolower('los '. $day.' días del mes de '.$month.' de '.$year);
             } 
         }
         

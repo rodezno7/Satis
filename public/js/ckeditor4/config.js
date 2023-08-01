@@ -9,74 +9,44 @@ CKEDITOR.editorConfig = function( config ) {
 	// config.uiColor = '#AADC6E';
 	// %REMOVE_START%
 	config.plugins =
-		//'about,' +
-		//'a11yhelp,' +
 		'basicstyles,' +
 		'bidi,' +
-		//'blockquote,' +
 		'clipboard,' +
 		'colorbutton,' +
 		'colordialog,' +
 		'copyformatting,' +
 		'contextmenu,' +
 		'dialogadvtab,' +
-		//'div,' +
 		'elementspath,' +
 		'enterkey,' +
 		'entities,' +
 		'filebrowser,' +
-		//'find,' +
 		'floatingspace,' +
 		'font,' +
 		'format,' +
-		//'forms,' +
 		'horizontalrule,' +
-		//'htmlwriter,' +
 		'image,' +
-		//'iframe,' +
 		'indentlist,' +
 		'indentblock,' +
 		'justify,' +
-		//'language,' +
 		'link,' +
 		'list,' +
 		'liststyle,' +
 		'magicline,' +
 		'maximize,' +
-		//'newpage,' +
-		//'pagebreak,' +
-		//'pastefromgdocs,' +
-		//'pastefromlibreoffice,' +
-		//'pastefromword,' +
-		//'pastetext,' +
-		//'editorplaceholder,' +
-		//'preview,' +
-		//'print,' +
-		//'removeformat,' +
 		'resize,' +
-		//'save,' +
 		'selectall,' +
-		//'showblocks,' +
 		'showborders,' +
-		//'smiley,' +
-		//'sourcearea,' +
-		//'specialchar,' +
 		'stylescombo,' +
 		'tab,' +
 		'table,' +
 		'tableselection,' +
 		'tabletools,' +
 		'tableresize,'+
-		//'templates,' +
 		'toolbar,' +
 		'undo,' +
 		'uploadimage,' +
 		'wysiwygarea';
-
-
-
-
-		
 	// %REMOVE_END%
 };
 
