@@ -3,10 +3,6 @@
 
 @section('css')
     <style>
-        .row {
-            margin-top: 15px !important;
-        }
-
         table#invoices tbody tr td {
             vertical-align: middle;
         }
@@ -35,13 +31,194 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-6 col-sm-12">
-                    {!! Form::label('customer', __('customer.customer')) !!}
-                    {!! Form::select('customer', [], null, ['class' => 'form-control', 'id' => 'customer']) !!}
-                    {!! Form::hidden(null, null, ['id' => 'customer_id']) !!}
+                    <div class="form-group">
+                        {!! Form::label('customer', __('customer.customer')) !!} <span class="text-danger">*</span>
+                        {!! Form::select('customer', [], null, ['class' => 'form-control', 'id' => 'customer']) !!}
+                        {!! Form::hidden(null, null, ['id' => 'customer_id']) !!}
+                    </div>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('amount', __('payment.amount')) !!} <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-money"></i>
+                            </span>
+                            {!! Form::text('amount', null, ['class' => 'form-control input_number',
+                                'placeholder' => __('payment.amount'), 'id' => 'amount']) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('paid_on', __('payment.paid_on')) !!} <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            {!! Form::text('paid_on', date('d/m/Y', strtotime('now')), ['class' => 'form-control input-date', 'readonly']) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('method', __('payment.payment_method')) !!} <span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card-alt"></i>
+                            </span>
+                            {!! Form::select('method', $payment_methods, 'cash', ['class' => 'form-control', 'id' => 'payment_method']) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row payment-details card-method" style="display: none;">
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        {!! Form::label("card_holder_name", __('payment.card_holder_name')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            {!! Form::text("card_holder_name", null,
+                                ['class' => 'form-control', 'placeholder' => __('payment.card_holder_name')]); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("card_authotization_number", __('payment.card_authotization_number')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa">#</i>
+                            </span>
+                            {!! Form::text("card_authotization_number", null,
+                                ['class' => 'form-control input_number', 'placeholder' => __('messages.please_select')]); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("card_type", __('payment.card_type')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card-alt"></i>
+                            </span>
+                            {!! Form::select("card_type", ['credit' => __('payment.credit_card'),
+                                'debit' => __('payment.debit_card'), 'visa' => 'Visa', 'master' => 'MasterCard'],
+                                'credit', ['class' => 'form-control']); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("card_pos", __('payment.card_pos')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-credit-card"></i>
+                            </span>
+                            {!! Form::select("card_pos", $pos, null, ['class' => 'form-control',
+                                'placeholder' => __('messages.please_select')]) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row payment-details check-method" style="display: none;">
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("check_number", __('payment.check_number')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa">#</i>
+                            </span>
+                            {!! Form::text("check_number", null,
+                                ['class' => 'form-control input_number', 'placeholder' => __('payment.check_number')]); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("check_account", __('payment.check_account')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-file-o"></i>
+                            </span>
+                            {!! Form::text("check_account", null,
+                                ['class' => 'form-control input_number', 'placeholder' => __('payment.check_account')]); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("check_bank", __('payment.check_bank')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-university"></i>
+                            </span>
+                            {!! Form::select("check_bank", $banks, null,
+                                ['class' => 'form-control', 'placeholder' => __('messages.please_select')]) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="form-group">
+                        {!! Form::label("check_account_owner", __('payment.check_account_owner')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            {!! Form::text("check_account_owner", null,
+                                ['class' => 'form-control', 'placeholder' => __('payment.check_account_owner')]); !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row payment-details bank_transfer-method" style="display: none;">
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("transfer_ref_no", __('payment.transfer_ref_no')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa">#</i>
+                            </span>
+                            {!! Form::text( "transfer_ref_no", null,
+                                ['class' => 'form-control input_number', 'placeholder' => __('payment.transfer_ref_no')]); !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("transfer_issuing_bank", __('payment.transfer_issuing_bank')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-university"></i>
+                            </span>
+                            {!! Form::select("transfer_issuing_bank", $banks, null,
+                                ['class' => 'form-control', 'placeholder' => __('messages.please_select')]) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label("transfer_receiving_bank", __('payment.transfer_receiving_bank')) !!}
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-file-o"></i>
+                            </span>
+                            {!! Form::select("transfer_receiving_bank", $bank_accounts, null,
+                                ['class' => 'form-control', 'placeholder' => __('messages.please_select')]) !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-3 col-sm-6">
-                    {!! Form::label('search_invoice', __('sale.search_invoices')) !!}
-                    {!! Form::select('search_invoice', [], null, ['class' => 'form-control', 'id' => 'search_invoices', 'disabled']) !!}
+                    <div class="form-group">
+                        {!! Form::label('search_invoice', __('sale.search_invoices')) !!}
+                        {!! Form::select('search_invoice', [], null, ['class' => 'form-control', 'id' => 'search_invoices', 'disabled']) !!}
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -84,6 +261,12 @@
 @section('javascript')
     <script>
         $(function () {
+            /** Date picker */
+            $('input.input-date').datepicker({
+                autoclose: true,
+                format: datepicker_date_format
+            });
+
             /** Get customers */
             $("select#customer").select2({
                 ajax: {
@@ -217,6 +400,19 @@
                         updateInvoiceTableIndexes();
                         updateInvoiceTableTotals();
                         __currency_convert_recursively($('table#invoices'));
+                    }
+                });
+            });
+
+            $('select#payment_method').on('change', function () {
+                let method = $(this).val();
+                let payment_details = $('div.payment-details');
+
+                $.each(payment_details, function (i, div) {
+                    if ($(div).hasClass(method+'-method')) {
+                        $(div).show();
+                    } else {
+                        $(div).hide();
                     }
                 });
             });

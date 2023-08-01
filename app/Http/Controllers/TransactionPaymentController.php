@@ -409,7 +409,7 @@ class TransactionPaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('$sell.create_payments')) {
+        if (!auth()->user()->can('purchase.payments') && !auth()->user()->can('sell.create_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -889,9 +889,19 @@ class TransactionPaymentController extends Controller
      * @return \Illuminate\Http\Response 
      */
     public function multiPayments() {
-        //TODO
+        if (!auth()->user()->can('sell.create_payments')) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        return view('transaction_payment.multi_payments');
+        $business_id = auth()->user()->business_id;
+
+        $payment_methods = $this->transactionUtil->payment_types();
+        $pos = Pos::where('business_id', $business_id)->pluck('name', 'id');
+        $banks = Bank::where('business_id', $business_id)->pluck('name', 'id');
+        $bank_accounts = BankAccount::where('business_id', $business_id)->pluck('name', 'id');
+
+        return view('transaction_payment.multi_payments',
+            compact('payment_methods', 'pos', 'banks', 'bank_accounts'));
     }
 
     /**
@@ -901,7 +911,10 @@ class TransactionPaymentController extends Controller
      * @return json
      */
     public function storeMultiPayments() {
-        //TODO
+        if (!auth()->user()->can('sell.create_payments')) {
+            abort(403, 'Unauthorized action.');
+        }
+
 
     }
 
