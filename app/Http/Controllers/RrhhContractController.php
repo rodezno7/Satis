@@ -66,9 +66,11 @@ class RrhhContractController extends Controller
 
         foreach($contracts as $contract){
             if($contract->contract_status == 'Vigente'){
-                if($contract->contract_end_date < $current_date){
-                    $contract->contract_status = 'Vencido';
-                    $contract->update();
+                if($contract->contract_end_date != null){
+                    if($contract->contract_end_date < $current_date){
+                        $contract->contract_status = 'Vencido';
+                        $contract->update();
+                    }
                 }
             }
         }
@@ -270,7 +272,7 @@ class RrhhContractController extends Controller
         $template = str_replace("employee_dni", $employee_dni, $template);
         $template = str_replace("employee_tax_number_letters", $employee_tax_number_letters, $template);
         //$template = str_replace("employee_tax_number_approved", $employee_tax_number_approved, $template);
-        if($employee_tax_number_approved == true){
+        if($employee_tax_number_approved == 'Homologado'){
             $template = str_replace("employee_tax_number", "Homologado", $template);
         }else{
             $template = str_replace("employee_tax_number", $employee_tax_number, $template);
@@ -295,7 +297,6 @@ class RrhhContractController extends Controller
         $template = str_replace("contract_end_date", $contract_end_date, $template);
         $template = str_replace("current_date_letters", $current_date_letters, $template);
         $template = str_replace("current_date", $current_date, $template);
-
         
         $pdf = \PDF::loadView('rrhh.contract.report_pdf', compact('contract', 'template'));
 
@@ -602,15 +603,20 @@ class RrhhContractController extends Controller
 
                 $currentContract = RrhhContract::where('employee_id', $employee->id)->where('deleted_at', null)->orderBy('id', 'DESC')->first();
                 if($currentContract){
-                    if($currentContract->contract_status == 'Vigente'){
+                    if($currentContract->contract_status != 'Finalizado'){
                         $currentContract->contract_status = 'Finalizado';
-                        //$currentContract->contract_end_date = Carbon::now()->format('Y-m-d');
                         $currentContract->update();
                     }                    
     
                     $positionHistory = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
                     $salaryHistory = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
-        
+                    $type_document     = RrhhData::where('value', 'DUI')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->first(); 
+                    $business_location = BusinessLocation::where('business_id', $business_id)->first();
+                    $rrhhTypeContract  = RrhhTypeContract::where('id', $currentContract->rrhh_type_contract_id)->first();
+                    if($type_document){
+                        $employee_document = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->first();
+                    }
+
                     $input_details = $request->only([
                         'contract_start_date',
                         'contract_end_date'
@@ -619,8 +625,19 @@ class RrhhContractController extends Controller
                     $input_details['employee_id']                   = $employee->id;
                     $input_details['rrhh_type_contract_id']         = $currentContract->rrhh_type_contract_id;
         
+                    if($employee->gender != null){
+                        if($employee->gender == 'F'){
+                            $gender = 'Femenino';
+                        }else{
+                            $gender = 'Masculino';
+                        } 
+                    }
+                    if($request->contract_end_date != ''){
+                        $input_details['contract_end_date']         = $this->moduleUtil->uf_date($request->input('contract_end_date'));
+                    }else{
+                        $input_details['contract_end_date']         = null;
+                    }
                     $input_details['contract_start_date']           = $this->moduleUtil->uf_date($request->input('contract_start_date'));
-                    $input_details['contract_end_date']             = $this->moduleUtil->uf_date($request->input('contract_end_date'));
                     $input_details['employee_name']                 = $employee->first_name.' '.$employee->last_name;
                     $input_details['employee_age']                  = $this->employeeUtil->getAge($employee->birth_date);
                     $input_details['employee_gender']               = ($employee->gender != null)? $gender : null;
@@ -631,7 +648,7 @@ class RrhhContractController extends Controller
                     $input_details['employee_dni_expedition_date']  = ($employee_document != null)? $employee_document->date_expedition : null;
                     $input_details['employee_dni_expedition_place'] = ($employee_document != null)? $employee_document->state->name.', '.$employee_document->city->name : null;
                     $input_details['employee_tax_number']           = ($employee->tax_number != null)? $employee->tax_number : null;
-                    $input_details['employee_tax_number_approved']  = ($employee->tax_number != null)? $employee->tax_number : null;
+                    $input_details['employee_tax_number_approved']  = ($employee->approved != null)? "Homologado" : "No homologado";
                     $input_details['employee_state']                = ($employee->state_id != null)? $employee->state->name : null;
                     $input_details['employee_city']                 = ($employee->city_id != null)? $employee->city->name : null;
                     $input_details['employee_address']              = ($employee->address != null)? $employee->address : null;
@@ -645,8 +662,7 @@ class RrhhContractController extends Controller
                     $input_details['business_tax_number']           = ($business->tax_number != null)? $business->tax_number : null;
                     $input_details['business_state']                = ($business->state_id != null)? $business->state->name : null;
                     $input_details['current_date']                  = Carbon::now();
-                    $input_details['template']                      = $rrhhTypeContract->template;    
-                    
+                    $input_details['template']                      = $rrhhTypeContract->template;        
     
                     RrhhContract::create($input_details);
                 }
@@ -664,7 +680,7 @@ class RrhhContractController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
 
