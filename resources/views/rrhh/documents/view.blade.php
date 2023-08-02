@@ -5,7 +5,7 @@
         @else
         <span class="badge" style="background: #C9302C">Expirado</span>
         @endif
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModalView()">
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</h4>
@@ -46,7 +46,7 @@
     </div>
 </div>
 <script>
-    function closeModal(){
+    function closeModalView(){
 		$('#modal_edit_action').modal({backdrop: 'static'});
 		$('#modal_photo').modal( 'hide' ).data( 'bs.modal', null );
 	}
