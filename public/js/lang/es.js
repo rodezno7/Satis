@@ -209,4 +209,7 @@ LANG = {
     'search_supplier': 'Buscar proveedor',
     'search_customer': 'Buscar cliente',
     'search_invoices': 'Buscar facturas',
+    'invoice_added_already' : 'La factura ya fue agregada',
+    'pay_amount_higher_than_due_balance' : 'El pago no puede ser mayor al monto debido',
+    'payment_exceed' : 'El monto total de las facturas a pagar sobrepasa el monto del pago',
 };

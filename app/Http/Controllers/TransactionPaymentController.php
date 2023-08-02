@@ -195,7 +195,7 @@ class TransactionPaymentController extends Controller
                     }
                 }*/
 
-                $this->transactionUtil->updatePaymentStatus($transaction_id);
+                //$this->transactionUtil->updatePaymentStatus($transaction_id);
 
                 if (config('app.business') == 'optics') {
                     // Create payment
@@ -910,12 +910,84 @@ class TransactionPaymentController extends Controller
      * @param \Illuminate\Http\Request
      * @return json
      */
-    public function storeMultiPayments() {
+    public function storeMultiPayments(Request $request) {
         if (!auth()->user()->can('sell.create_payments')) {
             abort(403, 'Unauthorized action.');
         }
 
+        try {
+            DB::beginTransaction();
 
+            $created_by = auth()->user()->id;
+            $business_id = auth()->user()->business_id;
+            $payment_for = $request->get('customer');
+            $prefix_type = 'sell_payment';
+            
+            $paid_on = $this->transactionUtil->uf_date($request->input('paid_on'));
+            $method = $request->input('method');
+            $payments = $request->input('payments');
+            $payment = [
+                'method'        => $request->input('method'),
+                'paid_on'       => $paid_on,
+                'card_holder_name'  => $request->input('card_holder_name'),
+                'card_authotization_number'   => $request->input('card_authotization_number'),
+                'card_type'     => $request->input('card_type'),
+                'card_pos'      => $request->input('card_pos'),
+                'card_month'    => null,
+                'card_year'     => null,
+                'card_security' => null,
+                'check_number'  => $request->input('check_number'),
+                'check_account' => $request->input('check_account'), 
+                'check_bank'    => $request->input('check_bank'),
+                'check_account_owner'   => $request->input('check_account_owner'),
+                'transfer_ref_no'       => $transfer_ref_no,
+                'transfer_issuing_bank' => $request->input('transfer_issuing_bank'), 
+                'transfer_destination_account'  => null,
+                'transfer_receiving_bank'   => $request->input('transfer_receiving_bank'),
+                'note'          => '',
+                'created_by'    => $created_by,
+                'business_id'   => $business_id,
+                'payment_for'   => $payment_for,
+                'document'  => $this->transactionUtil->uploadFile($request, 'document', 'documents')
+            ];
+
+            foreach ($payments as $p) {
+                $transaction_id = $p->transaction_id;
+                $transaction = Transaction::where('business_id', $business_id)
+                    ->findOrFail($transaction_id);
+                $ref_count = $this->transactionUtil->setAndGetReferenceCount($prefix_type);
+                $payment_ref_no = $this->transactionUtil->generateReferenceNumber($prefix_type, $ref_count);
+
+                $payment['transaction_id'] = $transaction_id;
+                $payment['amount'] = $this->transactionUtil->convertPayment($transaction_id, $p->amount);
+                $payment['payment_ref_no'] = $payment_ref_no;
+
+                $tp = TransactionPayment::create($payment);
+
+                $transaction->payment_balance += $tp->amount;
+                $transaction->save();
+
+                $this->transactionUtil->updatePaymentStatus($transaction_id);
+            }
+
+            $output = [
+                'success' => true,
+                'msg' => __('payment.payments_added_success')
+            ];
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = [
+                'success' => false,
+                'msg' => __('messages.something_went_wrong')
+            ];
+        }
+
+        return json_encode($output);
     }
 
     /**

@@ -74,4 +74,6 @@ return [
     'partial' => 'Parcial',
     'due' => 'Debido',
     'multi_payments' => 'Pagos múltiples',
+    'payment_exceed' => 'El monto total de las facturas a pagar sobrepasa el monto del pago',
+    'payments_added_success' => 'Pagos agregados con éxito',
 ];

@@ -40,4 +40,6 @@ return [
     'partial' => 'Partial',
     'due' => 'Due',
     'multi_payments' => 'Multi payments',
+    'payment_exceed' => 'Invoices total amounts exceed payment amount',
+    'payments_added_success' => 'Payments added successfuly',
 ];

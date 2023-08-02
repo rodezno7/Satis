@@ -225,7 +225,15 @@
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="form-group">
                         {!! Form::label('search_invoice', __('sale.search_invoices')) !!}
-                        {!! Form::select('search_invoice', [], null, ['class' => 'form-control', 'id' => 'search_invoices', 'disabled']) !!}
+                        {!! Form::select(null, [], null, ['class' => 'form-control', 'id' => 'search_invoices', 'disabled']) !!}
+                    </div>
+                </div>
+            </div>
+            <div class="row payment-exceed" style="display: none;">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="alert alert-danger" role="alert">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        @lang('payment.payment_exceed')
                     </div>
                 </div>
             </div>
@@ -290,7 +298,7 @@
                     type: "get",
                     url: "/customers/get_only_customers",
                     dataType: "json",
-                    data: function(params){
+                    data: function(params) {
                         return {
                             q: params.term
                         };
@@ -308,6 +316,7 @@
                 }
             });
 
+            /** On select customer */
             $("select#customer").on("select2:select", function (d) {
                 let id = d.params.data.id;
 
@@ -333,7 +342,7 @@
                         return '/sells/get-trans-due-by-customer/'+ customer_id;
                     },
                     dataType: 'json',
-                    data: function(params){
+                    data: function(params) {
                         return {
                             q: params.term
                         };
@@ -356,12 +365,14 @@
                 let data = d.params.data;
                 let table = $('table#invoices tbody');
 
-                if (transExists(data.transaction_id)) {
+                if (transExists(data.id)) {
                     swal({
-                        title: LANG.warning,
-                        text: LANG.wont_be_able_revert,
-                        icon: 'warning'
+                        title: LANG.notice,
+                        text: LANG.invoice_added_already,
+                        icon: 'info'
                     });
+
+                    return;
                 }
 
                 let tr = `
@@ -371,7 +382,7 @@
                             <input type='hidden'
                                 class='transaction_id'
                                 data-name='transaction_id'
-                                value='${data.transaction_id}' />
+                                value='${data.id}' />
                         </td>
                         <td style='text-align: center;'>${data.correlative}</td>
                         <td style='text-align: right;'>
@@ -380,7 +391,7 @@
                                 data-currency_precission='2'>
                                 ${data.balance}
                             </span>
-                            <input type='hidden' class='balance' value='${data.balance}' />
+                            <input type='hidden' class='balance' value='${parseFloat(data.balance).toFixed(2)}' />
                         </td>
                         <td>
                             <input type='text' value='${parseFloat(data.balance).toFixed(2)}'
@@ -406,6 +417,9 @@
                 updateInvoiceTableTotals();
                 $('select#search_invoices').val('').trigger('change');
                 __currency_convert_recursively($('table#invoices'));
+
+                /** Valid if payment amount exceeded */
+                payAmountExceeded();
             });
 
             /** On click on delete button */
@@ -418,11 +432,12 @@
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
-                }).then((willDelete) => {
-                    if (willDelete) {
+                }).then((remove) => {
+                    if (remove) {
                         tr.remove();
                         updateInvoiceTableIndexes();
                         updateInvoiceTableTotals();
+                        payAmountExceeded();
                         __currency_convert_recursively($('table#invoices'));
                     }
                 });
@@ -454,6 +469,98 @@
                 } else {
                     search_invoices.attr('disabled', true);
                 }
+
+                payAmountExceeded();
+            });
+
+            /** On change any payment value */
+            $(document).on('change', 'input.payment', function () {
+                let input = $(this);
+                let payment = __read_number(input);
+                let tr = input.closest('tr');
+                let balance = __read_number($(tr).find('input.balance'));
+
+                if (payment > balance) {
+                    __write_number(input, balance);
+
+                    swal({
+                        title: LANG.error,
+                        text: LANG.pay_amount_higher_than_due_balance,
+                        icon: 'error'
+                    }).then(function () {
+                        input.focus();
+                    });
+                }
+
+                updateInvoiceTableTotals();
+                payAmountExceeded();
+                __currency_convert_recursively($('table#invoices'));
+            });
+
+            /** On click on reset button */
+            $('button#reset_payments').on('click', function () {
+                swal({
+                    title: LANG.sure,
+                    text: LANG.wont_be_able_revert,
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((reset) => {
+                    if (reset) {
+                        $('select#customer').val('').trigger('change');
+                        $('select#search_invoices').val('').trigger('change');
+                        $('input#amount').val('');
+                        $('select#payment_method').val('cash').trigger('change');
+                        $("input.input-date").datepicker('setDate', moment().format(moment_date_format));
+                        $('table#invoices tbody tr').empty();
+                        updateInvoiceTableTotals();
+                        payAmountExceeded();
+                    }
+                });
+            });
+
+            /** On click on submit button */
+            $('button#save_payments').on('click', function () {
+                if (payAmountExceeded()) {
+                    swal({
+                        title: LANG.error,
+                        text: LANG.payment_exceed,
+                        icon: 'error'
+                    });
+                }
+
+                $('button#save_payments').attr('disabled', true);
+                let form = document.getElementById('multi_payments_form');
+                let data = new FormData(form);
+
+                $.ajax({
+                    method: 'post',
+                    url: $(form).attr('action'),
+                    data: data,
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        if (res.success) {
+                            swal({
+                                title: LANG.success,
+                                text: res.msg,
+                                icon: 'success'
+                            });
+
+                            $('button#save_payments').removeAttr('disabled');
+
+                        } else {
+                            swal({
+                                title: LANG.error,
+                                text: res.msg,
+                                icon: 'error'
+                            });
+
+                            $('button#save_payments').removeAttr('disabled');
+                        }
+                    }
+                });
             });
 
             /**
@@ -468,7 +575,10 @@
 
                     $.each(inputs, function (i, input) {
                         let name = $(input).data('name');
-                        $(input).attr('name', 'payments['+ index +']['+ name +']');
+
+                        if (name) {
+                            $(input).attr('name', 'payments['+ index +']['+ name +']');
+                        }
                     });
                 });
             }
@@ -486,9 +596,9 @@
                 let total_final = 0;
 
                 $.each(rows, function (index, row) {
-                    let due = parseFloat($(row).find('input.balance').val());
-                    let pay = parseFloat($(row).find('input.payment').val());
-                    let total = parseFloat($(row).find('input.total_final').val());
+                    let due = __read_number($(row).find('input.balance'));
+                    let pay = __read_number($(row).find('input.payment'));
+                    let total = __read_number($(row).find('input.total_final'));
 
                     total_due += due;
                     total_payment += pay;
@@ -520,10 +630,11 @@
             */
             function transExists(id) {
                 let rows = $('table#invoices tbody tr');
+                let transaction_id = null;
                 let exists = false;
 
                 $.each(rows, function (index, row) {
-                    let trasaction_id = $(row).find('input.transaction_id').val();
+                    transaction_id = $(row).find('input.transaction_id').val();
                    
                     if (transaction_id == id) {
                         exists = true;
@@ -531,6 +642,37 @@
                 });
 
                 return exists;
+            }
+
+
+            /**
+             * Determinate if total payments exceeded payment amount
+             * 
+             * @return boolean
+            */
+            function payAmountExceeded() {
+                let pay_amount = __read_number($('input#amount'));
+                let rows = $('table#invoices tbody tr');
+                let pay_total = 0;
+                let exceed = false;
+
+                $.each(rows, function (index, row) {
+                    pay_total += __read_number($(row).find('input.payment'));
+                   
+                    if (pay_total > pay_amount) {
+                        exceed = true;
+                    }
+                });
+
+                if (exceed) {
+                    $('div.payment-exceed').show();
+                    $('button#save_payments').attr('disabled', true);
+                } else {
+                    $('div.payment-exceed').hide();
+                    $('button#save_payments').removeAttr('disabled');
+                }
+
+                return exceed;
             }
         });
     </script>
