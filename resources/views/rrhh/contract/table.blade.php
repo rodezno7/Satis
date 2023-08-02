@@ -15,7 +15,12 @@
                 <tr>
                     <td>{{ $item->type }}</td>
                     <td>{{ @format_date($item->contract_start_date) }}</td>
-                    <td>{{ @format_date($item->contract_end_date) }}</td>
+                    <td>@if ($item->contract_end_date == null)
+                        ---
+                    @else
+                        {{ @format_date($item->contract_end_date) }}
+                    @endif
+                    </td>
                     <td>
                         @if ($item->contract_status == 'Vigente')
                             <span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
@@ -42,16 +47,18 @@
                                     class="fa fa-upload"></i></a>
                         @endcan
 
-                        @can('rrhh_contract.finish')
-                            @if ($item->contract_status == 'Finalizado')
-                                <button type="button" class="btn btn-danger btn-xs" disabled><i
-                                        class="fa fa-close"></i></button>
-                            @else
-                                <button type="button" onClick='finishContract({{ $item->id }})'
-                                    class="btn btn-danger btn-xs" title="{{ __('rrhh.finish_contract') }}"><i
-                                        class="fa fa-close"></i></button>
-                            @endif
-                        @endcan
+                        @if (!isset($show))
+                            @can('rrhh_contract.finish')
+                                @if ($item->contract_status == 'Finalizado')
+                                    <button type="button" class="btn btn-danger btn-xs" disabled><i
+                                            class="fa fa-close"></i></button>
+                                @else
+                                    <button type="button" onClick='finishContract({{ $item->id }})'
+                                        class="btn btn-danger btn-xs" title="{{ __('rrhh.finish_contract') }}"><i
+                                            class="fa fa-close"></i></button>
+                                @endif
+                            @endcan
+                        @endif
                     </td>
                 </tr>
             @endforeach
@@ -63,7 +70,6 @@
     </tbody>
 </table>
 <input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
-
 
 
 <script type="text/javascript">
