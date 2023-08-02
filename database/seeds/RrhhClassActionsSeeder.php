@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\RrhhClassAction;
 
 class RrhhClassActionsSeeder extends Seeder
 {
@@ -12,15 +13,45 @@ class RrhhClassActionsSeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (1, 1)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (1, 2)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (1, 3)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (2, 3)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (2, 6)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (2, 2)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (3, 4)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (3, 5)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (4, 7)");
-        DB::insert("INSERT INTO rrhh_class_actions (rrhh_class_personnel_action_id, rrhh_required_action_id) VALUES (4, 8)");
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 1,
+            'rrhh_required_action_id' => 1,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 1,
+            'rrhh_required_action_id' => 2,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 1,
+            'rrhh_required_action_id' => 3,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 2,
+            'rrhh_required_action_id' => 3,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 2,
+            'rrhh_required_action_id' => 6,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 2,
+            'rrhh_required_action_id' => 2,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 3,
+            'rrhh_required_action_id' => 4,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 3,
+            'rrhh_required_action_id' => 5,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 4,
+            'rrhh_required_action_id' => 7,
+        ]);
+        RrhhClassAction::firstOrCreate([
+            'rrhh_class_personnel_action_id' => 4,
+            'rrhh_required_action_id' => 8,
+        ]);
     }
 }

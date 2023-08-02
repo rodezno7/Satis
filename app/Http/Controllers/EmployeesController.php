@@ -350,6 +350,14 @@ class EmployeesController extends Controller
             ->where('document.employee_id', $id)
             ->get();
 
+        $studies = DB::table('rrhh_studies as study')
+            ->join('rrhh_datas as type', 'type.id', '=', 'study.type_study_id')
+            ->join('employees as employee', 'employee.id', '=', 'study.employee_id')
+            ->select('study.id as id', 'type.value as type', 'study.title as title', 'study.year_graduation as year_graduation', 'study.study_status as study_status', 'study.status as status')
+            ->where('study.employee_id', $employee->id)
+            ->where('type.rrhh_header_id', 12)
+            ->get();
+        
         $economicDependences = DB::table('rrhh_economic_dependences as economicDependence')
             ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
             ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
@@ -386,7 +394,7 @@ class EmployeesController extends Controller
 
         $show = true;
 
-        return view('rrhh.employees.show', compact('employee', 'route', 'show', 'documents', 'positions', 'salaries', 'business', 'economicDependences', 'absenceInabilities', 'personnelActions', 'contracts'));
+        return view('rrhh.employees.show', compact('employee', 'route', 'show', 'documents', 'positions', 'salaries', 'business', 'studies', 'economicDependences', 'absenceInabilities', 'personnelActions', 'contracts'));
     }
 
     /**

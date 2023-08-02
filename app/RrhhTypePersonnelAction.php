@@ -9,6 +9,6 @@ class RrhhTypePersonnelAction extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'required_authorization', 'apply_to_many', 'business_id'];
+    protected $fillable = ['name', 'required_authorization', 'apply_to_many', 'business_id', 'deleted_at'];
     
 }

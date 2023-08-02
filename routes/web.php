@@ -675,6 +675,12 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-economic-dependence-create/{id}', 'RrhhEconomicDependenceController@createEconomicDependence');
     Route::post('rrhh-economic-dependence-update', 'RrhhEconomicDependenceController@updateEconomicDependence');
 
+    //Routes economic dependencies by employees
+    Route::resource('rrhh-study', 'RrhhStudyController');
+    Route::get('rrhh-study-getByEmployee/{id}', 'RrhhStudyController@getByEmployee');
+    Route::get('rrhh-study-create/{id}', 'RrhhStudyController@createStudy');
+    Route::post('rrhh-study-update', 'RrhhStudyController@updateStudy');
+
     //Routes personnel action by employees
     Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController');
     Route::get('rrhh-personnel-action-getByEmployee/{id}', 'RrhhPersonnelActionController@getByEmployee');

@@ -2,30 +2,42 @@
     id="types_relationships-table">
     <thead>
         <tr class="active">
-            <th>@lang('rrhh.name')</th>
-            <th>@lang('rrhh.relationships')</th>
-            <th>@lang('rrhh.birthdate')</th>
-            <th width="12%">@lang('rrhh.phone')</th>
-            <th width="10%">@lang('rrhh.status')</th>
+            <th>@lang('rrhh.type_study')</th>
+            <th>@lang('rrhh.title')</th>
+            <th>@lang('rrhh.institution')</th>
+            <th>@lang('rrhh.year_graduation')</th>
+            <th>@lang('rrhh.study_status')</th>
+            <th >@lang('rrhh.status')</th>
 			@if(!isset($show))
-            <th width="15%" id="dele">@lang('rrhh.actions')</th>
+            <th id="dele">@lang('rrhh.actions')</th>
 			@endif
         </tr>
     </thead>
     <tbody id="referencesItems">
-        @if (count($economicDependences) > 0)
-            @foreach ($economicDependences as $item)
+        @if (count($studies) > 0)
+            @foreach ($studies as $item)
                 <tr>
                     <td>{{ $item->type }}</td>
-                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->institution }}</td>
                     <td>
-                        @if ($item->birthdate != null)
-                            {{ @format_date($item->birthdate) }}
+                        @if ($item->year_graduation != null)
+                            {{ $item->year_graduation }}
                         @else
                             N/A
                         @endif
                     </td>
-                    <td>{{ $item->phone }}</td>
+                    <td>
+                        @if ($item->study_status == 'En curso')
+                            {{ __('rrhh.in_progress') }}
+                        @else
+                            @if ($item->study_status == 'Finalizado')
+                                {{ __('rrhh.finalized') }}
+                            @else
+                                {{ __('rrhh.graduate') }}
+                            @endif
+                        @endif
+                    </td>
                     <td>
                         @if ($item->status == 1)
                             {{ __('rrhh.active') }}
@@ -35,12 +47,12 @@
                     </td>
 					@if(!isset($show))
                     <td>
-                        @can('rrhh_economic_dependence.update')
-                            <button type="button" onClick='editEconomicDependence({{ $item->id }})'
+                        @can('rrhh_study.update')
+                            <button type="button" onClick='editStudy({{ $item->id }})'
                                 class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
                         @endcan
-                        @can('rrhh_economic_dependence.delete')
-                            <button type="button" onClick='deleteEconomicDependence({{ $item->id }})'
+                        @can('rrhh_study.delete')
+                            <button type="button" onClick='deleteStudy({{ $item->id }})'
                                 class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
                         @endcan
                     </td>
@@ -63,9 +75,9 @@
 
 
 <script type="text/javascript">
-    function editEconomicDependence(id) {
+    function editStudy(id) {
         $("#modal_content_edit_document").html('');
-        var url = "{!! URL::to('/rrhh-economic-dependence/:id/edit') !!}";
+        var url = "{!! URL::to('/rrhh-study/:id/edit') !!}";
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_edit_document").html(data);
@@ -76,7 +88,7 @@
         $('#modal_action').modal('hide').data('bs.modal', null);
     }
 
-    function deleteEconomicDependence(id) {
+    function deleteStudy(id) {
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -88,7 +100,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/rrhh-economic-dependence/' + id;
+                route = '/rrhh-study/' + id;
                 token = $("#token").val();
                 $.ajax({
                     url: route,
@@ -106,7 +118,7 @@
                                 showConfirmButton: false,
                             });
 
-                            getEconomicDependence($('#_employee_id').val());
+                            getStudy($('#_employee_id').val());
 
                         } else {
                             Swal.fire({
@@ -120,9 +132,9 @@
         });
     }
 
-    $("#btn_add_economic_dependencies").click(function() {
+    $("#btn_add_type_studies").click(function() {
         $("#modal_content_document").html('');
-        var url = "{!! URL::to('/rrhh-economic-dependence-create/:id') !!}";
+        var url = "{!! URL::to('/rrhh-study-create/:id') !!}";
         id = $('#_employee_id').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
@@ -134,9 +146,9 @@
         $('#modal_action').modal('hide').data('bs.modal', null);
     });
 
-    function getEconomicDependence(id) {
+    function getStudy(id) {
         $("#modal_action").html('');
-        var route = '/rrhh-economic-dependence-getByEmployee/' + id;
+        var route = '/rrhh-study-getByEmployee/'+id;
         $.get(route, function(data) {
             $("#modal_action").html(data);
             $('#modal_action').modal({
