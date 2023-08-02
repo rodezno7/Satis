@@ -48,8 +48,8 @@ class RrhhTypePersonnelActionsSeeder extends Seeder
             ]);
             RrhhTypePersonnelAction::firstOrCreate([
                 'name' => 'Permiso', 
-                'required_authorization' => 1, 
-                'apply_to_many' => 1, 
+                'required_authorization' => 0, 
+                'apply_to_many' => 0, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
             ]);
