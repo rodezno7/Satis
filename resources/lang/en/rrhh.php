@@ -260,4 +260,13 @@ return[
     'personal_email' => 'Personal email',
     'institutional_email' => 'Institutional email',
     'files' => 'Files',
+    'studies' => 'Studies',
+    'study_status' => 'study_status',
+    'title' => 'Title',
+    'year_graduation' => 'year_of_graduation',
+    'type_study' => 'Type study',
+    'in_progress' => 'In progress',
+    'finalized' => 'Finalized',
+    'graduate' => 'Graduate',
+    'institution' => 'Institution'
 ];

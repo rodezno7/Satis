@@ -30,7 +30,7 @@
                         
                         <a href="#" class="list-group-item text-center">@lang('rrhh.special_capabilities')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.employee_classification')</a>
-                        {{-- <a href="#" class="list-group-item text-center">@lang('rrhh.types_studies')</a> --}}
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.types_studies')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_absences')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_inabilities')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_relationships')</a>
@@ -93,7 +93,7 @@
                     <!-- tab 11 end -->
 
                     <!-- tab 12 start -->
-                    {{-- @include('rrhh.catalogues.types_studies.index') --}}
+                    @include('rrhh.catalogues.types_studies.index')
                     <!-- tab 12 end -->
 
                     <!-- tab 13 start -->

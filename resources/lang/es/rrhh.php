@@ -258,4 +258,13 @@ return[
     'personal_email' => 'Correo personal',
     'institutional_email' => 'Correo institutional',
     'files' => 'Archivos',
+    'studies' => 'Estudios',
+    'study_status' => 'Estado del estudio',
+    'title' => 'Título',
+    'year_graduation' => 'Año de titulación',
+    'type_study' => 'Tipo de estudio',
+    'in_progress' => 'En curso',
+    'finalized' => 'Finalizado',
+    'graduate' => 'Graduado',
+    'institution' => 'Institución'
 ];

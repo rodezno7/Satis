@@ -118,6 +118,7 @@
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
+                html += '<li> <a href="#" onClick="addStudies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.studies')</a></li>';
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
                 html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
                 html += '<li> <a href="#" onClick="addAbsenceInhability('+data.id+')"><i class="fa fa-id-badge"></i>@lang('rrhh.absence_inability')</a></li>';
@@ -206,6 +207,16 @@
     function addEconomicDependencies(id){
         $("#modal_action").html('');
         var route = '/rrhh-economic-dependence-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
+            });
+        });
+    }
+
+    function addStudies(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-study-getByEmployee/'+id;
         $("#modal_action").load(route, function() {
             $(this).modal({
             backdrop: 'static'

@@ -293,6 +293,13 @@
                     <hr>
                     <div class="row">
                         <div class="col-lg-12">
+                            <h4 class="box-title text-center"><b>{{ __('rrhh.studies') }}</b></h4>
+                            @include('rrhh.studies.table')
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-12">
                             <h4 class="box-title text-center"><b>{{ __('rrhh.economic_dependencies') }}</b></h4>
                             @include('rrhh.economic_dependences.table')
                         </div>
