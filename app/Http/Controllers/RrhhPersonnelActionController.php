@@ -8,6 +8,7 @@ use App\Business;
 use App\RrhhPersonnelAction;
 use App\RrhhSalaryHistory;
 use App\RrhhPositionHistory;
+USE App\RrhhData;
 use App\Bank;
 use App\RrhhPersonnelActionAuthorizer;
 use App\RrhhTypePersonnelAction;
@@ -516,11 +517,23 @@ class RrhhPersonnelActionController extends Controller
             foreach($employees as $employee){
                 $countPosition = RrhhPositionHistory::where('employee_id', $employee->id)->count();
                 $countSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->count();
+                $type_document = RrhhData::where('value', 'DUI')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->first(); 
+                    
+                if($type_document){
+                    $countDocument = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->get();
+                    if($countDocument == 0){
+                        $employeeIncompleteInfo++;
+                    }
+                }
+
                 if($countPosition == 0){
                     $employeeIncompleteInfo++;
                 }
 
                 if($countSalary == 0){
+                    $employeeIncompleteInfo++;
+                }
+                if($employee->birth_date == null || $employee->gender  == null || $employee->address == null || $employee->nationality_id == null || $employee->civil_status_id == null || $employee->profession_id == null || $employee->dni == null || $employee->tax_number == null || $employee->state_id == null || $employee->city_id == null){
                     $employeeIncompleteInfo++;
                 }
             }

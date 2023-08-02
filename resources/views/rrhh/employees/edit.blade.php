@@ -100,7 +100,7 @@
                                         @endif>(Homologado)</label> <span class="text-danger">*</span>
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                              {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                                              {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'nitApproved()'])!!}
                                             </span>
                                             @if ($employee->approved == 1)
                                                 {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
@@ -183,7 +183,7 @@
                                         <label>@lang('rrhh.state')</label>
                                         {!! Form::select("state_id", $states, $employee->state_id,
                                         ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;', 'disabled']) !!}
                                     </div>
                                 </div>
 
@@ -192,7 +192,7 @@
                                         <label>@lang('rrhh.city')</label>
                                         {!! Form::select("city_id", $cities, $employee->city_id,
                                         ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;', 'disabled']) !!}
                                     </div>
                                 </div>
 
@@ -269,7 +269,7 @@
                                     <div class="form-group">
                                         <label>@lang('rrhh.type_employee')</label>
                                         <select name="type_id" id="type_id" class="form-control form-control-sm select2"
-                                            placeholder="{{ __('rrhh.type_employee') }}" style="width: : 100%">
+                                            placeholder="{{ __('rrhh.type_employee') }}" style="width: 100%">
                                             <option value="">{{ __('rrhh.type_employee') }}</option>
                                             @foreach ($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -576,12 +576,21 @@
 			$("#approved").prop("checked", true);
             $("#text-approved").show();
             $("#tax_number").prop('disabled', true);
-            
+            //$("#tax_number").val($('#dni').val());            
 		} else {
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
-            $("#tax_number").prop('disabled', false);            
+            $("#tax_number").prop('disabled', false);
+            $("#tax_number").val('');            
 		}
+
+        if($('#state_id').val() != ''){
+            $('#state_id').prop('disabled', false);
+        }
+        if($('#city_id').val() != ''){
+            $('#city_id').prop('disabled', false);
+        }
+
     });
 
     function getDocuments() {
@@ -602,13 +611,7 @@
 			$('#modal_photo').modal({backdrop: 'static'});
 		});
 	}
-
-    $("#dni").keyup(function () {
-        if($("#tax_number").val() == ''){
-            var value = $(this).val();
-            $("#tax_number").val(value);
-        }
-    });
+    
 
     $('#dni').on('change', function() {
         let id = $("#employee_id").val();
@@ -619,6 +622,10 @@
             Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
         }
         });
+        let approved = $("#approved").val();
+		if (approved == 1) {
+            $("#tax_number").val($('#dni').val());
+        }
     });
 
     $('#tax_number').on('change', function() {
@@ -748,10 +755,12 @@
 
 	$('#state_id').change(function(){
 		updateCities();
+        $('#city_id').prop('disabled', false);
 	});
 
 	$('#country_id').change(function(){
 		updateStates();
+        $('#state_id').prop('disabled', false);
 	});
 
 
@@ -771,7 +780,7 @@
 		});
 	}
 
-    function dniApproved() {
+    function nitApproved() {
         if ($("#approved").is(":checked")) {
             var dni = $("#dni").val();
             $("#approved").val('1');

@@ -8,7 +8,8 @@ class RrhhDocuments extends Model {
 
     protected $fillable = [
         'document_type_id', 
-        'number', 'file', 
+        'number', 
+        'file', 
         'employee_id', 
         'date_expedition', 
         'date_expiration', 

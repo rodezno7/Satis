@@ -63,7 +63,7 @@
             ['class' => 'form-control form-control-sm', 'placeholder' => '00000000-0', 'id' => 'dni', 'required']) !!}
           </div>
         </div>
-        <div class="col-sm-3 col-md-3 col-lg-3 col-xs-12">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.tax_number')</label> <label id="text-approved">(Homologado)</label> <span class="text-danger">*</span>
               <div class="input-group">
@@ -355,8 +355,6 @@
 @section('javascript')
 <script>
   $( document ).ready(function() {
-    //$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-    //$("#first_name").focus();
     showBankInformation();
     $('.select2').select2(); 
 
@@ -390,13 +388,6 @@
 
     $("#date_admission").datepicker("setDate", fechaActual);
 
-    if ($("#approved").is(":checked")) {
-      $("#dni").keyup(function () {
-        var value = $(this).val();
-        $("#tax_number").val(value);
-      });
-    }
-
     showUserOption();
     commision_enable();
     showPassMode();
@@ -410,6 +401,10 @@
         Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
       }
     });
+    let approved = $("#approved").val();
+		if (approved == 1) {
+      $("#tax_number").val($('#dni').val());
+    }
   });
 
   $('#tax_number').on('change', function() {

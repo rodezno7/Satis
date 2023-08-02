@@ -111,7 +111,8 @@
                     $('#modal_doc').modal('hide').data('bs.modal', null);
                 } else {
                     Swal.fire({
-                        title: result.msg,
+                        title: "Error",
+                        text: result.msg,
                         icon: "error",
                     });
                 }

@@ -49,7 +49,6 @@
 
 						<li><a href="/rrhh-personnel-action/{{ $item->id }}/authorization-report"><i class="fa fa-file"></i>{{ __('rrhh.download') }}</a></li>
 						
-
 						@if (!isset($show))
 						<li><a href="#" onClick="addFile({{ $item->id }})"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>
 						@endif
