@@ -38,7 +38,7 @@
                     </td>
                     <td>
                         @can('rrhh_document_employee.view')
-                            <button type="button" onClick="files({{ $item->id }})" class="btn btn-info btn-xs"><i
+                            <button type="button" onClick="filesDocument({{ $item->id }})" class="btn btn-info btn-xs"><i
                                     class="fa fa-list"></i></button>
                         @endcan
 						@if (!isset($show))
@@ -64,7 +64,7 @@
 <input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
 
 <script type="text/javascript">
-    function files(id) {
+    function filesDocument(id) {
         $("#modal_content_edit_document").html('');
         var url = "{!! URL::to('/rrhh-documents-files/:id') !!}";
         url = url.replace(':id', id);

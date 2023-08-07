@@ -41,7 +41,9 @@
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
     <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
     <button type="button" class="btn btn-primary" id="btn_add_new_contract">@lang('rrhh.add')</button>
-    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
+    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">
+        @lang('messages.cancel')
+    </button>
 </div>
 {!! Form::close() !!}
 <script>

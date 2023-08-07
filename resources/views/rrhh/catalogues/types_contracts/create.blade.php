@@ -36,7 +36,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h4 for="">Configurando márgenes del contrato</h4>
+                        <h4 for="">{{ __('rrhh.Configuring_contract_margins') }}</h4>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -93,168 +93,175 @@
                 </div>
                 <textarea cols="80" rows="10" name="editor" id="editor" required></textarea>
                 <hr>
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <h4>@lang('rrhh.available_parameters'):</h4>
-                        <h5><b>Nota:</b> {{ __('rrhh.message_parameter_name') }}</h5>
+                <div class="panel panel-default">
+                    <div class="panel-heading">@lang('rrhh.available_parameters')
+                        <div class="panel-tools pull-right">
+                            <button type="button" class="btn btn-panel-tool" data-toggle="collapse" data-target="#parameters-information-fields-box" id="btn-collapse-ci">
+                                <i class="fa fa-minus" id="create-icon-collapsed-ci"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12">
-                        <table class="table table-sm table-bordered">
-                            <caption class="text-center">Párametros con respecto al empleado</caption>
-                            <thead>
-                                <tr>
-                                    <th>Parámetro</th>
-                                    <th>Descripción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>employee_name</td>
-                                    <td>Obtiene el nombre del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_age</td>
-                                    <td>Obtiene el edad del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_gender</td>
-                                    <td>Obtiene el genero del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_civil_status</td>
-                                    <td>Obtiene el estado civil del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_nationality</td>
-                                    <td>Obtiene la nacionalidad del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_profession</td>
-                                    <td>Obtiene la profesión del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_dni</td>
-                                    <td>Obtiene el DUI del empleado. El formato será en números, por ejemplo: 02781023-5</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_dni_letters</td>
-                                    <td>Obtiene el DUI del empleado. El formato será en letras, por ejemplo: CERO DOS SIETE OCHO UNO CERO DOS TRES GUIÓN CINCO.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_dni_expedition_date</td>
-                                    <td>Obtiene la fecha de expedición del DUI del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_dni_expedition_place</td>
-                                    <td>Obtiene el lugar de expedición del DUI del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_tax_number</td>
-                                    <td>Obtiene el NIT del empleado. El formato será en números.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_tax_number_letters</td>
-                                    <td>Obtiene el NIT del empleado. El formato será en letras.</td>
-                                </tr>
-                                {{-- <tr>
-                                    <td>employee_tax_number_approved</td>
-                                    <td>Obtiene si el NIT del empleado está Homologado o no.</td>
-                                </tr> --}}
-                                <tr>
-                                    <td>employee_state</td>
-                                    <td>Obtiene el municipio de residencia del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_city</td>
-                                    <td>Obtiene el departamento de residencia del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_address</td>
-                                    <td>Obtiene la dirección del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_salary</td>
-                                    <td>Obtiene el salario actual del empleado. El formato será en números, por ejemplo: $500.00.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_salary_letters</td>
-                                    <td>Obtiene el salario actual del empleado. El formato será en letras, por ejemplo: QUINIENTOS 00/100 DOLARES.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_department</td>
-                                    <td>Obtiene el departamento del empleado.</td>
-                                </tr>
-                                <tr>
-                                    <td>employee_position</td>
-                                    <td>Obtiene el cargo del empleado.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-lg-6 col-md-12 col-sm-12">
-                        <table class="table table-sm table-bordered">
-                            <caption class="text-center">Párametros generales y de la empresa</caption>
-                            <thead>
-                                <tr>
-                                    <th>Parámetro</th>
-                                    <th>Descripción</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>business_name</td>
-                                    <td>Obtiene el nombre de la empresa.</td>
-                                </tr>
-                                <tr>
-                                    <td>line_of_business</td>
-                                    <td>Obtiene el giro de la empresa.</td>
-                                </tr>
-                                <tr>
-                                    <td>business_tax_number</td>
-                                    <td>Obtiene el NIT de la empresa.</td>
-                                </tr>
-                                <tr>
-                                    <td>business_tax_number_letters</td>
-                                    <td>Obtiene el NIT de la empresa. El formato será en letras.</td>
-                                </tr>
-                                <tr>
-                                    <td>business_state</td>
-                                    <td>Obtiene el departamento donde está ubicada la empresa.</td>
-                                </tr>
-                                <tr>
-                                    <td>business_address</td>
-                                    <td>Obtiene la dirección de la empresa.</td>
-                                </tr>
-                                <tr>
-                                    <td>business_legal_representative</td>
-                                    <td>Obtiene el representante legal de la empresa</td>
-                                </tr>
-                                <tr>
-                                    <td>contract_start_date</td>
-                                    <td>Obtiene la fecha de inicio del contrato. El formato es 12 de Julio de 2023.</td>
-                                </tr>
-                                <tr>
-                                    <td>contract_start_date_letters</td>
-                                    <td>Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: doce de julio de dos mil veintitres.</td>
-                                </tr>
-                                <tr>
-                                    <td>contract_end_date</td>
-                                    <td>Obtiene la fecha de finalización del contrato.</td>
-                                </tr>
-                                <tr>
-                                    <td>contract_end_date_letters</td>
-                                    <td>Obtiene la fecha de finalización del contrato. El formato es en letras.</td>
-                                </tr>
-                                <tr>
-                                    <td>current_date</td>
-                                    <td>Obtiene la fecha actual.</td>
-                                </tr>
-                                <tr>
-                                    <td>current_date_letters</td>
-                                    <td>Obtiene la fecha actual. El formato es en letras</td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                    <div class="panel-body collapse in" id="parameters-information-fields-box" aria-expanded="true">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <h5><b>Nota:</b> {{ __('rrhh.message_parameter_name') }}</h5>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <table class="table table-sm table-bordered">
+                                    <caption class="text-center">{{ __('rrhh.Parameters_employee') }}</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('rrhh.Parameters') }}</th>
+                                            <th>{{ __('rrhh.description') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>employee_name</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_name') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_age</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_age') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_gender</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_gender') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_civil_status</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_civil_status') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_nationality</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_nationality') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_profession</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_profession') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_dni</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_dni') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_dni_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_dni_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_dni_expedition_date</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_dni_expedition_date') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_dni_expedition_place</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_dni_expedition_place') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_tax_number</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_tax_number') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_tax_number_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_tax_number_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_state</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_state') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_city</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_city') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_address</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_address') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_salary</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_salary') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_salary_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_salary_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_department</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_department') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>employee_position</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_position') }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <table class="table table-sm table-bordered">
+                                    <caption class="text-center">{{ __('rrhh.Parameters_business') }}</caption>
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('rrhh.Parameters') }}</th>
+                                            <th>{{ __('rrhh.description') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>business_name</td>
+                                            <td>{{ __('rrhh.Gets_the_business_name') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>line_of_business</td>
+                                            <td>{{ __('rrhh.Gets_the_line_of_business') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_tax_number</td>
+                                            <td>{{ __('rrhh.Gets_the_business_tax_number') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_tax_number_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_business_tax_number_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_state</td>
+                                            <td>{{ __('rrhh.Gets_the_business_department') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_address</td>
+                                            <td>{{ __('rrhh.Gets_the_business_address') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_legal_representative</td>
+                                            <td>{{ __('rrhh.Gets_the_bsuiness_legal_representative') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>contract_start_date</td>
+                                            <td>{{ __('rrhh.Gets_the_contract_start_date') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>contract_start_date_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_contract_start_date_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>contract_end_date</td>
+                                            <td>{{ __('rrhh.Gets_the_contract_end_date') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>contract_end_date_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_contract_end_date_letters') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>current_date</td>
+                                            <td>{{ __('rrhh.Gets_the_current_date') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>current_date_letters</td>
+                                            <td>{{ __('rrhh.Gets_the_current_date_letters') }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -288,6 +295,16 @@
             if ($("form#form_add").valid()) {
                 $("form#form_add").submit();
             }
-        });        
+        });  
+        
+        $('#btn-collapse-ci').click(function(){
+            if ($("#parameters-information-fields-box").hasClass("in")) {            
+                $("#create-icon-collapsed-ci").removeClass("fa fa-minus");
+                $("#create-icon-collapsed-ci").addClass("fa fa-plus");
+            }else{
+                $("#create-icon-collapsed-ci").removeClass("fa fa-plus");
+                $("#create-icon-collapsed-ci").addClass("fa fa-minus"); 
+            }
+        });
     </script>
 @endsection

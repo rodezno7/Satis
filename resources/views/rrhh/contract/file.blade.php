@@ -22,8 +22,9 @@
     <input type="hidden" name="id" value="{{ $contract->id }}" id="id">
     <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
 	<button type="button" class="btn btn-primary" id="btn_add_document">@lang('rrhh.add')</button>
-	<button type="button" class="btn btn-danger" data-dismiss="modal"
-		onClick="closeModal()">@lang('messages.cancel')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">
+		@lang('messages.cancel')
+	</button>
 </div>
 {!! Form::close() !!}
 

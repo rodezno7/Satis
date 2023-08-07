@@ -204,15 +204,21 @@ class RrhhPersonnelActionController extends Controller
                     }
 
                     if ($action->rrhh_required_action_id == 6) { // Cambiar forma de pago
-                        $requiredBankAccount = 'required';
+                        //$requiredBankAccount = 'required';
                         $requiredPayment = 'required';
-                        $requiredBank = 'required';
+                        //$requiredBank = 'required';
                     }
 
                     if ($action->rrhh_required_action_id == 7) { // Seleccionar la fecha en que entra en vigor
                         $requiredEffectiveDate = 'required';
                     }
                 }
+            }
+
+            $typePayment = RrhhData::where('id', $request->input('payment_id'))->where('rrhh_header_id', 8)->first();
+            if($typePayment->value == 'Transferencia bancaria'){
+                $requiredBankAccount = 'required';
+                $requiredBank = 'required';
             }
         }
 

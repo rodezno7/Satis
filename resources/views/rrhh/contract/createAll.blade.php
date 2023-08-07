@@ -30,19 +30,6 @@
                     </select>
                 </div>
             </div>
-            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="form-group">
-                    <label>@lang('rrhh.types_contracts')</label> <span class="text-danger">*</span>
-                    <select name="rrhh_type_contract_id" id="rrhh_type_contract_id"
-                        class="form-control form-control-sm select2" placeholder="{{ __('rrhh.types_contracts') }}"
-                        style="width: 100%;">
-                        <option value="">{{ __('rrhh.types_contracts') }}</option>
-                        @foreach ($types as $type)
-                            <option value="{{ $type->id }}">{{ $type->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div> --}}
     
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
                 <div class="form-group">
