@@ -34,7 +34,7 @@
                     </td>
                     <td>
                         @can('rrhh_contract.view')
-                            <button type="button" onClick="viewFile({{ $item->id }}, {{ $employee->id }})"
+                            <button type="button" onClick="viewFilesContract({{ $item->id }}, {{ $employee->id }})"
                                 class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
                         @endcan
 
@@ -42,7 +42,7 @@
                             target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-file-pdf-o"></i></a>
 
                         @can('rrhh_contract.uploads')
-                            <a href="#" onClick="addDocument({{ $item->id }}, {{ $employee->id }})"
+                            <a href="#" onClick="addDocumentContract({{ $item->id }}, {{ $employee->id }})"
                                 type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.attach_file') }}"><i
                                     class="fa fa-upload"></i></a>
                         @endcan
@@ -73,7 +73,7 @@
 
 
 <script type="text/javascript">
-    function viewFile(id, employee_id) {
+    function viewFilesContract(id, employee_id) {
         $("#modal_content_edit_document").html('');
         var url = "{!! URL::to('/rrhh-contracts-show/:id/:employee_id') !!}";
         url = url.replace(':id', id);
@@ -87,20 +87,7 @@
         $('#modal_action').modal('hide').data('bs.modal', null);
     }
 
-    function editContract(id) {
-        $("#modal_content_edit_document").html('');
-        var url = "{!! URL::to('/rrhh-contracts/:id/edit') !!}";
-        url = url.replace(':id', id);
-        $.get(url, function(data) {
-            $("#modal_content_edit_document").html(data);
-            $('#modal_edit_action').modal({
-                backdrop: 'static'
-            });
-        });
-        $('#modal_action').modal('hide').data('bs.modal', null);
-    }
-
-    function addDocument(id, employee_id) {
+    function addDocumentContract(id, employee_id) {
         $("#modal_content_edit_document").html('');
         var url = "{!! URL::to('/rrhh-contracts-createDocument/:id/:employee_id') !!}";
         url = url.replace(':id', id);

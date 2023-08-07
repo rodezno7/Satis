@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
+    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close" onClick="closeModal()"><span
             aria-hidden="true">&times;</span></button>
 <h4 class="modal-title">@lang('rrhh.documents'): <span style="color: gray">{{ $employee->first_name }}
     {{ $employee->last_name }}</span></h4>

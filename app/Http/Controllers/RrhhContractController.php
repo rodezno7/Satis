@@ -148,14 +148,17 @@ class RrhhContractController extends Controller
             }
 
             $employeeIncompleteInfo = 0;
+            $employeeIncompleteDoc = 0;
             $countPosition = RrhhPositionHistory::where('employee_id', $employee->id)->count();
             $countSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->count();
                 
             if ($type_document) {
-                $employee_document = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->first();
-                if($employee_document){
-                    $employeeIncompleteInfo++;
+                $employee_document = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->count();
+                \Log::info($employee_document);
+                if($employee_document == 0){
+                    $employeeIncompleteDoc++;
                 }
+                \Log::info($employeeIncompleteDoc);
             }
 
             if ($countPosition == 0) {
@@ -181,28 +184,33 @@ class RrhhContractController extends Controller
                 $employeeIncompleteInfo++;
             }
 
-
-
-            if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo != 0) {
-                if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo == 0) {
+            if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo != 0 || $employeeIncompleteDoc != 0) {
+                if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc == 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_information_employee')
                     ];
                 }
-                if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo != 0) {
+                if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo != 0 || $employeeIncompleteDoc == 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_information_business')
                     ];
                 }
-                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0) {
+                if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc != 0) {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.incomplete_document_employee')
+                    ];
+                }
+                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_information')
                     ];
                 }
-            } else {
+            } 
+            if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc == 0) {
                 if (count($contract) > 0) {
                     $output = [
                         'success' => 0,
@@ -214,12 +222,7 @@ class RrhhContractController extends Controller
                     $positionHistory   = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
                     $salaryHistory     = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
                     $rrhhTypeContract  = RrhhTypeContract::where('id', $request->rrhh_type_contract_id)->first();
-                    // $type_document     = RrhhData::where('value', 'DUI')
-                    //                         ->where('rrhh_header_id', 9)
-                    //                         ->where('business_id', $business_id)
-                    //                         ->where('status', 1)
-                    //                         ->orderBy('value', 'DESC')
-                    //                         ->first();
+
                     if ($type_document) {
                         $employee_document = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->first();
                     }
@@ -282,7 +285,7 @@ class RrhhContractController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -509,38 +512,6 @@ class RrhhContractController extends Controller
         return view('rrhh.contract.show', compact('route', 'contract'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\RrhhContract  $rrhhDocuments
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        if (!auth()->user()->can('rrhh_contract.edit')) {
-            abort(403, 'Unauthorized action.');
-        }
-        $business_id = request()->session()->get('user.business_id');
-        $contract = RrhhContract::findOrFail($id);
-        $types = RrhhTypeContract::where('business_id', $business_id)->where('status', 1)->orderBy('id', 'DESC')->get();
-        $employee_id = $contract->employee_id;
-
-        return view('rrhh.contract.edit', compact('types', 'contract', 'employee_id'));
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\RrhhContract  $rrhhDocuments
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
 
     public function createMassive()

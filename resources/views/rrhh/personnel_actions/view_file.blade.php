@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title" id="formModal">@lang('rrhh.file') 
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModalView()">
 			<span aria-hidden="true">&times;</span>
 		</button>
 	</h4>
@@ -26,7 +26,7 @@
     </div>
 </div>
 <script>
-    function closeModal(){
+    function closeModalView(){
 		$('#modal_personnel_action').modal({backdrop: 'static'});
 		$('#modal_photo').modal( 'hide' ).data( 'bs.modal', null );
 	}
