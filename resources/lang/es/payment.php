@@ -4,6 +4,7 @@ return [
     'card_holder_name' => 'Titular de la tarjeta',
     'payment_method' => 'Método de pago',
     'paid_on' => 'Pagado el',
+    'note' => 'Comentario',
     'amount' => 'Monto',
     'cash' => 'Efectivo',
     'credit' => 'Crédito',

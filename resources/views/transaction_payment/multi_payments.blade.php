@@ -75,15 +75,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
-                    <div class="form-group">
-                        {!! Form::label('document', __('purchase.attach_document')) !!}
-                        {!! Form::file('document') !!}
-                    </div>
-                </div>
-            </div>
-            <div class="row payment-details card-method" style="display: none;">
-                <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="col-lg-6 col-md-8 col-sm-12 payment-details card-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("card_holder_name", __('payment.card_holder_name')) !!}
                         <div class="input-group">
@@ -95,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details card-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("card_authotization_number", __('payment.card_authotization_number')) !!}
                         <div class="input-group">
@@ -107,7 +99,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details card-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("card_type", __('payment.card_type')) !!}
                         <div class="input-group">
@@ -120,7 +112,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details card-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("card_pos", __('payment.card_pos')) !!}
                         <div class="input-group">
@@ -132,9 +124,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row payment-details check-method" style="display: none;">
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details check-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("check_number", __('payment.check_number')) !!}
                         <div class="input-group">
@@ -146,7 +136,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details check-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("check_account", __('payment.check_account')) !!}
                         <div class="input-group">
@@ -158,7 +148,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details check-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("check_bank", __('payment.check_bank')) !!}
                         <div class="input-group">
@@ -170,7 +160,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="col-lg-6 col-md-8 col-sm-12 payment-details check-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("check_account_owner", __('payment.check_account_owner')) !!}
                         <div class="input-group">
@@ -182,9 +172,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row payment-details bank_transfer-method" style="display: none;">
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details bank_transfer-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("transfer_ref_no", __('payment.transfer_ref_no')) !!}
                         <div class="input-group">
@@ -196,7 +184,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details bank_transfer-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("transfer_issuing_bank", __('payment.transfer_issuing_bank')) !!}
                         <div class="input-group">
@@ -208,7 +196,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-4">
+                <div class="col-lg-3 col-md-4 col-sm-4 payment-details bank_transfer-method" style="display: none;">
                     <div class="form-group">
                         {!! Form::label("transfer_receiving_bank", __('payment.transfer_receiving_bank')) !!}
                         <div class="input-group">
@@ -218,6 +206,18 @@
                             {!! Form::select("transfer_receiving_bank", $bank_accounts, null,
                                 ['class' => 'form-control', 'placeholder' => __('messages.please_select')]) !!}
                         </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('document', __('purchase.attach_document')) !!}
+                        {!! Form::file('document', ['style' => 'margin-bottom: 23px;']) !!}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-8 col-sm-12">
+                    <div class="form-group">
+                        {!! Form::label('note', __('payment.note')) !!}
+                        {!! Form::textarea('note', null, ['class' => 'form-control', 'rows' => 2, 'placeholder' => __('payment.note')]) !!}
                     </div>
                 </div>
             </div>
@@ -507,14 +507,7 @@
                     dangerMode: true
                 }).then((reset) => {
                     if (reset) {
-                        $('select#customer').val('').trigger('change');
-                        $('select#search_invoices').val('').trigger('change');
-                        $('input#amount').val('');
-                        $('select#payment_method').val('cash').trigger('change');
-                        $("input.input-date").datepicker('setDate', moment().format(moment_date_format));
-                        $('table#invoices tbody tr').empty();
-                        updateInvoiceTableTotals();
-                        payAmountExceeded();
+                        resetForm();
                     }
                 });
             });
@@ -548,6 +541,7 @@
                                 icon: 'success'
                             });
 
+                            resetForm();
                             $('button#save_payments').removeAttr('disabled');
 
                         } else {
@@ -658,8 +652,8 @@
 
                 $.each(rows, function (index, row) {
                     pay_total += __read_number($(row).find('input.payment'));
-                   
-                    if (pay_total > pay_amount) {
+
+                    if ((pay_total - pay_amount) > 0.01) {
                         exceed = true;
                     }
                 });
@@ -673,6 +667,24 @@
                 }
 
                 return exceed;
+            }
+
+            /**
+             * Reset multi payments form
+             * 
+             * @return void
+            */
+            function resetForm() {
+                $('select#customer').val('').trigger('change');
+                $('select#search_invoices').val('').trigger('change');
+                $('input#amount').val('');
+                $('select#payment_method').val('cash').trigger('change');
+                $('input[type="file"]').val('');
+                $('textarea').val('');
+                $("input.input-date").datepicker('setDate', moment().format(moment_date_format));
+                $('table#invoices tbody tr').empty();
+                updateInvoiceTableTotals();
+                payAmountExceeded();
             }
         });
     </script>

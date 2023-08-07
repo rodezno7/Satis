@@ -3,6 +3,7 @@ return [
     'payment' => 'Payment',
     'payment_method' => 'Payment method',
     'paid_on' => 'Paid on',
+    'note' => 'Note',
     'amount' => 'Amount',
     'cash' => 'Cash',
     'credit' => 'Credit',
