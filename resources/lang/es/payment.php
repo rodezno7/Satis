@@ -1,8 +1,10 @@
 <?php
 return [
+    'payment' => 'Pago',
     'card_holder_name' => 'Titular de la tarjeta',
     'payment_method' => 'Método de pago',
     'paid_on' => 'Pagado el',
+    'note' => 'Comentario',
     'amount' => 'Monto',
     'cash' => 'Efectivo',
     'credit' => 'Crédito',
@@ -71,5 +73,8 @@ return [
     'more_than_120' => 'Más de 120 días',
     'paid' => 'Pagado',
     'partial' => 'Parcial',
-    'due' => 'Debido'
+    'due' => 'Debido',
+    'multi_payments' => 'Pagos múltiples',
+    'payment_exceed' => 'El monto total de las facturas a pagar sobrepasa el monto del pago',
+    'payments_added_success' => 'Pagos agregados con éxito',
 ];

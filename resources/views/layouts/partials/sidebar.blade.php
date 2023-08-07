@@ -955,6 +955,7 @@
         'balances_customer',
         'accounts-receivable',
         'collections',
+        'payments',
         'portfolios',
         'credit-documents',
         'business_types',
@@ -984,6 +985,11 @@
             @can('cxc.collections')
             <li class="{{ $request->segment(1) == 'collections' ? 'active' : '' }}">
                 <a href="{{action('ReportController@getCollections')}}"><i class="fa fa-money"></i> @lang('cxc.collections')</a>
+            </li>
+            @endcan
+            @can('sell.create_payments')
+            <li class="{{ $request->segment(1) == 'payments' && $request->segment(2) == 'multi-payments' ? 'active' : '' }}">
+                <a href="{{action('TransactionPaymentController@multiPayments')}}"><i class="fa fa-money"></i> @lang('payment.multi_payments')</a>
             </li>
             @endcan
 

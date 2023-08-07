@@ -235,6 +235,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     /** Get parent correlative form final customer */
     Route::get('/sells/get-parent-correlative', 'SellController@getParentCorrelative');
+    Route::get('/sells/get-trans-due-by-customer/{customer_id}', 'SellController@getTransDueByCustomer');
     Route::resource('sells', 'SellController');
 
     Route::get('/sells/pos/get_product_row/{variation_id}/{location_id}', 'SellPosController@getProductRow');
@@ -405,6 +406,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/payments/add_payment/{transaction_id}', 'TransactionPaymentController@addPayment');
     Route::get('/payments/pay-contact-due/{contact_id}', 'TransactionPaymentController@getPayContactDue');
     Route::post('/payments/pay-contact-due', 'TransactionPaymentController@postPayContactDue');
+    Route::get('payments/multi-payments', 'TransactionPaymentController@multiPayments');
+    Route::post('payments/multi-payments', 'TransactionPaymentController@storeMultiPayments');
     Route::resource('payments', 'TransactionPaymentController');
     Route::delete('/payments/{id}/{entity_type?}', 'TransactionPaymentController@destroy');
     Route::get('/payments/{id}/edit/{entity_type?}', 'TransactionPaymentController@edit');
