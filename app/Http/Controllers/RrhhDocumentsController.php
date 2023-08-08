@@ -156,7 +156,7 @@ class RrhhDocumentsController extends Controller
                     foreach($request->file('files') as $file)
                     {
                         if (!Storage::disk('employee_documents')->exists($folderName)) {
-                            \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                            \File::makeDirectory(public_path().'/uploads/employee_documents/'.$folderName, $mode = 0755, true, true);
                         }
                         $name = time().'_'.$file->getClientOriginalName();
                         Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
@@ -230,7 +230,7 @@ class RrhhDocumentsController extends Controller
         
         $business_id = request()->session()->get('user.business_id');
         $folderName = 'business_'.$business_id;
-        $route = 'uploads/files/employee_documents/'.$folderName.'/'.$documentFile->file;
+        $route = 'uploads/employee_documents/'.$folderName.'/'.$documentFile->file;
         $ext = substr($documentFile->file, -3);
 
 
@@ -323,7 +323,7 @@ class RrhhDocumentsController extends Controller
                     foreach($request->file('files') as $file)
                     {
                         if (!Storage::disk('employee_documents')->exists($folderName)) {
-                            \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                            \File::makeDirectory(public_path().'/uploads/employee_documents/'.$folderName, $mode = 0755, true, true);
                         }
                         $name = time().'_'.$file->getClientOriginalName();
                         Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));

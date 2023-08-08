@@ -424,7 +424,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelActionFile = RrhhPersonnelActionFile::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
         $folderName = 'business_' . $business_id;
-        $route = 'uploads/files/employee_personel_actions/' . $folderName . '/' . $personnelActionFile->file;
+        $route = 'uploads/employee_personel_actions/' . $folderName . '/' . $personnelActionFile->file;
         $ext = substr($personnelActionFile->file, -3);
 
         return view('rrhh.personnel_actions.view_file', compact('route', 'ext'));
@@ -1149,7 +1149,7 @@ class RrhhPersonnelActionController extends Controller
                 $folderName = 'business_' . $business_id;
                 foreach ($request->file('files') as $file) {
                     if (!Storage::disk('employee_personel_actions')->exists($folderName)) {
-                        \File::makeDirectory(public_path() . '/uploads/files/employee_personel_actions/' . $folderName, $mode = 0755, true, true);
+                        \File::makeDirectory(public_path() . '/uploads/employee_personel_actions/' . $folderName, $mode = 0755, true, true);
                     }
 
                     $name = time() . '_' . $file->getClientOriginalName();

@@ -477,7 +477,7 @@ class RrhhContractController extends Controller
             $folderName = 'business_' . $business_id;
             if ($request->hasFile('file')) {
                 if (!Storage::disk('employee_contracts')->exists($folderName)) {
-                    \File::makeDirectory(public_path() . '/uploads/files/employee_contracts/' . $folderName, $mode = 0755, true, true);
+                    \File::makeDirectory(public_path() . '/uploads/employee_contracts/' . $folderName, $mode = 0755, true, true);
                 }
                 $file = $request->file('file');
                 $name = time() . '_' . $file->getClientOriginalName();
@@ -522,7 +522,7 @@ class RrhhContractController extends Controller
         if ($contract->file != null) {
             $business_id = request()->session()->get('user.business_id');
             $folderName = 'business_' . $business_id;
-            $route = 'uploads/files/employee_contracts/' . $folderName . '/' . $contract->file;
+            $route = 'uploads/employee_contracts/' . $folderName . '/' . $contract->file;
         } else {
             $route = config('app.url') . '/rrhh-contracts-generate/' . $id;
         }

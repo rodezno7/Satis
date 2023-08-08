@@ -255,7 +255,7 @@ class EmployeesController extends Controller
             $folderName = 'business_'.$business_id;
             if ($request->hasFile('photo')) {
                 if (!Storage::disk('employee_photo')->exists($folderName)) {
-                    \File::makeDirectory(public_path().'/uploads/files/employee_photo/'.$folderName, $mode = 0755, true, true);
+                    \File::makeDirectory(public_path().'/uploads/employee_photo/'.$folderName, $mode = 0755, true, true);
                 }
                 $file = $request->file('photo');
                 $name = time().'_'.$file->getClientOriginalName();
@@ -334,7 +334,7 @@ class EmployeesController extends Controller
                 $route = 'img/avatar-M.png';
             }
         } else {
-            $route = 'uploads/files/employee_photo/'.$folderName.'/'.$employee->photo;
+            $route = 'uploads/employee_photo/'.$folderName.'/'.$employee->photo;
         }
 
         $business_id = request()->session()->get('user.business_id');
@@ -577,7 +577,7 @@ class EmployeesController extends Controller
             $folderName = 'business_'.$business_id;
             if ($request->hasFile('photo')) {
                 if (!Storage::disk('employee_photo')->exists($folderName)) {
-                    \File::makeDirectory(public_path().'/uploads/files/employee_photo/'.$folderName, $mode = 0755, true, true);
+                    \File::makeDirectory(public_path().'/uploads/employee_photo/'.$folderName, $mode = 0755, true, true);
                 }
                 $file = $request->file('photo');
                 $name = time().'_'.$file->getClientOriginalName();
@@ -721,7 +721,7 @@ class EmployeesController extends Controller
             if ($employee->photo == null) {
                 $route = 'uploads/img/defualt.png';
             } else {
-                $route = 'uploads/files/employee_photo/'.$folderName.'/'.$employee->photo;
+                $route = 'uploads/employee_photo/'.$folderName.'/'.$employee->photo;
             }
             
             return view('rrhh.employees.photo', compact('route'));

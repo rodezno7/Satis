@@ -85,19 +85,19 @@ return [
         ],
         'employee_photo' => [
             'driver' => 'local',
-            'root' => public_path().'/uploads/files/employee_photo',
+            'root' => public_path().'/uploads/employee_photo',
         ],
         'employee_documents' => [
             'driver' => 'local',
-            'root' => public_path().'/uploads/files/employee_documents',
+            'root' => public_path().'/uploads/employee_documents',
         ],
         'employee_contracts' => [
             'driver' => 'local',
-            'root' => public_path().'/uploads/files/employee_contracts',
+            'root' => public_path().'/uploads/employee_contracts',
         ],
         'employee_personel_actions' => [
             'driver' => 'local',
-            'root' => public_path().'/uploads/files/employee_personel_actions',
+            'root' => public_path().'/uploads/employee_personel_actions',
         ],
     ],
 
