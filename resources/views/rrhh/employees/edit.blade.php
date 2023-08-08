@@ -238,12 +238,12 @@
                                         @if (count($position) != 0)
                                         {!! Form::select("department_id", $departments, $employee->department_id,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required'])
+                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;'])
                                         !!}
                                         @else
                                         {!! Form::select("department_id", $departments, $employee->department_id,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
@@ -255,12 +255,12 @@
                                         @if (count($position) != 0)
                                         {!! Form::select("position1_id", $positions, $employee->position1_id,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required'])
+                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;'])
                                         !!}
                                         @else
                                         {!! Form::select("position1_id", $positions, $employee->position1_id,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
@@ -272,24 +272,28 @@
                                             placeholder="{{ __('rrhh.type_employee') }}" style="width: 100%">
                                             <option value="">{{ __('rrhh.type_employee') }}</option>
                                             @foreach ($types as $type)
+                                            @if ($employee->type_id == $type->id)
+                                            <option value="{{ $type->id }}" selected>{{ $type->name }}</option>
+                                            @else
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            @endif
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) !=null)
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) != 0)
                                     style="display: none" @endif>
                                     <div class="form-group">
                                         <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
                                         @if (count($salary) != 0)
                                         {!! Form::number("salary", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
+                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
                                         @else
                                         {!! Form::number("salary", $employee->salary,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
+                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>

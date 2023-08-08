@@ -41,6 +41,6 @@ class RrhhPersonnelAction extends Model
     }
 
     public function personnelActionAuthorizers(){
-        return $this->hasMany('App\RrhhPersonnelAction');
+        return $this->hasMany('App\RrhhPersonnelActionAuthorizer');
     }
 }

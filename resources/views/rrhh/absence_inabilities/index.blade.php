@@ -17,7 +17,7 @@
 							</button>
 						@endcan
 					</div>
-					@include('rrhh.economic_dependences.table')
+					@include('rrhh.absence_inabilities.table')
 				</div>				
 			</div>
 		</div>

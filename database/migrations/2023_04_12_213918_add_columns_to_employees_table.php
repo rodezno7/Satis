@@ -37,13 +37,6 @@ class AddColumnsToEmployeesTable extends Migration
 
             $table->string('afp_number')->nullable()->after('afp_id');
             $table->date('date_admission')->nullable()->after('afp_number');
-            // $table->decimal('salary', 10, 2)->nullable()->after('date_admission');
-
-            // $table->integer('department_id')->unsigned()->nullable()->after('salary');
-            // $table->foreign('department_id')->references('id')->on('rrhh_datas')->onDelete('cascade')->onUpdate('cascade');
-            
-            // $table->integer('position1_id')->unsigned()->nullable()->after('department_id');
-            // $table->foreign('position1_id')->references('id')->on('rrhh_datas');
             
             $table->string('photo')->nullable()->after('position_id');
             $table->boolean('status')->default(1)->after('photo');
@@ -131,8 +124,6 @@ class AddColumnsToEmployeesTable extends Migration
             $table->dropColumn('extra_hours');
             $table->dropColumn('foreign_tax');
             $table->dropColumn('fee');
-
-
         });
     }
 }

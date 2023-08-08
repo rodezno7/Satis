@@ -212,8 +212,8 @@ class RrhhTypeWageController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('human_resource_employees')
-                ->where('bank_id', $id)               
+                $count = DB::table('employees')
+                ->where('type_id', $id)               
                 ->count();
 
                 if ($count > 0) {
