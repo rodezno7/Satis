@@ -108,7 +108,6 @@ class RrhhContractController extends Controller
      */
     public function store(Request $request)
     {
-
         if (!auth()->user()->can('rrhh_contract.create')) {
             abort(403, 'Unauthorized action.');
         }
@@ -158,7 +157,6 @@ class RrhhContractController extends Controller
                 if($employee_document == 0){
                     $employeeIncompleteDoc++;
                 }
-                \Log::info($employeeIncompleteDoc);
             }
 
             if ($countPosition == 0) {
@@ -183,24 +181,42 @@ class RrhhContractController extends Controller
             ) {
                 $employeeIncompleteInfo++;
             }
-
+            
             if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo != 0 || $employeeIncompleteDoc != 0) {
-                if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc == 0) {
+                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc == 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_information_employee')
                     ];
                 }
-                if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo != 0 || $employeeIncompleteDoc == 0) {
+                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_information_business')
                     ];
                 }
-                if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc != 0) {
+                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
                     $output = [
                         'success' => 0,
                         'msg' => __('rrhh.incomplete_document_employee')
+                    ];
+                }
+                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.incomplete_information_business_document')
+                    ];
+                }
+                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.incomplete_information_employee_document')
+                    ];
+                }
+                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.incomplete_information_employee_business')
                     ];
                 }
                 if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
@@ -210,7 +226,8 @@ class RrhhContractController extends Controller
                     ];
                 }
             } 
-            if ($employeeIncompleteInfo == 0 || $businessIncompleteInfo == 0 || $employeeIncompleteDoc == 0) {
+
+            if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc == 0) {
                 if (count($contract) > 0) {
                     $output = [
                         'success' => 0,
