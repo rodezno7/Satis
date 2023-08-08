@@ -32,7 +32,7 @@
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
           <label>@lang('rrhh.new_salary')</label> <span class="text-danger">*</span>
-          {!! Form::number("new_salary", $salary->new_salary,
+          {!! Form::number("new_salary", ($salary != null) ? $salary->new_salary : null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.new_salary'), 'id' => 'new_salary', 'step'
             => '0.01', 'min' => '0.01']) !!}
         </div>
@@ -164,6 +164,24 @@
               <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
 						@else
               <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+						@endif
+					@endforeach
+
+          @foreach ($userAdmins as $userAdmin)
+						@php
+							$exist = 0;
+						@endphp
+						@foreach ($authorizers as $authorizer)
+							@if($userAdmin->id == $authorizer->user_id)
+								@php
+									$exist = $userAdmin->id;
+								@endphp
+							@endif
+						@endforeach
+						@if ($exist == $userAdmin->id)
+              <option value="{{ $userAdmin->id }}" selected>{{ $userAdmin->first_name }} {{ $userAdmin->last_name }} - {{ $userAdmin->email }}</option>
+						@else
+              <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }} - {{ $userAdmin->email }}</option>
 						@endif
 					@endforeach
         </select>
@@ -362,7 +380,8 @@
           $('#btn_edit_personnel_action').prop('disabled', false);
           Swal.fire
           ({
-            title: result.msg,
+            title: "Error",
+            text: result.msg,
             icon: "error",
           });
         }

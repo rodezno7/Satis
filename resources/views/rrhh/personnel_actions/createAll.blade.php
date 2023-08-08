@@ -171,9 +171,10 @@
                             <select name="user_id[]" id="user_id" class="form-control form-control-sm select2"
                                 style="width: 100%;" multiple>
                                 @foreach ($users as $user)
-                                    {{-- <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option> --}}
-                                    <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}
-                                    </option>
+                                    <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}</option>
+                                @endforeach
+                                @foreach ($userAdmins as $userAdmin)
+                                    <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
                                 @endforeach
                             </select>
                         </div>

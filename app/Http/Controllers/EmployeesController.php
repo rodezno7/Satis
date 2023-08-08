@@ -484,19 +484,19 @@ class EmployeesController extends Controller
 
         //dd($request);
         $employee = Employees::findOrFail($id);
-        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
-        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->count();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->count();
 
         $requiredDepartment = 'nullable';
         $requiredPosition = 'nullable';
         $requiredSalary = 'nullable';
         $requiredPayment = 'nullable';
-        if(count($position) == 0){
+        if($position == 0){
             $requiredDepartment = 'required';
             $requiredPosition = 'required';
         }
 
-        if(count($salary) == 0){
+        if($salary == 0){
             $requiredSalary = 'required|numeric|min:1';
         }
 
@@ -611,13 +611,13 @@ class EmployeesController extends Controller
             }
             $employee->update($input_details);
 
-            if(count($position) == 0){
+            if($position == 0){
                 RrhhPositionHistory::insert(
                     ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                 );
             }
 
-            if(count($salary) == 0){
+            if($salary == 0){
                 RrhhSalaryHistory::insert(
                     ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
                 );
@@ -631,7 +631,7 @@ class EmployeesController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
         return redirect('rrhh-employees')->with('status', $output);
