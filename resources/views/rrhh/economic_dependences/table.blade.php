@@ -77,6 +77,7 @@
     }
 
     function deleteEconomicDependence(id) {
+        employee_id = $('#_employee_id').val();
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -106,7 +107,7 @@
                                 showConfirmButton: false,
                             });
 
-                            getEconomicDependence($('#_employee_id').val());
+                            getEconomicDependence(employee_id);
 
                         } else {
                             Swal.fire({
@@ -135,11 +136,11 @@
     });
 
     function getEconomicDependence(id) {
+        $('#_employee_id').val('');
         $("#modal_action").html('');
-        var route = '/rrhh-economic-dependence-getByEmployee/' + id;
-        $.get(route, function(data) {
-            $("#modal_action").html(data);
-            $('#modal_action').modal({
+        var route = '/rrhh-economic-dependence-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
                 backdrop: 'static'
             });
         });

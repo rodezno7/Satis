@@ -82,6 +82,7 @@
 	$("#btn_add_study").click(function() {
 		route = "/rrhh-study";    
 		token = $("#token").val();
+    employee_id = $('#employee_id').val();
 
 		var form = $("#form_add_study");
 		var formData = new FormData(form[0]);
@@ -95,7 +96,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getStudy($('#employee_id').val());
+					getStudy(employee_id);
+          $('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

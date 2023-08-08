@@ -306,6 +306,7 @@
     $('#btn_add_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action";    
     token = $("#token").val();
+    employee_id = $('#employee_id').val();
       
     var form = $("#form_add_personnel_action");
     var formData = new FormData(form[0]);
@@ -319,7 +320,8 @@
       data: formData,
       success:function(result) {
         if(result.success == true) {
-          getPersonnelActions($('#employee_id').val());
+          getPersonnelActions(employee_id);
+          $('#employee_id').val('');
           Swal.fire
           ({
             title: result.msg,

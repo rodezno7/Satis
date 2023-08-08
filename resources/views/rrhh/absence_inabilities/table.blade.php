@@ -65,8 +65,6 @@
 </table>
 <input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
 
-
-
 <script type="text/javascript">
     function editAbsenceInability(id) {
         $("#modal_content_edit_document").html('');
@@ -82,6 +80,7 @@
     }
 
     function deleteAbsenceInability(id) {
+        employee_id = $('#_employee_id').val();
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -111,7 +110,7 @@
                                 showConfirmButton: false,
                             });
 
-                            getAbsenceInability($('#_employee_id').val());
+                            getAbsenceInability(employee_id);
 
                         } else {
                             Swal.fire({
@@ -140,12 +139,12 @@
     });
 
     function getAbsenceInability(id) {
+        $('#_employee_id').val('');
         $("#modal_action").html('');
-        var route = '/rrhh-absence-inability-getByEmployee/' + id;
-        $.get(route, function(data) {
-            $("#modal_action").html(data);
-            $('#modal_action').modal({
-                backdrop: 'static'
+        var route = '/rrhh-absence-inability-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
             });
         });
     }

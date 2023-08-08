@@ -102,24 +102,6 @@
       </div>
     </div>
 
-    {{-- <div id="div_position_history">
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="form-group">
-          <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
-          {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->department_id : null,
-          ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
-        </div>
-      </div>
-  
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="form-group">
-          <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
-          {!! Form::select("position1_id", $positions, ($positionHistory != null) ? $positionHistory->position1_id : null,
-          ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
-        </div>
-      </div>
-    </div> --}}
-
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" id="div_payment">
       <div class="form-group">
         <label>@lang('rrhh.way_to_pay')</label> <span class="text-danger">*</span>
@@ -353,7 +335,8 @@
     $('#btn_edit_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action-update";    
     token = $("#token").val();
-      
+    employee_id = $('#employee_id').val();  
+
     var form = $("#form_edit_personnel_action");
     var formData = new FormData(form[0]);
     
@@ -366,7 +349,8 @@
       data: formData,
       success:function(result) {
         if(result.success == true) {
-          getPersonnelActions($('#employee_id').val());
+          getPersonnelActions(employee_id);
+          $('#employee_id').val('');
           Swal.fire
           ({
             title: result.msg,

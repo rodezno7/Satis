@@ -3,7 +3,7 @@
         @if ($contract->contract_status == 'Vigente')
 			<span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
 		@else
-			@if ($item->contract_status == 'Finalizado')
+			@if ($contract->contract_status == 'Finalizado')
 				<span class="badge" style="background: #4e58b6">{{ __('rrhh.finalized') }}</span>
 			@else
 				<span class="badge" style="background: #C9302C">{{ __('rrhh.defeated') }}</span>

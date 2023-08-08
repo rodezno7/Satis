@@ -213,9 +213,7 @@ class RrhhPersonnelActionController extends Controller
                     }
 
                     if ($action->rrhh_required_action_id == 6) { // Cambiar forma de pago
-                        //$requiredBankAccount = 'required';
                         $requiredPayment = 'required';
-                        //$requiredBank = 'required';
                     }
 
                     if ($action->rrhh_required_action_id == 7) { // Seleccionar la fecha en que entra en vigor
@@ -258,14 +256,6 @@ class RrhhPersonnelActionController extends Controller
  
             $countPosition = RrhhPositionHistory::where('employee_id', $employee->id)->count();
             $countSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->count();
-            // $type_document = RrhhData::where('value', 'DUI')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->first();
-
-            // if ($type_document) {
-            //     $countDocument = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->t();
-            //     if ($countDocument == 0) {
-            //         $employeeIncompleteInfo++;
-            //     }
-            // }
 
             if ($countPosition == 0) {
                 $employeeIncompleteInfo++;
@@ -404,7 +394,7 @@ class RrhhPersonnelActionController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -577,14 +567,6 @@ class RrhhPersonnelActionController extends Controller
             foreach ($employees as $employee) {
                 $countPosition = RrhhPositionHistory::where('employee_id', $employee->id)->count();
                 $countSalary = RrhhSalaryHistory::where('employee_id', $employee->id)->count();
-                // $type_document = RrhhData::where('value', 'DUI')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->first();
-
-                // if ($type_document) {
-                //     $countDocument = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->get();
-                //     if ($countDocument == 0) {
-                //         $employeeIncompleteInfo++;
-                //     }
-                // }
 
                 if ($countPosition == 0) {
                     $employeeIncompleteInfo++;
@@ -765,7 +747,7 @@ class RrhhPersonnelActionController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 

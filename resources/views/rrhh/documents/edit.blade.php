@@ -60,7 +60,7 @@
 		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
-				<input type="file" name="file" id='file' class="form-control form-control-sm">
+				<input type="file" name="files[]" id='files' class="form-control form-control-sm" multiple>
 			</div>
 		</div>
 	</div>
@@ -158,7 +158,8 @@
 	$("#btn_edit_document").click(function() {
 		var form = $("#form_edit");
 		var formData = new FormData(form[0]);
-		
+		employee_id = $('#employee_id').val();
+
 		route = '/rrhh-documents-updateDocument';    
 		token = $("#token").val();
 
@@ -172,7 +173,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getDocuments($('#employee_id').val());
+					getDocuments(employee_id);
+					$('#employee_id').val('');
 					Swal.fire
 						({
 							title: result.msg,

@@ -147,11 +147,19 @@
     });
 
     function getStudy(id) {
+        // $("#modal_action").html('');
+        // var route = '/rrhh-study-getByEmployee/'+id;
+        // $.get(route, function(data) {
+        //     $("#modal_action").html(data);
+        //     $('#modal_action').modal({
+        //         backdrop: 'static'
+        //     });
+        // });
+        $('#_employee_id').val('');
         $("#modal_action").html('');
         var route = '/rrhh-study-getByEmployee/'+id;
-        $.get(route, function(data) {
-            $("#modal_action").html(data);
-            $('#modal_action').modal({
+        $("#modal_action").load(route, function() {
+            $(this).modal({
                 backdrop: 'static'
             });
         });

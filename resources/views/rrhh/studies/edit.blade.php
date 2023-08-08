@@ -106,6 +106,7 @@
     $("#btn_edit_study").click(function() {
         route = "/rrhh-study-update";
         token = $("#token").val();
+        employee_id = $('#employee_id').val();
 
         var form = $("#form_edit");
         var formData = new FormData(form[0]);
@@ -121,7 +122,8 @@
             data: formData,
             success: function(result) {
                 if (result.success == true) {
-                    getStudy($('#employee_id').val());
+                    getStudy(employee_id);
+                    $('#employee_id').val('');
                     Swal.fire({
                         title: result.msg,
                         icon: "success",
@@ -151,9 +153,7 @@
     });
 
     function closeModal() {
-        $('#modal_action').modal({
-            backdrop: 'static'
-        });
+        $('#modal_action').modal({backdrop: 'static'});
         $('#modal_edit_action').modal('hide').data('bs.modal', null);
     }
 </script>

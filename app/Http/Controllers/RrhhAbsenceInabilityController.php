@@ -139,7 +139,7 @@ class RrhhAbsenceInabilityController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -282,7 +282,7 @@ class RrhhAbsenceInabilityController extends Controller
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => $e->getMessage()
+                    'msg' => __('rrhh.error')
                 ];
             }
 

@@ -196,6 +196,7 @@
     }
 
     function addDocument(id) {
+        $("#document_modal").html('');
         var route = '/rrhh-documents-getByEmployee/'+id;
         $("#document_modal").load(route, function() {
             $(this).modal({
@@ -209,7 +210,7 @@
         var route = '/rrhh-economic-dependence-getByEmployee/'+id;
         $("#modal_action").load(route, function() {
             $(this).modal({
-            backdrop: 'static'
+                backdrop: 'static'
             });
         });
     }

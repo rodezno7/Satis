@@ -187,7 +187,7 @@ class RrhhDocumentsController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -286,14 +286,14 @@ class RrhhDocumentsController extends Controller
                 'number'                => 'required',
                 'date_expedition'       => 'required',
                 'date_expiration'       => 'required',
-                'file'                  => 'required',
+                'files'                  => 'required',
             ]);
         }else{
             $request->validate([
                 'state_id'              => 'required',
                 'city_id'               => 'required',
                 'number'                => 'required',
-                'file'                  => 'required',
+                'files'                  => 'required',
                 'date_expedition'       => 'required',
             ]);
         }
@@ -304,7 +304,7 @@ class RrhhDocumentsController extends Controller
                 'state_id', 
                 'city_id',
                 'number',
-                'file'
+                //'files'
             ]);
 
             $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
@@ -314,21 +314,24 @@ class RrhhDocumentsController extends Controller
             {
                 DB::beginTransaction();
 
-                $item = RrhhDocuments::findOrFail($request->id);
-
-                $business_id = request()->session()->get('user.business_id');
-                $folderName = 'business_'.$business_id;
-                if ($request->hasFile('file')) {
-                    if (!Storage::disk('employee_documents')->exists($folderName)) {
-                        \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                $item->update($input_details);
+    
+                $files = [];
+                if ($request->file('files')){
+                    $business_id = request()->session()->get('user.business_id');
+                    $folderName = 'business_'.$business_id;
+                    foreach($request->file('files') as $file)
+                    {
+                        if (!Storage::disk('employee_documents')->exists($folderName)) {
+                            \File::makeDirectory(public_path().'/uploads/files/employee_documents/'.$folderName, $mode = 0755, true, true);
+                        }
+                        $name = time().'_'.$file->getClientOriginalName();
+                        Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
+                        $input_document['file'] = $name;
+                        $input_document['rrhh_document_id'] = $item->id;
+                        RrhhDocumentFile::create($input_document);
                     }
-                    $file = $request->file('file');
-                    $name = time().'_'.$file->getClientOriginalName();
-                    Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
-                    $input_details['file'] = $name;
                 }
-
-                $document = $item->update($input_details);
 
                 DB::commit();
 

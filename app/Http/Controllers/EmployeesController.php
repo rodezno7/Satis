@@ -353,7 +353,7 @@ class EmployeesController extends Controller
         $studies = DB::table('rrhh_studies as study')
             ->join('rrhh_datas as type', 'type.id', '=', 'study.type_study_id')
             ->join('employees as employee', 'employee.id', '=', 'study.employee_id')
-            ->select('study.id as id', 'type.value as type', 'study.title as title', 'study.year_graduation as year_graduation', 'study.study_status as study_status', 'study.status as status')
+            ->select('study.id as id', 'type.value as type', 'study.title as title', 'study.institution as institution', 'study.year_graduation as year_graduation', 'study.study_status as study_status', 'study.status as status')
             ->where('study.employee_id', $employee->id)
             ->where('type.rrhh_header_id', 12)
             ->get();

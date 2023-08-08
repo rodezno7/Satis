@@ -153,7 +153,7 @@ class RrhhContractController extends Controller
                 
             if ($type_document) {
                 $employee_document = RrhhDocuments::where('employee_id', $employee->id)->where('document_type_id', $type_document->id)->count();
-                \Log::info($employee_document);
+                
                 if($employee_document == 0){
                     $employeeIncompleteDoc++;
                 }
@@ -182,50 +182,51 @@ class RrhhContractController extends Controller
                 $employeeIncompleteInfo++;
             }
             
-            if ($employeeIncompleteInfo != 0 || $businessIncompleteInfo != 0 || $employeeIncompleteDoc != 0) {
-                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc == 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information_employee')
-                    ];
-                }
-                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information_business')
-                    ];
-                }
-                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_document_employee')
-                    ];
-                }
-                if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information_business_document')
-                    ];
-                }
-                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information_employee_document')
-                    ];
-                }
-                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information_employee_business')
-                    ];
-                }
-                if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.incomplete_information')
-                    ];
-                }
-            } 
+            if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information')
+                ];
+            }
+            
+            if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc != 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information_business_document')
+                ];
+            }
+            if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information_employee_document')
+                ];
+            }
+            if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information_employee_business')
+                ];
+            }
+
+            if ($employeeIncompleteInfo != 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc == 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information_employee')
+                ];
+            }
+            if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo != 0 && $employeeIncompleteDoc == 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_information_business')
+                ];
+            }
+            if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc != 0) {
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.incomplete_document_employee')
+                ];
+            }
+
 
             if ($employeeIncompleteInfo == 0 && $businessIncompleteInfo == 0 && $employeeIncompleteDoc == 0) {
                 if (count($contract) > 0) {
@@ -498,7 +499,7 @@ class RrhhContractController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -553,7 +554,7 @@ class RrhhContractController extends Controller
 
         $request->validate([
             'contract_start_date'   => 'required',
-            'contract_end_date'     => 'required',
+            //'contract_end_date'     => 'required',
         ]);
 
         try {
@@ -653,7 +654,7 @@ class RrhhContractController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 

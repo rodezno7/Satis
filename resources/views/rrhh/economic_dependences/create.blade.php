@@ -86,6 +86,7 @@
 	$("#btn_add_economic_dependence").click(function() {
 		route = "/rrhh-economic-dependence";    
 		token = $("#token").val();
+    employee_id = $('#employee_id').val();
 
 		var form = $("#form_add_economic_dependence");
 		var formData = new FormData(form[0]);
@@ -99,7 +100,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getEconomicDependence($('#employee_id').val());
+					getEconomicDependence(employee_id);
+          $('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

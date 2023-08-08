@@ -1,5 +1,5 @@
 <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-    <div class="modal-content">
+    <div class="modal-content" id="modal_content_documents">
         <div class="modal-header">
             <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>

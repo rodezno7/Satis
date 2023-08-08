@@ -126,8 +126,8 @@
 		$('#modal_action').modal('hide').data('bs.modal', null);
 	}
 
-	function deletePersonnelAction(id) 
-	{
+	function deletePersonnelAction(id) {
+		employee_id = $('#_employee_id').val();
 		Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -156,7 +156,7 @@
 						showConfirmButton: false,
 					});
 
-					getPersonnelActions($('#_employee_id').val());
+					getPersonnelActions(employee_id);
 
 					} else {
 					Swal.fire
@@ -187,12 +187,12 @@
     });
 
 	function getPersonnelActions(id){
+		$('#_employee_id').val('');
 		$("#modal_action").html('');
-		var route = '/rrhh-personnel-action-getByEmployee/'+id;
-		$.get(route, function(data) {
-			$("#modal_action").html(data);
-			$('#modal_action').modal({
-            	backdrop: 'static'
+        var route = '/rrhh-personnel-action-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+            backdrop: 'static'
             });
         });
 	}

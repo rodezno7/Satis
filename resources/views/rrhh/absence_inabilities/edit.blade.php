@@ -151,6 +151,7 @@
 	$("#btn_edit_absence_inability").click(function() {
 		route = "/rrhh-absence-inability-update";    
 		token = $("#token").val();
+    employee_id = $('#employee_id').val();
 
 		var form = $("#form_edit");
 		var formData = new FormData(form[0]);
@@ -164,7 +165,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-          getAbsenceInability($('#employee_id').val());
+          getAbsenceInability(employee_id);
+          $('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

@@ -64,6 +64,7 @@
 	$("#btn_add_document").click(function() {
 		route = "/rrhh-contracts-storeDocument";    
 		token = $("#token").val();
+		employee_id = $('#employee_id').val();
 
 		var form = $("#form_add_document");
 		var formData = new FormData(form[0]);
@@ -77,7 +78,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getContract($('#employee_id').val());
+					getContract(employee_id);
+					$('#employee_id').val('');
                     Swal.fire({
                         title: result.msg,
                         icon: "success",
