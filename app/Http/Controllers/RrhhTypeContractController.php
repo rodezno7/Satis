@@ -195,7 +195,7 @@ class RrhhTypeContractController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\RrhhTypeWage  $humanResourceBanks
+     * @param  \App\RrhhTypeWage  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {

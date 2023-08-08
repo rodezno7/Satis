@@ -84,14 +84,6 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
-                                        {!! Form::text("tax_number", null,
-                                        ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])
-                                        !!}
-                                    </div>
-                                </div> --}}
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.tax_number')</label> <label id="text-approved" 
@@ -574,13 +566,11 @@
             format: datepicker_date_format
         });
         
-        //console.log({{ $employee->approved }});
         let approved = $("#approved").val();
 		if (approved == 1) {
 			$("#approved").prop("checked", true);
             $("#text-approved").show();
-            $("#tax_number").prop('disabled', true);
-            //$("#tax_number").val($('#dni').val());            
+            $("#tax_number").prop('disabled', true);            
 		} else {
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
@@ -765,6 +755,7 @@
 	$('#country_id').change(function(){
 		updateStates();
         $('#state_id').prop('disabled', false);
+        $('#city_id').prop('disabled', true);
 	});
 
 

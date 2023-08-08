@@ -304,7 +304,7 @@ class EmployeesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $id) {
@@ -400,7 +400,7 @@ class EmployeesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -474,7 +474,7 @@ class EmployeesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
@@ -640,7 +640,7 @@ class EmployeesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) 

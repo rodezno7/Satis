@@ -714,9 +714,6 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh/create-item/{id}', 'RrhhDataController@createItem');
     Route::get('rrhh/edit-item/{id}', 'RrhhDataController@editItem');
 
-    Route::resource('rrhh-banks', 'HumanResourceBanksController');
-    Route::get('rrhh/getBanksData', 'HumanResourceBanksController@getBanksData');
-
     Route::resource('rrhh-type-wages', 'RrhhTypeWageController');
     Route::get('rrhh/getTypeWagesData', 'RrhhTypeWageController@getTypeWagesData');
 
