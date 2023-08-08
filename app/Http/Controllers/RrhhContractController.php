@@ -320,7 +320,7 @@ class RrhhContractController extends Controller
     public function generate(Request $request, $id)
     {
         $business_id = request()->session()->get('user.business_id');
-        $contract = RrhhContract::where('id', $id)->first();
+        $contract = RrhhContract::where('id', $id)->firstOrFail();
         $type = RrhhTypeContract::where('id', $contract->rrhh_type_contract_id)->first();
 
         $contract_end_date             = null;
@@ -514,7 +514,7 @@ class RrhhContractController extends Controller
      */
     function show($id, $employee_id)
     {
-        if (!auth()->user()->can('rrhh.contract.view')) {
+        if (!auth()->user()->can('rrhh_contract.view')) {
             abort(403, 'Unauthorized action.');
         }
         $contract = RrhhContract::where('id', $id)->where('employee_id', $employee_id)->first();

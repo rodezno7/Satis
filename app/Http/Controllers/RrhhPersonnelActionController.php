@@ -575,6 +575,7 @@ class RrhhPersonnelActionController extends Controller
                 if ($countSalary == 0) {
                     $employeeIncompleteInfo++;
                 }
+
                 if ($employee->payment_id == null) {
                     $employeeIncompleteInfo++;
                 }
@@ -798,7 +799,7 @@ class RrhhPersonnelActionController extends Controller
         $actions = DB::table('rrhh_action_type')->where('rrhh_type_personnel_action_id', $personnelAction[0]->type_id)->orderBy('id', 'DESC')->get();
 
         $business_id = request()->session()->get('user.business_id');
-        $business = Business::find($business_id);
+        $business = Business::findOrFail($business_id);
 
         return view('rrhh.personnel_actions.view', compact('personnelAction', 'salary', 'position', 'business', 'actions', 'employee', 'users', 'payment', 'bank'));
     }

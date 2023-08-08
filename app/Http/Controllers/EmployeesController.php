@@ -265,6 +265,7 @@ class EmployeesController extends Controller
 
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
+            $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
@@ -329,12 +330,12 @@ class EmployeesController extends Controller
         $folderName = 'business_'.$business_id;
         if ($employee->photo == '') {
             if($employee->gender == 'F'){
-                $route = 'img/avatar-F.png';
+                $route = '/img/Avatar-F.png';
             }else{
-                $route = 'img/avatar-M.png';
+                $route = '/img/Avatar-M.png';
             }
         } else {
-            $route = 'uploads/employee_photo/'.$folderName.'/'.$employee->photo;
+            $route = '/uploads/employee_photo/'.$folderName.'/'.$employee->photo;
         }
 
         $business_id = request()->session()->get('user.business_id');
