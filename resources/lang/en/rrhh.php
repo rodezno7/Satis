@@ -310,4 +310,5 @@ return[
     'Gets_the_contract_end_date_letters' => 'Gets the contract end date. The format is in letters, for example: July twelve, two thousand twenty-three.',
     'Gets_the_current_date' => 'Gets the current date. The format is: On the 12th day of July 2023.',
     'Gets_the_current_date_letters' => 'Gets the start date of the contract. The format is in letters, for example: July twelve, two thousand twenty-three.',
+    'import_employees' => 'Import employees',
 ];

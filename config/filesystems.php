@@ -95,9 +95,9 @@ return [
             'driver' => 'local',
             'root' => public_path().'/uploads/employee_contracts',
         ],
-        'employee_personel_actions' => [
+        'employee_personnel_actions' => [
             'driver' => 'local',
-            'root' => public_path().'/uploads/employee_personel_actions',
+            'root' => public_path().'/uploads/employee_personnel_actions',
         ],
     ],
 

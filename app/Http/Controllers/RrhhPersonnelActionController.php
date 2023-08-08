@@ -424,7 +424,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelActionFile = RrhhPersonnelActionFile::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
         $folderName = 'business_' . $business_id;
-        $route = 'uploads/employee_personel_actions/' . $folderName . '/' . $personnelActionFile->file;
+        $route = 'uploads/employee_personnel_actions/' . $folderName . '/' . $personnelActionFile->file;
         $ext = substr($personnelActionFile->file, -3);
 
         return view('rrhh.personnel_actions.view_file', compact('route', 'ext'));
@@ -1148,12 +1148,12 @@ class RrhhPersonnelActionController extends Controller
                 $business_id = request()->session()->get('user.business_id');
                 $folderName = 'business_' . $business_id;
                 foreach ($request->file('files') as $file) {
-                    if (!Storage::disk('employee_personel_actions')->exists($folderName)) {
-                        \File::makeDirectory(public_path() . '/uploads/employee_personel_actions/' . $folderName, $mode = 0755, true, true);
+                    if (!Storage::disk('employee_personnel_actions')->exists($folderName)) {
+                        \File::makeDirectory(public_path() . '/uploads/employee_personnel_actions/' . $folderName, $mode = 0755, true, true);
                     }
 
                     $name = time() . '_' . $file->getClientOriginalName();
-                    Storage::disk('employee_personel_actions')->put($folderName . '/' . $name,  \File::get($file));
+                    Storage::disk('employee_personnel_actions')->put($folderName . '/' . $name,  \File::get($file));
                     $input_details['file'] = $name;
                     $input_details['rrhh_personnel_action_id'] = $request->input('rrhh_personnel_action_id');
 

@@ -147,6 +147,14 @@
                     </span>
                   </a>
                 </li>
+                {{-- <li class="{{ $request->segment(1) == 'rrhh-personnel-action-masive' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhPersonnelActionController@createMasive') }}">
+                    <i class="fa fa-download"></i>
+                    <span class="title">
+                      @lang('rrhh.import_employees')
+                    </span>
+                  </a>
+                </li> --}}
                 <li class="{{ $request->segment(1) == 'rrhh-personnel-action-masive' ? 'active' : '' }}">
                   <a href="{{ action('RrhhPersonnelActionController@createMasive') }}">
                     <i class="fa fa-drivers-license"></i>
@@ -166,13 +174,6 @@
               </ul>
             </li>
             @endcan
-            {{-- @can('rrhh_employees.view')
-            <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
-              <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
-                @lang('rrhh.employee')
-              </a>
-            </li>
-            @endcan --}}
             @can('rrhh_personnel_action.authorize')
             <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
               <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>

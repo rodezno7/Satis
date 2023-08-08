@@ -733,4 +733,8 @@ class EmployeesController extends Controller
         $extension = !empty(System::getProperty('enable_business_based_username')) ? '-' .str_pad(session()->get('business.id'), 2, 0, STR_PAD_LEFT) : null;
         return $extension;
     }
+
+    public function getImportEmployees(){
+        
+    }
 }

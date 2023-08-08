@@ -645,6 +645,13 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
+
+    // Route::get('/import-employees', 'EmployeesController@import');
+    // Route::post('/import-employees/import', 'ImportProductsController@import')->name('employees.import');
+    // Route::get('/edit-employees', 'ImportProductsController@edit');
+    // Route::post('/edit-employees/import', 'ImportProductsController@update');
+
+
     Route::resource('rrhh-assistances', 'AssistanceEmployeeController');
     Route::get('rrhh-assistances-getAssistances', 'AssistanceEmployeeController@getAssistances');
     Route::post('/rrhh-assistances-report', 'AssistanceEmployeeController@postAssistancesReport');

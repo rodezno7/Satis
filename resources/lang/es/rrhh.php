@@ -308,5 +308,5 @@ return[
     'Gets_the_contract_end_date_letters' => 'Obtiene la fecha de finalización del contrato. El formato es en letras, por ejemplo: doce de julio de dos mil veintitres.',
     'Gets_the_current_date' => 'Obtiene la fecha actual. El formato es: A los 12 días del mes de julio de 2023.',
     'Gets_the_current_date_letters' => 'Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: A los doce días del mes de julio de dos mil veintitres.',
-    
+    'import_employees' => 'Importar empleados',
 ];
