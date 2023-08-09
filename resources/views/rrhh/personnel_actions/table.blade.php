@@ -171,9 +171,8 @@
         });
 	}
 
-	$("#btn_add_personnel_actions").click(function() 
-    {
-        $("#modal_content_personnel_action").html('');
+	function btnAddPersonnelActions(){
+		$("#modal_content_personnel_action").html('');
         var url = "{!!URL::to('/rrhh-personnel-action-create/:id')!!}";
         id = $('#_employee_id_pa').val();
         url = url.replace(':id', id);
@@ -184,7 +183,7 @@
             });
         });
 		$('#modal_action').modal('hide').data('bs.modal', null);
-    });
+	}
 
 	function getPersonnelActions(id){
 		$('#_employee_id_pa').val('');

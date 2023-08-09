@@ -10,7 +10,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="form-group">
 						@can('rrhh_personnel_action.create')
-							<button type="button" class="btn btn-info btm-sm" id='btn_add_personnel_actions'
+							<button type="button" class="btn btn-info btm-sm" id='btn_add_personnel_actions' onclick="btnAddPersonnelActions()"
 							style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 							<i class="fa fa-plus"></i>
 							{{ __('rrhh.add') }}

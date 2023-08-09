@@ -123,8 +123,8 @@
             }
         });
     }
-
-    $("#btn_add_absence_inabilities").click(function() {
+    
+    function btnAddAbsenceInabilities(){
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-absence-inability-create/:id') !!}";
         id = $('#_employee_id_ai').val();
@@ -136,7 +136,7 @@
             });
         });
         $('#modal_action').modal('hide').data('bs.modal', null);
-    });
+    }
 
     function getAbsenceInability(id) {
         //$('#_employee_id_ai').val('');

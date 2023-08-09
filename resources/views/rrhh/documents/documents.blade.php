@@ -11,7 +11,7 @@
 					@if (count($types) > count($documents))
 					<div class="form-group">
 						@can('rrhh_document_employee.create')
-							<button type="button" class="btn btn-info btm-sm" id='btn_add_documents'
+							<button type="button" class="btn btn-info btm-sm" id='btn_add_documents' onclick="btnAddDocuments()"
 								style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
 								<i class="fa fa-plus"></i> @lang('rrhh.add')
 							</button>

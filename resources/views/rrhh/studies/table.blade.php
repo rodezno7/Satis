@@ -133,7 +133,7 @@
         });
     }
 
-    $("#btn_add_type_studies").click(function() {
+    function btnAddTypeStudies(){
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-study-create/:id') !!}";
         id = $('#_employee_id_st').val();
@@ -145,7 +145,7 @@
             });
         });
         $('#modal_action').modal('hide').data('bs.modal', null);
-    });
+    }
 
     function getStudy(id) {
         //$('#_employee_id_st').val('');

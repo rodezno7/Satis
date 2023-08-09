@@ -121,7 +121,7 @@
         });
     }
 
-    $("#btn_add_economic_dependencies").click(function() {
+    function btnAddEconomicDependencies(){
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-economic-dependence-create/:id') !!}";
         id = $('#_employee_id_ed').val();
@@ -133,7 +133,7 @@
             });
         });
         $('#modal_action').modal('hide').data('bs.modal', null);
-    });
+    }
 
     function getEconomicDependence(id) {
         //$('#_employee_id_ed').val('');

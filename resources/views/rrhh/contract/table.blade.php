@@ -153,7 +153,7 @@
     }
 
 
-    $("#btn_add_contract").click(function() {
+    function btnAddContract(){
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-contracts-create/:id') !!}";
         id = $('#_employee_id_con').val();
@@ -165,7 +165,7 @@
             });
         });
         $('#modal_action').modal('hide').data('bs.modal', null);
-    });
+    }
 
     function getContract(id) {
         //$('#_employee_id_con').val('');

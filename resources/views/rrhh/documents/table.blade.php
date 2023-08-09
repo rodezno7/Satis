@@ -64,18 +64,6 @@
 <input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_doc">
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#modal_doc').on('shown.bs.modal', function () {
-		    $(this).find('.select2').select2({
-                dropdownParent: $(this),
-			})
-		})
-        $('#modal_edit_action').on('shown.bs.modal', function () {
-		    $(this).find('.select2').select2({
-                dropdownParent: $(this),
-			})
-		})
-    });
 
     function filesDocument(id) {
         $("#modal_content_edit_document").html('');
@@ -148,7 +136,7 @@
         });
     }
 
-    $("#btn_add_documents").click(function() {
+    function btnAddDocuments(){
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-documents-createDocument/:id') !!}";
         id = $('#_employee_id_doc').val();
@@ -160,7 +148,7 @@
             });
         });
         $('#document_modal').modal('hide').data('bs.modal', null);
-    });
+    }
 
     function getDocuments(id) {
         //$('#_employee_id_doc').val('');
