@@ -27,7 +27,7 @@
 					class="form-control form-control-sm" placeholder="@lang('rrhh.number')">
 			</div>
 		</div>
-		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12"  @if ($type->date_required != 1) style="display:none" @endif>
+		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.date_expedition')</label> <span class="text-danger">*</span>
 				{!! Form::text("date_expedition", @format_date($document->date_expedition), ['class' => 'form-control form-control-sm', 'id' =>
@@ -59,7 +59,7 @@
 		</div>
 		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
+				<label>@lang('rrhh.files')</label> <span class="text-danger">*</span>
 				<input type="file" name="files[]" id='files' class="form-control form-control-sm" multiple>
 			</div>
 		</div>
@@ -154,6 +154,8 @@
             },
     	});	
 	}
+
+	
 
 	$("#btn_edit_document").click(function() {
 		employee_id = $('#employee_id_doc1').val();

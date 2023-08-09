@@ -392,6 +392,17 @@ class RrhhCatalogueHeaderSeeder extends Seeder
 
 
         Permission::firstOrCreate(
+            ['name' => 'rrhh_import_employees.create'],
+            ['description' => 'Importar empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_import_employees.update'],
+            ['description' => 'Actualizar empleados masivamente', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+
+        Permission::firstOrCreate(
             ['name' => 'rrhh_document_employee.view'],
             ['description' => 'Ver documento del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
         );

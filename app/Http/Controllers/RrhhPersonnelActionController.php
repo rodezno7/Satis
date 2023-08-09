@@ -424,7 +424,7 @@ class RrhhPersonnelActionController extends Controller
         $personnelActionFile = RrhhPersonnelActionFile::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
         $folderName = 'business_' . $business_id;
-        $route = 'uploads/employee_personnel_actions/' . $folderName . '/' . $personnelActionFile->file;
+        $route = '/uploads/employee_personnel_actions/' . $folderName . '/' . $personnelActionFile->file;
         $ext = substr($personnelActionFile->file, -3);
 
         return view('rrhh.personnel_actions.view_file', compact('route', 'ext'));

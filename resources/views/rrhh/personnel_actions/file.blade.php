@@ -85,7 +85,7 @@
 						timer: 1000,
 						showConfirmButton: false,
 					});
-					getPersonnelActions();
+					getPersonnelActions(employee_id);
                     //$("#personnel_actions-table").DataTable().ajax.reload(null, false);
 					$('#modal_doc').modal( 'hide' ).data( 'bs.modal', null );
 				}

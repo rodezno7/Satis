@@ -147,8 +147,8 @@
                     </span>
                   </a>
                 </li>
-                {{-- <li class="{{ $request->segment(1) == 'rrhh-personnel-action-masive' ? 'active' : '' }}">
-                  <a href="{{ action('RrhhPersonnelActionController@createMasive') }}">
+                {{-- <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhImportEmployeesController@create') }}">
                     <i class="fa fa-download"></i>
                     <span class="title">
                       @lang('rrhh.import_employees')

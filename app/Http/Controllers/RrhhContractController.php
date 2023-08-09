@@ -445,7 +445,7 @@ class RrhhContractController extends Controller
 
     public function createDocument($id, $employee_id)
     {
-        if (!auth()->user()->can('rrhh.contract.uploads')) {
+        if (!auth()->user()->can('rrhh_contract.uploads')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -462,7 +462,7 @@ class RrhhContractController extends Controller
      */
     public function storeDocument(Request $request)
     {
-        if (!auth()->user()->can('rrhh.contract.uploads')) {
+        if (!auth()->user()->can('rrhh_contract.uploads')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -524,7 +524,7 @@ class RrhhContractController extends Controller
             $folderName = 'business_' . $business_id;
             $route = '/uploads/employee_contracts/' . $folderName . '/' . $contract->file;
         } else {
-            $route = '/rrhh-contracts-generate/' . $id;
+            $route = '/rrhh-contracts-generate/'.$id;
         }
 
         return view('rrhh.contract.show', compact('route', 'contract'));

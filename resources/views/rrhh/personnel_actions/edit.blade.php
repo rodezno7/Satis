@@ -143,9 +143,9 @@
 							@endif
 						@endforeach
 						@if ($exist == $user->id)
-              <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+              <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }}</option>
 						@else
-              <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+              <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}</option>
 						@endif
 					@endforeach
 
@@ -161,9 +161,9 @@
 							@endif
 						@endforeach
 						@if ($exist == $userAdmin->id)
-              <option value="{{ $userAdmin->id }}" selected>{{ $userAdmin->first_name }} {{ $userAdmin->last_name }} - {{ $userAdmin->email }}</option>
+              <option value="{{ $userAdmin->id }}" selected>{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
 						@else
-              <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }} - {{ $userAdmin->email }}</option>
+              <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
 						@endif
 					@endforeach
         </select>

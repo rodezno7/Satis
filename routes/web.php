@@ -646,10 +646,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
 
-    // Route::get('/import-employees', 'EmployeesController@import');
-    // Route::post('/import-employees/import', 'ImportProductsController@import')->name('employees.import');
-    // Route::get('/edit-employees', 'ImportProductsController@edit');
-    // Route::post('/edit-employees/import', 'ImportProductsController@update');
+    // Route::get('/rrhh-import-employees', 'RrhhImportEmployeesController@create');
+    // Route::post('/rrhh-import-employees/import', 'RrhhImportEmployeesController@import')->name('employees.import');
+    // Route::get('/rrhh-edit-employees', 'RrhhImportEmployeesController@edit');
+    // Route::post('/rrhh-edit-employees/import', 'RrhhImportEmployeesController@update');
 
 
     Route::resource('rrhh-assistances', 'AssistanceEmployeeController');
@@ -664,7 +664,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-documents-files/{id}', 'RrhhDocumentsController@files');
     Route::get('rrhh-documents-viewFile/{id}', 'RrhhDocumentsController@viewFile');
     Route::post('rrhh-documents-updateDocument', 'RrhhDocumentsController@updateDocument');
-    Route::resource('rrhh-documents', 'RrhhDocumentsController');
+    Route::resource('rrhh-documents', 'RrhhDocumentsController')->except(['create', 'show', 'update']);
 
     //Routes contract by employees
     Route::get('rrhh-contracts-getByEmployee/{id}', 'RrhhContractController@getByEmployee');
@@ -675,24 +675,24 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-contracts-show/{id}/{employee_id}', 'RrhhContractController@show');
     Route::get('rrhh-contracts-createDocument/{id}/{employee_id}', 'RrhhContractController@createDocument');
     Route::post('rrhh-contracts-storeDocument', 'RrhhContractController@storeDocument');
-    Route::resource('rrhh-contracts', 'RrhhContractController');
+    Route::resource('rrhh-contracts', 'RrhhContractController')->only(['store', 'show']);
     Route::get('rrhh-contracts-masive', 'RrhhContractController@createMassive');
     Route::post('rrhh-contracts-masive-1', 'RrhhContractController@storeMassive');
 
     //Routes economic dependencies by employees
-    Route::resource('rrhh-economic-dependence', 'RrhhEconomicDependenceController');
+    Route::resource('rrhh-economic-dependence', 'RrhhEconomicDependenceController')->except(['index', 'create', 'show', 'update']);
     Route::get('rrhh-economic-dependence-getByEmployee/{id}', 'RrhhEconomicDependenceController@getByEmployee');
     Route::get('rrhh-economic-dependence-create/{id}', 'RrhhEconomicDependenceController@createEconomicDependence');
     Route::post('rrhh-economic-dependence-update', 'RrhhEconomicDependenceController@updateEconomicDependence');
 
     //Routes economic dependencies by employees
-    Route::resource('rrhh-study', 'RrhhStudyController');
+    Route::resource('rrhh-study', 'RrhhStudyController')->except(['index', 'create', 'show', 'update']);
     Route::get('rrhh-study-getByEmployee/{id}', 'RrhhStudyController@getByEmployee');
     Route::get('rrhh-study-create/{id}', 'RrhhStudyController@createStudy');
     Route::post('rrhh-study-update', 'RrhhStudyController@updateStudy');
 
     //Routes personnel action by employees
-    Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController');
+    Route::resource('rrhh-personnel-action', 'RrhhPersonnelActionController')->except(['create', 'show', 'update']);
     Route::get('rrhh-personnel-action-getByEmployee/{id}', 'RrhhPersonnelActionController@getByEmployee');
     Route::get('rrhh-personnel-action-create/{id}', 'RrhhPersonnelActionController@createPersonnelAction');
     Route::get('rrhh-personnel-action-masive', 'RrhhPersonnelActionController@createMasive');
@@ -709,7 +709,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('rrhh-personnel-action-viewFile/{id}', 'RrhhPersonnelActionController@viewFile');
 
     //Routes economic dependencies by employees
-    Route::resource('rrhh-absence-inability', 'RrhhAbsenceInabilityController');
+    Route::resource('rrhh-absence-inability', 'RrhhAbsenceInabilityController')->except(['index', 'create', 'show', 'update']);
     Route::get('rrhh-absence-inability-getByEmployee/{id}', 'RrhhAbsenceInabilityController@getByEmployee');
     Route::get('rrhh-absence-inability-create/{id}', 'RrhhAbsenceInabilityController@createAbsenceInability');
     Route::post('rrhh-absence-inability-update', 'RrhhAbsenceInabilityController@updateAbsenceInability');

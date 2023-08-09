@@ -52,7 +52,7 @@
                                 @else
                                     {{ asset('uploads/files/import_products_xlsx_template_en.xlsx') }}
                                 @endif
-                                " class="btn btn-success" download>
+                                " class="btn btn-success">
                                 <i class="fa fa-download"></i>
                                 @lang('accounting.download_xlsx_file_template')
                             </a>
@@ -63,68 +63,7 @@
         </div>
     </div>
 
-    @if (isset($flag) && isset($exception))
-        {{-- Errors --}}
-        @if (! $flag)
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-solid box-danger">
-                        <div class="box-header">
-                            <h3 class="box-title">@lang('accounting.errors')</h3>
-                        </div>
-
-                        <div class="box-body">
-                            <table class="table table-condensed table-striped table-text-center table-th-gray" id="errors_table">
-                                <thead>
-                                    <tr>
-                                        <th width="15%">@lang('purchase.row_number')</th>
-                                        <th width="15%">@lang('lang_v1.sheet')</th>
-                                        <th width="60%">@lang('accounting.description')</th>
-                                    </tr>
-                                </thead>
-                                @foreach ($errors as $error)
-                                    <tr>
-                                        <td>{{ $error['row'] }}</td>
-                                        <td>{{ $error['sheet'] }}</td>
-                                        <td>{{ $error['msg'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {{-- Process purchase --}}
-        @else
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-solid box-success">
-                        <div class="box-header">
-                            <h3 class="box-title">@lang('customer.import_data')</h3>
-                        </div>
-
-                        <div class="box-body">
-                            {!! Form::open([
-                                'url' => action('ImportProductsController@import'),
-                                'method' => 'post',
-                                'enctype' => 'multipart/form-data',
-                                'id' => 'import_form'
-                            ]) !!}
-                            <div class="col-sm-12 text-center">
-                                <div class="form-group" style="margin-bottom: 0;">
-                                    <button type="submit" class="btn btn-success" id="submit_import">
-                                        @lang('purchase.import')
-                                    </button>
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endif
-
+   
     {{-- Instructions --}}
     <div class="row">
         <div class="col-sm-12">

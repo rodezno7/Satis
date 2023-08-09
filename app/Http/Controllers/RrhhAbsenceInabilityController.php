@@ -35,6 +35,7 @@ class RrhhAbsenceInabilityController extends Controller
     {
         //
     }
+    
     public function getByEmployee($id) 
     {
         if ( !auth()->user()->can('rrhh_employees.view') ) {
