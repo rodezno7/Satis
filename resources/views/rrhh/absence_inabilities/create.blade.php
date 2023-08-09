@@ -78,7 +78,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_ai">
   <button type="button" class="btn btn-primary" id="btn_add_absence_inability">@lang('rrhh.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel' )</button>
 </div>
@@ -86,9 +86,6 @@
 
 <script>
   $( document ).ready(function() {
-    console.log($('#type').val());
-    //$('#type option:eq(1)').attr('selected', 'selected')
-
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
 
@@ -144,10 +141,11 @@
 	$("#btn_add_absence_inability").click(function() {
 		route = "/rrhh-absence-inability";    
 		token = $("#token").val();
-    employee_id = $('#employee_id').val();
+    employee_id = $('#employee_id_ai').val();
 
 		var form = $("#form_add_absence_inability");
 		var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -159,7 +157,7 @@
 			success:function(result) {
 				if(result.success == true) {
 					getAbsenceInability(employee_id);
-          $('#employee_id').val('');
+          //$('#employee_id_ai').val('');
 					Swal.fire
 					({
 						title: result.msg,

@@ -74,7 +74,7 @@
 		@endif
 	</tbody>
 </table>
-<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_pa">
 <div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
 
 <script type="text/javascript">
@@ -127,7 +127,7 @@
 	}
 
 	function deletePersonnelAction(id) {
-		employee_id = $('#_employee_id').val();
+		employee_id = $('#_employee_id_pa').val();
 		Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -175,7 +175,7 @@
     {
         $("#modal_content_personnel_action").html('');
         var url = "{!!URL::to('/rrhh-personnel-action-create/:id')!!}";
-        id = $('#_employee_id').val();
+        id = $('#_employee_id_pa').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
 			$("#modal_content_personnel_action").html(data);
@@ -187,7 +187,7 @@
     });
 
 	function getPersonnelActions(id){
-		$('#_employee_id').val('');
+		$('#_employee_id_pa').val('');
 		$("#modal_action").html('');
         var route = '/rrhh-personnel-action-getByEmployee/'+id;
         $("#modal_action").load(route, function() {

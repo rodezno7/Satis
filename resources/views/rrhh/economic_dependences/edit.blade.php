@@ -61,10 +61,9 @@
 <div class="modal-footer">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<input type="hidden" name="id" value="{{ $economicDependence->id }}" id="id">
-	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_ed1">
 	<button type="button" class="btn btn-primary" id="btn_edit_economic_dependence">@lang('rrhh.update')</button>
-	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang(
-		'messages.cancel')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
 {!! Form::close() !!}
 <script>
@@ -85,10 +84,11 @@
 	$("#btn_edit_economic_dependence").click(function() {
 		route = "/rrhh-economic-dependence-update";
 		token = $("#token").val();
-		employee_id = $('#employee_id').val();
+		employee_id = $('#employee_id_ed1').val();
 
 		var form = $("#form_edit");
 		var formData = new FormData(form[0]);
+		formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -100,7 +100,7 @@
 			success:function(result) {
 				if(result.success == true) {
 					getEconomicDependence(employee_id);
-					$('#employee_id').val('');
+					//$('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

@@ -33,7 +33,7 @@
 					@endif
 				</tbody>
 			</table>
-			<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+			<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_pa3">
 			<div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
 		</div>				
 	</div>

@@ -63,7 +63,7 @@
         @endif
     </tbody>
 </table>
-<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_ai">
 
 <script type="text/javascript">
     function editAbsenceInability(id) {
@@ -80,7 +80,7 @@
     }
 
     function deleteAbsenceInability(id) {
-        employee_id = $('#_employee_id').val();
+        employee_id = $('#_employee_id_ai').val();
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -127,7 +127,7 @@
     $("#btn_add_absence_inabilities").click(function() {
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-absence-inability-create/:id') !!}";
-        id = $('#_employee_id').val();
+        id = $('#_employee_id_ai').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_document").html(data);
@@ -139,7 +139,7 @@
     });
 
     function getAbsenceInability(id) {
-        $('#_employee_id').val('');
+        //$('#_employee_id_ai').val('');
         $("#modal_action").html('');
         var route = '/rrhh-absence-inability-getByEmployee/'+id;
         $("#modal_action").load(route, function() {

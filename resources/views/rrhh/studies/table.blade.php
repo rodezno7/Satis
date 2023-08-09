@@ -70,7 +70,7 @@
         @endif
     </tbody>
 </table>
-<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_st">
 
 
 
@@ -89,6 +89,7 @@
     }
 
     function deleteStudy(id) {
+        employee_id = $('#_employee_id_st').val();
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -118,7 +119,7 @@
                                 showConfirmButton: false,
                             });
 
-                            getStudy($('#_employee_id').val());
+                            getStudy(employee_id);
 
                         } else {
                             Swal.fire({
@@ -135,7 +136,7 @@
     $("#btn_add_type_studies").click(function() {
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-study-create/:id') !!}";
-        id = $('#_employee_id').val();
+        id = $('#_employee_id_st').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_document").html(data);
@@ -147,15 +148,7 @@
     });
 
     function getStudy(id) {
-        // $("#modal_action").html('');
-        // var route = '/rrhh-study-getByEmployee/'+id;
-        // $.get(route, function(data) {
-        //     $("#modal_action").html(data);
-        //     $('#modal_action').modal({
-        //         backdrop: 'static'
-        //     });
-        // });
-        $('#_employee_id').val('');
+        //$('#_employee_id_st').val('');
         $("#modal_action").html('');
         var route = '/rrhh-study-getByEmployee/'+id;
         $("#modal_action").load(route, function() {

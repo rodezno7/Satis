@@ -68,7 +68,7 @@
 
 <div class="modal-footer">
 	<input type="hidden" name="id" value="{{ $document->id }}" id="id">
-	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_doc1">
 	<button type="button" class="btn btn-primary" id="btn_edit_document">@lang('rrhh.update')</button>
 	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel')</button>
 </div>
@@ -156,14 +156,14 @@
 	}
 
 	$("#btn_edit_document").click(function() {
-		var form = $("#form_edit");
-		var formData = new FormData(form[0]);
-		employee_id = $('#employee_id').val();
-
+		employee_id = $('#employee_id_doc1').val();
 		route = '/rrhh-documents-updateDocument';    
 		token = $("#token").val();
 
-		
+		var form = $("#form_edit");
+		var formData = new FormData(form[0]);
+		formData.append('employee_id', employee_id);
+	
 		$.ajax({
 			url: route,
 			headers: {'X-CSRF-TOKEN': token},
@@ -174,7 +174,7 @@
 			success:function(result) {
 				if(result.success == true) {
 					getDocuments(employee_id);
-					$('#employee_id').val('');
+					//$('#employee_id_doc1').val('');
 					Swal.fire
 						({
 							title: result.msg,

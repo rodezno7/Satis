@@ -155,7 +155,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id_pa">
   <button type="button" class="btn btn-primary" id="btn_add_personnel_action">@lang('rrhh.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
@@ -306,10 +306,11 @@
     $('#btn_add_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action";    
     token = $("#token").val();
-    employee_id = $('#employee_id').val();
+    employee_id = $('#employee_id_pa').val();
       
     var form = $("#form_add_personnel_action");
     var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
     
     $.ajax({
       url: route,
@@ -321,7 +322,7 @@
       success:function(result) {
         if(result.success == true) {
           getPersonnelActions(employee_id);
-          $('#employee_id').val('');
+          //$('#employee_id_pa').val('');
           Swal.fire
           ({
             title: result.msg,

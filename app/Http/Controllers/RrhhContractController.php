@@ -522,9 +522,9 @@ class RrhhContractController extends Controller
         if ($contract->file != null) {
             $business_id = request()->session()->get('user.business_id');
             $folderName = 'business_' . $business_id;
-            $route = 'uploads/employee_contracts/' . $folderName . '/' . $contract->file;
+            $route = '/uploads/employee_contracts/' . $folderName . '/' . $contract->file;
         } else {
-            $route = config('app.url') . '/rrhh-contracts-generate/' . $id;
+            $route = '/rrhh-contracts-generate/' . $id;
         }
 
         return view('rrhh.contract.show', compact('route', 'contract'));

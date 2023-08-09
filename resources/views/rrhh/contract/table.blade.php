@@ -43,19 +43,22 @@
 
                         @can('rrhh_contract.uploads')
                             <a href="#" onClick="addDocumentContract({{ $item->id }}, {{ $employee->id }})"
-                                type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.attach_file') }}"><i
-                                    class="fa fa-upload"></i></a>
+                                type="button" class="btn btn-primary btn-xs" title="{{ __('rrhh.attach_file') }}">
+                                <i class="fa fa-upload"></i>
+                            </a>
                         @endcan
 
                         @if (!isset($show))
                             @can('rrhh_contract.finish')
                                 @if ($item->contract_status == 'Finalizado')
-                                    <button type="button" class="btn btn-danger btn-xs" disabled><i
-                                            class="fa fa-close"></i></button>
+                                    <button type="button" class="btn btn-danger btn-xs" disabled>
+                                        <i class="fa fa-close"></i>
+                                    </button>
                                 @else
                                     <button type="button" onClick='finishContract({{ $item->id }})'
-                                        class="btn btn-danger btn-xs" title="{{ __('rrhh.finish_contract') }}"><i
-                                            class="fa fa-close"></i></button>
+                                        class="btn btn-danger btn-xs" title="{{ __('rrhh.finish_contract') }}">
+                                        <i class="fa fa-close"></i>
+                                    </button>
                                 @endif
                             @endcan
                         @endif
@@ -69,7 +72,7 @@
         @endif
     </tbody>
 </table>
-<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
+<input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id_con">
 
 
 <script type="text/javascript">
@@ -115,7 +118,7 @@
             if (willDelete.value) {
                 route = '/rrhh-contracts-finish/' + id;
                 token = $("#token").val();
-                employee_id = $('#_employee_id').val();
+                employee_id = $('#_employee_id_con').val();
                 $.ajax({
                     url: route,
                     headers: {
@@ -153,7 +156,7 @@
     $("#btn_add_contract").click(function() {
         $("#modal_content_document").html('');
         var url = "{!! URL::to('/rrhh-contracts-create/:id') !!}";
-        id = $('#_employee_id').val();
+        id = $('#_employee_id_con').val();
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_document").html(data);
@@ -165,7 +168,7 @@
     });
 
     function getContract(id) {
-        $('#_employee_id').val('');
+        //$('#_employee_id_con').val('');
         $("#modal_action").html('');
         var route = '/rrhh-contracts-getByEmployee/'+id;
         $("#modal_action").load(route, function() {

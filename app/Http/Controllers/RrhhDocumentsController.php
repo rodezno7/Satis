@@ -137,7 +137,6 @@ class RrhhDocumentsController extends Controller
             ]);
         }
 
-        \Log::info($request);
         try {
             $input_details = $request->all();
             $input_details['date_expedition'] = $this->moduleUtil->uf_date($request->input('date_expedition'));
@@ -212,8 +211,6 @@ class RrhhDocumentsController extends Controller
                 DB::commit();
             }
             
-            
-            
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
@@ -262,7 +259,7 @@ class RrhhDocumentsController extends Controller
         
         $business_id = request()->session()->get('user.business_id');
         $folderName = 'business_'.$business_id;
-        $route = 'uploads/employee_documents/'.$folderName.'/'.$documentFile->file;
+        $route = '/uploads/employee_documents/'.$folderName.'/'.$documentFile->file;
         $ext = substr($documentFile->file, -3);
 
 
@@ -339,15 +336,56 @@ class RrhhDocumentsController extends Controller
                 //'files'
             ]);
 
-            $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
+            
             $input_details['date_expedition'] = $this->moduleUtil->uf_date($request->input('date_expedition'));
-
-            if($input_details['date_expedition'] < $input_details['date_expiration'])
-            {
-                DB::beginTransaction();
-
-                $item->update($input_details);
+            if($type){
+                $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
+                if($input_details['date_expedition'] < $input_details['date_expiration'])
+                {
+                    DB::beginTransaction();
     
+                    $item->update($input_details);
+        
+                    $files = [];
+                    if ($request->file('files')){
+                        $business_id = request()->session()->get('user.business_id');
+                        $folderName = 'business_'.$business_id;
+                        foreach($request->file('files') as $file)
+                        {
+                            if (!Storage::disk('employee_documents')->exists($folderName)) {
+                                \File::makeDirectory(public_path().'/uploads/employee_documents/'.$folderName, $mode = 0755, true, true);
+                            }
+                            $name = time().'_'.$file->getClientOriginalName();
+                            Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
+                            $input_document['file'] = $name;
+                            $input_document['rrhh_document_id'] = $item->id;
+                            RrhhDocumentFile::create($input_document);
+                        }
+                    }
+    
+                    DB::commit();
+    
+    
+                    $output = [
+                        'success' => 1,
+                        'msg' => __('rrhh.updated_successfully')
+                    ];
+                }
+                else
+                {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.message_date_valitation')
+                    ];
+                }
+            }
+            else{
+                $input_details['date_expiration'] = null;
+
+                DB::beginTransaction();
+    
+                $item->update($input_details);
+        
                 $files = [];
                 if ($request->file('files')){
                     $business_id = request()->session()->get('user.business_id');
@@ -364,22 +402,16 @@ class RrhhDocumentsController extends Controller
                         RrhhDocumentFile::create($input_document);
                     }
                 }
-
+    
                 DB::commit();
-
-
+    
                 $output = [
                     'success' => 1,
                     'msg' => __('rrhh.updated_successfully')
                 ];
             }
-            else
-            {
-                $output = [
-                    'success' => 0,
-                    'msg' => __('rrhh.message_date_valitation')
-                ];
-            }
+
+            
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());

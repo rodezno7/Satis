@@ -63,7 +63,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_st">
   <button type="button" class="btn btn-primary" id="btn_add_study">@lang('rrhh.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
@@ -82,10 +82,11 @@
 	$("#btn_add_study").click(function() {
 		route = "/rrhh-study";    
 		token = $("#token").val();
-    employee_id = $('#employee_id').val();
+    employee_id = $('#employee_id_st').val();
 
 		var form = $("#form_add_study");
 		var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -97,7 +98,7 @@
 			success:function(result) {
 				if(result.success == true) {
 					getStudy(employee_id);
-          $('#employee_id').val('');
+          //$('#employee_id_st').val('');
 					Swal.fire
 					({
 						title: result.msg,

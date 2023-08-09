@@ -21,7 +21,7 @@
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<input type="hidden" name="rrhh_personnel_action_id" value="{{ $personnelAction->id }}"
 		id="rrhh_personnel_action_id">
-	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_pa2">
 	<button type="button" class="btn btn-primary" id="btn_add_document_pa">@lang('rrhh.add')</button>
 	<button type="button" class="btn btn-danger" data-dismiss="modal"
 		onClick="closeModal()">@lang('messages.cancel')</button>
@@ -64,6 +64,7 @@
 	$("#btn_add_document_pa").click(function() {
 		route = "/rrhh-personnel-action-storeDocument";    
 		token = $("#token").val();
+		employee_id = $('#employee_id_pa2').val();
 
 		var form = $("#form_add_document");
 		var formData = new FormData(form[0]);
@@ -84,7 +85,7 @@
 						timer: 1000,
 						showConfirmButton: false,
 					});
-					getPersonnelActions($('#employee_id').val());
+					getPersonnelActions();
                     //$("#personnel_actions-table").DataTable().ajax.reload(null, false);
 					$('#modal_doc').modal( 'hide' ).data( 'bs.modal', null );
 				}

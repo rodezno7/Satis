@@ -181,7 +181,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id_pa1">
   <input type="hidden" name="id" value="{{ $personnelAction[0]->id }}" id="id">
   <button type="button" class="btn btn-primary" id="btn_edit_personnel_action">@lang('rrhh.update')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
@@ -335,10 +335,11 @@
     $('#btn_edit_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action-update";    
     token = $("#token").val();
-    employee_id = $('#employee_id').val();  
+    employee_id = $('#employee_id_pa1').val();  
 
     var form = $("#form_edit_personnel_action");
     var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
     
     $.ajax({
       url: route,
@@ -350,7 +351,7 @@
       success:function(result) {
         if(result.success == true) {
           getPersonnelActions(employee_id);
-          $('#employee_id').val('');
+          //$('#employee_id_pa').val('');
           Swal.fire
           ({
             title: result.msg,
