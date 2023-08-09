@@ -18,7 +18,7 @@
         	<div class="box box-solid box-default">
                 <div class="box-body">
                     {!! Form::open([
-                        'url' => action('ImportProductsController@checkFile'),
+                        'url' => action('ImportEmployeesController@checkFile'),
                         'method' => 'post',
                         'enctype' => 'multipart/form-data',
                         'id' => 'send_form'

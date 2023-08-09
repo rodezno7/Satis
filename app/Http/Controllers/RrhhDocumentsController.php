@@ -137,18 +137,56 @@ class RrhhDocumentsController extends Controller
             ]);
         }
 
+        \Log::info($request);
         try {
             $input_details = $request->all();
-            $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
             $input_details['date_expedition'] = $this->moduleUtil->uf_date($request->input('date_expedition'));
-            $date_expiration = strtotime($input_details['date_expiration']);
             $date_expedition = strtotime($input_details['date_expedition']);
-            if($date_expedition < $date_expiration)
-            {
+
+            if($type){
+                $input_details['date_expiration'] = $this->moduleUtil->uf_date($request->input('date_expiration'));
+                $date_expiration = strtotime($input_details['date_expiration']);
+                if($date_expedition < $date_expiration)
+                {
+                    DB::beginTransaction();
+
+                    $document = RrhhDocuments::create($input_details);
+                    $files = [];
+                    if ($request->file('files')){
+                        $business_id = request()->session()->get('user.business_id');
+                        $folderName = 'business_'.$business_id;
+                        foreach($request->file('files') as $file)
+                        {
+                            if (!Storage::disk('employee_documents')->exists($folderName)) {
+                                \File::makeDirectory(public_path().'/uploads/employee_documents/'.$folderName, $mode = 0755, true, true);
+                            }
+                            $name = time().'_'.$file->getClientOriginalName();
+                            Storage::disk('employee_documents')->put($folderName.'/'.$name,  \File::get($file));
+                            $input_document['file'] = $name;
+                            $input_document['rrhh_document_id'] = $document->id;
+                            RrhhDocumentFile::create($input_document);
+                        }
+                    }
+
+                    $output = [
+                        'success' => 1,
+                        'msg' => __('rrhh.added_successfully')
+                    ];
+
+                    DB::commit();
+                }else
+                {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.message_date_valitation')
+                    ];
+                }
+            }else{
+                $input_details['date_expiration'] = null;
+                
                 DB::beginTransaction();
 
                 $document = RrhhDocuments::create($input_details);
-    
                 $files = [];
                 if ($request->file('files')){
                     $business_id = request()->session()->get('user.business_id');
@@ -172,16 +210,10 @@ class RrhhDocumentsController extends Controller
                 ];
 
                 DB::commit();
-    
-                
-            }else
-            {
-                $output = [
-                    'success' => 0,
-                    'msg' => __('rrhh.message_date_valitation')
-                ];
             }
-
+            
+            
+            
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
