@@ -36,7 +36,7 @@
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.birthdate')</label> <span class="text-danger">*</span>
-				{!! Form::text("birthdate", @format_date($economicDependence->birthdate), ['class' => 'form-control form-control-sm', 'id' => 'birthdate',
+				{!! Form::text("birthdate", @format_date($economicDependence->birthdate), ['class' => 'form-control form-control-sm', 'id' => 'birthdate1',
 				'required'])!!}
 			</div>
 		</div>
@@ -76,7 +76,7 @@
 	var fechaMaxima = new Date();
     fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-	$('#birthdate').datepicker({
+	$('#birthdate1').datepicker({
 		autoclose: true,
 		format: datepicker_date_format,
 		endDate: fechaMaxima,

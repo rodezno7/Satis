@@ -64,6 +64,19 @@
 <input type="hidden" name="_employee_id" value="{{ $employee->id }}" id="_employee_id">
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#modal_doc').on('shown.bs.modal', function () {
+		    $(this).find('.select2').select2({
+                dropdownParent: $(this),
+			})
+		})
+        $('#modal_edit_action').on('shown.bs.modal', function () {
+		    $(this).find('.select2').select2({
+                dropdownParent: $(this),
+			})
+		})
+    });
+
     function filesDocument(id) {
         $("#modal_content_edit_document").html('');
         var url = "{!! URL::to('/rrhh-documents-files/:id') !!}";
@@ -155,7 +168,7 @@
         var route = '/rrhh-documents-getByEmployee/'+id;
         $("#document_modal").load(route, function() {
             $(this).modal({
-            backdrop: 'static'
+                backdrop: 'static'
             });
         });
     }

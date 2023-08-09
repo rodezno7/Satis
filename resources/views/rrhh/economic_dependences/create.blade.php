@@ -60,11 +60,6 @@
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
 
-		// $('#birthdate').datepicker({
-		// 	autoclose: true,
-		// 	format: datepicker_date_format,
-		// });
-
     var fechaMaxima = new Date();
     fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 

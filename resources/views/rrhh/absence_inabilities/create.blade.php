@@ -80,12 +80,15 @@
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
   <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
   <button type="button" class="btn btn-primary" id="btn_add_absence_inability">@lang('rrhh.add')</button>
-  <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel'
-    )</button>
+  <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel' )</button>
 </div>
 {!! Form::close() !!}
+
 <script>
   $( document ).ready(function() {
+    console.log($('#type').val());
+    //$('#type option:eq(1)').attr('selected', 'selected')
+
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
 

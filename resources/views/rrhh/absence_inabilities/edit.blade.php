@@ -11,7 +11,7 @@
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
         <label>@lang('rrhh.option')</label> <span class="text-danger">*</span>
-        <select name="type" id="type" class="form-control form-control-sm" disabled>
+        <select name="type" id="type1" class="form-control form-control-sm" disabled>
           @if ($absenceInability->type == 'Ausencia')
             <option value="1">Ausencia</option>
           @else
@@ -20,7 +20,7 @@
         </select>
       </div>
     </div>
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_inability">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_inability1">
       <div class="form-group">
         <label>@lang('rrhh.types_inabilities')</label> <span class="text-danger">*</span>
         <select name="type_inability_id" id="type_inability_id" class="form-control form-control-sm select2"
@@ -36,7 +36,7 @@
         </select>
       </div>
     </div>
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_absence">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_absence1">
       <div class="form-group">
         <label>@lang('rrhh.types_absences')</label> <span class="text-danger">*</span>
         <select name="type_absence_id" id="type_absence_id" class="form-control form-control-sm select2"
@@ -56,20 +56,20 @@
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
         <label>@lang('rrhh.start_date')</label> <span class="text-danger">*</span>
-        {!! Form::text("start_date", @format_date($absenceInability->start_date), ['class' => 'form-control form-control-sm', 'id' => 'start_date',
+        {!! Form::text("start_date", @format_date($absenceInability->start_date), ['class' => 'form-control form-control-sm', 'id' => 'start_date1',
         'required'])!!}
       </div>
     </div>
 
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_end_date">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_end_date1">
       <div class="form-group">
         <label>@lang('rrhh.end_date')</label> <span class="text-danger">*</span>
-        {!! Form::text("end_date", ($absenceInability->end_date != null)? @format_date($absenceInability->end_date) : null, ['class' => 'form-control form-control-sm', 'id' => 'end_date',
+        {!! Form::text("end_date", ($absenceInability->end_date != null)? @format_date($absenceInability->end_date) : null, ['class' => 'form-control form-control-sm', 'id' => 'end_date1',
         'required'])!!}
       </div>
     </div>
 
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_amount">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_amount1">
       <div class="form-group">
         <label>@lang('rrhh.amount')</label> <span class="text-danger">*</span>
         {!! Form::number("amount", ($absenceInability->amount != null)? $absenceInability->amount : null,
@@ -99,12 +99,12 @@
   $( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
-    $('#start_date').datepicker({
+    $('#start_date1').datepicker({
       autoclose: true,
       format: datepicker_date_format,
     });
 
-    $('#end_date').datepicker({
+    $('#end_date1').datepicker({
       autoclose: true,
       format: datepicker_date_format,
     });
@@ -112,37 +112,37 @@
     typeOption();
 	});
 
-  $('#type').on('change', function() {
+  $('#type1').on('change', function() {
 		typeOption();
 	});
 
   function typeOption(){
-    let type = $('#type').val();
+    let type = $('#type1').val();
 
-    $('#div_amount').hide();
+    $('#div_amount1').hide();
     $("#amount").prop('required', false);
 
-    $('#div_end_date').hide();
-		$("#end_date").prop('required', false);
+    $('#div_end_date1').hide();
+		$("#end_date1").prop('required', false);
 
-    $('#div_type_inability').hide();
+    $('#div_type_inability1').hide();
 		$("#type_inability_id").prop('required', false);
 
-    $('#div_type_absence').hide();
+    $('#div_type_absence1').hide();
     $("#type_absence_id").prop('required', false);
 		
     //Evaluando si la accion de personal requiere autorizacion
 		if (type == 1) { //Ausencia
-			$('#div_amount').show();
+			$('#div_amount1').show();
 			$("#amount").prop('required', true);
 
-      $('#div_type_absence').show();
+      $('#div_type_absence1').show();
       $("#type_absence_id").prop('required', true);
 		}else{//Incapacidad
-			$('#div_end_date').show();
-			$("#end_date").prop('required', true);
+			$('#div_end_date1').show();
+			$("#end_date1").prop('required', true);
 
-      $('#div_type_inability').show();
+      $('#div_type_inability1').show();
       $("#type_inability_id").prop('required', true);
 		}
 

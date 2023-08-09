@@ -81,15 +81,21 @@
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 		select2 = $('.select2').select2();
 
+		var fechaActual = new Date();
+    	fechaActual = fechaActual.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
 		$('#date_expiration').datepicker({
 			autoclose: true,
 			format: datepicker_date_format,
 		});
+		$("#date_expiration").datepicker("setDate", fechaActual);
 
 		$('#date_expedition').datepicker({
 			autoclose: true,
 			format: datepicker_date_format
 		});
+		$("#date_expedition").datepicker("setDate", fechaActual);
+
 		updateCitiesD();
 	});
 

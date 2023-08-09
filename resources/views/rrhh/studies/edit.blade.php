@@ -54,7 +54,7 @@
                 <label>@lang('rrhh.year_graduation')</label> <span class="text-danger">*</span>
                 {!! Form::text('year_graduation', $study->year_graduation, [
                     'class' => 'form-control form-control-sm',
-                    'id' => 'year_graduation',
+                    'id' => 'year_graduation1',
                     'required',
                 ]) !!}
             </div>
@@ -93,11 +93,11 @@
 {!! Form::close() !!}
 <script>
     $(document).ready(function() {
-        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+        //$.fn.modal.Constructor.prototype.enforceFocus = function() {};
         select2 = $('.select2').select2();
     });
 
-    $("#year_graduation").datepicker({
+    $("#year_graduation1").datepicker({
         format: "yyyy",
         viewMode: "years",
         minViewMode: "years"
