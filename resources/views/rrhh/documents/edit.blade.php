@@ -60,7 +60,7 @@
 		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.files')</label> <span class="text-danger">*</span>
-				<input type="file" name="files[]" id='files' class="form-control form-control-sm" multiple>
+				<input type="file" name="files[]" id='files' class="form-control form-control-sm" accept="image/png, image/jpeg, .pdf" multiple>
 			</div>
 		</div>
 	</div>

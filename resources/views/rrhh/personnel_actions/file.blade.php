@@ -11,7 +11,7 @@
 		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
-				<input type="file" id="files" name="files[]" multiple class="form-control form-control-sm">
+				<input type="file" id="files" name="files[]" accept="image/png, image/jpeg, .pdf" multiple class="form-control form-control-sm">
 			</div>
 		</div>
 	</div>

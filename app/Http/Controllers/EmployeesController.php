@@ -322,7 +322,8 @@ class EmployeesController extends Controller
             'type',
             'bank',
             'city',
-            'state'
+            'state',
+            'payment'
         )
         ->first();
 

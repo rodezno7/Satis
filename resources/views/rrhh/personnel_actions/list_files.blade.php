@@ -17,7 +17,11 @@
 					@if (count($personnelActionsFile) > 0)
 						@foreach($personnelActionsFile as $item)
 							<tr>
-								<td>{{ $item->file }}</td>
+								@php
+                                	$name = explode('_', $item->file);
+								@endphp
+								<td>{{ $name[1] }}</td>
+								{{-- <td>{{ $item->file }}</td> --}}
 								<td>
 									@can('rrhh_personnel_action.view')
 										<button type="button" onClick="showFile({{ $item->id }})"

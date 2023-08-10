@@ -264,25 +264,27 @@
                                         <td>
                                             <strong>@lang('rrhh.way_to_pay'):</strong>
                                             @if( !empty($employee->payment_id))
-                                            @if( isset($employee->payment->name))
-                                            {{ $employee->payment->name }}
+                                                @if( isset($employee->payment->value))
+                                                {{ $employee->payment->value }}
+                                                @else
+                                                N/A
+                                                @endif
                                             @else
-                                            N/A
+                                                N/A
                                             @endif
-                                            @else
-                                            N/A
-                                            @endif
+
                                             @if( !empty($employee->bank_id))
-                                            <br><strong>@lang('rrhh.bank'):</strong>
-                                            @if( isset($employee->bank->name))
-                                            {{ $employee->bank->name }}
-                                            @else
-                                            N/A
+                                                <br><strong>@lang('rrhh.bank'):</strong>
+                                                @if( isset($employee->bank->name))
+                                                    {{ $employee->bank->name }}
+                                                @else
+                                                    N/A
+                                                @endif
                                             @endif
-                                            @endif
+                                            
                                             @if( !empty($employee->bank_account))
-                                            <br><strong>@lang('rrhh.bank_account'):</strong>
-                                            {{ $employee->bank_account }}
+                                                <br><strong>@lang('rrhh.bank_account'):</strong>
+                                                {{ $employee->bank_account }}
                                             @endif
                                         </td>
                                     </tr>
