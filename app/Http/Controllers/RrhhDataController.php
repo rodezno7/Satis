@@ -206,14 +206,14 @@ class RrhhDataController extends Controller
                     $date_required = 0;
                 }
             }
-            $human_resource_item = new RrhhData();
-            $human_resource_item->business_id = $request->session()->get('user.business_id');
-            $human_resource_item->rrhh_header_id = $request->input('rrhh_header_id');
-            $human_resource_item->status = 1;
-            $human_resource_item->code = $code;
-            $human_resource_item->date_required = $date_required;
-            $human_resource_item->value = $request->input('value');
-            $human_resource_item->save();
+            $item = new RrhhData();
+            $item->business_id = $request->session()->get('user.business_id');
+            $item->rrhh_header_id = $request->input('rrhh_header_id');
+            $item->status = 1;
+            $item->code = $code;
+            $item->date_required = $date_required;
+            $item->value = $request->input('value');
+            $item->save();
 
             $output = [
                 'success' => 1,
@@ -350,11 +350,11 @@ class RrhhDataController extends Controller
         ]);
 
         try {
-            $human_resource_item = RrhhData::findOrFail($id);
-            $human_resource_item->status = $request->input('status');
-            $human_resource_item->date_required = $request->input('date_required');
-            $human_resource_item->value = $request->input('value');
-            $human_resource_item->save();
+            $item = RrhhData::findOrFail($id);
+            $item->status = $request->input('status');
+            $item->date_required = $request->input('date_required');
+            $item->value = $request->input('value');
+            $item->save();
 
             $output = [
                 'success' => 1,

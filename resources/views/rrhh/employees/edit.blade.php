@@ -84,14 +84,6 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <div class="form-group">
-                                        <label>@lang('rrhh.tax_number')</label> <span class="text-danger">*</span>
-                                        {!! Form::text("tax_number", null,
-                                        ['class' => 'form-control form-control-sm', 'id' => 'tax_number', 'required'])
-                                        !!}
-                                    </div>
-                                </div> --}}
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.tax_number')</label> <label id="text-approved" 
@@ -100,9 +92,9 @@
                                         @endif>(Homologado)</label> <span class="text-danger">*</span>
                                         <div class="input-group">
                                             <span class="input-group-addon">
-                                              {!! Form::checkbox('approved', 1, $employee->approved, ['id' => 'approved', 'onClick' => 'dniApproved()'])!!}
+                                              {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'nitApproved()'])!!}
                                             </span>
-                                            @if ($employee->approved == 0)
+                                            @if ($employee->approved == 1)
                                                 {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required'])!!}
                                             @else
@@ -141,17 +133,26 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.email')</label> <span class="text-danger">*</span>
-                                        @show_tooltip(__('rrhh.tooltip_email'))
-                                        {!! Form::email("email", null,
-                                        ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.email'),
-                                        'id' => 'email']) !!}
+                                      <label>@lang('rrhh.personal_email')</label> <span class="text-danger">*</span>
+                                      @show_tooltip(__('rrhh.tooltip_email'))
+                                      {!! Form::email("email", null,
+                                      ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.personal_email'), 'id' => 'email', 'required'])
+                                      !!}
                                     </div>
                                 </div>
 
-                                <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>@lang('rrhh.institutional_email')</label>
+                                        {!! Form::email("institutional_email", null,
+                                        ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.institutional_email'),
+                                        'id' => 'institutional_email']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
                                         {!! Form::text("address", null,
@@ -174,7 +175,7 @@
                                         <label>@lang('rrhh.state')</label>
                                         {!! Form::select("state_id", $states, $employee->state_id,
                                         ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;', 'disabled']) !!}
                                     </div>
                                 </div>
 
@@ -183,7 +184,7 @@
                                         <label>@lang('rrhh.city')</label>
                                         {!! Form::select("city_id", $cities, $employee->city_id,
                                         ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;', 'disabled']) !!}
                                     </div>
                                 </div>
 
@@ -217,8 +218,13 @@
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.date_admission')</label>
+                                        @if ($employee->date_admission != null)
                                         {!! Form::text("date_admission", @format_date($employee->date_admission),
                                         ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        @else
+                                        {!! Form::text("date_admission", @format_date('now'),
+                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        @endif
                                     </div>
                                 </div>
 
@@ -229,12 +235,12 @@
                                         @if (count($position) != 0)
                                         {!! Form::select("department_id", $departments, $employee->department_id,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required'])
+                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;'])
                                         !!}
                                         @else
                                         {!! Form::select("department_id", $departments, $employee->department_id,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
@@ -246,12 +252,12 @@
                                         @if (count($position) != 0)
                                         {!! Form::select("position1_id", $positions, $employee->position1_id,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required'])
+                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;'])
                                         !!}
                                         @else
                                         {!! Form::select("position1_id", $positions, $employee->position1_id,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
+                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
@@ -260,27 +266,31 @@
                                     <div class="form-group">
                                         <label>@lang('rrhh.type_employee')</label>
                                         <select name="type_id" id="type_id" class="form-control form-control-sm select2"
-                                            placeholder="{{ __('rrhh.type_employee') }}" style="width: : 100%">
+                                            placeholder="{{ __('rrhh.type_employee') }}" style="width: 100%">
                                             <option value="">{{ __('rrhh.type_employee') }}</option>
                                             @foreach ($types as $type)
+                                            @if ($employee->type_id == $type->id)
+                                            <option value="{{ $type->id }}" selected>{{ $type->name }}</option>
+                                            @else
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            @endif
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) !=null)
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) != 0)
                                     style="display: none" @endif>
                                     <div class="form-group">
                                         <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
                                         @if (count($salary) != 0)
                                         {!! Form::number("salary", null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
+                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
                                         @else
                                         {!! Form::number("salary", $employee->salary,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
+                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
@@ -348,7 +358,7 @@
                                 <div class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         {!! Form::label('photo', __('rrhh.photo') . ':') !!}
-                                        {!! Form::file('photo', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+                                        {!! Form::file('photo', ['id' => 'photo', 'accept' => 'image/*']); !!}
                                         <small class="help-block">@lang('purchase.max_file_size', ['size' =>
                                             (config('constants.document_size_limit') / 1000000)]).
                                             @if(!empty($employee->photo)) <br>
@@ -545,6 +555,10 @@
         fechaMinima.setFullYear(fechaMinima.getFullYear() - 99);
         fechaMinima = fechaMinima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
+        var fechaActual = new Date();
+        fechaActual = fechaActual.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+
         $('#birth_date').datepicker({
             autoclose: true,
             format: datepicker_date_format,
@@ -556,24 +570,26 @@
             autoclose: true,
             format: datepicker_date_format
         });
-
-        console.log({{ $employee->approved }});
-        let approved = {{ $employee->approved }};
+        
+        let approved = $("#approved").val();
 		if (approved == 1) {
 			$("#approved").prop("checked", true);
             $("#text-approved").show();
-            
+            $("#tax_number").prop('disabled', true);            
 		} else {
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
+            $("#tax_number").prop('disabled', false);
+            $("#tax_number").val('');            
 		}
 
-        if ($("#approved").is(":checked")) {
-            $("#dni").keyup(function () {
-                var value = $(this).val();
-                $("#tax_number").val(value);
-            });
+        if($('#state_id').val() != ''){
+            $('#state_id').prop('disabled', false);
         }
+        if($('#city_id').val() != ''){
+            $('#city_id').prop('disabled', false);
+        }
+
     });
 
     function getDocuments() {
@@ -594,13 +610,7 @@
 			$('#modal_photo').modal({backdrop: 'static'});
 		});
 	}
-
-    $("#dni").keyup(function () {
-        if($("#tax_number").val() == ''){
-            var value = $(this).val();
-            $("#tax_number").val(value);
-        }
-    });
+    
 
     $('#dni').on('change', function() {
         let id = $("#employee_id").val();
@@ -611,6 +621,10 @@
             Swal.fire({ title: data.msg, icon: "error", timer: 3000, showConfirmButton: true, });
         }
         });
+        let approved = $("#approved").val();
+		if (approved == 1) {
+            $("#tax_number").val($('#dni').val());
+        }
     });
 
     $('#tax_number').on('change', function() {
@@ -740,10 +754,13 @@
 
 	$('#state_id').change(function(){
 		updateCities();
+        $('#city_id').prop('disabled', false);
 	});
 
 	$('#country_id').change(function(){
 		updateStates();
+        $('#state_id').prop('disabled', false);
+        $('#city_id').prop('disabled', true);
 	});
 
 
@@ -763,18 +780,18 @@
 		});
 	}
 
-    function dniApproved() {
+    function nitApproved() {
         if ($("#approved").is(":checked")) {
-        var dni = $("#dni").val();
-        $("#approved").val('1');
-        $("#tax_number").prop('disabled', true);
-        $("#tax_number").val(dni);
-        $("#text-approved").show();
+            var dni = $("#dni").val();
+            $("#approved").val('1');
+            $("#tax_number").prop('disabled', true);
+            $("#tax_number").val(dni);
+            $("#text-approved").show();
         } else {
-        $("#approved").val('0');
-        $("#tax_number").prop('disabled', false);
-        $("#tax_number").val('');
-        $("#text-approved").hide();
+            $("#approved").val('0');
+            $("#tax_number").prop('disabled', false);
+            $("#tax_number").val('');
+            $("#text-approved").hide();
         }
     }
 
@@ -813,7 +830,7 @@
 		}
 	};
 
-    $("#upload_image").fileinput(img_fileinput_setting);
+    $("#photo").fileinput(img_fileinput_setting);
 
 </script>
 @endsection

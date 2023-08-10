@@ -31,17 +31,19 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('rrhh.end_date')</label> <span class="text-danger">*</span>
-                {!! Form::text('contract_end_date', null, ['class' => 'form-control form-control-sm', 'id' => 'contract_end_date', 'required']) !!}
+                <label>@lang('rrhh.end_date')</label>
+                {!! Form::text('contract_end_date', null, ['class' => 'form-control form-control-sm', 'id' => 'contract_end_date']) !!}
             </div>
         </div>
     </div>
 </div>
 <div class="modal-footer">
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-    <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+    <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_con">
     <button type="button" class="btn btn-primary" id="btn_add_new_contract">@lang('rrhh.add')</button>
-    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
+    <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">
+        @lang('messages.cancel')
+    </button>
 </div>
 {!! Form::close() !!}
 <script>
@@ -79,16 +81,18 @@
             startDate: fechaMinima,
         });
 
-        $("#contract_end_date").datepicker("setDate", fechaMaxima);
+        //$("#contract_end_date").datepicker("setDate", fechaMaxima);
     });
 
 
     $("#btn_add_new_contract").click(function() {
         route = "/rrhh-contracts";
         token = $("#token").val();
+        employee_id = $('#employee_id_con').val();
 
         var form = $("#form_add_contract");
         var formData = new FormData(form[0]);
+        formData.append('employee_id', employee_id);
 
         $.ajax({
             url: route,
@@ -101,7 +105,8 @@
             data: formData,
             success: function(result) {
                 if (result.success == true) {
-                    getContract($('#employee_id').val());
+                    getContract(employee_id);
+                    //$('#employee_id_con').val('');
                     Swal.fire({
                         title: result.msg,
                         icon: "success",
@@ -111,7 +116,8 @@
                     $('#modal_doc').modal('hide').data('bs.modal', null);
                 } else {
                     Swal.fire({
-                        title: result.msg,
+                        title: "Error",
+                        text: result.msg,
                         icon: "error",
                     });
                 }

@@ -48,6 +48,7 @@ class Employees extends Model
         'phone',
         'mobile',
         'email',
+        'institutional_email',
         'address',
         'country_id',
         'state_id',
@@ -123,6 +124,10 @@ class Employees extends Model
     
     public function rrhhContracts(){
         return $this->hasMany('App\RrhhContract');
+    }
+
+    public function rrhhDocuments(){
+        return $this->hasMany('App\RrhhDocuments');
     }
 
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)

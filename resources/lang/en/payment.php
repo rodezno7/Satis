@@ -1,7 +1,9 @@
 <?php
 return [
+    'payment' => 'Payment',
     'payment_method' => 'Payment method',
     'paid_on' => 'Paid on',
+    'note' => 'Note',
     'amount' => 'Amount',
     'cash' => 'Cash',
     'credit' => 'Credit',
@@ -37,5 +39,8 @@ return [
     'more_than_120' => 'More than 120 days',
     'paid' => 'Paid',
     'partial' => 'Partial',
-    'due' => 'Due'
+    'due' => 'Due',
+    'multi_payments' => 'Multi payments',
+    'payment_exceed' => 'Invoices total amounts exceed payment amount',
+    'payments_added_success' => 'Payments added successfuly',
 ];

@@ -202,4 +202,8 @@ LANG = {
     'parent_correlative_required': 'Parent document is required for a sell return',
     'search_supplier': 'Search supplier',
     'search_customer': 'Search customer',
+    'search_invoices': 'Search invoices',
+    'invoice_added_already' : 'Invoice added already',
+    'pay_amount_higher_than_due_balance' : 'Payment amount cant be higher than due balance',
+    'payment_exceed' : 'Invoices total amounts exceed payment amount',
 };

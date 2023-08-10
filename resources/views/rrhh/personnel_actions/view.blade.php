@@ -147,37 +147,39 @@
                 </tbody>
             </table>
 
-            <h5 class="text-center">{{ mb_strtoupper(__('rrhh.authorizations')) }}</h5>
-            <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;">
-                <thead>
-                    <tr>
-                        <th>{{ __('rrhh.user') }}</th>
-                        <th>{{ __('rrhh.authorization') }}</th>
-                        <th>{{ __('rrhh.authorization_date') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $i=>$user)
-                    <tr>
-                        <td>{{ $user->user->first_name }} {{ $user->user->last_name }}</td>
-                        <td class="text-center">
-                            @if ($user->authorized == 1)
-                                Si
-                            @else
-                                Aún no
-                            @endif
-                        </td>
-                        <td class="text-center">
-                            @if ($user->updated_at != null)
-                                {{ @format_date($user->updated_at) }}
-                            @else
-                                ----
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            @if (count($users) > 0)
+                <h5 class="text-center">{{ mb_strtoupper(__('rrhh.authorizations')) }}</h5>
+                <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;">
+                    <thead>
+                        <tr>
+                            <th>{{ __('rrhh.user') }}</th>
+                            <th>{{ __('rrhh.authorization') }}</th>
+                            <th>{{ __('rrhh.authorization_date') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $i=>$user)
+                        <tr>
+                            <td>{{ $user->user->first_name }} {{ $user->user->last_name }}</td>
+                            <td class="text-center">
+                                @if ($user->authorized == 1)
+                                    Si
+                                @else
+                                    Aún no
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if ($user->updated_at != null)
+                                    {{ @format_date($user->updated_at) }}
+                                @else
+                                    ----
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 </div>

@@ -60,11 +60,33 @@ class EmployeeUtil extends Util
         return $numberLetters;
     }
 
+    public function getDate($date, $normal_format){ 
+        $day = Carbon::parse($date)->format('d');
+
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $month = Carbon::parse($date)->format('m');
+        $month = $meses[$month - 1];
+        
+        $year = Carbon::parse($date)->format('Y');
+
+        if($normal_format == true ){
+            return strtolower($day.' de '.$month.' '.$year);
+        }else{
+            if($day == '01'){
+                \Log::info(mb_strtolower('Al primer día del mes de '.$month.' de '.$year));
+                return 'Al '.mb_strtolower('primer día del mes de '.$month.' de '.$year);
+                
+            }else{
+                return 'A '.mb_strtolower('los '. $day.' días del mes de '.$month.' de '.$year);
+            } 
+        }
+    }
+
     /**
      * Return date letters
      * @param string
      */
-    public function getDateLetters($date){ 
+    public function getDateLetters($date, $normal_format){ 
         $day = Carbon::parse($date)->format('d');
         $num = str_replace(",", "", $day);
         $num = (int)$num;
@@ -79,7 +101,16 @@ class EmployeeUtil extends Util
         $num = (int)$num;
         $year = $this->miles($num);
 
-        return strtolower($day.' de '.$month.' de '.$year);
+        if($normal_format == true ){
+            return strtolower($day.' de '.$month.' de '.$year);
+        }else{
+            if($day == '01'){
+                return 'Al '.strtolower('primer día del mes de '.$month.' de '.$year);
+            }else{
+                return 'A '.strtolower('los '. $day.' días del mes de '.$month.' de '.$year);
+            } 
+        }
+        
     }
 
     public function unidad($numero){

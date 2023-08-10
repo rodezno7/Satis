@@ -35,6 +35,7 @@ class RrhhAbsenceInabilityController extends Controller
     {
         //
     }
+    
     public function getByEmployee($id) 
     {
         if ( !auth()->user()->can('rrhh_employees.view') ) {
@@ -90,7 +91,7 @@ class RrhhAbsenceInabilityController extends Controller
 
         if($request->input('type') == 1){
             $requiredTypeAbsence = 'required';
-            $requiredAmount = 'required';
+            $requiredAmount = 'required|numeric|min:1|max:8';
         }else{
             $requiredEndDate = 'required';
             $requiredTypeInability = 'required';
@@ -139,7 +140,7 @@ class RrhhAbsenceInabilityController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
 
@@ -203,7 +204,7 @@ class RrhhAbsenceInabilityController extends Controller
 
         if($absenceInability->type == 'Ausencia'){
             $requiredTypeAbsence = 'required';
-            $requiredAmount = 'required';
+            $requiredAmount = 'required|numeric|min:1|max:8';
         }else{
             $requiredEndDate = 'required';
             $requiredTypeInability = 'required';
@@ -282,7 +283,7 @@ class RrhhAbsenceInabilityController extends Controller
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => $e->getMessage()
+                    'msg' => __('rrhh.error')
                 ];
             }
 

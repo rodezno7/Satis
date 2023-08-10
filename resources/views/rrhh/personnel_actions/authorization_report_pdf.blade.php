@@ -128,7 +128,7 @@
                     </tr>
                 @endif
 
-                @if ($action->rrhh_required_action_id == 4) {{-- Cambiar cuenta bancaria --}}
+                @if ($action->rrhh_required_action_id == 4) {{-- Seleccionar un periodo en específico --}}
                     <tr>
                         <th>{{ __('rrhh.period') }}</th>
                         <td colspan="3">{{ @format_date($personnelAction[0]->start_date) }} - {{

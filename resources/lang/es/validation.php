@@ -134,7 +134,7 @@ return [
         'last_name'             => 'apellido',
         'password'              => 'contraseña',
         'password_confirmation' => 'confirmación de la contraseña',
-        'city'                  => 'ciudad',
+        'city'                  => 'municipio',
         'country'               => 'país',
         'address'               => 'dirección',
         'phone'                 => 'teléfono',
@@ -159,7 +159,7 @@ return [
         'message'               => 'mensaje',
 
         
-        
+        'files'                 => 'archivos',
         'period_id'             => 'período',
         'number'                => 'número',
         'debe'                  => 'debe',
@@ -238,7 +238,7 @@ return [
         'business_type_id'          => 'tipo de empresa',
         'customer_portfolio_id'     => 'cartera de clientes',
         'customer_group_id'         => 'grupo de clientes',
-        'city_id'                   => 'ciudad',
+        'city_id'                   => 'municipio',
         'txt-name-type'             => 'nombre',
         'txt-resolution-time-type'  => 'tiempo de resolución',
         'txt-ename-type'            => 'nombre',

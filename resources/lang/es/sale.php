@@ -100,4 +100,5 @@
     'insurance' => 'Seguro',
     'price_inc_vat' => 'Precio con IVA',
     'price_exc_vat' => 'Precio sin IVA',
+    'search_invoices' => 'Buscar facturas',
 ];

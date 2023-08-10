@@ -135,8 +135,10 @@
         <select name="user_id[]" id="user_id" class="form-control form-control-sm select2" 
           style="width: 100%;" multiple>
           @foreach ($users as $user)
-            {{-- <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option> --}}
             <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}</option>
+          @endforeach
+          @foreach ($userAdmins as $userAdmin)
+            <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
           @endforeach
         </select>
       </div>
@@ -153,7 +155,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id_pa">
   <button type="button" class="btn btn-primary" id="btn_add_personnel_action">@lang('rrhh.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
@@ -304,9 +306,11 @@
     $('#btn_add_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action";    
     token = $("#token").val();
+    employee_id = $('#employee_id_pa').val();
       
     var form = $("#form_add_personnel_action");
     var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
     
     $.ajax({
       url: route,
@@ -317,7 +321,8 @@
       data: formData,
       success:function(result) {
         if(result.success == true) {
-          getPersonnelActions($('#employee_id').val());
+          getPersonnelActions(employee_id);
+          //$('#employee_id_pa').val('');
           Swal.fire
           ({
             title: result.msg,
@@ -330,7 +335,8 @@
         else {
           Swal.fire
           ({
-            title: result.msg,
+            title: "Error",
+            text: result.msg,
             icon: "error",
           });
           $('#btn_add_personnel_action').prop('disabled', false);

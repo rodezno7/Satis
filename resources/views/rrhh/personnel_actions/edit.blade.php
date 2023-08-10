@@ -32,7 +32,7 @@
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
           <label>@lang('rrhh.new_salary')</label> <span class="text-danger">*</span>
-          {!! Form::number("new_salary", $salary->new_salary,
+          {!! Form::number("new_salary", ($salary != null) ? $salary->new_salary : null,
             ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.new_salary'), 'id' => 'new_salary', 'step'
             => '0.01', 'min' => '0.01']) !!}
         </div>
@@ -102,24 +102,6 @@
       </div>
     </div>
 
-    {{-- <div id="div_position_history">
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="form-group">
-          <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
-          {!! Form::select("department_id", $departments, ($positionHistory != null) ? $positionHistory->department_id : null,
-          ['id' => 'department_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;']) !!}
-        </div>
-      </div>
-  
-      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="form-group">
-          <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
-          {!! Form::select("position1_id", $positions, ($positionHistory != null) ? $positionHistory->position1_id : null,
-          ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2', 'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;']) !!}
-        </div>
-      </div>
-    </div> --}}
-
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12" id="div_payment">
       <div class="form-group">
         <label>@lang('rrhh.way_to_pay')</label> <span class="text-danger">*</span>
@@ -161,9 +143,27 @@
 							@endif
 						@endforeach
 						@if ($exist == $user->id)
-              <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+              <option value="{{ $user->id }}" selected>{{ $user->first_name }} {{ $user->last_name }}</option>
 						@else
-              <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }} - {{ $user->email }}</option>
+              <option value="{{ $user->id }}">{{ $user->first_name }} {{ $user->last_name }}</option>
+						@endif
+					@endforeach
+
+          @foreach ($userAdmins as $userAdmin)
+						@php
+							$exist = 0;
+						@endphp
+						@foreach ($authorizers as $authorizer)
+							@if($userAdmin->id == $authorizer->user_id)
+								@php
+									$exist = $userAdmin->id;
+								@endphp
+							@endif
+						@endforeach
+						@if ($exist == $userAdmin->id)
+              <option value="{{ $userAdmin->id }}" selected>{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
+						@else
+              <option value="{{ $userAdmin->id }}">{{ $userAdmin->first_name }} {{ $userAdmin->last_name }}</option>
 						@endif
 					@endforeach
         </select>
@@ -181,7 +181,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee->id }}" id="employee_id_pa1">
   <input type="hidden" name="id" value="{{ $personnelAction[0]->id }}" id="id">
   <button type="button" class="btn btn-primary" id="btn_edit_personnel_action">@lang('rrhh.update')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
@@ -335,9 +335,11 @@
     $('#btn_edit_personnel_action').attr('disabled', 'disabled');
     route = "/rrhh-personnel-action-update";    
     token = $("#token").val();
-      
+    employee_id = $('#employee_id_pa1').val();  
+
     var form = $("#form_edit_personnel_action");
     var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
     
     $.ajax({
       url: route,
@@ -348,7 +350,8 @@
       data: formData,
       success:function(result) {
         if(result.success == true) {
-          getPersonnelActions($('#employee_id').val());
+          getPersonnelActions(employee_id);
+          //$('#employee_id_pa').val('');
           Swal.fire
           ({
             title: result.msg,
@@ -362,7 +365,8 @@
           $('#btn_edit_personnel_action').prop('disabled', false);
           Swal.fire
           ({
-            title: result.msg,
+            title: "Error",
+            text: result.msg,
             icon: "error",
           });
         }

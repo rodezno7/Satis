@@ -16,13 +16,6 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                @can('rrhh_personnel_action.create')
-                    <button type="button" class="btn btn-info btm-sm" id='btn_add_actions'
-						style="padding: 5px 8px; margin-right: 5px; margin-top: -2px;">
-						<i class="fa fa-plus"></i>
-						{{ __('rrhh.personnel_actions_massive') }}
-					</button>
-                @endcan
                 @can('rrhh_employees.create')
                     <a href="{!!URL::to('/rrhh-employees/create')!!}" type="button" class="btn btn-primary" id="btn_add"><i
                         class="fa fa-plus"></i> @lang('messages.add')
@@ -56,7 +49,7 @@
 </div>
 
 <div class="modal fade" id="modal_photo" tabindex="-1">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-dialog-scrollable">
 		<div class="modal-content" id="modal_content_photo">
 
 		</div>
@@ -101,19 +94,6 @@
 		})
 	});
 
-    $("#btn_add_actions").click(function(){
-        $("#modal_content_personnel_action").html('');
-        var url = "{!!URL::to('/rrhh-personnel-action-createAll')!!}";
-        id = $('#_employee_id').val();
-        url = url.replace(':id', id);
-        $.get(url, function(data) {
-			$("#modal_content_personnel_action").html(data);
-			$('#modal_personnel_action').modal({
-            	backdrop: 'static'
-            });
-        });
-    });
-
     function loadEmployees() 
     {
         var table = $("#employees-table").DataTable();
@@ -132,17 +112,18 @@
             {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-                html += '<li><a href="/rrhh-employees/'+data.id+'/show"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
+                html += '<li><a href="/rrhh-employees/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
                 @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
-                html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
-                html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
-                html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
+                html += '<li> <a href="#" onClick="addStudies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.studies')</a></li>';
+                html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
+                html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
                 html += '<li> <a href="#" onClick="addAbsenceInhability('+data.id+')"><i class="fa fa-id-badge"></i>@lang('rrhh.absence_inability')</a></li>';
-
+                html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
+                
                 @can('rrhh_employees.delete')
                 html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                 @endcan
@@ -215,6 +196,7 @@
     }
 
     function addDocument(id) {
+        $("#document_modal").html('');
         var route = '/rrhh-documents-getByEmployee/'+id;
         $("#document_modal").load(route, function() {
             $(this).modal({
@@ -226,6 +208,16 @@
     function addEconomicDependencies(id){
         $("#modal_action").html('');
         var route = '/rrhh-economic-dependence-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+                backdrop: 'static'
+            });
+        });
+    }
+
+    function addStudies(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-study-getByEmployee/'+id;
         $("#modal_action").load(route, function() {
             $(this).modal({
             backdrop: 'static'

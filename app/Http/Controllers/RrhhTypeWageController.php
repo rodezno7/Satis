@@ -121,10 +121,10 @@ class RrhhTypeWageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\RrhhTypeWage  $humanResourceBanks
+     * @param  \App\RrhhTypeWage  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
-    public function show(RrhhTypeWage $humanResourceBanks)
+    public function show(RrhhTypeWage $rrhhTypeWage)
     {
         //
     }
@@ -132,7 +132,7 @@ class RrhhTypeWageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\RrhhTypeWage  $humanResourceBanks
+     * @param  \App\RrhhTypeWage  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -150,7 +150,7 @@ class RrhhTypeWageController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\RrhhTypeWage  $humanResourceBanks
+     * @param  \App\RrhhTypeWage  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
@@ -201,7 +201,7 @@ class RrhhTypeWageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\RrhhTypeWage  $humanResourceBanks
+     * @param  \App\RrhhTypeWage  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -212,8 +212,8 @@ class RrhhTypeWageController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('human_resource_employees')
-                ->where('bank_id', $id)               
+                $count = DB::table('employees')
+                ->where('type_id', $id)               
                 ->count();
 
                 if ($count > 0) {
