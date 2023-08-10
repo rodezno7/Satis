@@ -1467,6 +1467,7 @@
     auth()->user()->can('contact.import') ||
     auth()->user()->can('payment_commitment.view') ||
     auth()->user()->can('debts-to-pay.view') ||
+    auth()->user()->can('suggested_purchase.view') ||
     auth()->user()->can('import_expense.view') ||
     auth()->user()->can('import_expense.create') ||
     auth()->user()->can('apportionment.view') ||
@@ -1481,6 +1482,7 @@
           'supplier',
           'payment-commitments',
           'debts-to-pay-report',
+          'suggested-purchase-report',
           'import-expenses',
           'import',
           'apportionments'
@@ -1524,11 +1526,20 @@
         @endcan
 
         {{-- Debts to pay --}}
-        @if(auth()->user()->can('debts-to-pay.view'))
+        @if(auth()->user()->can('debts_to_pay.view'))
         <li
           class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'debts-to-pay-report') ? 'active' : '' }}">
           <a href="{{action('PurchaseController@debtsToPay')}}"><i
               class="fa fa-money"></i>@lang('contact.debts_to_pay')</a>
+        </li>
+        @endcan
+
+        {{-- Suggested purchase --}}
+        @if(auth()->user()->can('suggested_purchase.view'))
+        <li
+            class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'suggested-purchase-report') ? 'active' : '' }}">
+            <a href="{{action('PurchaseController@suggestedPurchase')}}">
+                <i class="fa fa-shopping-cart"></i>@lang('contact.suggested_purchase')</a>
         </li>
         @endcan
 

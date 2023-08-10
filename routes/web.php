@@ -209,6 +209,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/purchases/get_suppliers', 'PurchaseController@getSuppliers');
     Route::get('/purchases/debts-to-pay-report', 'PurchaseController@debtsToPay');
     Route::post('/purchases/debts-to-pay-report', 'PurchaseController@debtsToPayReport');
+    Route::get('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchase');
+    Route::post('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchaseReport');
     Route::get('/expenses/get_suppliers', 'ExpenseController@getSuppliers');
     Route::get('/expenses/get_contacts', 'ExpenseController@getAccount');
     Route::get('/expenses/{id}/print','ExpenseController@printExpense');
