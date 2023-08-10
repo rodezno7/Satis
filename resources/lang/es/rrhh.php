@@ -207,6 +207,7 @@ return[
     'to_the_department_of' => 'Al departamento de',
     'to_the_position_of' => 'Al puesto de',
     'personnel_actions_massive' => 'Acciones de personal masivas',
+    'incomplete_information_employees' => 'Debe completar la información personal de los empleados.',
     'incomplete_information_employee' => 'Debe completar la información personal del empleado.',
     'incomplete_document_employee' => 'Debe agregar el documento (DUI) del empleado.',
     'incomplete_information_business' => 'Debe completar la información general de la empresa.',

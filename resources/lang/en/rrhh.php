@@ -210,6 +210,7 @@ return[
     'to_the_department_of' => 'To the department of',
     'to_the_position_of' => 'To the position of',
     'personnel_actions_massive' => 'Personnel actions massive',
+    'incomplete_information_employees' => 'You must fill in the personal information of the employees.',
     'incomplete_information_employee' => 'You must fill in the personal information of the employee.',
     'incomplete_document_employee' => 'You must add the document (DNI) of the employee.',
     'incomplete_information_business' => 'You must complete the general information of the company.',
