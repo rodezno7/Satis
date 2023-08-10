@@ -385,11 +385,14 @@ class EmployeesController extends Controller
     
         $current_date = Carbon::now()->format('Y-m-d');
     
-        foreach($contracts as $contract){
-            if($contract->contract_status == 'Vigente'){
-                if($contract->contract_end_date < $current_date){
-                    $contract->contract_status = 'Vencido';
-                    $contract->update();
+        
+        foreach ($contracts as $contract) {
+            if ($contract->contract_status == 'Vigente') {
+                if ($contract->contract_end_date != null) {
+                    if ($contract->contract_end_date < $current_date) {
+                        $contract->contract_status = 'Vencido';
+                        $contract->update();
+                    }
                 }
             }
         }

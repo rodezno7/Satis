@@ -110,6 +110,7 @@ return[
     'document_types' => 'Tipos de documento',
     'all_your_document_types' => 'Todas tus tipos de documento',
     'only_pdf' => 'Solo se permiten archivos de imagen y pdf',
+    'only_pdf1' => 'Solo se permiten archivos pdf',
     'view_file' => 'Ver archivo',
     'document' => 'Documento',
     'photo' => 'Foto del empleado',
@@ -309,4 +310,6 @@ return[
     'Gets_the_current_date' => 'Obtiene la fecha actual. El formato es: A los 12 días del mes de julio de 2023.',
     'Gets_the_current_date_letters' => 'Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: A los doce días del mes de julio de dos mil veintitres.',
     'import_employees' => 'Importar empleados',
+    'validation_file' => 'Los archivos permidos únicamente son .jpg, .jpeg, .png y .pdf',
+    'validation_file_pdf' => 'Los archivos permidos únicamente son .pdf',
 ];

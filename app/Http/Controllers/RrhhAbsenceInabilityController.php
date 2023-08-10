@@ -204,7 +204,7 @@ class RrhhAbsenceInabilityController extends Controller
 
         if($absenceInability->type == 'Ausencia'){
             $requiredTypeAbsence = 'required';
-            $requiredAmount = 'required';
+            $requiredAmount = 'required|numeric|min:1|max:8';
         }else{
             $requiredEndDate = 'required';
             $requiredTypeInability = 'required';

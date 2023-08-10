@@ -110,6 +110,7 @@ return[
     'document_types' => 'Document types',
     'all_your_document_types' => 'All your document types',
     'only_pdf' => 'Only images and pdf',
+    'only_pdf1' => 'Only pdf',
     'view_file' => 'View file',
     'document' => 'Document',
     'photo' => 'Employee photo',
@@ -311,4 +312,6 @@ return[
     'Gets_the_current_date' => 'Gets the current date. The format is: On the 12th day of July 2023.',
     'Gets_the_current_date_letters' => 'Gets the start date of the contract. The format is in letters, for example: July twelve, two thousand twenty-three.',
     'import_employees' => 'Import employees',
+    'validation_file' => 'The only allowed files are .jpg, .jpeg, .png and .pdf',
+    'validation_file_pdf' => 'The only allowed files are .pdf',
 ];

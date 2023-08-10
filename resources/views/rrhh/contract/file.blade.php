@@ -44,7 +44,7 @@
 			$('#file').val('');
 			Swal.fire
 			({
-				title: '@lang('rrhh.only_pdf')',
+				title: '@lang('rrhh.only_pdf1')',
 				icon: "error",
 			});
 		} else {
