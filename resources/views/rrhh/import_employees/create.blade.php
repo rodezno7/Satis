@@ -29,7 +29,7 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     {!! Form::label('file_xlsx', __( 'product.file_to_import' ) . ':') !!}
-                                    {!! Form::file('products_xlsx', ['accept'=> '.xlsx', 'required']) !!}
+                                    {!! Form::file('employees_xlsx', ['accept'=> '.xlsx', 'required']) !!}
                                   </div>
                             </div>
 

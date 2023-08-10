@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 
 class RrhhImportEmployeesController extends Controller
 {
+    
     public function create(){
         if (!auth()->user()->can('rrhh_import_employees.create')) {
             abort(403, 'Unauthorized action.');
         }
     
-        return view('rrhh.import_employees.index');
+        return view('rrhh.import_employees.create');
     }
 
     /**
@@ -38,15 +39,14 @@ class RrhhImportEmployeesController extends Controller
 
             $business_id = $request->session()->get('user.business_id');
             $user_id = $request->session()->get('user.id');
-            $default_profit_percent = $request->session()->get('business.default_profit_percent');
             $exception = 0;
 
-            if ($request->hasFile('products_xlsx')) {
-                $file = $request->file('products_xlsx');
+            if ($request->hasFile('employees_xlsx')) {
+                $file = $request->file('employees_xlsx');
 
                 /**
                  * ------------------------------------------------------------
-                 * PRODUCT SHEET
+                 * EMPLOYEE SHEET
                  * ------------------------------------------------------------
                  */
 
@@ -55,16 +55,9 @@ class RrhhImportEmployeesController extends Controller
                 // Removing the header
                 unset($imported_data[0]);
                 unset($imported_data[1]);
-                unset($imported_data[2]);
-                unset($imported_data[3]);
 
                 // Columns number
-                $col_no = 21;
-
-                // Default data
-                $type = 'single';
-                $enable_stock = 1;
-                $barcode_type = 'C128';
+                $col_no = 28;
 
                 // Process file
                 foreach ($imported_data as $key => $value) {
@@ -84,33 +77,37 @@ class RrhhImportEmployeesController extends Controller
 
                     // Row
                     $row = [
-                        'product_name' => trim($value[0]),
-                        'sku' => trim($value[1]),
-                        'status' => trim($value[2]),
-                        'brand_name' => trim($value[3]),
-                        'unit_name' => trim($value[4]),
-                        'quantity' => trim($value[5]),
-                        'category_name' => trim($value[6]),
-                        'sub_category_name' => trim($value[7]),
-                        'min_inventory' => trim($value[8]),
-                        'has_warranty' => trim($value[9]),
-                        'warranty' => trim($value[10]),
-                        'sales_tax' => trim($value[11]),
-                        'applied_tax' => trim($value[12]),
-                        'cost_without_tax' => trim($value[13]),
-                        'sales_price_without_tax' => trim($value[14]),
-                        'clasification' => trim($value[15]),
-                        'product_description' => null,
+                        'first_name' => trim($value[0]),
+                        'last_name' => trim($value[1]),
+                        'gender' => trim($value[2]),
+                        'nationality' => trim($value[3]),
+                        'birth_date' => trim($value[4]),
+                        'dni' => trim($value[5]),
+                        'tax_number' => trim($value[6]),
+                        'civil_status' => trim($value[7]),
+                        'phone' => trim($value[8]),
+                        'mobile' => trim($value[9]),
+                        'email' => trim($value[10]),
+                        'institutional_email' => trim($value[11]),
+                        'address' => trim($value[12]),
+                        'country' => trim($value[13]),
+                        'state' => trim($value[14]),
+                        'city' => trim($value[15]),
+                        'social_security_number' => trim($value[16]),
+                        'afp' => trim($value[17]),
+                        'afp_number' => trim($value[18]),
+                        'date_admission' => trim($value[19]),
+                        'department' => trim($value[20]),
+                        'position1' => trim($value[21]),
+                        'type' => trim($value[22]),
+                        'salary' => trim($value[23]),
+                        'profession' => trim($value[24]),
+                        'payment' => trim($value[25]),
+                        'bank' => trim($value[26]),
+                        'bank_acount' => trim($value[27]),
                     ];
 
-                    // Default data
-                    $default_data = [
-                        'type' => $type,
-                        'enable_stock' => $enable_stock,
-                        'barcode_type' => $barcode_type
-                    ];
-
-                    $result = $this->checkRow($row, $row_no, $default_data);
+                    $result = $this->checkRow($row, $row_no);
 
                     // Product result
                     array_push($products, $result['product']);
@@ -118,84 +115,6 @@ class RrhhImportEmployeesController extends Controller
                     // Error messages result
                     foreach ($result['error_msg'] as $item) {
                         $item['sheet'] = __('product.products');
-                        array_push($error_msg, $item);
-                    }
-                }
-
-                /**
-                 * ------------------------------------------------------------
-                 * SERVICE SHEET
-                 * ------------------------------------------------------------
-                 */
-
-                $imported_data = Excel::toArray('', $file->getRealPath(), null, \Maatwebsite\Excel\Excel::XLSX)[2];
-
-                // Removing the header
-                unset($imported_data[0]);
-                unset($imported_data[1]);
-                unset($imported_data[2]);
-                unset($imported_data[3]);
-
-                // Columns number
-                $col_no = 14;
-
-                // Default data
-                $type = 'single';
-                $enable_stock = 0;
-                $barcode_type = 'C128';
-
-                // Process file
-                foreach ($imported_data as $key => $value) {
-                    // Check columns number
-                    if (count($value) != $col_no) {
-                        $error_line = [
-                            'row' => 'N/A',
-                            'sheet' => __('product.services'),
-                            'msg' => __('product.number_of_columns_mismatch', ['number' => $col_no - 1])
-                        ];
-
-                        array_push($error_msg, $error_line);
-                    }
-
-                    // Row number
-                    $row_no = $key + 1;
-
-                    // Row
-                    $row = [
-                        'product_name' => trim($value[0]),
-                        'sku' => trim($value[1]),
-                        'status' => trim($value[2]),
-                        'category_name' => trim($value[3]),
-                        'sub_category_name' => trim($value[4]),
-                        'product_description' => trim($value[5]),
-                        'has_warranty' => trim($value[6]),
-                        'warranty' => trim($value[7]),
-                        'sales_tax' => trim($value[8]),
-                        'applied_tax' => trim($value[9]),
-                        'cost_without_tax' => trim($value[10]),
-                        'sales_price_without_tax' => trim($value[11]),
-                        'clasification' => trim($value[12]),
-                        'brand_name' => null,
-                        'unit_name' => null,
-                        'quantity' => null,
-                        'min_inventory' => null,
-                    ];
-
-                    // Default data
-                    $default_data = [
-                        'type' => $type,
-                        'enable_stock' => $enable_stock,
-                        'barcode_type' => $barcode_type
-                    ];
-
-                    $result = $this->checkRow($row, $row_no, $default_data);
-
-                    // Product result
-                    array_push($products, $result['product']);
-
-                    // Error messages result
-                    foreach ($result['error_msg'] as $item) {
-                        $item['sheet'] = __('product.services');
                         array_push($error_msg, $item);
                     }
                 }
@@ -235,7 +154,7 @@ class RrhhImportEmployeesController extends Controller
             $flag = false;
         }
 
-        return view('import_products.index')
+        return view('rrhh.import_employees.create')
             ->with(compact(
                 'errors',
                 'status',
@@ -243,7 +162,7 @@ class RrhhImportEmployeesController extends Controller
                 'exception'
             ));
 
-        return redirect('import-products')->with('status', $status);
+        return redirect('rrhh-import-employees')->with('status', $status);
     }
 
     /**
@@ -254,46 +173,38 @@ class RrhhImportEmployeesController extends Controller
      * @param  array  $default_data
      * @return array
      */
-    public function checkRow($row, $row_no, $default_data = null)
+    public function checkRow($row, $row_no)
     {
         $product = [
-            // Product
-            'product_name' => null,
-            'business_id' => null,
-            'type' => null,
-            'unit_id' => null,
-            'brand_name' => null,
-            'category_name' => null,
-            'sub_category_name' => null,
-            'tax' => null,
-            'tax_type' => null,
-            'enable_stock' => null,
-            'alert_quantity' => null,
-            'sku' => null,
-            'barcode_type' => null,
-            'product_description' => null,
-            'warranty' => null,
-            'discount_card' => null,
-            'add_products' => null,
-            'status' => null,
-            'clasification' => null,
-            'has_warranty' => null,
-            'created_by' => null,
-
-            // Variation
-            'variation_name' =>  null,
-            'product_id' =>  null,
-            'sub_sku' =>  null,
-            'product_variation_id' =>  null,
-            'variation_value_id' =>  null,
-            'default_purchase_price' =>  null,
-            'dpp_inc_tax' =>  null,
-            'profit_percent' =>  null,
-            'default_sell_price' =>  null,
-            'sell_price_inc_tax' =>  null,
-
-            // Opening stock
-            'quantity' => null,
+            'first_name' => null,
+            'last_name' => null,
+            'gender_id' => null,
+            'nationality_id' => null,
+            'birth_date' => null,
+            'dni' => null,
+            'approved' => null,
+            'tax_number' => null,
+            'civil_status_id' => null,
+            'phone' => null,
+            'mobile' => null,
+            'email' => null,
+            'institutional_email' => null,
+            'address' => null,
+            'country_id' => null,
+            'state_id' => null,
+            'city_id' => null,
+            'social_security_number' => null,
+            'afp_id' => null,
+            'afp_number' => null,
+            'date_admission' => null,
+            'department_id' => null,
+            'position1_id' => null,
+            'type_id' => null,
+            'salary' => null,
+            'profession_id' => null,
+            'payment_id' => null,
+            'bank' => null,
+            'bank_acount' => null,
         ];
 
         // Errors list
