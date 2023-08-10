@@ -137,6 +137,7 @@ class EmployeesController extends Controller
      */
     public function store(Request $request) 
     {
+        //dd($request);
         if ( !auth()->user()->can('rrhh_employees.create') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -147,7 +148,7 @@ class EmployeesController extends Controller
             'gender'                => 'required',
             'birth_date'            => 'required',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            'tax_number'            => 'required',
+            //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'nullable',
@@ -265,6 +266,19 @@ class EmployeesController extends Controller
 
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
+
+            $mdate = Carbon::parse($input_details['date_admission'])->format('n');
+            $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
+            $last_correlative = DB::table('employees')
+                ->select(DB::raw('MAX(id) as max'))
+                ->first();
+            if ($last_correlative->max != null) {
+                $correlative = $last_correlative->max + 1;
+
+            } else {
+                $correlative = 1;
+            }
+
             $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
             $employee = Employees::create($input_details);
 
