@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\RrhhClassPersonnelAction;
 
 class RrhhClassPersonnelActionsSeeder extends Seeder
 {
@@ -11,9 +12,17 @@ class RrhhClassPersonnelActionsSeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("INSERT INTO rrhh_class_personnel_actions (id, name) VALUES (1, 'Entrada')");
-        DB::insert("INSERT INTO rrhh_class_personnel_actions (id, name) VALUES (2, 'Movimiento')");
-        DB::insert("INSERT INTO rrhh_class_personnel_actions (id, name) VALUES (3, 'Interna')");
-        DB::insert("INSERT INTO rrhh_class_personnel_actions (id, name) VALUES (4, 'Salida')");
+        RrhhClassPersonnelAction::firstOrCreate([
+            'name' => 'Entrada',
+        ]);
+        RrhhClassPersonnelAction::firstOrCreate([
+            'name' => 'Movimiento',
+        ]);
+        RrhhClassPersonnelAction::firstOrCreate([
+            'name' => 'Interna',
+        ]);
+        RrhhClassPersonnelAction::firstOrCreate([
+            'name' => 'Salida',
+        ]);
     }
 }

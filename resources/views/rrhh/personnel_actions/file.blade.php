@@ -1,36 +1,35 @@
-<div class="modal-dialog">
-    <div class="modal-content" id="modal_content_photo">
-        {!! Form::open(['method' => 'post', 'id' => 'form_add_document','files' => true ]) !!}
-        <div class="modal-header">
-            <h4 class="modal-title" id="formModal">@lang('rrhh.document')
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </h4>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="form-group">
-                        <label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
-                        <input type="file" name="file" id='file' class="form-control form-control-sm" accept="application/pdf">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="modal-footer">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-            <input type="hidden" name="rrhh_personnel_action_id" value="{{ $personnelAction->id }}" id="rrhh_personnel_action_id">
-            <button type="button" class="btn btn-primary" id="btn_add_document">@lang('rrhh.add')</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
-        </div>
-        {!! Form::close() !!}
-    </div>
+{!! Form::open(['method' => 'post', 'id' => 'form_add_document','files' => true ]) !!}
+<div class="modal-header">
+	<h4 class="modal-title" id="formModal">@lang('rrhh.document')
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="form-group">
+				<label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
+				<input type="file" id="files" name="files[]" multiple class="form-control form-control-sm">
+			</div>
+		</div>
+	</div>
 </div>
 
+<div class="modal-footer">
+	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+	<input type="hidden" name="rrhh_personnel_action_id" value="{{ $personnelAction->id }}"
+		id="rrhh_personnel_action_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_pa2">
+	<button type="button" class="btn btn-primary" id="btn_add_document_pa">@lang('rrhh.add')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal"
+		onClick="closeModal()">@lang('messages.cancel')</button>
+</div>
+{!! Form::close() !!}
+
 <script>
-    $( document ).ready(function() {
+	$( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 		select2 = $('.select2').select2();
 	});
@@ -40,7 +39,6 @@
 
 	$('#file').on('change', function() {
 		extension = this.files[0].type.split('/')[1];
-		//console.log(this.files[0].type);
 
 		if(validExt.indexOf(extension) == -1){
 			$('#file').val('');
@@ -63,9 +61,10 @@
 		}
 	});
 
-	$("#btn_add_document").click(function() {
+	$("#btn_add_document_pa").click(function() {
 		route = "/rrhh-personnel-action-storeDocument";    
 		token = $("#token").val();
+		employee_id = $('#employee_id_pa2').val();
 
 		var form = $("#form_add_document");
 		var formData = new FormData(form[0]);
@@ -86,8 +85,9 @@
 						timer: 1000,
 						showConfirmButton: false,
 					});
-                    $("#personnel_actions-table").DataTable().ajax.reload(null, false);
-					$('#file_modal').modal( 'hide' ).data( 'bs.modal', null );
+					getPersonnelActions(employee_id);
+                    //$("#personnel_actions-table").DataTable().ajax.reload(null, false);
+					$('#modal_doc').modal( 'hide' ).data( 'bs.modal', null );
 				}
 				else {
 					Swal.fire
@@ -113,7 +113,7 @@
   	});
 
 	function closeModal(){
-		$('#file_modal').modal({backdrop: 'static'});
+		$('#modal_action').modal({backdrop: 'static'});
 		$('#modal_doc').modal( 'hide' ).data( 'bs.modal', null );
 	}
 </script>

@@ -13,7 +13,7 @@
 </section>
 
 <!-- Main content -->
-<section class="content">
+<section class="content"> 
     {!! Form::open(['url' => action('BusinessController@postBusinessSettings'), 'method' => 'post', 'id' => 'bussiness_edit_form',
     'files' => true ]) !!}
     <div class="row">
@@ -37,7 +37,9 @@
                         <!--a href="#" class="list-group-item text-center">@lang('lang_v1.email_settings')</a-->
                         <!--a href="#" class="list-group-item text-center">@lang('lang_v1.sms_settings')</a-->
                         <a href="#" class="list-group-item text-center">@lang('sale.pos_sale')</a>
-                        <!--a href="#" class="list-group-item text-center">@lang('lang_v1.modules')</a-->
+                        @if(auth()->user()->can('business_settings.access_module'))
+                            <a href="#" class="list-group-item text-center">@lang('lang_v1.modules')</a>
+                        @endif
                         <a href="#" class="list-group-item text-center">@lang('quote.quotes')</a>
                         <a href="#" class="list-group-item text-center">@lang('customer.customers')</a>
                     </div>
@@ -83,7 +85,9 @@
                     @include('business.partials.settings_pos')
                     <!-- tab 12 end -->
                     <!-- tab 13 start -->
-                    {{--@include('business.partials.settings_modules')--}}
+                    @if(auth()->user()->can('business_settings.access_module'))
+                        @include('business.partials.settings_modules')
+                    @endif
                     <!-- tab 13 end -->
                     <!-- tab 14 start -->
                     @include('business.partials.settings_quotes')

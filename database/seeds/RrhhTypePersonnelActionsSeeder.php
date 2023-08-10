@@ -1,5 +1,7 @@
 <?php
 
+use App\RrhhTypePersonnelAction;
+use App\Business;
 use Illuminate\Database\Seeder;
 
 class RrhhTypePersonnelActionsSeeder extends Seeder
@@ -11,12 +13,61 @@ class RrhhTypePersonnelActionsSeeder extends Seeder
      */
     public function run()
     {
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Cambio de salario', 1, 3, '2023-06-27 19:20:18', '2023-06-27 19:20:18')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Cambio de puesto', 1, 3, '2023-06-27 18:04:19', '2023-06-27 18:04:19')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Reincorporación', 0, 3, '2023-06-27 19:21:07', '2023-06-27 19:21:07')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Despido justificado', 1, 3, '2023-06-27 19:21:26', '2023-06-27 19:21:26')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Permiso', 0, 3, '2023-06-27 19:21:41', '2023-06-27 19:21:41')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Cambio de forma de pago', 0, 3, '2023-06-27 19:22:11', '2023-06-27 19:22:11')");
-        DB::insert("INSERT INTO rrhh_type_personnel_actions (name, required_authorization, business_id, created_at, updated_at) VALUES ('Cambio de cuenta bancaria', 0, 3, '2023-06-27 19:22:31', '2023-06-27 19:22:31')");
+        $business = Business::all();
+        foreach($business as $item){
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Cambio de salario', 
+                'required_authorization' => 1, 
+                'apply_to_many' => 1, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Cambio de puesto',
+                'required_authorization' => 1, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Reincorporación', 
+                'required_authorization' => 0, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Despido justificado',
+                'required_authorization' => 1, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Permiso', 
+                'required_authorization' => 0, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Cambio de forma de pago',
+                'required_authorization' => 0, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+            RrhhTypePersonnelAction::firstOrCreate([
+                'name' => 'Cambio de cuenta bancaria', 
+                'required_authorization' => 0, 
+                'apply_to_many' => 0, 
+                'business_id' => $item->id, 
+                'deleted_at' => null
+            ]);
+        }
     }
 }

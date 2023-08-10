@@ -48,57 +48,41 @@
                     </tr>
                     @foreach ($actions as $action)
                         @if ($action->rrhh_required_action_id == 2) {{-- Cambiar departamento --}}
-                            @php
-                                $len = count($positions);
-                            @endphp
-                            @foreach ($positions as $index => $position)
-                                @if ($index == $len - 1)
-                                <tr>
-                                    <th>{{ __('rrhh.previous_department') }}</th>
-                                    <td>{{ $position->department->value }}</td>
-                                    <th>{{ __('rrhh.previous_position') }}</th>
-                                    <td>{{ $position->position1->value }}</td>
-                                </tr>
-                                @elseif($index == 0)
-                                <tr>
-                                    <th>{{ __('rrhh.new_department') }}</th>
-                                    <td>{{ $position->department->value }}</td>
-                                    <th>{{ __('rrhh.new_position') }}</th>
-                                    <td>{{ $position->position1->value }}</td>
-                                </tr>
-                                @endif
-                            @endforeach
+                            <tr>
+                                <th>{{ __('rrhh.previous_department') }}</th>
+                                <td>{{ $position->previousDepartment->value }}</td>
+                                <th>{{ __('rrhh.previous_position') }}</th>
+                                <td>{{ $position->previousPosition1->value }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('rrhh.new_department') }}</th>
+                                <td>{{ $position->newDepartment->value }}</td>
+                                <th>{{ __('rrhh.new_position') }}</th>
+                                <td>{{ $position->newPosition1->value }}</td>
+                            </tr>
                         @endif
         
                         @if ($action->rrhh_required_action_id == 3) {{-- Cambiar salario --}}
-                            @php
-                                $len = count($salaries);
-                            @endphp
-                            @foreach ($salaries as $index => $salary)
-                                @if ($index == $len - 1)
-                                <tr>
-                                    <th>{{ __('rrhh.previous_salary') }}</th>
-                                    <td colspan="3">
-                                        @if ($business->currency_symbol_placement == 'after')
-                                            {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                        @else
-                                            {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                        @endif
-                                    </td>
-                                </tr>
-                                @elseif($index == 0)
-                                <tr>
-                                    <th>{{ __('rrhh.new_salary') }}</th>
-                                    <td colspan="3">
-                                        @if ($business->currency_symbol_placement == 'after')
-                                            {{ @num_format($salary->salary) }} {{ $business->currency->symbol }}
-                                        @else
-                                            {{ $business->currency->symbol }} {{ @num_format($salary->salary) }}
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endif
-                            @endforeach
+                            <tr>
+                                <th>{{ __('rrhh.previous_salary') }}</th>
+                                <td colspan="3">
+                                    @if ($business->currency_symbol_placement == 'after')
+                                        {{ @num_format($salary->previous_salary) }} {{ $business->currency->symbol }}
+                                    @else
+                                        {{ $business->currency->symbol }} {{ @num_format($salary->previous_salary) }}
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('rrhh.new_salary') }}</th>
+                                <td colspan="3">
+                                    @if ($business->currency_symbol_placement == 'after')
+                                        {{ @num_format($salary->new_salary) }} {{ $business->currency->symbol }}
+                                    @else
+                                        {{ $business->currency->symbol }} {{ @num_format($salary->new_salary) }}
+                                    @endif
+                                </td>
+                            </tr>
                         @endif
         
                         @if ($action->rrhh_required_action_id == 4) {{-- Cambiar cuenta bancaria --}}
@@ -163,31 +147,39 @@
                 </tbody>
             </table>
 
-            <h5 class="text-center">{{ mb_strtoupper(__('rrhh.authorizations')) }}</h5>
-            <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;">
-                <thead>
-                    <tr>
-                        <th>{{ __('rrhh.user') }}</th>
-                        <th>{{ __('rrhh.authorization') }}</th>
-                        <th>{{ __('rrhh.authorization_date') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $i=>$user)
-                    <tr>
-                        <td>{{ $user->user->first_name }} {{ $user->user->last_name }}</td>
-                        <td class="text-center">
-                            @if ($user->authorized == 1)
-                                Si
-                            @else
-                                Aún no
-                            @endif
-                        </td>
-                        <td class="text-center">{{ @format_date($user->updated_at) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            @if (count($users) > 0)
+                <h5 class="text-center">{{ mb_strtoupper(__('rrhh.authorizations')) }}</h5>
+                <table class="table table-responsive table-bordered table-condensed table-text-center" style="font-size: inherit;">
+                    <thead>
+                        <tr>
+                            <th>{{ __('rrhh.user') }}</th>
+                            <th>{{ __('rrhh.authorization') }}</th>
+                            <th>{{ __('rrhh.authorization_date') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($users as $i=>$user)
+                        <tr>
+                            <td>{{ $user->user->first_name }} {{ $user->user->last_name }}</td>
+                            <td class="text-center">
+                                @if ($user->authorized == 1)
+                                    Si
+                                @else
+                                    Aún no
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                @if ($user->updated_at != null)
+                                    {{ @format_date($user->updated_at) }}
+                                @else
+                                    ----
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
         </div>
     </div>
 </div>

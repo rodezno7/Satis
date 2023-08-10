@@ -11,6 +11,7 @@ use App\RrhhPositionHistory;
 use App\Bank;
 use App\Business;
 use App\RrhhAbsenceInability;
+use App\RrhhContract;
 use App\Notifications\NewNotification;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -62,18 +63,23 @@ class EmployeesController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('employees as e')
-        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
         ->where('e.deleted_at', null)
         ->get();
         
-
         return DataTables::of($data)->editColumn('department', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->department->value : __('rrhh.no_department');
+            return (!empty($position)) ? $position->newDepartment->value : __('rrhh.not_assigned');
         })->editColumn('position', function ($data) {
             $position = RrhhPositionHistory::where('employee_id', $data->id)->where('current', 1)->first();
-            return (!empty($position)) ? $position->position1->value : __('rrhh.no_position');
+            return (!empty($position)) ? $position->newPosition1->value : __('rrhh.not_assigned');
+        })->editColumn('status', function ($data) {
+            if($data->status == 1){
+                return __('rrhh.active');
+            }else{
+                return __('rrhh.inactive');
+            }
         })->toJson();
     }
 
@@ -96,7 +102,7 @@ class EmployeesController extends Controller
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         
@@ -214,33 +220,60 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                'approved',
                 'civil_status_id',
                 'phone',
                 'mobile',
-                'email',
+                //'email',
                 'address',
                 'social_security_number',
                 'afp_id',
                 'afp_number',
                 'payment_id',
                 'bank_id',
-                'bank_account'
+                'bank_account',
             ]);
+            if($request->approved){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
 
-            $input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+            //$input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.employee_img_path'));
+
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $name = time().$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($name,  \File::get($file));
+                $input_details['photo'] = $name;
+            }
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
+            if ($request->hasFile('photo')) {
+                if (!Storage::disk('employee_photo')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/employee_photo/'.$folderName, $mode = 0755, true, true);
+                }
+                $file = $request->file('photo');
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($folderName.'/'.$name,  \File::get($file));
+                $input_details['photo'] = $name;
+            }
+
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
+            $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
-                ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
             );
 
             RrhhSalaryHistory::insert(
-                ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
             );
 
             DB::commit();
@@ -272,10 +305,10 @@ class EmployeesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
 
         if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');
@@ -293,14 +326,16 @@ class EmployeesController extends Controller
         )
         ->first();
 
+        $business_id = request()->session()->get('user.business_id');
+        $folderName = 'business_'.$business_id;
         if ($employee->photo == '') {
             if($employee->gender == 'F'){
-                $route = 'uploads/img/avatar_F.png';
+                $route = '/img/Avatar-F.png';
             }else{
-                $route = 'uploads/img/avatar_M.png';
+                $route = '/img/Avatar-M.png';
             }
         } else {
-            $route = 'uploads/img/'.$employee->photo;
+            $route = '/uploads/employee_photo/'.$folderName.'/'.$employee->photo;
         }
 
         $business_id = request()->session()->get('user.business_id');
@@ -309,20 +344,28 @@ class EmployeesController extends Controller
         $positions = RrhhPositionHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $documents = DB::table('rrhh_documents as document')
-        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-        ->join('states as state', 'state.id', '=', 'document.state_id')
-        ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
-        ->where('document.employee_id', $id)
-        ->get();
+            ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
+            ->join('states as state', 'state.id', '=', 'document.state_id')
+            ->join('cities as city', 'city.id', '=', 'document.city_id')
+            ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+            ->where('document.employee_id', $id)
+            ->get();
 
+        $studies = DB::table('rrhh_studies as study')
+            ->join('rrhh_datas as type', 'type.id', '=', 'study.type_study_id')
+            ->join('employees as employee', 'employee.id', '=', 'study.employee_id')
+            ->select('study.id as id', 'type.value as type', 'study.title as title', 'study.institution as institution', 'study.year_graduation as year_graduation', 'study.study_status as study_status', 'study.status as status')
+            ->where('study.employee_id', $employee->id)
+            ->where('type.rrhh_header_id', 12)
+            ->get();
+        
         $economicDependences = DB::table('rrhh_economic_dependences as economicDependence')
-        ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
-        ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
-        ->select('economicDependence.id as id', 'type.value as type', 'economicDependence.name as name', 'economicDependence.birthdate as birthdate', 'economicDependence.phone as phone', 'economicDependence.status as status')
-        ->where('economicDependence.employee_id', $employee->id)
-        ->where('type.rrhh_header_id', 15)
-        ->get();
+            ->join('rrhh_datas as type', 'type.id', '=', 'economicDependence.type_relationship_id')
+            ->join('employees as employee', 'employee.id', '=', 'economicDependence.employee_id')
+            ->select('economicDependence.id as id', 'type.value as type', 'economicDependence.name as name', 'economicDependence.birthdate as birthdate', 'economicDependence.phone as phone', 'economicDependence.status as status')
+            ->where('economicDependence.employee_id', $employee->id)
+            ->where('type.rrhh_header_id', 15)
+            ->get();
 
         $absenceInabilities = RrhhAbsenceInability::where('employee_id', $employee->id)->get();
 
@@ -332,13 +375,33 @@ class EmployeesController extends Controller
             ->where('personnel_action.employee_id', $employee->id)
             ->get();
 
-        return view('rrhh.employees.show', compact('employee', 'route', 'documents', 'positions', 'salaries', 'business', 'economicDependences', 'absenceInabilities', 'personnelActions'));
+        $contracts = RrhhContract::join('rrhh_type_contracts as type', 'type.id', '=', 'rrhh_contracts.rrhh_type_contract_id')
+            ->join('employees as employee', 'employee.id', '=', 'rrhh_contracts.employee_id')
+            ->select('rrhh_contracts.id as id', 'type.name as type', 'rrhh_contracts.contract_start_date as contract_start_date', 'rrhh_contracts.contract_end_date as contract_end_date', 'rrhh_contracts.contract_status as contract_status')
+            ->where('rrhh_contracts.employee_id', $employee->id)
+            ->orderBy('id', 'DESC')
+            ->get();
+    
+        $current_date = Carbon::now()->format('Y-m-d');
+    
+        foreach($contracts as $contract){
+            if($contract->contract_status == 'Vigente'){
+                if($contract->contract_end_date < $current_date){
+                    $contract->contract_status = 'Vencido';
+                    $contract->update();
+                }
+            }
+        }
+
+        $show = true;
+
+        return view('rrhh.employees.show', compact('employee', 'route', 'show', 'documents', 'positions', 'salaries', 'business', 'studies', 'economicDependences', 'absenceInabilities', 'personnelActions', 'contracts'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -358,7 +421,7 @@ class EmployeesController extends Controller
         $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 5)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $countries = DB::table('countries')->pluck('name', 'id');
@@ -369,12 +432,11 @@ class EmployeesController extends Controller
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
         ->join('states as state', 'state.id', '=', 'document.state_id')
         ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.file as file', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
 
         $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
-        
        
         for ($i=0; $i < count($documents); $i++) { 
             if(isset($type_documents)){
@@ -413,27 +475,29 @@ class EmployeesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
         if ( !auth()->user()->can('rrhh_employees.update') ) {
             abort(403, 'Unauthorized action.');
         }
+
+        //dd($request);
         $employee = Employees::findOrFail($id);
-        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
-        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->count();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->count();
 
         $requiredDepartment = 'nullable';
         $requiredPosition = 'nullable';
         $requiredSalary = 'nullable';
         $requiredPayment = 'nullable';
-        if(count($position) == 0){
+        if($position == 0){
             $requiredDepartment = 'required';
             $requiredPosition = 'required';
         }
 
-        if(count($salary) == 0){
+        if($salary == 0){
             $requiredSalary = 'required|numeric|min:1';
         }
 
@@ -447,7 +511,7 @@ class EmployeesController extends Controller
             'gender'                => 'required',
             'birth_date'            => 'required',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            'tax_number'            => 'required',
+            //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'nullable',
@@ -467,15 +531,15 @@ class EmployeesController extends Controller
                 'last_name', 
                 'username', 
                 'email',
+                'institutional_email',
                 'last_name',
                 'gender',
                 'nationality_id',
                 'dni',
-                'tax_number',
+                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
-                'email',
                 'address',
                 'social_security_number',
                 'afp_id',
@@ -484,7 +548,7 @@ class EmployeesController extends Controller
                 'bank_id',
                 'bank_account',
                 'date_admission',
-                'photo',
+                //'photo',
                 'status',
                 'country_id',
                 'profession_id',
@@ -495,6 +559,13 @@ class EmployeesController extends Controller
                 'state_id',
                 'city_id'
             ]);
+            if($request->input('approved')){
+                $input_details['approved'] = 1;
+                $input_details['tax_number'] = $request->input('dni');
+            }else{
+                $input_details['approved'] = 0;
+                $input_details['tax_number'] = $request->input('tax_number');
+            }
 
             if ($request->input('status')) {
                 $input_details['status'] = 1;
@@ -502,10 +573,20 @@ class EmployeesController extends Controller
                 $input_details['status'] = 0;
             }
             
+            
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
             if ($request->hasFile('photo')) {
-                $input_details['photo'] = $this->productUtil->uploadFile($request, 'photo', config('constants.product_img_path'));
+                if (!Storage::disk('employee_photo')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/employee_photo/'.$folderName, $mode = 0755, true, true);
+                }
+                $file = $request->file('photo');
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_photo')->put($folderName.'/'.$name,  \File::get($file));
+                $input_details['photo'] = $name;
             }
             
+
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));     
             if ($employee->payment_id == null){
@@ -531,15 +612,15 @@ class EmployeesController extends Controller
             }
             $employee->update($input_details);
 
-            if(count($position) == 0){
+            if($position == 0){
                 RrhhPositionHistory::insert(
-                    ['department_id' => $request->input('department_id'), 'position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                    ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                 );
             }
 
-            if(count($salary) == 0){
+            if($salary == 0){
                 RrhhSalaryHistory::insert(
-                    ['employee_id' => $employee->id, 'salary' => $request->input('salary'), 'current' => 1]
+                    ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
                 );
             }
 
@@ -551,7 +632,7 @@ class EmployeesController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => $e->getMessage()
+                'msg' => __('rrhh.error')
             ];
         }
         return redirect('rrhh-employees')->with('status', $output);
@@ -560,7 +641,7 @@ class EmployeesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Employees  $humanResourceEmployee
+     * @param  \App\Employees  $employee
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) 
@@ -633,14 +714,17 @@ class EmployeesController extends Controller
             if ( !auth()->user()->can('rrhh_employees.view') ) {
                 abort(403, 'Unauthorized action.');
             }
-    
+            
             $employee = Employees::findOrFail($id);
+            $business_id = request()->session()->get('user.business_id');
+            $folderName = 'business_'.$business_id;
+            
             if ($employee->photo == null) {
                 $route = 'uploads/img/defualt.png';
             } else {
-                $route = 'uploads/img/'.$employee->photo;
+                $route = 'uploads/employee_photo/'.$folderName.'/'.$employee->photo;
             }
-    
+            
             return view('rrhh.employees.photo', compact('route'));
         }
     }
@@ -649,5 +733,9 @@ class EmployeesController extends Controller
     {
         $extension = !empty(System::getProperty('enable_business_based_username')) ? '-' .str_pad(session()->get('business.id'), 2, 0, STR_PAD_LEFT) : null;
         return $extension;
+    }
+
+    public function getImportEmployees(){
+        
     }
 }

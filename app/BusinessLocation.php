@@ -13,6 +13,15 @@ class BusinessLocation extends Model
      */
     protected $guarded = ['id'];
 
+
+    /**
+     * Get the Business currency.
+     */
+    public function business()
+    {
+        return $this->belongsTo(\App\Business::class);
+    }
+
     /**
      * Return list of locations for a business
      *

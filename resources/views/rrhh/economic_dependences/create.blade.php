@@ -49,7 +49,7 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+  <input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_ed">
   <button type="button" class="btn btn-primary" id="btn_add_economic_dependence">@lang('rrhh.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel'
     )</button>
@@ -59,11 +59,6 @@
   $( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
     select2 = $('.select2').select2();
-
-		// $('#birthdate').datepicker({
-		// 	autoclose: true,
-		// 	format: datepicker_date_format,
-		// });
 
     var fechaMaxima = new Date();
     fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -86,9 +81,11 @@
 	$("#btn_add_economic_dependence").click(function() {
 		route = "/rrhh-economic-dependence";    
 		token = $("#token").val();
+    employee_id = $('#employee_id_ed').val();
 
 		var form = $("#form_add_economic_dependence");
 		var formData = new FormData(form[0]);
+    formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -99,7 +96,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getEconomicDependence($('#employee_id').val());
+					getEconomicDependence(employee_id);
+          //$('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

@@ -42,6 +42,14 @@
 	</div>
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<div tabindex="-1" class="modal fade" id="file_modal" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true"></div>
+
+	<div class="modal fade" id="modal_personnel_action" tabindex="-1">
+		<div class="modal-dialog modal-lg" role="document">
+		  <div class="modal-content" id="modal_content_personnel_action">
+	
+		  </div>
+		</div>
+	</div>
 </section>
 @endsection
 
@@ -72,6 +80,9 @@
 				// {data: 'created_at', name: 'created_at'},
 				{data: null, render: function(data) {
 					html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
+					
+					html += '<li><a href="#" onClick="viewPersonnelAction('+data.id+')"><i class="fa fa-eye"></i>{{ __('messages.view') }}</a></li>';
+					
 					@can('rrhh_personnel_action.authorize')
 					if (data.authorized == 0){
 						html += '<li><a href="#" onClick="autorizerPersonnelAction('+data.id+')"><i class="fa fa-check-square"></i>{{ __('rrhh.authorize') }}</a></li>';
@@ -81,7 +92,9 @@
 					html += '<li><a href="rrhh-personnel-action/'+data.id+'/authorization-report" type="button"><i class="fa fa-file"></i>{{ __('rrhh.download') }}</a></li>';
 
 					html += '<li><a href="#" onClick="addDocument('+data.id+')" type="button"><i class="fa fa-upload"></i>{{ __('rrhh.attach_file') }}</a></li>';
+					
 					html += '</ul></div>';
+					
 					return html;
 				}, orderable: false, searchable: false, className: "text-center"}
             ],
@@ -101,7 +114,7 @@
 	function autorizerPersonnelAction(id) {
         Swal.fire({
             title: "{{ __('messages.authorizer_question') }}",
-            text: "{{ __('messages.authorizer_content') }}",
+            text: "{{ __('messages.question_content') }}",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -133,7 +146,7 @@
 						var route = "{!!URL::to('/rrhh-personnel-action/:id/confirmAuthorization')!!}";
 						route = route.replace(':id', id);   
 						token = $("#token").val();
-						console.log(result.value);
+						
 						$.ajax({
 							url: route,
 							headers: {'X-CSRF-TOKEN': token},
@@ -178,6 +191,17 @@
             }
         });
     }
+
+	function viewPersonnelAction(id) 
+	{
+		$("#modal_content_personnel_action").html('');
+		var url = "{!!URL::to('/rrhh-personnel-action-view/:id')!!}";
+		url = url.replace(':id', id);
+		$.get(url, function(data) {
+			$("#modal_content_personnel_action").html(data);
+			$('#modal_personnel_action').modal({backdrop: 'static'});
+		});
+	}
 
 </script>
 @endsection
