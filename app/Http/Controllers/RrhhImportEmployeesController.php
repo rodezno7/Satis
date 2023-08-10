@@ -2,10 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\RrhhData;
 use Illuminate\Http\Request;
+use App\Utils\ProductUtil;
+use App\Utils\ModuleUtil;
+use Excel;
 
 class RrhhImportEmployeesController extends Controller
 {
+
+    /**
+     * Constructor
+     *
+     * @param ProductUtil $product
+     * @return void
+     */
+    public function __construct(ProductUtil $productUtil, ModuleUtil $moduleUtil)
+    {
+        $this->productUtil = $productUtil;
+        $this->moduleUtil = $moduleUtil;
+    }
     
     public function create(){
         if (!auth()->user()->can('rrhh_import_employees.create')) {
@@ -175,10 +191,10 @@ class RrhhImportEmployeesController extends Controller
      */
     public function checkRow($row, $row_no)
     {
-        $product = [
+        $employee = [
             'first_name' => null,
             'last_name' => null,
-            'gender_id' => null,
+            'gender' => null,
             'nationality_id' => null,
             'birth_date' => null,
             'dni' => null,
@@ -197,14 +213,20 @@ class RrhhImportEmployeesController extends Controller
             'afp_id' => null,
             'afp_number' => null,
             'date_admission' => null,
-            'department_id' => null,
-            'position1_id' => null,
             'type_id' => null,
-            'salary' => null,
             'profession_id' => null,
             'payment_id' => null,
-            'bank' => null,
+            'bank_id' => null,
             'bank_acount' => null,
+        ];
+
+        $positionHistory = [
+            'department_id' => null,
+            'position1_id' => null,
+        ];
+
+        $salaryHistory = [
+            'salary' => null,
         ];
 
         // Errors list
@@ -213,77 +235,229 @@ class RrhhImportEmployeesController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $user_id = request()->session()->get('user.id');
 
-        // ----- CLASIFICATION -----
+
+        $civil_statuses = DB::table('rrhh_datas')->where('rrhh_header_id', 1)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $professions = DB::table('rrhh_datas')->where('rrhh_header_id', 7)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+
+        $departments = DB::table('rrhh_datas')->where('rrhh_header_id', 2)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $positions = DB::table('rrhh_datas')->where('rrhh_header_id', 3)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $afps = DB::table('rrhh_datas')->where('rrhh_header_id', 4)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
+        $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
+        
+        $countries = DB::table('countries')->pluck('name', 'id');
+
+
+
+        // ----- FIRST NAME -----
+        $first_name_error = false;
 
         // Check empty
-        if (! empty($row['clasification'])) {
-            $clasification = mb_strtolower($row['clasification']);
-
-            // Check invalid value
-            if (in_array($clasification, ['product', 'service', 'kits', 'material', 'producto', 'servicio'])) {
-                if (in_array($clasification, ['product', 'producto'])) {
-                    $product['clasification'] = 'product';
-
-                } else if (in_array($clasification, ['service', 'servicio'])) {
-                    $product['clasification'] = 'service';
-
-                } else {
-                    $product['clasification'] = $clasification;
-                }
-                
-            } else {
-                $error_line = [
-                    'row' => $row_no,
-                    'msg' => __('product.clasification_invalid')
-                ];
-
-                array_push($error_msg, $error_line);
-            }
-
-        } else {
+        if (empty($row['first_name'])) {
             $error_line = [
                 'row' => $row_no,
-                'msg' => __('product.clasification_empty')
-            ];
-
-            array_push($error_msg, $error_line);
-        }
-
-        // ----- NAME -----
-
-        $name_error = false;
-
-        // Check empty
-        if (empty($row['product_name'])) {
-            $error_line = [
-                'row' => $row_no,
-                'msg' => __('product.product_name_empty')
+                'msg' => __('rrhh.first_name_empty')
             ];
 
             array_push($error_msg, $error_line);
 
-            $name_error = true;
+            $first_name_error = true;
 
         } else {
             // Check length
-            if (strlen($row['product_name']) > 191) {
+            if (strlen($row['first_name']) > 191) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.product_name_length')
+                    'msg' => __('rrhh.first_name_length')
                 ];
-    
+
                 array_push($error_msg, $error_line);
-    
-                $name_error = true;
+
+                $first_name_error = true;
             }
         }
 
-        if (! $name_error) {
-            $product['product_name'] = $row['product_name'];
+        if (! $first_name_error) {
+            $employee['first_name'] = $row['first_name'];
         }
 
+
+
+
+        // ----- LAST NAME -----
+        $last_name_error = false;
+
+        // Check empty
+        if (empty($row['last_name'])) {
+            $error_line = [
+                'row' => $row_no,
+                'msg' => __('rrhh.last_name_empty')
+            ];
+
+            array_push($error_msg, $error_line);
+
+            $last_name_error = true;
+
+        } else {
+            // Check length
+            if (strlen($row['last_name']) > 191) {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.last_name_length')
+                ];
+
+                array_push($error_msg, $error_line);
+
+                $last_name_error = true;
+            }
+        }
+
+        if (! $last_name_error) {
+            $employee['last_name'] = $row['last_name'];
+        }
+
+        // ----- GENDER -----
+
+        // Check empty
+        if (! empty($row['gender'])) {
+            $gender = mb_strtolower($row['gender']);
+
+            // Check invalid value
+            if (in_array($gender, ['f', 'F', 'm', 'M'])) {
+                if (in_array($gender, ['f', 'F'])) {
+                    $employee['gender'] = 'F';
+                } else if (in_array($gender, ['m', 'M'])) {
+                    $employee['gender'] = 'M';
+                } 
+            } else {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.gender_invalid')
+                ];
+
+                array_push($error_msg, $error_line);
+            }
+        } else {
+            $error_line = [
+                'row' => $row_no,
+                'msg' => __('rrhh.gender_empty')
+            ];
+
+            array_push($error_msg, $error_line);
+        }
+
+        // ----- NATIONALITY -----
+        $nationality_error = true;
+
+            // Check empty
+        if (empty($row['nationality'])) {
+            $error_line = [
+                'row' => $row_no,
+                'msg' => __('rrhh.nationality_empty')
+            ];
+
+            array_push($error_msg, $error_line);
+
+            $nationality_error = true;
+
+        } else {
+            // Check length
+            if (strlen($row['nationality']) > 191) {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.nationality_length')
+                ];
+
+                array_push($error_msg, $error_line);
+
+                $nationality_error = true;
+            }
+
+            // Check exist
+            $nationality = RrhhData::where('business_id', $business_id)
+                ->where('rrhh_header_id', 6)
+                ->where('status', 1)
+                ->where(function ($query) use ($row) {
+                    $query->whereRaw('UPPER(value) = UPPER(?)', [$row['nationality']]);
+                })
+                ->first();
+
+            if (empty($nationality)) {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.nationality_exist')
+                ];
+
+                array_push($error_msg, $error_line);
+
+                $nationality_error = true;
+            }
+        }
+
+        if (! $nationality_error) {
+            $employee['nationality'] = $row['nationality'];
+        }
+
+
+        // ----- NATIONALITY -----
+        if (empty($row['nationality'])) {
+            $error_line = [
+                'row' => $row_no,
+                'msg' => __('rrhh.nationality_empty')
+            ];
+
+            array_push($error_msg, $error_line);
+
+            $nationality_error = true;
+
+        } else {
+            // Check length
+            if (strlen($row['nationality']) > 191) {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.nationality_length')
+                ];
+
+                array_push($error_msg, $error_line);
+
+                $nationality_error = true;
+            }
+
+            // Check exist
+            $nationality = RrhhData::where('business_id', $business_id)
+                ->where('rrhh_header_id', 6)
+                ->where('status', 1)
+                ->where(function ($query) use ($row) {
+                    $query->whereRaw('UPPER(value) = UPPER(?)', [$row['nationality']]);
+                })
+                ->first();
+
+            if (empty($nationality)) {
+                $error_line = [
+                    'row' => $row_no,
+                    'msg' => __('rrhh.nationality_exist')
+                ];
+
+                array_push($error_msg, $error_line);
+
+                $nationality_error = true;
+            }
+        }
+
+        if (! $nationality_error) {
+            $employee['nationality'] = $row['nationality'];
+        }
+
+
+
+
+        
+
+        
+
         // ----- BUSINESS ID -----
-        $product['business_id'] = $business_id;
+        $employee['business_id'] = $business_id;
 
         // ----- TYPE -----
         $product['type'] = is_null($default_data) ? null : (isset($default_data['type']) ? $default_data['type'] : null);
@@ -297,7 +471,7 @@ class RrhhImportEmployeesController extends Controller
             if (empty($row['unit_name'])) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.unit_empty')
+                    'msg' => __('rrhh.unit_empty')
                 ];
     
                 array_push($error_msg, $error_line);
@@ -309,7 +483,7 @@ class RrhhImportEmployeesController extends Controller
                 if (strlen($row['unit_name']) > 50) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.unit_length')
+                        'msg' => __('rrhh.unit_length')
                     ];
     
                     array_push($error_msg, $error_line);
@@ -328,7 +502,7 @@ class RrhhImportEmployeesController extends Controller
                 if (empty($unit)) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.unit_exist')
+                        'msg' => __('rrhh.unit_exist')
                     ];
     
                     array_push($error_msg, $error_line);
@@ -349,7 +523,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['brand_name']) > 50) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.brand_length')
+                    'msg' => __('rrhh.brand_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -368,7 +542,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['category_name']) > 100) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.category_length')
+                    'msg' => __('rrhh.category_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -389,7 +563,7 @@ class RrhhImportEmployeesController extends Controller
                 if (strlen($row['sub_category_name']) > 100) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.sub_category_length')
+                        'msg' => __('rrhh.sub_category_length')
                     ];
     
                     array_push($error_msg, $error_line);
@@ -401,7 +575,7 @@ class RrhhImportEmployeesController extends Controller
             } else {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.sub_category_empty_category')
+                    'msg' => __('rrhh.sub_category_empty_category')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -417,7 +591,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['applied_tax']) > 25) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.tax_length')
+                    'msg' => __('rrhh.tax_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -433,7 +607,7 @@ class RrhhImportEmployeesController extends Controller
             if (empty($tax)) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.tax_exist')
+                    'msg' => __('rrhh.tax_exist')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -462,7 +636,7 @@ class RrhhImportEmployeesController extends Controller
             } else {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.tax_type_invalid')
+                    'msg' => __('rrhh.tax_type_invalid')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -482,7 +656,7 @@ class RrhhImportEmployeesController extends Controller
             if (is_null($row['min_inventory'])) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.min_inventory_empty')
+                    'msg' => __('rrhh.min_inventory_empty')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -494,7 +668,7 @@ class RrhhImportEmployeesController extends Controller
                 if (! is_numeric($row['min_inventory'])) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.min_inventory_numeric')
+                        'msg' => __('rrhh.min_inventory_numeric')
                     ];
         
                     array_push($error_msg, $error_line);
@@ -506,7 +680,7 @@ class RrhhImportEmployeesController extends Controller
                     if ($row['min_inventory'] < 0) {
                         $error_line = [
                             'row' => $row_no,
-                            'msg' => __('product.min_inventory_zero')
+                            'msg' => __('rrhh.min_inventory_zero')
                         ];
             
                         array_push($error_msg, $error_line);
@@ -533,7 +707,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['sku']) > 191) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.sku_length')
+                    'msg' => __('rrhh.sku_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -549,7 +723,7 @@ class RrhhImportEmployeesController extends Controller
             if ($is_exist) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.sku_unique')
+                    'msg' => __('rrhh.sku_unique')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -573,7 +747,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['product_description']) > 255) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.product_description_length')
+                    'msg' => __('rrhh.product_description_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -590,7 +764,7 @@ class RrhhImportEmployeesController extends Controller
             if (strlen($row['warranty']) > 191) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.warranty_length')
+                    'msg' => __('rrhh.warranty_length')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -618,7 +792,7 @@ class RrhhImportEmployeesController extends Controller
             } else {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.status_invalid')
+                    'msg' => __('rrhh.status_invalid')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -627,7 +801,7 @@ class RrhhImportEmployeesController extends Controller
         } else {
             $error_line = [
                 'row' => $row_no,
-                'msg' => __('product.status_empty')
+                'msg' => __('rrhh.status_empty')
             ];
 
             array_push($error_msg, $error_line);
@@ -651,7 +825,7 @@ class RrhhImportEmployeesController extends Controller
             } else {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.has_warranty_invalid')
+                    'msg' => __('rrhh.has_warranty_invalid')
                 ];
 
                 array_push($error_msg, $error_line);
@@ -673,7 +847,7 @@ class RrhhImportEmployeesController extends Controller
             if (! is_numeric($row['cost_without_tax'])) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.cost_without_tax_numeric')
+                    'msg' => __('rrhh.cost_without_tax_numeric')
                 ];
     
                 array_push($error_msg, $error_line);
@@ -683,7 +857,7 @@ class RrhhImportEmployeesController extends Controller
                 if ($row['cost_without_tax'] < 0) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.cost_without_tax_zero')
+                        'msg' => __('rrhh.cost_without_tax_zero')
                     ];
         
                     array_push($error_msg, $error_line);
@@ -704,7 +878,7 @@ class RrhhImportEmployeesController extends Controller
             if (! is_numeric($row['sales_price_without_tax'])) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.sales_price_without_tax_numeric')
+                    'msg' => __('rrhh.sales_price_without_tax_numeric')
                 ];
     
                 array_push($error_msg, $error_line);
@@ -714,7 +888,7 @@ class RrhhImportEmployeesController extends Controller
                 if ($row['sales_price_without_tax'] < 0) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.sales_price_without_tax_zero')
+                        'msg' => __('rrhh.sales_price_without_tax_zero')
                     ];
         
                     array_push($error_msg, $error_line);
@@ -741,7 +915,7 @@ class RrhhImportEmployeesController extends Controller
             if (! is_numeric($row['quantity'])) {
                 $error_line = [
                     'row' => $row_no,
-                    'msg' => __('product.quantity_numeric')
+                    'msg' => __('rrhh.quantity_numeric')
                 ];
     
                 array_push($error_msg, $error_line);
@@ -751,7 +925,7 @@ class RrhhImportEmployeesController extends Controller
                 if ($row['quantity'] < 0) {
                     $error_line = [
                         'row' => $row_no,
-                        'msg' => __('product.quantity_zero')
+                        'msg' => __('rrhh.quantity_zero')
                     ];
         
                     array_push($error_msg, $error_line);

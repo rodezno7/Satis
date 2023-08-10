@@ -95,11 +95,12 @@
                                               {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'nitApproved()'])!!}
                                             </span>
                                             @if ($employee->approved == 1)
-                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                {!! Form::text("tax_number", $employee->tax_number, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required'])!!}
                                             @else
-                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                {!! Form::text("tax_number", $employee->tax_number, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required', 'disabled'])!!}
+                                                
                                             @endif
                                         </div>
                                     </div>
@@ -580,7 +581,7 @@
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
             $("#tax_number").prop('disabled', false);
-            $("#tax_number").val('');            
+            //$("#tax_number").val('');            
 		}
 
         if($('#state_id').val() != ''){
