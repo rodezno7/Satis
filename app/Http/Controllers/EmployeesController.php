@@ -105,8 +105,10 @@ class EmployeesController extends Controller
         $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         $banks = Bank::where('business_id', $business_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $payments = DB::table('rrhh_datas')->where('rrhh_header_id', 8)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
-        
         $countries = DB::table('countries')->pluck('name', 'id');
+        $states = DB::table('states')->where('country_id')->pluck('name', 'id');
+        $cities = DB::table('cities')->where('state_id')->pluck('name', 'id');
+        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         
         $roles = DB::table('roles')
             ->select(DB::raw("left(roles.name,LOCATE('#', roles.name) - 1) as rol, id"))
@@ -125,7 +127,11 @@ class EmployeesController extends Controller
             'types',
             'payments',
             'banks',
-            'roles'
+            'roles',
+            'countries',
+            'states',
+            'cities',
+            'types'
         ));
     }
 
@@ -225,7 +231,6 @@ class EmployeesController extends Controller
                 'civil_status_id',
                 'phone',
                 'mobile',
-                //'email',
                 'address',
                 'social_security_number',
                 'afp_id',
@@ -233,6 +238,12 @@ class EmployeesController extends Controller
                 'payment_id',
                 'bank_id',
                 'bank_account',
+                'institutional_email',
+                'country_id',
+                'state_id',
+                'city_id',
+                'profession_id',
+                'type_id'
             ]);
             if($request->approved){
                 $input_details['approved'] = 1;
@@ -429,8 +440,9 @@ class EmployeesController extends Controller
         }
 
         $employee = Employees::findOrFail($id);
-        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->get();
-        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->get();
+        $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->get();
+        $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->get();
+
         $business_id = request()->session()->get('user.business_id');
 
         $nationalities = DB::table('rrhh_datas')->where('rrhh_header_id', 6)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
@@ -634,9 +646,23 @@ class EmployeesController extends Controller
                 RrhhPositionHistory::insert(
                     ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
                 );
+            }else{
+                $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
+                $position->delete();
+
+                RrhhPositionHistory::insert(
+                    ['new_department_id' => $request->input('department_id'), 'new_position1_id' => $request->input('position1_id'), 'employee_id' => $employee->id, 'current' => 1]
+                );
             }
 
             if($salary == 0){
+                RrhhSalaryHistory::insert(
+                    ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
+                );
+            }else{
+                $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
+                $salary->delete();
+
                 RrhhSalaryHistory::insert(
                     ['employee_id' => $employee->id, 'new_salary' => $request->input('salary'), 'current' => 1]
                 );
