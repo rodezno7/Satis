@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.personal_email')</label> <span class="text-danger">*</span>
             @show_tooltip(__('rrhh.tooltip_email'))
@@ -111,7 +111,16 @@
           </div>
         </div>
 
-        <div class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+              <label>@lang('rrhh.institutional_email')</label>
+              {!! Form::email("institutional_email", null,
+              ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.institutional_email'),
+              'id' => 'institutional_email']) !!}
+          </div>
+      </div>
+
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.address')</label> <span class="text-danger">*</span>
             {!! Form::text("address", null,
@@ -119,6 +128,34 @@
             'required']) !!}
           </div>
         </div>
+
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+          <div class="form-group">
+              <label>@lang('rrhh.country')</label>
+              {!! Form::select("country_id", $countries, null,
+              ['id' => 'country_id', 'class' => 'form-control form-control-sm select2',
+              'placeholder' => __('rrhh.country'), 'style' => 'width: 100%;']) !!}
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label>@lang('rrhh.state')</label>
+                {!! Form::select("state_id", $states, null,
+                ['id' => 'state_id', 'class' => 'form-control form-control-sm select2',
+                'placeholder' => __('rrhh.state'), 'style' => 'width: 100%;', 'disabled']) !!}
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group">
+                <label>@lang('rrhh.city')</label>
+                {!! Form::select("city_id", $cities, null,
+                ['id' => 'city_id', 'class' => 'form-control form-control-sm select2',
+                'placeholder' => __('rrhh.city'), 'style' => 'width: 100%;', 'disabled']) !!}
+            </div>
+        </div>
+
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
             <label>@lang('rrhh.social_security_number')</label>
@@ -207,6 +244,29 @@
               </div>
           </div>
       </div>
+
+      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>@lang('rrhh.type_employee')</label>
+            <select name="type_id" id="type_id" class="form-control form-control-sm select2"
+                placeholder="{{ __('rrhh.type_employee') }}" style="width: 100%">
+                <option value="">{{ __('rrhh.type_employee') }}</option>
+                @foreach ($types as $type)
+                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+        <div class="form-group">
+            <label>@lang('rrhh.profession_occupation')</label>
+            {!! Form::select("profession_id", $professions, null,
+            ['id' => 'profession_id', 'class' => 'form-control form-control-sm select2',
+            'placeholder' => __('rrhh.profession_occupation'), 'style' => 'width: 100%;'])
+            !!}
+        </div>
+    </div>
       
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="form-group">
@@ -517,5 +577,55 @@
 		showBankInformation();
 	});
   
+
+  function updateCities() {
+		$("#city_id").empty();
+		state_id = $('#state_id').val();
+
+		if (state_id) {
+
+			var route = "/cities/getCitiesByState/"+state_id;
+			$.get(route, function(res){
+
+				$("#city_id").append('<option value="0" disabled selected>{{ __('messages.please_select') }}</option>');           
+
+				$(res).each(function(key,value){
+					$("#city_id").append('<option value="'+value.id+'">'+value.name+'</option>');
+
+				});
+			});
+
+		}
+
+	}
+
+	$('#state_id').change(function(){
+		updateCities();
+        $('#city_id').prop('disabled', false);
+	});
+
+	$('#country_id').change(function(){
+		updateStates();
+        $('#state_id').prop('disabled', false);
+        $('#city_id').prop('disabled', true);
+	});
+
+
+	function updateStates(){
+		$("#state_id").empty();
+		$("#city_id").empty();
+		country_id = $('#country_id').val();
+
+		var route = "/states/getStatesByCountry/"+country_id;
+		$.get(route, function(res){
+			$("#state_id").append('<option value="0" disabled selected>{{ __('messages.please_select') }}</option>');
+
+			$(res).each(function(key,value){
+				$("#state_id").append('<option value="'+value.id+'">'+value.name+'</option>');
+
+			});
+		});
+	}
+
 </script>
 @endsection
