@@ -110,6 +110,7 @@ return[
     'document_types' => 'Tipos de documento',
     'all_your_document_types' => 'Todas tus tipos de documento',
     'only_pdf' => 'Solo se permiten archivos de imagen y pdf',
+    'only_pdf1' => 'Solo se permiten archivos pdf',
     'view_file' => 'Ver archivo',
     'document' => 'Documento',
     'photo' => 'Foto del empleado',
@@ -206,6 +207,7 @@ return[
     'to_the_department_of' => 'Al departamento de',
     'to_the_position_of' => 'Al puesto de',
     'personnel_actions_massive' => 'Acciones de personal masivas',
+    'incomplete_information_employees' => 'Debe completar la información personal de los empleados.',
     'incomplete_information_employee' => 'Debe completar la información personal del empleado.',
     'incomplete_document_employee' => 'Debe agregar el documento (DUI) del empleado.',
     'incomplete_information_business' => 'Debe completar la información general de la empresa.',
@@ -309,4 +311,70 @@ return[
     'Gets_the_current_date' => 'Obtiene la fecha actual. El formato es: A los 12 días del mes de julio de 2023.',
     'Gets_the_current_date_letters' => 'Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: A los doce días del mes de julio de dos mil veintitres.',
     'import_employees' => 'Importar empleados',
+    'validation_file' => 'Los archivos permidos únicamente son .jpg, .jpeg, .png y .pdf',
+    'validation_file_pdf' => 'Los archivos permidos únicamente son .pdf',
+
+
+
+
+
+
+
+
+
+
+
+    'first_name_empty' => 'Los nombre del empleado están vacíos',
+	'first_name_length' => 'Los nombre del empleado exceden la cantidad máxima de caracteres',
+    'last_name_empty' => 'Los apellidos del empleado están vacíos',
+	'last_name_length' => 'Los apellidos del empleado exceden la cantidad máxima de caracteres',
+    'gender_invalid' => 'Valor de género no es válido',
+	'gender_empty' => 'Género está vacío',
+    'nationality_empty' => 'El nombre de la nacionalidad está vacío',
+	'nationality_length' => 'El nombre de la nacionalidad excede la cantidad máxima de caracteres',
+	'nationality_exist' => 'La nacionalidad no existe',
+
+
+	'product_name_empty' => 'El nombre del producto está vacío',
+	'product_name_length' => 'El nombre del producto excede la cantidad máxima de caracteres',
+	'unit_empty' => 'El nombre de la unidad de medida está vacío',
+	'unit_length' => 'El nombre de la unidad de medida excede la cantidad máxima de caracteres',
+	'unit_exist' => 'La unidad de medida no existe',
+	'brand_length' => 'La marca excede la cantidad máxima de caracteres',
+	'brand_exist' => 'La marca no existe',
+	'category_length' => 'La categoría excede la cantidad máxima de caracteres',
+	'category_exist' => 'La categoría no existe',
+	'sub_category_length' => 'La sub categoría excede la cantidad máxima de caracteres',
+	'sub_category_empty' => 'La categoría está vacía',
+	'sub_category_exist' => 'La sub categoría no existe',
+	'tax_length' => 'El impuesto aplicado excede la cantidad máxima de caracteres',
+	'tax_exist' => 'El impuesto aplicado no existe',
+	'tax_type_invalid' => 'El impuesto sobre la venta no es válido',
+	'min_inventory_empty' => 'El inventario mínimo está vacío',
+	'min_inventory_zero' => 'El inventario mínimo es menor a cero',
+	'min_inventory_numeric' => 'El valor de inventario minimo no es un número',
+	'alert_quantity_empty' => 'La cantidad para alerta está vacía',
+	'alert_quantity_zero' => 'La cantidad para alerta es menor a cero',
+	'alert_quantity_numeric' => 'El valor de la cantidad para alerta no es un número',
+	'sku_length' => 'El SKU excede la cantidad máxima de caracteres',
+	'sku_unique' => 'El SKU ya existe',
+	'sku_empty' => 'El SKU está vacío',
+	'sku_exist' => 'No existen productos con este SKU',
+	'sub_sku_exist' => 'No existen variaciones con este SKU',
+	'product_description_length' => 'La descripción del producto excede la cantidad máxima de caracteres',
+	'warranty_length' => 'La garantía excede la cantidad máxima de caracteres',
+	'status_invalid' => 'El estado no es válido',
+	'status_empty' => 'El estado está vacío',
+	'has_warranty_invalid' => 'El valor de "posee garantía" no válido',
+	'cost_without_tax_zero' => 'El costo sin impuestos es menor a cero',
+	'cost_without_tax_numeric' => 'El valor del costo sin impuestos no es un número',
+	'sales_price_without_tax_zero' => 'El precio de venta sin impuestos es menor a cero',
+	'sales_price_without_tax_numeric' => 'El valor del precio de venta sin impuestos no es un número',
+	'quantity_zero' => 'La cantidad es menor a cero',
+	'quantity_numeric' => 'El valor de la cantidad no es un número',
+	'barcode_type_invalid' => 'El tipo de código de barra no es válido',
+	'enable_sr_no_invalid' => 'Valor inválido en columna "¿Habilitar IMEI?"',
+	'weight_length' => 'El peso excede la cantidad máxima de caracteres',
+	'model_length' => 'El modelo excede la cantidad máxima de caracteres',
+	'measurement_length' => 'El tamaño excede la cantidad máxima de caracteres',
 ];

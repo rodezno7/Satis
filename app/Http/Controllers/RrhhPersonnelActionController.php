@@ -584,7 +584,7 @@ class RrhhPersonnelActionController extends Controller
             if ($employeeIncompleteInfo != 0) {
                 $output = [
                     'success' => 0,
-                    'msg' => __('rrhh.incomplete_information_employee')
+                    'msg' => __('rrhh.incomplete_information_employees')
                 ];
             } else {
                 $input_details = $request->only(['rrhh_type_personnel_action_id', 'description', 'employee_id']);

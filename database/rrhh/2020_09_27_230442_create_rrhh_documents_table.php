@@ -17,7 +17,7 @@ class CreateRrhhDocumentsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('number');
-            //$table->string('file')->nullable();
+            $table->string('file')->nullable();
             $table->date('date_expedition')->nullable();
             $table->date('date_expiration')->nullable();
 

@@ -95,11 +95,12 @@
                                               {!! Form::checkbox('approved', $employee->approved, $employee->approved, ['id' => 'approved', 'onClick' => 'nitApproved()'])!!}
                                             </span>
                                             @if ($employee->approved == 1)
-                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                {!! Form::text("tax_number", $employee->tax_number, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required'])!!}
                                             @else
-                                                {!! Form::text("tax_number", null, ['class' => 'form-control form-control-sm', 
+                                                {!! Form::text("tax_number", $employee->tax_number, ['class' => 'form-control form-control-sm', 
                                                 'id' => 'tax_number', 'placeholder' => __('rrhh.tax_number'), 'required', 'disabled'])!!}
+                                                
                                             @endif
                                         </div>
                                     </div>
@@ -218,39 +219,42 @@
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.date_admission')</label>
+                                        @if ($employee->date_admission != null)
                                         {!! Form::text("date_admission", @format_date($employee->date_admission),
                                         ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        @else
+                                        {!! Form::text("date_admission", @format_date('now'),
+                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        @endif
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($position) !=0)
-                                    style="display: none" @endif>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.department')</label> <span class="text-danger">*</span>
                                         @if (count($position) != 0)
-                                        {!! Form::select("department_id", $departments, $employee->department_id,
+                                        {!! Form::select("department_id", $departments, (count($position) != 0)? $position[0]->new_department_id : null,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;'])
-                                        !!}
+                                         'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required']) 
+                                        !!}{{-- Disabled --}}
                                         @else
-                                        {!! Form::select("department_id", $departments, $employee->department_id,
+                                        {!! Form::select("department_id", $departments, (count($position) != 0)? $position[0]->new_department_id : null,
                                         ['id' => 'department_id', 'class' => 'form-control form-control-sm select2',
                                         'placeholder' => __('rrhh.department'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($position) !=0)
-                                    style="display: none" @endif>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.position')</label> <span class="text-danger">*</span>
                                         @if (count($position) != 0)
-                                        {!! Form::select("position1_id", $positions, $employee->position1_id,
+                                        {!! Form::select("position1_id", $positions, (count($position) != 0)? $position[0]->new_position1_id : null,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
-                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;'])
-                                        !!}
+                                        'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required'])
+                                        !!}{{-- Disabled --}}
                                         @else
-                                        {!! Form::select("position1_id", $positions, $employee->position1_id,
+                                        {!! Form::select("position1_id", $positions, (count($position) != 0)? $position[0]->new_position1_id : null,
                                         ['id' => 'position1_id', 'class' => 'form-control form-control-sm select2',
                                         'placeholder' => __('rrhh.position'), 'style' => 'width: 100%;', 'required']) !!}
                                         @endif
@@ -274,16 +278,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" @if (count($salary) != 0)
-                                    style="display: none" @endif>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
                                         <label>@lang('rrhh.salary')</label> <span class="text-danger">*</span>
                                         @if (count($salary) != 0)
-                                        {!! Form::number("salary", null,
+                                        {!! Form::number("salary", (count($salary) != 0)? $salary[0]->new_salary : null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
-                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01']) !!}
+                                        'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!} {{-- Disabled --}}
                                         @else
-                                        {!! Form::number("salary", $employee->salary,
+                                        {!! Form::number("salary", (count($salary) != 0)? $salary[0]->new_salary : null,
                                         ['class' => 'form-control form-control-sm', 'placeholder' => __('rrhh.salary'),
                                         'id' => 'salary', 'step' => '0.01', 'min' => '0.01', 'required']) !!}
                                         @endif
@@ -575,7 +578,7 @@
 			$("#approved").prop("checked", false);
             $("#text-approved").hide();
             $("#tax_number").prop('disabled', false);
-            $("#tax_number").val('');            
+            //$("#tax_number").val('');            
 		}
 
         if($('#state_id').val() != ''){

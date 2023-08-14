@@ -61,7 +61,7 @@
 			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<div class="form-group">
 					<label>@lang('rrhh.files')</label> <span class="text-danger">*</span>
-					<input type="file" name="files[]" id='files' class="form-control form-control-sm" multiple>
+					<input type="file" name="files[]" id='files' class="form-control form-control-sm" accept="image/png, image/jpeg, image/jpg, .pdf" multiple>
 				</div>
 			</div>
 		</div>
@@ -109,27 +109,30 @@
 
 	validExt = ['jpg', 'jpeg', 'png', 'pdf'];
 
-	$('#file').on('change', function() {
-		extension = this.files[0].type.split('/')[1];
+	$('#files').on('change', function() {
+		console.log(this.files);
+		var invalidFormat = 0;
+		for (var i = 0; i < this.files.length; i++) {
+			extension = this.files[i].type.split('/')[1];
 
-		if(validExt.indexOf(extension) == -1){
-			$('#file').val('');
+			if(validExt.indexOf(extension) == -1){
+				$('#files').val('');
+				invalidFormat++;
+			} else {
+				size = this.files[i].size;
+				if(size > 5242880) {
+
+					$('#files').val('');
+					invalidFormat++;
+				}
+			}
+		}
+		if(invalidFormat > 0){
 			Swal.fire
 			({
-				title: '@lang('rrhh.only_pdf')',
+				title: '@lang('rrhh.validation_file')',
 				icon: "error",
 			});
-		} else {
-			size = this.files[0].size;
-			if(size > 5242880) {
-
-				$('#file').val('');
-				Swal.fire
-				({
-					title: '@lang('rrhh.bad_size_img')',
-					icon: "error",
-				});
-			}
 		}
 	});
 
