@@ -2,7 +2,7 @@
 return [
     'add_warehouse' => 'Registrar Bodega',
     'added_success' => 'Bodega registrada exitosamente',
-    'all_warehouses' => 'Todas las Bodegas',
+    'all_warehouses' => 'Todas las bodegas',
     'warehouses' => 'Bodegas',
     'confirm_button_delete' => '¡Sí, elimínala!',
     "deleted_success" => "Bodega eliminada exitosamente",

@@ -84,5 +84,6 @@ return [
     "type_person_business" => "Persona jurídica",
     "id_number" => "DUI",
     "new_register" => "Nuevo registro",
-    "create_supplier" => "Crear proveedor"
+    "create_supplier" => "Crear proveedor",
+    'suggested_purchase' => 'Sugerido de compra',
 ];

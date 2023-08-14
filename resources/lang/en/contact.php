@@ -94,5 +94,6 @@ return [
     "type_person_business" => "Business person",
     "id_number" => "Identification number",
     "new_register" => "New register",
-    "create_supplier" => "Crete supplier"
+    "create_supplier" => "Crete supplier",
+    'suggested_purchase' => 'Suggested purchase',
 ];

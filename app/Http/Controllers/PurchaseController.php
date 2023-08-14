@@ -27,6 +27,7 @@ use App\AccountBusinessLocation;
 use App\Apportionment;
 use App\ApportionmentHasTransaction;
 use App\BankAccount;
+use App\Brands;
 use App\BusinessType;
 use App\TransactionHasImportExpense;
 
@@ -36,7 +37,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Validator;
 
 use App\Exports\DebtsToPayReportExport;
-
+use App\Exports\SuggestedPurchaseReportExport;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\TaxUtil;
@@ -2618,10 +2619,12 @@ class PurchaseController extends Controller
 
     /**
      * Debts to pay report
-     * @param int
+     * 
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
      */
     public function debtsToPay(){
-        if (!auth()->user()->can('debts-to-pay.view')) {
+        if (!auth()->user()->can('debts_to_pay.view')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -2669,7 +2672,7 @@ class PurchaseController extends Controller
      * Generate debt to pay report
      */
     public function debtsToPayReport(){
-        if (!auth()->user()->can('debts-to-pay.view')) {
+        if (!auth()->user()->can('debts_to_pay.view')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -2705,6 +2708,54 @@ class PurchaseController extends Controller
         } else if($report_type == 'excel'){
             return Excel::download(new DebtsToPayReportExport($transactions, $business_name, $report_name, $final_totals, $this->transactionUtil), 'debts_to_pay_report.xlsx');
         }
+    }
+
+    /**
+     * Get suggested purchase
+     * 
+     * @param \Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
+     */
+    public function suggestedPurchase(Request $request) {
+        if (!auth()->user()->can('suggested_purchase.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->user()->business_id;
+		$locations = BusinessLocation::forDropdown($business_id);
+
+        $brands = Brands::brandsDropdown($business_id, false, false);
+
+        return view('report.suggested_purchase',
+            compact('locations', 'brands'));
+    }
+
+    /**
+     * Get suggested purchas report
+     * 
+     * @param \Illuminate\Http\Request
+     * @return Excel
+     */
+    public function suggestedPurchaseReport(Request $request) {
+        if (!auth()->user()->can('suggested_purchase.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->user()->business_id;
+        $location = $request->input('location');
+        $warehouse = $request->input('warehouse') ?? 0;
+        $brand = $request->input('brand');
+        $date = $this->transactionUtil->uf_date($request->input('date'));
+        $months = $request->input('months');
+        
+        $transactions = collect(DB::select('CALL suggested_purchase(?, ?, ?, ?, ?, ?)',
+            [$business_id, $location, $warehouse, $brand, $date, $months]));
+
+        $business_name = Business::find($business_id)->business_full_name;
+        $location_name = BusinessLocation::find($location)->name;
+
+        return Excel::download(new SuggestedPurchaseReportExport($transactions, $business_name, $location_name, $request->input('date')),
+            __('contact.suggested_purchase'). '.xlsx');
     }
 
     /**
