@@ -2,7 +2,7 @@
 return [
     'add_warehouse' => 'Add Warehouse',
     'added_success' => 'Warehouse added successfully',
-    'all_warehouses' => 'All Warehouses',
+    'all_warehouses' => 'All warehouses',
     'warehouse' => 'Warehouse',
     'confirm_button_delete' => 'Yes, delete it!',
     "deleted_success" => "Warehouse deleted successfully",

@@ -1466,7 +1466,7 @@
     auth()->user()->can('contact.create') ||
     auth()->user()->can('contact.import') ||
     auth()->user()->can('payment_commitment.view') ||
-    auth()->user()->can('debts-to-pay.view') ||
+    auth()->user()->can('debts_to_pay.view') ||
     auth()->user()->can('suggested_purchase.view') ||
     auth()->user()->can('import_expense.view') ||
     auth()->user()->can('import_expense.create') ||

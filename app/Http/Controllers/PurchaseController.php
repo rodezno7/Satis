@@ -2741,15 +2741,20 @@ class PurchaseController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $business_id = request()->user()->business_id;
         $location = $request->input('location');
+        $warehouse = $request->input('warehouse') ?? 0;
         $brand = $request->input('brand');
         $date = $this->transactionUtil->uf_date($request->input('date'));
+        $months = $request->input('months');
         
-        $business_id = request()->user()->business_id;
+        $transactions = collect(DB::select('CALL suggested_purchase(?, ?, ?, ?, ?, ?)',
+            [$business_id, $location, $warehouse, $brand, $date, $months]));
+
         $business_name = Business::find($business_id)->business_full_name;
         $location_name = BusinessLocation::find($location)->name;
 
-        return Excel::download(new SuggestedPurchaseReportExport([], $business_name, $location_name, $request->input('date')),
+        return Excel::download(new SuggestedPurchaseReportExport($transactions, $business_name, $location_name, $request->input('date')),
             __('contact.suggested_purchase'). '.xlsx');
     }
 
