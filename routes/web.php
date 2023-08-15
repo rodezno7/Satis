@@ -650,6 +650,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('/rrhh-import-employees/check-file', 'RrhhImportEmployeesController@checkFile')->name('rrhh-import-employees.checkFile');
     Route::post('/rrhh-import-employees/import', 'RrhhImportEmployeesController@import')->name('rrhh-import-employees.import');
     Route::get('/rrhh-edit-employees', 'RrhhImportEmployeesController@edit');
+    Route::post('/rrhh-edit-employees/check-file', 'RrhhImportEmployeesController@checkEditFile');
     Route::post('/rrhh-edit-employees/import', 'RrhhImportEmployeesController@update');
 
 

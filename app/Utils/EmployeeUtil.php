@@ -16,8 +16,6 @@ class EmployeeUtil extends Util
      */
     public function getAge($birth_date)
     {
-        // $current_date = Carbon::now();
-        // return $current_date->diffForHumans($birth_date, $current_date);
         return Carbon::parse($birth_date)->diff(Carbon::now())->format('%y');
     }
 

@@ -409,5 +409,6 @@ return[
     'payment_required' => 'Este campo es requerido si la forma de pago es Transferencia bancaria.',
     'date_format' => 'Formato 00-00-0000',
     'dni_format' => 'El formato del DUI es 00000000-0',
-    'general_format' => 'Debe separarlo por medio de guion (-)'
+    'general_format' => 'Debe separarlo por medio de guion (-)',
+    'edit_employees' => 'Editar empleados'
 ];

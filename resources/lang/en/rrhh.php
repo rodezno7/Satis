@@ -410,4 +410,5 @@ return[
     'date_format' => 'Format 00-00-0000',
     'dni_format' => 'The DUI format is 00000000-0',
     'general_format' => 'You must separate it by a leading (-)',
+    'edit_employees' => 'Edit employees'
 ];
