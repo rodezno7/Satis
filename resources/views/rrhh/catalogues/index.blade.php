@@ -200,11 +200,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -232,11 +232,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -264,11 +264,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -296,11 +296,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -328,11 +328,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -360,11 +360,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -392,11 +392,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -426,11 +426,11 @@
                 if (data.value != 'Transferencia bancaria') {
 
                     @can('rrhh_catalogues.update')
-                    html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                    html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                     @endcan
 
                     @can('rrhh_catalogues.delete')
-                    html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                    html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                     @endcan
                 }
                 
@@ -460,11 +460,11 @@
                 html = "";
 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -492,11 +492,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -525,11 +525,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -556,11 +556,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -588,11 +588,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -619,11 +619,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -651,11 +651,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -682,11 +682,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -712,11 +712,11 @@
     //             html = "";
                 
     //             @can('rrhh_catalogues.update')
-    //             html += '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+    //             html += '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
     //             @endcan
 
     //             @can('rrhh_catalogues.delete')
-    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteBank('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteBank('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
     //             @endcan
                 
     //             return html;
@@ -745,11 +745,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypePersonnelAction('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -779,11 +779,11 @@
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editTypeWage('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editTypeWage('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeWage('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeWage('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -810,15 +810,15 @@
 
                 html = "";
                 @can('rrhh_catalogues.view')
-                html += '<a href="/rrhh-catalogues/type-contract/'+data.id+'"  target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-file"></i>@lang('messages.view')</a>';
+                html += '<a href="/rrhh-catalogues/type-contract/'+data.id+'"  target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-file"></i> @lang('messages.view')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.update')
-                html += ' <a href="/rrhh-catalogues/type-contract/'+data.id+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+                html += ' <a href="/rrhh-catalogues/type-contract/'+data.id+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeContract('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeContract('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -845,11 +845,11 @@
     //             html = "";
                 
     //             @can('rrhh_catalogues.update')
-    //             html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>';
+    //             html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
     //             @endcan
 
     //             @can('rrhh_catalogues.delete')
-    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>';
+    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
     //             @endcan
                 
     //             return html;

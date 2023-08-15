@@ -6,9 +6,7 @@
 
 {{-- Content Header (Page header) --}}
 <section class="content-header">
-    <h1>
-        @lang('rrhh.import_employees')
-    </h1>
+    <h1> @lang('rrhh.import_employees')</h1>
 </section>
 
 {{-- Main content --}}
@@ -18,7 +16,7 @@
         	<div class="box box-solid box-default">
                 <div class="box-body">
                     {!! Form::open([
-                        'url' => action('ImportEmployeesController@checkFile'),
+                        'url' => action('RrhhImportEmployeesController@checkFile'),
                         'method' => 'post',
                         'enctype' => 'multipart/form-data',
                         'id' => 'send_form'
@@ -36,21 +34,22 @@
                             {{-- button --}}
                             <div class="col-sm-4">
                                 <button type="submit" class="btn btn-primary" id="submit_send" style="margin-top: 12px;">
-                                    @lang('messages.submit')
+                                    @lang('messages.validate_file')
                                 </button>
                             </div>
                         </div>
 
                     {!! Form::close() !!}
 
+                    <hr>
                     {{-- Download template --}}
-                    <div class="row" style="margin-top: 5px;">
+                    <div class="row">
                         <div class="col-sm-4">
                             <a href="
                                 @if (auth()->user()->language == 'es' || auth()->user()->language == 'en')
-                                    {{ asset('uploads/files/import_products_xlsx_template_' . auth()->user()->language . '.xlsx') }}
+                                    {{ asset('uploads/files/import_employees_xlsx_template_' . auth()->user()->language . '.xlsx') }}
                                 @else
-                                    {{ asset('uploads/files/import_products_xlsx_template_en.xlsx') }}
+                                    {{ asset('uploads/files/import_employees_xlsx_template_en.xlsx') }}
                                 @endif
                                 " class="btn btn-success">
                                 <i class="fa fa-download"></i>
@@ -63,7 +62,67 @@
         </div>
     </div>
 
-   
+    @if (isset($flag) && isset($exception))
+        {{-- Errors --}}
+        @if (! $flag)
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-solid box-danger">
+                        <div class="box-header">
+                            <h3 class="box-title">@lang('accounting.errors')</h3>
+                        </div>
+
+                        <div class="box-body">
+                            <table class="table table-condensed table-striped table-text-center table-th-gray" id="errors_table">
+                                <thead>
+                                    <tr>
+                                        <th width="15%">@lang('purchase.row_number')</th>
+                                        <th width="60%">@lang('accounting.description')</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($errors as $error)
+                                    <tr>
+                                        <td>{{ $error['row'] }}</td>
+                                        <td>{{ $error['msg'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{-- Process employee --}}
+        @else
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box box-solid box-success">
+                        <div class="box-header">
+                            <h3 class="box-title">@lang('customer.import_data')</h3>
+                        </div>
+
+                        <div class="box-body">
+                            <h4>{{ __('rrhh.message_file_validated') }}</h4>
+                            {!! Form::open([
+                                'url' => action('RrhhImportEmployeesController@import'),
+                                'method' => 'post',
+                                'enctype' => 'multipart/form-data',
+                                'id' => 'import_form'
+                            ]) !!}
+                            <div class="col-sm-12 text-center">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <button type="submit" class="btn btn-success" id="submit_import">
+                                        @lang('purchase.import')
+                                    </button>
+                                </div>
+                            </div>
+                            {!! Form::close() !!}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
+
     {{-- Instructions --}}
     <div class="row">
         <div class="col-sm-12">
@@ -83,36 +142,34 @@
         </div>
     </div>
 
-    <div class="panel with-nav-tabs panel-default boxform_u box-solid_u">
-        <div class="panel-heading">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#tab-products" id="link-products" data-toggle="tab">
-                        @lang('product.products')
-                    </a>
-                </li>
-                <li>
-                    <a href="#tab-services" id="link-services" data-toggle="tab">
-                        @lang('product.services')
-                    </a>
-                </li>
-            </ul>
+    <div class="panel panel-default">
+        <div class="panel-heading">@lang('rrhh.column_information')
+            <div class="panel-tools pull-right">
+                <button type="button" class="btn btn-panel-tool" data-toggle="collapse"
+                    data-target="#general-information-fields-box" id="btn-collapse-gi">
+                    <i class="fa fa-minus" id="create-icon-collapsed-gi"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="panel-body">
-            <div class="tab-content">
-                {{-- Products tab --}}
-                <div class="tab-pane fade in active" id="tab-products">
-                    @include('import_products.partials.products_tab')
-                </div>
-
-                {{-- Services tab --}}
-                <div class="tab-pane" id="tab-services">
-                    @include('import_products.partials.services_tab')
-                </div>
-            </div>
+        <div class="panel-body collapse in" id="general-information-fields-box" aria-expanded="true">
+            @include('rrhh.import_employees.table')
         </div>
     </div>
 </section>
 
+@endsection
+
+@section('javascript')
+<script type="text/javascript">
+    $('#btn-collapse-gi').click(function(){
+        if ($("#general-information-fields-box").hasClass("in")) {            
+            $("#create-icon-collapsed-gi").removeClass("fa fa-minus");
+            $("#create-icon-collapsed-gi").addClass("fa fa-plus");
+        }else{
+            $("#create-icon-collapsed-gi").removeClass("fa fa-plus");
+            $("#create-icon-collapsed-gi").addClass("fa fa-minus"); 
+        }
+    });
+</script>
 @endsection

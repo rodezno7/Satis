@@ -224,7 +224,7 @@ return [
 	'column' => 'Columna',
 	"col_name" => "Nombre de columna",
 	"instruction" => "Instrucción",
-	"required" => "Necesario",
+	"required" => "Requerido",
 	"optional" => "Opcional",
 	"name_ins" => "Nombre del producto",
 	"brand_ins" => "Nombre de la marca",
