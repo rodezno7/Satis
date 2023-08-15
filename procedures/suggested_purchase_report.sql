@@ -24,7 +24,8 @@ BEGIN
 			v.id AS variation_id
 		FROM products AS p
 		INNER JOIN variations AS v ON p.id = v.product_id
-		WHERE p.brand_id = brand_id
+		WHERE p.business_id = business_id
+			AND p.brand_id = brand_id
 			AND p.clasification = 'product'
 			and p.status = 'active'
 		GROUP BY p.id, v.id;
@@ -64,7 +65,7 @@ BEGIN
 	/** Return result */
 	SELECT
 		v.sub_sku AS sku,
-		IF(v.name != 'DUMMY', p.name, CONCAT(p.name, ' - ', v.name))  AS product,
+		IF(v.name = 'DUMMY', p.name, CONCAT(p.name, ' - ', v.name))  AS product,
 		c.name AS category,
 		sc.name AS sub_category,
 		b.name AS brand,
@@ -75,13 +76,13 @@ BEGIN
 		IFNULL(ks.qty, 0) AS stock
 	FROM products AS p
 	INNER JOIN variations AS v ON p.id = v.product_id
-	INNER JOIN brands AS b ON p. brand_id = b.id
+	INNER JOIN brands AS b ON p.brand_id = b.id
 	LEFT JOIN categories AS c ON p.category_id = c.id
 	LEFT JOIN categories AS sc ON p.sub_category_id = sc.id
 	LEFT JOIN sells AS s ON v.id = s.variation_id
 	LEFT JOIN kardex_stock AS ks ON v.id = ks.variation_id
 	WHERE p.id IN (SELECT tp.product_id FROM tmp_products AS tp)
-	GROUP BY s.variation_id;
+	GROUP BY v.id;
 	
 	/** Drop temporary tables */ 
 	DROP TEMPORARY TABLE IF EXISTS tmp_products;
@@ -90,4 +91,4 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL suggested_purchase(3, 1, 27, '2023-08-10');
+CALL suggested_purchase(16, 9, 17, 640, '2023-08-14', 6);
