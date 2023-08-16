@@ -218,13 +218,13 @@
 
                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <div class="form-group">
-                                        <label>@lang('rrhh.date_admission')</label>
+                                        <label>@lang('rrhh.date_admission')</label> <span class="text-danger">*</span>
                                         @if ($employee->date_admission != null)
                                         {!! Form::text("date_admission", @format_date($employee->date_admission),
-                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission', 'required'])!!}
                                         @else
                                         {!! Form::text("date_admission", @format_date('now'),
-                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+                                        ['class' => 'form-control form-control-sm', 'id' => 'date_admission', 'required'])!!}
                                         @endif
                                     </div>
                                 </div>
