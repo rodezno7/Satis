@@ -13,6 +13,7 @@ use App\Business;
 use App\RrhhAbsenceInability;
 use App\RrhhContract;
 use App\Notifications\NewNotification;
+use App\Utils\EmployeeUtil;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use DB;
@@ -27,6 +28,7 @@ class EmployeesController extends Controller
 {
     protected $productUtil;
     protected $moduleUtil;
+    protected $employeeUtil;
 
     /**
      * Constructor
@@ -34,10 +36,11 @@ class EmployeesController extends Controller
      * @param ProductUtil $product
      * @return void
      */
-    public function __construct(ProductUtil $productUtil, ModuleUtil $moduleUtil)
+    public function __construct(ProductUtil $productUtil, ModuleUtil $moduleUtil, EmployeeUtil $employeeUtil)
     {
         $this->productUtil = $productUtil;
         $this->moduleUtil = $moduleUtil;
+        $this->employeeUtil = $employeeUtil;
     }
 
     /**
@@ -56,7 +59,6 @@ class EmployeesController extends Controller
 
     //Mostrar Lista de Empleados
     public function getEmployees(){
-
         if ( !auth()->user()->can('rrhh_employees.view') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -108,7 +110,6 @@ class EmployeesController extends Controller
         $countries = DB::table('countries')->pluck('name', 'id');
         $states = DB::table('states')->where('country_id')->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id')->pluck('name', 'id');
-        $types = DB::table('rrhh_type_wages')->where('business_id', $business_id)->orderBy('id', 'ASC')->get();
         
         $roles = DB::table('roles')
             ->select(DB::raw("left(roles.name,LOCATE('#', roles.name) - 1) as rol, id"))
@@ -157,7 +158,7 @@ class EmployeesController extends Controller
             //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
-            'date_admission'        => 'nullable',
+            'date_admission'        => 'required',
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
             'department_id'         => 'required',
@@ -278,19 +279,7 @@ class EmployeesController extends Controller
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
 
-            $mdate = Carbon::parse($input_details['date_admission'])->format('n');
-            $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
-            $last_correlative = DB::table('employees')
-                ->select(DB::raw('MAX(id) as max'))
-                ->first();
-            if ($last_correlative->max != null) {
-                $correlative = $last_correlative->max + 1;
-
-            } else {
-                $correlative = 1;
-            }
-
-            $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
+            $input_details['agent_code']     = $this->employeeUtil->generateCorrelative($input_details['date_admission'], $business_id);
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
@@ -544,7 +533,7 @@ class EmployeesController extends Controller
             //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
-            'date_admission'        => 'nullable',
+            'date_admission'        => 'required',
             'nationality_id'        => 'required', 
             'civil_status_id'       => 'required', 
             'department_id'         => $requiredDepartment,
@@ -624,21 +613,9 @@ class EmployeesController extends Controller
                 $input_details['bank_id']      = $request->input('bank_id');
                 $input_details['bank_account'] = $request->input('bank_account');
             }
-
-            $mdate = Carbon::parse($input_details['date_admission'])->format('n');
-            $ydate = Carbon::parse($input_details['date_admission'])->format('Y');
-            $last_correlative = DB::table('employees')
-                ->select(DB::raw('MAX(id) as max'))
-                ->first();
-            if ($last_correlative->max != null) {
-                $correlative = $last_correlative->max + 1;
-
-            } else {
-                $correlative = 1;
-            }
             
             if($employee->agent_code == null){
-                $input_details['agent_code']     = 'E'.$mdate.$ydate.str_pad($correlative, 3, '0', STR_PAD_LEFT);
+                $input_details['agent_code']     = $this->employeeUtil->generateCorrelative($input_details['date_admission'], $business_id);
             }
             $employee->update($input_details);
 

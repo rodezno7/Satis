@@ -38,8 +38,12 @@
                 @if ($document->date_expiration != null)
                 <li><strong>{{ __('rrhh.date_expiration') }}:</strong> {{ @format_date($document->date_expiration) }}</li>
                 @endif
+                @if ($document->state_id != null)
                 <li><strong>{{ __('rrhh.state_expedition') }}:</strong> {{ $state->name }}</li>
+                @endif
+                @if ($document->city_id != null)
                 <li><strong>{{ __('rrhh.city_expedition') }}:</strong> {{ $city->name }}</li>
+                @endif
                 <li><strong>{{ __('rrhh.number') }}:</strong> {{ $document->number }}</li>
             </ul>
         </div>

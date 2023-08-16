@@ -65,4 +65,5 @@
     "authorizer_question" => '¿Está seguro?',
     'question_content' => 'Recuerde que no podrá revertir esta acción',
     'password_required' => 'El campo de la contraseña es requerido.',
+    'validate_file' => 'Validar archivo'
 ];

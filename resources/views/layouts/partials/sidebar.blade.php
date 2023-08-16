@@ -117,9 +117,9 @@
 
       {{-- Inicio Recurso humano --}}
       @if(in_array('module_rrhh', $enabled_modules))
-        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
+        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_import_employees.create') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
         <li
-          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action', 'rrhh-assistances', 'rrhh-setting', 'rrhh-personnel-action-masive', 'rrhh-contracts-masive']) ? 'active active-sub' : '' }}"
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-import-employees', 'rrhh-contracts-masive', 'rrhh-personnel-action-masive', 'rrhh-assistances', 'rrhh-catalogues', 'rrhh-setting']) ? 'active active-sub' : '' }}"
           id="tour_step4">
           <a href="#" id="tour_step4_menu"><i class="fa fa-address-book" aria-hidden="true"></i><span>RRHH</span>
             <span class="pull-right-container">
@@ -128,7 +128,7 @@
           </a>
           <ul class="treeview-menu" id="rrhh_over">
             @can('rrhh_employees.view')
-            <li class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-personnel-action-masive', 'rrhh-contracts-masive']) ? 'active active-sub' : '' }}">
+            <li class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-import-employees', 'rrhh-personnel-action-masive', 'rrhh-contracts-masive']) ? 'active active-sub' : '' }}">
               <a href="#">
                 <i class="fa fa-user"></i>
                 <span class="title">
@@ -147,11 +147,19 @@
                     </span>
                   </a>
                 </li>
-                {{-- <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
                   <a href="{{ action('RrhhImportEmployeesController@create') }}">
                     <i class="fa fa-download"></i>
                     <span class="title">
                       @lang('rrhh.import_employees')
+                    </span>
+                  </a>
+                </li>
+                {{-- <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhImportEmployeesController@edit') }}">
+                    <i class="fa fa-download"></i>
+                    <span class="title">
+                      @lang('rrhh.edit_employees')
                     </span>
                   </a>
                 </li> --}}
@@ -1466,7 +1474,8 @@
     auth()->user()->can('contact.create') ||
     auth()->user()->can('contact.import') ||
     auth()->user()->can('payment_commitment.view') ||
-    auth()->user()->can('debts-to-pay.view') ||
+    auth()->user()->can('debts_to_pay.view') ||
+    auth()->user()->can('suggested_purchase.view') ||
     auth()->user()->can('import_expense.view') ||
     auth()->user()->can('import_expense.create') ||
     auth()->user()->can('apportionment.view') ||
@@ -1481,6 +1490,7 @@
           'supplier',
           'payment-commitments',
           'debts-to-pay-report',
+          'suggested-purchase-report',
           'import-expenses',
           'import',
           'apportionments'
@@ -1524,11 +1534,20 @@
         @endcan
 
         {{-- Debts to pay --}}
-        @if(auth()->user()->can('debts-to-pay.view'))
+        @if(auth()->user()->can('debts_to_pay.view'))
         <li
           class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'debts-to-pay-report') ? 'active' : '' }}">
           <a href="{{action('PurchaseController@debtsToPay')}}"><i
               class="fa fa-money"></i>@lang('contact.debts_to_pay')</a>
+        </li>
+        @endcan
+
+        {{-- Suggested purchase --}}
+        @if(auth()->user()->can('suggested_purchase.view'))
+        <li
+            class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'suggested-purchase-report') ? 'active' : '' }}">
+            <a href="{{action('PurchaseController@suggestedPurchase')}}">
+                <i class="fa fa-shopping-cart"></i>@lang('contact.suggested_purchase')</a>
         </li>
         @endcan
 

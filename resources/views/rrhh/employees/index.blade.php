@@ -125,7 +125,7 @@
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
                 
                 @can('rrhh_employees.delete')
-                html += '<li> <a onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
+                html += '<li> <a href="#" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                 @endcan
                 
                 html += '</ul></div>';

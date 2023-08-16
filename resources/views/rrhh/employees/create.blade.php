@@ -183,8 +183,8 @@
 
         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
           <div class="form-group">
-            <label>@lang('rrhh.date_admission')</label>
-            {!! Form::text("date_admission", @format_date('now'), ['class' => 'form-control form-control-sm', 'id' => 'date_admission'])!!}
+            <label>@lang('rrhh.date_admission')</label> <span class="text-danger">*</span>
+            {!! Form::text("date_admission", @format_date('now'), ['class' => 'form-control form-control-sm', 'id' => 'date_admission', 'required'])!!}
           </div>
         </div>
 
