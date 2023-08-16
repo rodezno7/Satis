@@ -43,7 +43,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.state_expedition')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.state_expedition')</label>
 					{!! Form::select("state_id", $states, null,
 					['id' => 'state_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.state'), 'style' => 'width: 100%;']) !!}
@@ -52,7 +52,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.city_expedition')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.city_expedition')</label>
 					{!! Form::select("city_id", [], null,
 					['id' => 'city_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.city'), 'style' => 'width: 100%;']) !!}

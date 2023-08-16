@@ -43,7 +43,7 @@
 		</div>
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.state_expedition')</label> <span class="text-danger">*</span>
+				<label>@lang('rrhh.state_expedition')</label>
 				{!! Form::select("state_id", $states, $document->state_id,
 				['id' => 'state_id1', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 				__('rrhh.state'), 'style' => 'width: 100%;']) !!}
@@ -51,7 +51,7 @@
 		</div>
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.city_expedition')</label> <span class="text-danger">*</span>
+				<label>@lang('rrhh.city_expedition')</label>
 				{!! Form::select("city_id", $cities, $document->city_id,
 				['id' => 'city_id1', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 				__('rrhh.city'), 'style' => 'width: 100%;']) !!}
@@ -59,8 +59,8 @@
 		</div>
 		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.files')</label> <span class="text-danger">*</span>
-				<input type="file" name="files[]" id='files' class="form-control form-control-sm" accept="image/png, image/jpeg, .pdf" multiple>
+				<label>@lang('rrhh.files')</label>
+				<input type="file" name="files[]" id='files' class="form-control form-control-sm" accept="image/png, image/jpeg, image/jpg, .pdf" multiple>
 			</div>
 		</div>
 	</div>

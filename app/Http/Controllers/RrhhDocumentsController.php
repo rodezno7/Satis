@@ -44,9 +44,7 @@ class RrhhDocumentsController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $documents = DB::table('rrhh_documents as document')
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-        ->join('states as state', 'state.id', '=', 'document.state_id')
-        ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+        ->select('document.id as id', 'type.value as type', 'document.number as number', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->get();
@@ -109,8 +107,6 @@ class RrhhDocumentsController extends Controller
             $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $request->document_type_id)->first();
             if($type){
                 $request->validate([
-                    'state_id'              => 'required',
-                    'city_id'               => 'required',
                     'number'                => 'required',
                     'date_expedition'       => 'required',
                     'date_expiration'       => 'required',
@@ -118,8 +114,6 @@ class RrhhDocumentsController extends Controller
                 ]);
             }else{
                 $request->validate([
-                    'state_id'              => 'required',
-                    'city_id'               => 'required',
                     'number'                => 'required',
                     'files'                 => 'required',
                     'date_expedition'       => 'required',
@@ -129,8 +123,6 @@ class RrhhDocumentsController extends Controller
         else{
             $request->validate([
                 'document_type_id'      => 'required',
-                'state_id'              => 'required',
-                'city_id'               => 'required',
                 'number'                => 'required',
                 'files'                 => 'required',
                 'date_expedition'       => 'required',
@@ -310,19 +302,15 @@ class RrhhDocumentsController extends Controller
         $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $item->document_type_id)->first();
         if($type){
             $request->validate([
-                'state_id'              => 'required',
-                'city_id'               => 'required',
                 'number'                => 'required',
                 'date_expedition'       => 'required',
                 'date_expiration'       => 'required',
-                'files'                  => 'required',
+                //'files'                  => 'required',
             ]);
         }else{
             $request->validate([
-                'state_id'              => 'required',
-                'city_id'               => 'required',
                 'number'                => 'required',
-                'files'                  => 'required',
+                //'files'                  => 'required',
                 'date_expedition'       => 'required',
             ]);
         }
@@ -330,8 +318,6 @@ class RrhhDocumentsController extends Controller
             $input_details = $request->only([
                 'date_expiration', 
                 'date_expedition', 
-                'state_id', 
-                'city_id',
                 'number',
                 //'files'
             ]);
@@ -364,7 +350,6 @@ class RrhhDocumentsController extends Controller
                     }
     
                     DB::commit();
-    
     
                     $output = [
                         'success' => 1,
