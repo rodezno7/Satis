@@ -360,9 +360,7 @@ class EmployeesController extends Controller
         $salaries = RrhhSalaryHistory::where('employee_id', $employee->id)->orderBy('id', 'DESC')->get();
         $documents = DB::table('rrhh_documents as document')
             ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-            ->join('states as state', 'state.id', '=', 'document.state_id')
-            ->join('cities as city', 'city.id', '=', 'document.city_id')
-            ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+            ->select('document.id as id', 'type.value as type', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
             ->where('document.employee_id', $id)
             ->get();
 
@@ -449,9 +447,7 @@ class EmployeesController extends Controller
         
         $documents = DB::table('rrhh_documents as document')
         ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-        ->join('states as state', 'state.id', '=', 'document.state_id')
-        ->join('cities as city', 'city.id', '=', 'document.city_id')
-        ->select('document.id as id', 'type.value as type', 'state.name as state', 'city.name as city', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+        ->select('document.id as id', 'type.value as type', 'document.number as number', 'document.document_type_id as document_type_id', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
         ->where('document.employee_id', $employee->id)
         ->get();
 

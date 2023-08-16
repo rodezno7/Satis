@@ -401,91 +401,98 @@
                                         </thead>
                                         <tbody id="referencesItems">
                                             @if (count($documents) > 0)
-                                            @if (count($type_documents) == 0)
-                                            @foreach($documents as $item)
-                                            <tr style="background: #DFF0D8">
-                                                <td><i class="alert alert-success fa fa-check"></i></td>
-                                                <td>{{ $item->type }}</td>
-                                                <td>
-                                                    @if ($item->date_expedition != null)
-                                                    {{ @format_date($item->date_expedition) }}
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($item->date_expiration != null)
-                                                    {{ @format_date($item->date_expiration) }}
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>{{ $item->number }}</td>
-                                                <td>
-                                                    @if ($item->date_expiration == null || $item->date_expiration >=
-                                                    Carbon::now()->format('Y-m-d'))
-                                                    <span class="badge" style="background: #449D44">Vigente</span>
-                                                    @else
-                                                    <span class="badge" style="background: #C9302C">Expirado</span>
-                                                    @endif
-                                                </td>
-                                                <td><button type="button" onClick="viewFile({{ $item->id }})"
-                                                        class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                            @else
-                                            @foreach($documents as $item)
-                                            <tr style="background: #DFF0D8">
-                                                <td><i class="fa fa-check"></i></td>
-                                                <td>{{ $item->type }}</td>
-                                                <td>
-                                                    @if ($item->date_expedition != null)
-                                                    {{ @format_date($item->date_expedition) }}
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($item->date_expiration != null)
-                                                    {{ @format_date($item->date_expiration) }}
-                                                    @else
-                                                    N/A
-                                                    @endif
-                                                </td>
-                                                <td>{{ $item->number }}</td>
-                                                <td>
-                                                    @if ($item->date_expiration == null || $item->date_expiration >=
-                                                    Carbon::now()->format('Y-m-d'))
-                                                    <span class="badge" style="background: #449D44">Vigente</span>
-                                                    @else
-                                                    <span class="badge" style="background: #C9302C">Expirado</span>
-                                                    @endif
-                                                </td>
-                                                <td><button type="button" onClick="viewFile({{ $item->id }})"
-                                                        class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                            @foreach($type_documents as $item)
-                                            @if ($item->value != '')
-                                            <tr>
-                                                <td><i class="glyphicon glyphicon-remove"></i></td>
-                                                <td>{{ $item->value }}</td>
-                                                <td colspan="5" class="text-center">@lang('rrhh.no_file')</td>
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @endif
+                                                @if (count($type_documents) == 0)
+                                                    @foreach($documents as $item)
+                                                    <tr style="background: #DFF0D8">
+                                                        <td><i class="alert alert-success fa fa-check"></i></td>
+                                                        <td>{{ $item->type }}</td>
+                                                        <td>
+                                                            @if ($item->date_expedition != null)
+                                                            {{ @format_date($item->date_expedition) }}
+                                                            @else
+                                                            N/A
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->date_expiration != null)
+                                                            {{ @format_date($item->date_expiration) }}
+                                                            @else
+                                                            N/A
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $item->number }}</td>
+                                                        <td>
+                                                            @if ($item->date_expiration == null || $item->date_expiration >=
+                                                            Carbon::now()->format('Y-m-d'))
+                                                            <span class="badge" style="background: #449D44">Vigente</span>
+                                                            @else
+                                                            <span class="badge" style="background: #C9302C">Expirado</span>
+                                                            @endif
+                                                        </td>
+                                                        <td><button type="button" onClick="viewFile({{ $item->id }})"
+                                                                class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @else
+                                                    @foreach($documents as $item)
+                                                    <tr style="background: #DFF0D8">
+                                                        <td><i class="fa fa-check"></i></td>
+                                                        <td>{{ $item->type }}</td>
+                                                        <td>
+                                                            @if ($item->date_expedition != null)
+                                                            {{ @format_date($item->date_expedition) }}
+                                                            @else
+                                                            N/A
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($item->date_expiration != null)
+                                                            {{ @format_date($item->date_expiration) }}
+                                                            @else
+                                                            N/A
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $item->number }}</td>
+                                                        <td>
+                                                            @if ($item->date_expiration == null || $item->date_expiration >=
+                                                            Carbon::now()->format('Y-m-d'))
+                                                            <span class="badge" style="background: #449D44">Vigente</span>
+                                                            @else
+                                                            <span class="badge" style="background: #C9302C">Expirado</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{-- <button type="button" onClick="viewFile({{ $item->id }})"
+                                                                class="btn btn-info btn-xs"><i class="fa fa-eye"></i>
+                                                            </button> --}}
+                                                            @can('rrhh_document_employee.view')
+                                                                <button type="button" onClick="filesDocument({{ $item->id }}, {{ $employee->id }})" class="btn btn-info btn-xs"><i
+                                                                        class="fa fa-list"></i>
+                                                                </button>
+                                                            @endcan
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                    @foreach($type_documents as $item)
+                                                        @if ($item->value != '')
+                                                        <tr>
+                                                            <td><i class="glyphicon glyphicon-remove"></i></td>
+                                                            <td>{{ $item->value }}</td>
+                                                            <td colspan="5" class="text-center">@lang('rrhh.no_file')</td>
+                                                        </tr>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             @else
                                             @if (count($type_documents) > 0)
-                                            @foreach($type_documents as $item)
-                                            <tr>
-                                                <td><i class="glyphicon glyphicon-remove"></i></td>
-                                                <td>{{ $item->value }}</td>
-                                                <td colspan="5" class="text-center">@lang('rrhh.no_file')</td>
-                                            </tr>
-                                            @endforeach
+                                                @foreach($type_documents as $item)
+                                                <tr>
+                                                    <td><i class="glyphicon glyphicon-remove"></i></td>
+                                                    <td>{{ $item->value }}</td>
+                                                    <td colspan="5" class="text-center">@lang('rrhh.no_file')</td>
+                                                </tr>
+                                                @endforeach
 
                                             @else
                                             <tr>
@@ -517,6 +524,14 @@
     </div>
 
 
+    <div class="modal fade" id="modal_edit_action" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal_content_edit_document">
+    
+            </div>
+        </div>
+    </div>
+    
     <div class="modal fade" id="modal_doc" tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content" id="modal_content_document">
@@ -608,6 +623,21 @@
 			$('#modal_photo').modal({backdrop: 'static'});
 		});
 	}
+
+
+    function filesDocument(id, employee_id) {
+        $("#modal_content_edit_document").html('');
+        var url = "{!! URL::to('/rrhh-documents-files/:id/:employee_id') !!}";
+        url = url.replace(':id', id);
+        url = url.replace(':employee_id', employee_id);
+        $.get(url, function(data) {
+            $("#modal_content_edit_document").html(data);
+            $('#modal_edit_action').modal({
+                backdrop: 'static'
+            });
+        });
+        $('#document_modal').modal('hide').data('bs.modal', null);
+    }
     
 
     $('#dni').on('change', function() {
