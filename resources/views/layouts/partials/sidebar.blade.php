@@ -155,14 +155,14 @@
                     </span>
                   </a>
                 </li>
-                <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                {{-- <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
                   <a href="{{ action('RrhhImportEmployeesController@edit') }}">
                     <i class="fa fa-download"></i>
                     <span class="title">
                       @lang('rrhh.edit_employees')
                     </span>
                   </a>
-                </li>
+                </li> --}}
                 <li class="{{ $request->segment(1) == 'rrhh-personnel-action-masive' ? 'active' : '' }}">
                   <a href="{{ action('RrhhPersonnelActionController@createMasive') }}">
                     <i class="fa fa-drivers-license"></i>
