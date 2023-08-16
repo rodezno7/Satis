@@ -109,11 +109,10 @@ class SuggestedPurchaseReportExport implements WithEvents, WithTitle
                 /** table body */
                 $row = 5;
                 foreach ($this->transactions as $t) {
-                    $diff_req = $t->avg_val - $t->stock;
+                    $request = ($t->avg_val - $t->stock) <= 0 ? 'no' : 'yes';
+                    $qty_req = $request == 'yes' ? ($t->max_val - $t->stock) : 0;
+                    
                     $diff_max = $t->stock - $t->max_val;
-
-                    $request = $diff_req <= 0 ? 'no' : 'yes';
-                    $qty_req = $diff_req <= 0 ? 0 : $diff_req;
                     $excess = $diff_max <= 0 ? 'no' : 'yes';
                     $move = $diff_max <= 0 ? 0 : $diff_max;
 
