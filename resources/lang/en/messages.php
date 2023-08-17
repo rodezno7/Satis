@@ -72,5 +72,6 @@ return [
     "authorizer_question" => 'Are you sure?',
     'question_content' => 'Remember that you will not be able to reverse this action',
     'password_required' => 'The password field is required.',
-    'validate_file' => 'Validate file'
+    'validate_file' => 'Validate file',
+    'download_cv' => 'Download cv'
 ];
