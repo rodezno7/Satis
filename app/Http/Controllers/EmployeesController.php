@@ -65,7 +65,7 @@ class EmployeesController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('employees as e')
-        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.curriculum_vitae as curriculum_vitae', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
         ->where('e.deleted_at', null)
         ->get();
@@ -144,27 +144,27 @@ class EmployeesController extends Controller
      */
     public function store(Request $request) 
     {
-        //dd($request);
         if ( !auth()->user()->can('rrhh_employees.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
-            'first_name'            => 'required',
-            'last_name'             => 'required',
-            'gender'                => 'required',
-            'birth_date'            => 'required',
-            'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            //'tax_number'            => 'required',
-            'address'               => 'required',
-            'email'                 => 'required|email',
-            'date_admission'        => 'required',
-            'nationality_id'        => 'required', 
-            'civil_status_id'       => 'required', 
-            'department_id'         => 'required',
-            'position1_id'          => 'required', 
-            'salary'                => 'required|numeric|min:1',
-            'payment_id'            => 'required',
+            'first_name'             => 'required',
+            'last_name'              => 'required',
+            'gender'                 => 'required',
+            'birth_date'             => 'required',
+            'dni'                    => 'required|regex:/^\d{8}-\d$/',
+            'address'                => 'required',
+            'email'                  => 'required|email',
+            'date_admission'         => 'required',
+            'nationality_id'         => 'required', 
+            'civil_status_id'        => 'required', 
+            'department_id'          => 'required',
+            'position1_id'           => 'required', 
+            'salary'                 => 'required|numeric|min:1',
+            'payment_id'             => 'required',
+            'afp_number'             => 'nullable|regex:/^[0-9]+$/',
+            'social_security_number' => 'nullable|regex:/^[0-9]+$/',
         ]);
 
         try {
@@ -256,14 +256,6 @@ class EmployeesController extends Controller
             $input_details['birth_date']     = $this->moduleUtil->uf_date($request->input('birth_date'));
             $input_details['date_admission'] = $this->moduleUtil->uf_date($request->input('date_admission'));
 
-            //$input_details['photo']          = $this->productUtil->uploadFile($request, 'photo', config('constants.employee_img_path'));
-
-            if ($request->hasFile('photo')) {
-                $file = $request->file('photo');
-                $name = time().$file->getClientOriginalName();
-                Storage::disk('employee_photo')->put($name,  \File::get($file));
-                $input_details['photo'] = $name;
-            }
             $business_id = request()->session()->get('user.business_id');
             $folderName = 'business_'.$business_id;
             if ($request->hasFile('photo')) {
@@ -276,10 +268,21 @@ class EmployeesController extends Controller
                 $input_details['photo'] = $name;
             }
 
+            if ($request->hasFile('curriculum_vitae')) {
+                if (!Storage::disk('employee_curriculum_vitae')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/employee_curriculum_vitae/'.$folderName, $mode = 0755, true, true);
+                }
+                $file1 = $request->file('curriculum_vitae');
+                $name1 = time().'_'.$file1->getClientOriginalName();
+                Storage::disk('employee_curriculum_vitae')->put($folderName.'/'.$name1,  \File::get($file1));
+                $input_details['curriculum_vitae'] = $name1;
+            }
+
             $input_details['created_by']     = $request->session()->get('user.id');
             $input_details['business_id']    = $request->session()->get('user.business_id');
 
             $input_details['agent_code']     = $this->employeeUtil->generateCorrelative($input_details['date_admission'], $business_id);
+
             $employee = Employees::create($input_details);
 
             RrhhPositionHistory::insert(
@@ -526,7 +529,6 @@ class EmployeesController extends Controller
             'gender'                => 'required',
             'birth_date'            => 'required',
             'dni'                   => 'required|regex:/^\d{8}-\d$/',
-            //'tax_number'            => 'required',
             'address'               => 'required',
             'email'                 => 'required|email',
             'date_admission'        => 'required',
@@ -536,9 +538,10 @@ class EmployeesController extends Controller
             'position1_id'          => $requiredPosition, 
             'salary'                => $requiredSalary,
             'payment_id'            => $requiredPayment,
-            'afp_number'            => 'nullable|integer',
-            'social_security_number'=> 'nullable|integer',
+            'afp_number'             => 'nullable|regex:/^[0-9]+$/',
+            'social_security_number' => 'nullable|regex:/^[0-9]+$/',
         ]);
+        \Log::info($request);
 
         try {
             $input_details = $request->only([
@@ -551,7 +554,6 @@ class EmployeesController extends Controller
                 'gender',
                 'nationality_id',
                 'dni',
-                //'tax_number',
                 'civil_status_id',
                 'phone',
                 'mobile',
@@ -563,7 +565,6 @@ class EmployeesController extends Controller
                 'bank_id',
                 'bank_account',
                 'date_admission',
-                //'photo',
                 'status',
                 'country_id',
                 'profession_id',
@@ -599,6 +600,16 @@ class EmployeesController extends Controller
                 $name = time().'_'.$file->getClientOriginalName();
                 Storage::disk('employee_photo')->put($folderName.'/'.$name,  \File::get($file));
                 $input_details['photo'] = $name;
+            }
+
+            if ($request->hasFile('curriculum_vitae')) {
+                if (!Storage::disk('employee_curriculum_vitae')->exists($folderName)) {
+                    \File::makeDirectory(public_path().'/uploads/employee_curriculum_vitae/'.$folderName, $mode = 0755, true, true);
+                }
+                $file = $request->file('curriculum_vitae');
+                $name = time().'_'.$file->getClientOriginalName();
+                Storage::disk('employee_curriculum_vitae')->put($folderName.'/'.$name,  \File::get($file));
+                $input_details['curriculum_vitae'] = $name;
             }
             
 
@@ -745,6 +756,27 @@ class EmployeesController extends Controller
             return view('rrhh.employees.photo', compact('route'));
         }
     }
+
+
+    public function downloadCv($id) {
+
+        if($id != null){
+            if ( !auth()->user()->can('rrhh_employees.view') ) {
+                abort(403, 'Unauthorized action.');
+            }
+            
+            $business_id = request()->session()->get('user.business_id');
+            $employee = Employees::where('id', $id)->where('business_id', $business_id)->firstOrFail();
+            $folderName = 'business_'.$business_id;
+            
+            if ($employee->curriculum_vitae != null) {
+                $route = 'uploads/employee_curriculum_vitae/'.$folderName.'/'.$employee->curriculum_vitae;
+            }
+            
+            return response()->download(public_path($route));
+        }
+    }
+
 
     private function getUsernameExtension()
     {

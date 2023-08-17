@@ -75,7 +75,7 @@ LANG = {
     "inc_tax": "Incluyendo impuesto",
     "exc_tax": "Excluyendo impuestos",
     "file_browse_label": "Adjuntar..",
-    "remove": "Retirar",
+    "remove": "Eliminar",
     "apply": "Aplicar",
     "custom_range": "Rango personalizado",
     "action": "Acción",

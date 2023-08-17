@@ -117,6 +117,13 @@
                 @can('rrhh_employees.update')
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
+
+                if (data.curriculum_vitae != null){
+                    @can('rrhh_employees.update')
+                    html += '<li><a href="/rrhh-employees-downloadCv/'+data.id+'"><i class="fa fa-download"></i>@lang('messages.download_cv')</a></li>';
+                    @endcan
+                }
+
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
                 html += '<li> <a href="#" onClick="addStudies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.studies')</a></li>';
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';

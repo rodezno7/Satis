@@ -642,6 +642,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-employees', 'EmployeesController');
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
+    Route::get('rrhh-employees-downloadCv/{id}', 'EmployeesController@downloadCv');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 

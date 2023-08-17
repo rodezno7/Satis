@@ -93,6 +93,11 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td class="text-center">
+                                            <a href="/rrhh-employees-downloadCv/{{ $employee->id }}" class="btn btn-primary"><i class="fa fa-file" aria-hidden="true"></i> {{ __('messages.download_cv') }}</a>
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>

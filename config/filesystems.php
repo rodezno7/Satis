@@ -99,6 +99,10 @@ return [
             'driver' => 'local',
             'root' => public_path().'/uploads/employee_personnel_actions',
         ],
+        'employee_curriculum_vitae' => [
+            'driver' => 'local',
+            'root' => public_path().'/uploads/employee_curriculum_vitae',
+        ],
     ],
 
 ];
