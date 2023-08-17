@@ -100,6 +100,7 @@ return[
     'tooltip_img' => 'Replace previous loaded',
     'only_jpg' => 'Only image formats',
     'bad_size_img' => '5 MB Max',
+    'bad_size_img1' => '3 MB Max',
     'upload_successfully' => 'Upload successfully',
      'add_document' => 'Add document',
     'document_type' => 'Document type',
@@ -111,6 +112,7 @@ return[
     'all_your_document_types' => 'All your document types',
     'only_pdf' => 'Only images and pdf',
     'only_pdf1' => 'Only pdf',
+    'only_img' => 'Only images',
     'view_file' => 'View file',
     'document' => 'Document',
     'photo' => 'Employee photo',
@@ -410,5 +412,6 @@ return[
     'date_format' => 'Format 00-00-0000',
     'dni_format' => 'The DUI format is 00000000-0',
     'general_format' => 'You must separate it by a leading (-)',
-    'edit_employees' => 'Edit employees'
+    'edit_employees' => 'Edit employees',
+    'curriculum_vitae' => 'Curriculum vitae'
 ];

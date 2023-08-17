@@ -644,6 +644,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-employees', 'EmployeesController');
     Route::get('rrhh-employees-getEmployees', 'EmployeesController@getEmployees');
     Route::get('rrhh-employees-getPhoto/{id}', 'EmployeesController@getPhoto');
+    Route::get('rrhh-employees-downloadCv/{id}', 'EmployeesController@downloadCv');
     Route::post('rrhh-employees/uploadPhoto', 'EmployeesController@uploadPhoto');
     Route::get('/rrhh-employees/verified_document/{type}/{value}/{id?}', 'EmployeesController@verifiedIfExistsDocument');
 
@@ -665,7 +666,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     //Routes documents by employees
     Route::get('rrhh-documents-getByEmployee/{id}', 'RrhhDocumentsController@getByEmployee');
     Route::get('rrhh-documents-createDocument/{id}', 'RrhhDocumentsController@createDocument');
-    Route::get('rrhh-documents-files/{id}', 'RrhhDocumentsController@files');
+    Route::get('rrhh-documents-files/{id}/{employee_id}', 'RrhhDocumentsController@files');
     Route::get('rrhh-documents-viewFile/{id}', 'RrhhDocumentsController@viewFile');
     Route::post('rrhh-documents-updateDocument', 'RrhhDocumentsController@updateDocument');
     Route::resource('rrhh-documents', 'RrhhDocumentsController')->except(['create', 'show', 'update']);

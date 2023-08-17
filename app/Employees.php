@@ -67,6 +67,7 @@ class Employees extends Model
         'foreign_tax',
         'fee',
         'status',
+        'curriculum_vitae',
         'created_by',
         'business_id',
         'user_id', 

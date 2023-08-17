@@ -20,7 +20,14 @@
             <div class="boxform_u box-solid_u" style="border-top: 0px solid #d2d6de !important; border-radius: 0px !important;">
                 <div class="box-body">
                     <div class="row">
+                        @if ($employee->curriculum_vitae != null)
+                        <div class="col-lg-12">
+                            <a href="/rrhh-employees-downloadCv/{{ $employee->id }}" class="btn btn-primary pull-right"><i class="fa fa-file" aria-hidden="true"></i> {{ __('messages.download_cv') }}</a>
+                        </div>
+                        
+                        @endif
                         <div class="col-lg-4">
+                            <br>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-condensed" width="100%">
                                     <tr class="text-center">
@@ -97,6 +104,7 @@
                             </div>
                         </div>
                         <div class="col-lg-8">
+                            <br>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-condensed" width="100%">
                                     <tr>

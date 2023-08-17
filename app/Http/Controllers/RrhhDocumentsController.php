@@ -226,13 +226,13 @@ class RrhhDocumentsController extends Controller
         //
     }
 
-    function files($id) 
+    function files($id, $employee_id) 
     {
         if ( !auth()->user()->can('rrhh_document_employee.view') ) {
             abort(403, 'Unauthorized action.');
         }
         $documentsFile = RrhhDocumentFile::where('rrhh_document_id', $id)->get();
-        $document = RrhhDocuments::where('id', $id)->first();
+        $document = RrhhDocuments::where('id', $id)->where('employee_id', $employee_id)->first();
         $employee = Employees::where('id', $document->employee_id)->first();
 
         return view('rrhh.documents.files', compact('documentsFile', 'employee'));
