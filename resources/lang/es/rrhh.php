@@ -100,6 +100,7 @@ return[
     'tooltip_img' => 'Sustituye imagen cargada previamente',
     'only_jpg' => 'Solo se permiten archivos jpg, jpeg y png',
     'bad_size_img' => 'Se permite un máximo de 5 MB',
+    'bad_size_img1' => 'Se permite un máximo de 3 MB',
     'upload_successfully' => 'Cargado exitosamente',
     'add_document' => 'Agregar documento',
     'document_type' => 'Tipo de documento',
@@ -111,6 +112,7 @@ return[
     'all_your_document_types' => 'Todas tus tipos de documento',
     'only_pdf' => 'Solo se permiten archivos de imagen y pdf',
     'only_pdf1' => 'Solo se permiten archivos pdf',
+    'only_img' => 'Solo se permiten archivos de imagen',
     'view_file' => 'Ver archivo',
     'document' => 'Documento',
     'photo' => 'Foto del empleado',
@@ -410,5 +412,6 @@ return[
     'date_format' => 'Formato 00-00-0000',
     'dni_format' => 'El formato del DUI es 00000000-0',
     'general_format' => 'Debe separarlo por medio de guion (-)',
-    'edit_employees' => 'Editar empleados'
+    'edit_employees' => 'Editar empleados',
+    'curriculum_vitae' => 'Curriculum vitae'
 ];

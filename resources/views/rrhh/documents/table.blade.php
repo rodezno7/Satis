@@ -38,7 +38,7 @@
                     </td>
                     <td>
                         @can('rrhh_document_employee.view')
-                            <button type="button" onClick="filesDocument({{ $item->id }})" class="btn btn-info btn-xs"><i
+                            <button type="button" onClick="filesDocument({{ $item->id }}, {{ $employee->id }})" class="btn btn-info btn-xs"><i
                                     class="fa fa-list"></i></button>
                         @endcan
 						@if (!isset($show))
@@ -65,10 +65,11 @@
 
 <script type="text/javascript">
 
-    function filesDocument(id) {
+    function filesDocument(id, employee_id) {
         $("#modal_content_edit_document").html('');
-        var url = "{!! URL::to('/rrhh-documents-files/:id') !!}";
+        var url = "{!! URL::to('/rrhh-documents-files/:id/:employee_id') !!}";
         url = url.replace(':id', id);
+        url = url.replace(':employee_id', employee_id);
         $.get(url, function(data) {
             $("#modal_content_edit_document").html(data);
             $('#modal_edit_action').modal({

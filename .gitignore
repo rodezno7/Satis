@@ -17,6 +17,7 @@ docker
 /public/uploads/img
 /public/uploads/invoice_logos
 /public/uploads/employee_photo
+/public/uploads/employee_curriculum_vitae
 /public/uploads/employee_documents
 /public/uploads/employee_contracts
 /public/uploads/employee_personnel_actions

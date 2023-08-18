@@ -344,6 +344,7 @@ return [
 	'product_image' => 'Imagen del producto',
 	'aspect_ratio_should_be_1_1' => 'La relación de aspecto debe ser 1: 1',
 	'previous_image_will_be_replaced' => 'La imagen cargada previamente será reemplazada',
+	'previous_file_will_be_replaced' => 'El archivo cargado previamente será reemplazado',
 	'all_category' => 'todas las categorias',
 	'all_brands' => 'Todas las marcas',
 	'backup' => 'Respaldo de Seguridad',
