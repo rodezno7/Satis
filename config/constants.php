@@ -23,7 +23,7 @@ return [
 
     'langs_rtl' => ['ar'],
     
-    'document_size_limit' => '1000000', //in Bytes,
+    'document_size_limit' => '5000000', //in Bytes,
 
     'asset_version' => 31,
 
