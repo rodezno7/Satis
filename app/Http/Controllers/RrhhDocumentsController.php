@@ -319,6 +319,8 @@ class RrhhDocumentsController extends Controller
                 'date_expiration', 
                 'date_expedition', 
                 'number',
+                'state_id', 
+                'city_id'
                 //'files'
             ]);
 

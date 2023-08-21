@@ -493,14 +493,14 @@
                                 <div class="form-group">
                                     {!! Form::label('photo', __('rrhh.photo') . ':') !!}
                                     {!! Form::file('photo', ['id' => 'photo', 'accept' => 'image/*']) !!}
-                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit') / 1000000]).</small>
+                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit_3') / 1000000]).</small>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group">
                                     {!! Form::label('curriculum_vitae', __('rrhh.curriculum_vitae') . ':') !!}
                                     {!! Form::file('curriculum_vitae', ['id' => 'curriculum_vitae', 'accept' => 'application/pdf']) !!}
-                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit') / 1000000]).</small>
+                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit_6') / 1000000]).</small>
                                 </div>
                             </div>
                         </div>
@@ -765,7 +765,7 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 1048576) {
+                if (size > 5242880) {
 
                     $('#photo').val('');
                     Swal.fire({
@@ -790,11 +790,11 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 1048576) {
+                if (size > 5242880) {
 
                     $('#curriculum_vitae').val('');
                     Swal.fire({
-                        title: '@lang('rrhh.bad_size_img1')',
+                        title: '@lang('rrhh.bad_size_cv')',
                         icon: "error",
                     });
                 }
