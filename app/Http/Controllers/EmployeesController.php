@@ -770,7 +770,7 @@ class EmployeesController extends Controller
             $folderName = 'business_'.$business_id;
             
             if ($employee->curriculum_vitae != null) {
-                $route = 'uploads/employee_curriculum_vitae/'.$folderName.'/'.$employee->curriculum_vitae;
+                $route = '/uploads/employee_curriculum_vitae/'.$folderName.'/'.$employee->curriculum_vitae;
             }
             
             return response()->download(public_path($route));

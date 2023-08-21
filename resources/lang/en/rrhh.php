@@ -101,7 +101,7 @@ return[
     'only_jpg' => 'Only image formats',
     'bad_size_img' => '5 MB Max',
     'bad_size_img1' => '1 MB Max',
-    'bad_size_cv' => '6 MB Max',
+    'bad_size_cv' => '5 MB Max',
     'upload_successfully' => 'Upload successfully',
      'add_document' => 'Add document',
     'document_type' => 'Document type',

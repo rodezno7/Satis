@@ -216,6 +216,60 @@
       @endif
       {{-- Fin Recurso humano --}}
 
+      {{-- Inicio Planilla --}}
+      @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
+        <li
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'institution-law', 'law-discount']) ? 'active active-sub' : '' }}"
+          id="tour_step4">
+          <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" id="rrhh_over">
+            {{-- @can('planilla.view')
+            <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
+              <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                @lang('planilla.planilla')
+              </a>
+            </li>
+            @endcan --}}
+            @can('planilla-catalogues.view')
+            <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount']) ? 'active active-sub' : '' }}">
+              <a href="#">
+                <i class="fa fa-table"></i>
+                <span class="title">
+                  @lang('planilla.catalogues')
+                </span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="{{ $request->segment(1) == 'institution-law' ? 'active' : '' }}">
+                  <a href="{{ action('InstitutionLawController@index') }}">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">
+                      @lang('planilla.institution_laws')
+                    </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'law-discount' ? 'active' : '' }}">
+                  <a href="{{ action('LawDiscountController@index') }}">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">
+                      @lang('planilla.law_discounts')
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            @endcan
+          </ul>
+        </li>
+      @endif
+      {{-- Fin Planilla --}}
+
       <!-- Accounting Menu -->
       @if (auth()->user()->can('catalogue')
       || auth()->user()->can('entries')
