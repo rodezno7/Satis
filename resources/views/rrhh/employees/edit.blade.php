@@ -994,7 +994,7 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 1048576) {
+                if (size > 5242880) {
 
                     $('#photo').val('');
                     Swal.fire({
@@ -1019,11 +1019,11 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 1048576) {
+                if (size > 5242880) {
 
                     $('#curriculum_vitae').val('');
                     Swal.fire({
-                        title: '@lang('rrhh.bad_size_img1')',
+                        title: '@lang('rrhh.bad_size_cv')',
                         icon: "error",
                     });
                 }
