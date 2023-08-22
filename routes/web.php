@@ -747,11 +747,16 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     //Route catalogues
     Route::resource('institution-law', 'InstitutionLawController');
+    Route::put('institution-law/{id}/edit', 'InstitutionLawController@update');
     Route::get('institution-law-getInstitutionLaws', 'InstitutionLawController@getInstitutionLaws');
     
     Route::resource('law-discount', 'LawDiscountController');
+    Route::put('law-discount/{id}/edit', 'InstitutionLawController@update');
     Route::get('law-discount-getLawDiscounts', 'LawDiscountController@getLawDiscounts');
 
+    Route::resource('bonus-calculation', 'BonusCalculationController');
+    Route::put('bonus-calculation/{id}/edit', 'InstitutionLawController@update');
+    Route::get('bonus-calculation-getBonusCalculations', 'BonusCalculationController@getBonusCalculations');
 
 
     /** Cost Centers */

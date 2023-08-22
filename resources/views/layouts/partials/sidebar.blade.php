@@ -219,7 +219,7 @@
       {{-- Inicio Planilla --}}
       @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
         <li
-          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'institution-law', 'law-discount']) ? 'active active-sub' : '' }}"
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
           id="tour_step4">
           <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
             <span class="pull-right-container">
@@ -235,7 +235,7 @@
             </li>
             @endcan --}}
             @can('planilla-catalogues.view')
-            <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount']) ? 'active active-sub' : '' }}">
+            <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
               <a href="#">
                 <i class="fa fa-table"></i>
                 <span class="title">
@@ -258,7 +258,15 @@
                   <a href="{{ action('LawDiscountController@index') }}">
                     <i class="fa fa-newspaper-o"></i>
                     <span class="title">
-                      @lang('planilla.law_discounts')
+                      @lang('planilla.discounts_table')
+                    </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'bonus-calculation' ? 'active' : '' }}">
+                  <a href="{{ action('BonusCalculationController@index') }}">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">
+                      @lang('planilla.bonus_table')
                     </span>
                   </a>
                 </li>

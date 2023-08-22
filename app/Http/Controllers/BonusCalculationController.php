@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Business;
+use App\CalculationType;
 use App\InstitutionLaw;
+use App\BonusCalculation;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
 
-class InstitutionLawController extends Controller
+class BonusCalculationController extends Controller
 {
         /**
      * Display a listing of the resource.
@@ -19,30 +22,30 @@ class InstitutionLawController extends Controller
         if(!auth()->user()->can('planilla-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.institution_laws.index');
+        return view('planilla.catalogues.bonus_calculation.index');
     }
 
-    public function getInstitutionLaws(){
+    public function getBonusCalculations(){
         if ( !auth()->user()->can('plantilla-catolgues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $data = DB::table('institution_laws as il')
-        ->select('il.id as id', 'il.name', 'il.description', 'il.employeer_number')
-        ->where('il.business_id', $business_id)
-        ->where('il.deleted_at', null)
-        ->get();
-        
-        return DataTables::of($data)
-        ->editColumn('employeer_number', function ($data) {
-            if($data->employeer_number != null){
-                return $data->employeer_number;
+        $data = DB::table('bonus_calculations as bc')
+            ->select('bc.id as id', 'bc.from', 'bc.until', 'bc.days', 'bc.percentage', 'bc.status')
+            ->where('bc.business_id', $business_id)
+            ->where('bc.deleted_at', null)
+            ->get();
+
+        return DataTables::of($data)->editColumn('status', function ($data) {
+            if($data->status == 1){
+                return __('rrhh.active');
             }else{
-                return '---';
+                return __('rrhh.inactive');
             }
         })->toJson();
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -54,7 +57,8 @@ class InstitutionLawController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        return view('planilla.catalogues.institution_laws.create');
+        $business_id = request()->session()->get('user.business_id');
+        return view('planilla.catalogues.bonus_calculation.create');
     }
 
     /**
@@ -70,17 +74,19 @@ class InstitutionLawController extends Controller
         }
 
         $request->validate([
-            'name'                 => 'required',
-            'description'          => 'required',
-            'employeer_number'     => 'nullable|regex:/^[0-9]+$/',
+            'from'       => 'required|numeric',
+            'until'      => 'required|numeric',
+            'days'       => 'required|integer|min:0',
+            'percentage' => 'required|numeric',
         ]);
 
         try {
             $input_details = $request->all();
             $input_details['business_id'] = request()->session()->get('user.business_id');
+            
             DB::beginTransaction();
-    
-            InstitutionLaw::create($input_details);
+            
+            BonusCalculation::create($input_details);
     
             DB::commit();
     
@@ -122,10 +128,10 @@ class InstitutionLawController extends Controller
         if ( !auth()->user()->can('planilla-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
-        $business_id = request()->session()->get('user.business_id');
-        $institutionLaw = InstitutionLaw::where('id', $id)->where('business_id', $business_id)->first();
 
-        return view('planilla.catalogues.institution_laws.edit', compact('institutionLaw'));
+        $business_id = request()->session()->get('user.business_id');
+        $bonusCalculation = BonusCalculation::where('id', $id)->where('business_id', $business_id)->first();
+        return view('planilla.catalogues.bonus_calculation.edit', compact('bonusCalculation'));
     }
 
     /**
@@ -137,24 +143,25 @@ class InstitutionLawController extends Controller
      */
     public function update(Request $request, $id)
     {
-        \Log::info($request);
         if ( !auth()->user()->can('planilla-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
-            'name'                 => 'required',
-            'description'          => 'required',
-            'employeer_number'     => 'nullable|regex:/^[0-9]+$/',
+            'from'       => 'required|numeric',
+            'until'      => 'required|numeric',
+            'days'       => 'required|integer|min:0',
+            'percentage' => 'required|numeric',
         ]);
 
         try {
             $input_details = $request->all();
+            $input_details['business_id'] = request()->session()->get('user.business_id');
+            
             DB::beginTransaction();
-    
             $business_id = request()->session()->get('user.business_id');
-            $item = InstitutionLaw::where('id', $id)->where('business_id', $business_id)->first();
-            $institutionLaw = $item->update($input_details);
+            $item = BonusCalculation::where('id', $id)->where('business_id', $business_id)->first();
+            $bonusCalculation = $item->update($input_details);
     
             DB::commit();
     
@@ -189,7 +196,7 @@ class InstitutionLawController extends Controller
         if (request()->ajax()) {
             try {
                 $business_id = request()->session()->get('user.business_id');
-                $item = InstitutionLaw::where('id', $id)->where('business_id', $business_id)->first();
+                $item = BonusCalculation::where('id', $id)->where('business_id', $business_id)->first();
                 $item->forceDelete();
                 
                 $output = [
@@ -209,4 +216,5 @@ class InstitutionLawController extends Controller
             return $output;
         }
     }
+
 }

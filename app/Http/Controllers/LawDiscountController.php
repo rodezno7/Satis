@@ -22,7 +22,7 @@ class LawDiscountController extends Controller
         if(!auth()->user()->can('planilla-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.law-discounts.index');
+        return view('planilla.catalogues.law_discounts.index');
     }
 
     public function getLawDiscounts(){
@@ -62,7 +62,7 @@ class LawDiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
         $calculation_types = CalculationType::where('business_id', $business_id)->get();
-        return view('planilla.catalogues.law-discounts.create', compact('institutions', 'calculation_types'));
+        return view('planilla.catalogues.law_discounts.create', compact('institutions', 'calculation_types'));
     }
 
     /**
@@ -136,10 +136,10 @@ class LawDiscountController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $lawDiscount = LawDiscount::findOrFail($id);
+        $lawDiscount = LawDiscount::where('id', $id)->where('business_id', $business_id)->first();
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
         $calculation_types = CalculationType::where('business_id', $business_id)->get();
-        return view('planilla.catalogues.law-discounts.edit', compact('lawDiscount', 'institutions', 'calculation_types'));
+        return view('planilla.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'calculation_types'));
     }
 
     /**
@@ -170,7 +170,8 @@ class LawDiscountController extends Controller
             $input_details = $request->all();
             DB::beginTransaction();
 
-            $item = LawDiscount::findOrFail($id);
+            $business_id = request()->session()->get('user.business_id');
+            $item = LawDiscount::where('id', $id)->where('business_id', $business_id)->first();
             $lawDiscount = $item->update($input_details);
     
             DB::commit();
@@ -205,7 +206,8 @@ class LawDiscountController extends Controller
 
         if (request()->ajax()) {
             try {
-                $item = LawDiscount::findOrFail($id);
+                $business_id = request()->session()->get('user.business_id');
+                $item = LawDiscount::where('id', $id)->where('business_id', $business_id)->first();
                 $item->forceDelete();
                 
                 $output = [
