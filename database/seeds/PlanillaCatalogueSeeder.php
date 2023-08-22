@@ -1,6 +1,7 @@
 <?php
 
 use App\CalculationType;
+use App\PaymentPeriod;
 use App\InstitutionLaw;
 use App\LawDiscount;
 use App\Business;
@@ -20,26 +21,52 @@ class PlanillaCatalogueSeeder extends Seeder
         $business = Business::all();
 
         foreach ($business as $item) {
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Semanal',
+                'business_id' => $item->id,
+            ]);
+
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Catorcenal',
+                'business_id' => $item->id,
+            ]);
+
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Quincenal',
+                'business_id' => $item->id,
+            ]);
+
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Mensual',
+                'business_id' => $item->id,
+            ]);
+
+
+
             CalculationType::firstOrCreate([
                 'name' => 'Semanal',
+                'business_id' => $item->id,
             ]);
 
             CalculationType::firstOrCreate([
                 'name' => 'Quincenal',
+                'business_id' => $item->id,
             ]);
 
             CalculationType::firstOrCreate([
                 'name' => 'Mensual',
+                'business_id' => $item->id,
             ]);
 
             CalculationType::firstOrCreate([
                 'name' => 'Semestral',
+                'business_id' => $item->id,
             ]);
 
             CalculationType::firstOrCreate([
                 'name' => 'Anual',
+                'business_id' => $item->id,
             ]);
-
 
 
 
@@ -82,7 +109,6 @@ class PlanillaCatalogueSeeder extends Seeder
                 'business_id' => $item->id,
                 'deleted_at' => null,
             ]);
-
 
 
 
@@ -139,6 +165,8 @@ class PlanillaCatalogueSeeder extends Seeder
             ]);
         }
 
+
+
         $module = Module::firstOrCreate(
             ['name' => 'Planillas'],
             ['description' => 'Gestión de planillas', 'status' => 1]
@@ -163,8 +191,6 @@ class PlanillaCatalogueSeeder extends Seeder
             ['name' => 'planilla_catalogues.delete'],
             ['description' => 'Eliminar catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
-
-
 
 
 

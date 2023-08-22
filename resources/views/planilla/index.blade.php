@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', __('planilla.law_discounts'))
+@section('title', __('planilla.planilla'))
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('planilla.law_discounts')
+    <h1> @lang('planilla.planilla')
         <small></small>
     </h1>
 </section>
@@ -16,8 +16,8 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                @can('planilla-catalogues.create')
-                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addLawDiscount()">
+                @can('planilla.create')
+                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addPlanilla()">
                         <i class="fa fa-plus"></i> @lang('messages.add')
                     </a>
                 @endcan
@@ -25,19 +25,15 @@
         </div>
         <div class="box-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed table-hover" id="law-discount-table"
+                <table class="table table-striped table-bordered table-condensed table-hover" id="planilla-table"
                     width="100%">
                     <thead>
-                        <th>@lang('planilla.institution_law')</th>
-                        <th>@lang('planilla.from')</th>
-                        <th>@lang('planilla.until')</th>
-                        <th>@lang('planilla.base')</th>
-                        <th>@lang('planilla.fixed_fee')</th>
-                        <th>@lang('planilla.employee_percentage')</th>
-                        <th>@lang('planilla.employer_value')</th>
+                        <th width="22%">@lang('planilla.year')</th>
+                        <th>@lang('planilla.month')</th>
+                        <th>@lang('planilla.period')</th>
+                        <th>@lang('planilla.payment_period')</th>
                         <th>@lang('planilla.calculation_type')</th>
-                        <th>@lang('planilla.status')</th>
-                        <th width="12%">@lang('rrhh.actions')</th>
+                        <th width="12%">@lang('planilla.actions')</th>
                     </thead>
                 </table>
                 <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -45,6 +41,7 @@
         </div>
     </div>
 </section>
+
 <div class="modal fade" id="modal_edit" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content" id="modal_content_edit">
@@ -65,40 +62,48 @@
 @section('javascript')
 <script>
     $(document).ready(function() {
-        loadLawDiscount();      
+        loadPlanillas();      
         $.fn.dataTable.ext.errMode = 'none';      
+
+        $('#modal_action').on('shown.bs.modal', function () {
+		    $(this).find('#rrhh_type_personnel_action_id').select2({
+                dropdownParent: $(this),
+			})
+		})
 	});
 
-    function loadLawDiscount() {
-        var table = $("#law-discount-table").DataTable();
+    function loadPlanillas() 
+    {
+        var table = $("#planilla-table").DataTable();
         table.destroy();
-        var table = $("#law-discount-table").DataTable({
+        var table = $("#planilla-table").DataTable({
             select: true,
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/law-discount-getLawDiscounts",
+            ajax: "/planilla-getPlanillas",
             columns: [
-            {data: 'institution_law', name: 'institution_law', className: "text-center"},
-            {data: 'from', name: 'from', className: "text-center"},
-            {data: 'until', name: 'until', className: "text-center"},
-            {data: 'base', name: 'base', className: "text-center"},
-            {data: 'fixed_fee', name: 'fixed_fee', className: "text-center"},
-            {data: 'employee_percentage', name: 'employee_percentage', className: "text-center"},
-            {data: 'employer_value', name: 'employer_value', className: "text-center"},
-            {data: 'calculation_type', name: 'calculation_type', className: "text-center"}, 
-            {data: 'status', name: 'status', className: "text-center"},
+            {data: 'year', name: 'year', className: "text-center"},
+            {data: 'month', name: 'month', className: "text-center"},
+            {data: 'period', name: 'period', className: "text-center"},
+            {data: 'payment_period', name: 'payment_period', className: "text-center"},
+            {data: 'calculation_type', name: 'calculation_type', className: "text-center"},
             {data: null, render: function(data) {
-                html = "";
+                html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
+                html += '<li><a href="/planilla/'+data.id+'"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
                 
-                @can('planilla-catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editLawDiscount('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
+                @can('planilla.update')
+                html += '<li><a href="/planilla/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
+                html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('planilla.economic_dependencies')</a></li>';
+                html += '<li> <a href="#" onClick="addStudies('+data.id+')"><i class="fa fa-user"></i>@lang('planilla.studies')</a></li>';
+                
+                @can('planilla.delete')
+                html += '<li> <a href="#" onClick="deletePlanilla('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
+                @endcan
+                
+                html += '</ul></div>';
 
-                @can('planilla-catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteLawDiscount('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
-                @endcan
-                
                 return html;
             } , orderable: false, searchable: false, className: "text-center"}
             ],
@@ -106,7 +111,7 @@
         });
     }
 
-    function deleteLawDiscount(id) {
+    function deletePlanilla(id) {
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -118,7 +123,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/law-discount/'+id;
+                route = '/planilla/'+id;
                 token = $("#token").val();
                 $.ajax({
                     url: route,
@@ -134,8 +139,12 @@
                                 timer: 2000,
                                 showConfirmButton: false,
                             });
+
+                            $("#div_info").html('');
                             
-                            $("#law-discount-table").DataTable().ajax.reload(null, false);   
+                            $("#planilla-table").DataTable().ajax.reload(null, false);
+                            
+                            
                         } else {
                             Swal.fire
                             ({
@@ -150,9 +159,9 @@
         });
     }
 
-    function addLawDiscount() {
+    function addPlanilla() {
         $("#modal_content_add").html('');
-        var url = "{!! URL::to('/law-discount/create') !!}";
+        var url = "{!! URL::to('/planilla/create') !!}";
         $.get(url, function(data) {
             $("#modal_content_add").html(data);
             $('#modal_add').modal({

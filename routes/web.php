@@ -738,12 +738,13 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     // Route Module Planilla
     //Routes Planilla
-    // Route::resource('planilla', 'PlanillaController');
-    // Route::get('planilla-getEmployees', 'PlanillaController@getEmployees');
-    // Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
-    // Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
-    // Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');
-    // Route::get('/planilla/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
+    Route::resource('planilla', 'PlanillaController');
+    Route::get('planilla-getPlanillas', 'PlanillaController@getPlanillas');
+    Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
+    Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
+    Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');
+    Route::get('/planilla/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
+
 
     //Route catalogues
     Route::resource('institution-law', 'InstitutionLawController');
