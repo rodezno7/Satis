@@ -35,7 +35,7 @@
                 @if ($document->date_expedition != null)
                 <li><strong>{{ __('rrhh.date_expedition') }}:</strong> {{ @format_date($document->date_expedition) }}</li>
                 @endif
-                @if ($document->date_expiration != null)
+                @if ($document->date_expiration != null && $type->date_required == 1)
                 <li><strong>{{ __('rrhh.date_expiration') }}:</strong> {{ @format_date($document->date_expiration) }}</li>
                 @endif
                 @if ($document->state_id != null)
@@ -44,7 +44,9 @@
                 @if ($document->city_id != null)
                 <li><strong>{{ __('rrhh.city_expedition') }}:</strong> {{ $city->name }}</li>
                 @endif
+                @if ($document->number != null)
                 <li><strong>{{ __('rrhh.number') }}:</strong> {{ $document->number }}</li>
+                @endif
             </ul>
         </div>
     </div>

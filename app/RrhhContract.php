@@ -10,7 +10,6 @@ class RrhhContract extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
         'contract_start_date', 
         'contract_end_date',
         'employee_id', 

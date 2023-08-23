@@ -60,6 +60,32 @@ class RrhhDataController extends Controller
                 return $html;
             }
         )
+        ->addColumn(
+            'number_required',
+            function ($row) {
+                if ($row->number_required == 1) {
+
+                    $html = 'Requerida';
+                } else {
+
+                    $html = 'No requerida';
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
+            'expedition_place',
+            function ($row) {
+                if ($row->expedition_place == 1) {
+
+                    $html = 'Requerida';
+                } else {
+
+                    $html = 'No requerida';
+                }
+                return $html;
+            }
+        )
         ->toJson();
     }
 
@@ -199,11 +225,25 @@ class RrhhDataController extends Controller
                 $code = $this->getCorrelative($request->input('rrhh_header_id'), $code);
             }
             $date_required = null;
+            $expedition_place = null;
+            $number_required = null;
             if($request->input('rrhh_header_id') == 9) {
                 if($request->input('date_required')){
                     $date_required = 1;
                 }else{
                     $date_required = 0;
+                }
+
+                if($request->input('expedition_place')){
+                    $expedition_place = 1;
+                }else{
+                    $expedition_place = 0;
+                }
+
+                if($request->input('number_required')){
+                    $number_required = 1;
+                }else{
+                    $number_required = 0;
                 }
             }
             $item = new RrhhData();
@@ -212,6 +252,8 @@ class RrhhDataController extends Controller
             $item->status = 1;
             $item->code = $code;
             $item->date_required = $date_required;
+            $item->expedition_place = $expedition_place;
+            $item->number_required = $number_required;
             $item->value = $request->input('value');
             $item->save();
 
@@ -223,7 +265,7 @@ class RrhhDataController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
         return $output;
@@ -353,6 +395,8 @@ class RrhhDataController extends Controller
             $item = RrhhData::findOrFail($id);
             $item->status = $request->input('status');
             $item->date_required = $request->input('date_required');
+            $item->expedition_place = $request->input('expedition_place');
+            $item->number_required = $request->input('number_required');
             $item->value = $request->input('value');
             $item->save();
 

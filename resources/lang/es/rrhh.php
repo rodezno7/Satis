@@ -101,7 +101,7 @@ return[
     'only_jpg' => 'Solo se permiten archivos jpg, jpeg y png',
     'bad_size_img' => 'Se permite un máximo de 5 MB',
     'bad_size_img1' => 'Se permite un máximo de 1 MB',
-    'bad_size_cv' => 'Se permite un máximo de 6 MB',
+    'bad_size_cv' => 'Se permite un máximo de 5 MB',
     'upload_successfully' => 'Cargado exitosamente',
     'add_document' => 'Agregar documento',
     'document_type' => 'Tipo de documento',
@@ -120,6 +120,13 @@ return[
     'mobile_phone' => 'Teléfono móvil',
     'date_required' => 'Fecha de expiración es requerida',
     'Date_required' => 'Fecha de expiración',
+
+    'expedition_place' => 'Lugar de expedición es requerida',
+    'Expedition_place' => 'Lugar de expedición',
+
+    'number_required' => 'Número del documento es requerido',
+    'Number_required' => 'Número del documento',
+    
     'date_expedition' => 'Fecha de expedición',
     'date_expiration' => 'Fecha de expiración',
     'no_file' => 'Falta que suba un documento de este tipo',

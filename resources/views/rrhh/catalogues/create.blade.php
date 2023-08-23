@@ -13,11 +13,19 @@
 			<input type="text" name='value' id='value' class="form-control" placeholder="@lang('rrhh.name')">
 
 			@if ($header_id == 9)
-			<br>
-			{{-- <input type="checkbox" name='value' id='value' class="form-control"> --}}
-			<label>
-                {!! Form::checkbox('date_required', '0', false, ['id' => 'date_required', 'onClick' => 'dateRequired()']) !!}
-			@lang('rrhh.date_required')</label>
+				<br>
+				{{-- <input type="checkbox" name='value' id='value' class="form-control"> --}}
+				<label>
+					{!! Form::checkbox('date_required', '0', false, ['id' => 'date_required', 'onClick' => 'dateRequired()']) !!}
+				@lang('rrhh.date_required')</label>
+				<br>
+				<label>
+					{!! Form::checkbox('number_required', '0', false, ['id' => 'number_required', 'onClick' => 'numberRequired()']) !!}
+				@lang('rrhh.number_required')</label>
+				<br>
+				<label>
+					{!! Form::checkbox('expedition_place', '0', false, ['id' => 'expedition_place', 'onClick' => 'expeditionPlace()']) !!}
+				@lang('rrhh.expedition_place')</label>
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -35,6 +43,8 @@
 	$( document ).ready(function() {		
 		select2 = $('.select2').select2();
 		dateRequired();
+		expeditionPlace();
+		numberRequired();
 	});
 
 	$("#btn_add_item").click(function() {
@@ -106,9 +116,25 @@
 
 	function dateRequired() {
 		if ($("#date_required").is(":checked")) {
-		$("#date_required").val('1');
+			$("#date_required").val('1');
 		} else {
-		$("#chk_has_user").val('0');
+			$("#date_required").val('0');
+		}
+	}
+
+	function expeditionPlace() {
+		if ($("#expedition_place").is(":checked")) {
+			$("#expedition_place").val('1');
+		} else {
+			$("#expedition_place").val('0');
+		}
+	}
+
+	function numberRequired() {
+		if ($("#number_required").is(":checked")) {
+			$("#number_required").val('1');
+		} else {
+			$("#number_required").val('0');
 		}
 	}
 </script>

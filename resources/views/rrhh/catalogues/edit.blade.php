@@ -11,11 +11,20 @@
 			<label>@lang('rrhh.name')</label>
 			<input type="text" name='value' id='value' class="form-control" value='{{ $item->value }}' placeholder="@lang('rrhh.name')">
 
-			@if ($item->rrhh_header_id == 9)
-			<br>
-			<label>
-                <input type="checkbox" name='date_required' id='date_required' onclick="dateRequired()" value="{{ $item->date_required }}">
-			@lang('rrhh.date_required')</label>
+			@if ($header_id == 9)
+				<br>
+				{{-- <input type="checkbox" name='value' id='value' class="form-control"> --}}
+				<label>
+					{!! Form::checkbox('date_required', $item->date_required, false, ['id' => 'date_required', 'onClick' => 'dateRequired()']) !!}
+				@lang('rrhh.date_required')</label>
+				<br>
+				<label>
+					{!! Form::checkbox('number_required', $item->number_required, false, ['id' => 'number_required', 'onClick' => 'numberRequired()']) !!}
+				@lang('rrhh.number_required')</label>
+				<br>
+				<label>
+					{!! Form::checkbox('expedition_place', $item->expedition_place, false, ['id' => 'expedition_place', 'onClick' => 'expeditionPlace()']) !!}
+				@lang('rrhh.expedition_place')</label>
 			@endif
 
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -43,6 +52,20 @@
 			$("#date_required").prop("checked", true);
 		} else {
 			$("#date_required").prop("checked", false);
+		}
+
+		let expedition_place = $("#expedition_place").val();
+		if (expedition_place == 1) {
+			$("#expedition_place").prop("checked", true);
+		} else {
+			$("#expedition_place").prop("checked", false);
+		}
+
+		let number_required = $("#number_required").val();
+		if (number_required == 1) {
+			$("#number_required").prop("checked", true);
+		} else {
+			$("#number_required").prop("checked", false);
 		}
 	});
 
@@ -111,6 +134,22 @@
 			$("#date_required").val('1');
 		} else {
 			$("#date_required").val('0');
+		}
+	}
+
+	function numberRequired() {
+		if ($("#number_required").is(":checked")) {
+			$("#number_required").val('1');
+		} else {
+			$("#number_required").val('0');
+		}
+	}
+
+	function expeditionPlace() {
+		if ($("#expedition_place").is(":checked")) {
+			$("#expedition_place").val('1');
+		} else {
+			$("#expedition_place").val('0');
 		}
 	}
 

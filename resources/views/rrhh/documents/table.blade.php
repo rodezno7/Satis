@@ -22,13 +22,19 @@
                         @endif
                     </td>
                     <td>
-                        @if ($item->date_expiration != null)
+                        @if ($item->date_expiration != null && $item->date_required == 1)
                             {{ @format_date($item->date_expiration) }}
                         @else
                             N/A
                         @endif
                     </td>
-                    <td>{{ $item->number }}</td>
+                    <td>
+                        @if ($item->number != null)
+                            {{ $item->number }}
+                        @else
+                            N/A
+                        @endif
+                    </td>
                     <td>
                         @if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d'))
                             <span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>

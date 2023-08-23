@@ -454,6 +454,8 @@
             columns: [
             {data: 'value'},
             {data: 'date_required'},
+            {data: 'number_required'},
+            {data: 'expedition_place'},
             {data: 'status'},
             {data: null, render: function(data){
 
