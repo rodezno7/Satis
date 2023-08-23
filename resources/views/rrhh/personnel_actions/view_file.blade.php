@@ -10,7 +10,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             @if ($ext == 'pdf')
                 <style>
-                    .pdfobject-container {width: 55rem; height: 50rem; border: 1rem solid rgba(0,0,0,.1); }
+                    .pdfobject-container {width: 87rem; height: 50rem; border: 1rem solid rgba(0,0,0,.1); }
                 </style>
 
                 <div id="pdf">
@@ -27,7 +27,7 @@
 </div>
 <script>
     function closeModalView(){
-		$('#modal_personnel_action').modal({backdrop: 'static'});
-		$('#modal_photo').modal( 'hide' ).data( 'bs.modal', null );
+		$('#modal_edit_action').modal({backdrop: 'static'});
+		$('#modal_show').modal( 'hide' ).data( 'bs.modal', null );
 	}
 </script>

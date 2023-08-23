@@ -137,7 +137,6 @@ class InstitutionLawController extends Controller
      */
     public function update(Request $request, $id)
     {
-        \Log::info($request);
         if ( !auth()->user()->can('planilla-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }

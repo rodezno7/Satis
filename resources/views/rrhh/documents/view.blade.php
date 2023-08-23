@@ -15,7 +15,11 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             @if ($ext == 'pdf')
                 <style>
-                    .pdfobject-container {width: 55rem; height: 50rem; border: 1rem solid rgba(0,0,0,.1); }
+                    .pdfobject-container {
+                        width: 87rem; 
+                        height: 40rem; 
+                        border: 1rem solid rgba(0,0,0,.1); 
+                    }
                 </style>
 
                 <div id="pdf">
@@ -29,7 +33,6 @@
             @endif
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12">
-            <h4>{{ __('rrhh.document') }}</h4>
             <ul>
                 <li><strong>{{ __('rrhh.document_type') }}:</strong> {{ $type->value }}</li>
                 @if ($document->date_expedition != null)
@@ -54,6 +57,6 @@
 <script>
     function closeModalView(){
 		$('#modal_edit_action').modal({backdrop: 'static'});
-		$('#modal_photo').modal( 'hide' ).data( 'bs.modal', null );
+		$('#modal_show').modal( 'hide' ).data( 'bs.modal', null );
 	}
 </script>

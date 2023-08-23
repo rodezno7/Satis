@@ -19,8 +19,8 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <style>
                 .pdfobject-container {
-                    width: 55rem;
-                    height: 50rem;
+                    width: 87rem;
+                    height: 49rem;
                     border: 1rem solid rgba(0, 0, 0, .1);
                 }
             </style>
@@ -39,6 +39,6 @@
         $('#modal_action').modal({
             backdrop: 'static'
         });
-        $('#modal_edit_action').modal('hide').data('bs.modal', null);
+        $('#modal_show').modal('hide').data('bs.modal', null);
     }
 </script>
