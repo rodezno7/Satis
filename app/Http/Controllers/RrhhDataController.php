@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Employees;
+use App\RrhhAbsenceInability;
 use App\RrhhData;
+use App\RrhhDocuments;
+use App\RrhhEconomicDependence;
+use App\RrhhPositionHistory;
+use App\RrhhStudy;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -428,35 +434,52 @@ class RrhhDataController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('employees')
-                ->where('afp_id', $id)
-                ->orWhere('civil_status_id', $id)
-                ->orWhere('department_id', $id)
-                ->orWhere('nationality_id', $id)
-                ->orWhere('position_id', $id)
-                ->orWhere('profession_id', $id)
-                ->orWhere('type_id', $id)
-                ->count();
+                $countEmployeeAfp = Employees::where('afp_id', $id)->count();
+                $countEmployeeCS = Employees::where('civil_status_id', $id)->count();
+                $countEmployeeNat = Employees::where('nationality_id', $id)->count();
+                $countEmployeeProf = Employees::where('profession_id', $id)->count();
+                $countEmployeeType = Employees::where('type_id', $id)->count();
+                $countEmployeePayment = Employees::where('payment_id', $id)->count();
+                $countPosition = RrhhPositionHistory::where('new_position1_id', $id)->count();
+                $countDepartement = RrhhPositionHistory::where('new_department_id', $id)->count();
+                $countDocument = RrhhDocuments::where('document_type_id', $id)->count();
+                $countStudy = RrhhStudy::where('type_study_id', $id)->count();
+                $countInability = RrhhAbsenceInability::where('type_inability_id', $id)->count();
+                $countAbsence = RrhhAbsenceInability::where('type_absence_id', $id)->count();
+                $countRelationship = RrhhEconomicDependence::where('type_relationship_id', $id)->count();
 
-                if ($count > 0) {
+                if (
+                    $countEmployeeAfp > 0 || 
+                    $countEmployeeCS > 0 || 
+                    $countEmployeeNat > 0 || 
+                    $countEmployeeProf > 0 || 
+                    $countEmployeeType > 0 || 
+                    $countEmployeePayment > 0 || 
+                    $countPosition > 0 || 
+                    $countDepartement > 0 ||
+                    $countDocument > 0 ||
+                    $countStudy > 0 ||
+                    $countInability > 0 ||
+                    $countAbsence > 0 ||
+                    $countRelationship > 0
+                ) {
                     $output = [
                         'success' => false,
                         'msg' => __('rrhh.item_has_childs')
                     ];
                 } else {
                     $item = RrhhData::findOrFail($id);
-                    $item->delete();
+                    //$item->delete();
                     $output = [
                         'success' => true,
                         'msg' => __('rrhh.deleted_successfully')
                     ];
                 }                
-            }
-            catch (\Exception $e){
+            }catch (\Exception $e){
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => __('rrhh.error')
+                    'msg' => $e->getMessage()
                 ];
             }
 
