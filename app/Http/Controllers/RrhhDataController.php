@@ -394,7 +394,19 @@ class RrhhDataController extends Controller
         }
 
         $request->validate([
-            'value' => 'required|unique:rrhh_datas,value,'.$id,
+            'value' => [
+                'required',
+                Rule::unique('rrhh_datas')
+                ->where(function ($query) {
+                    return $query->where('rrhh_header_id', request('rrhh_header_id'));
+                })
+                ->where(function ($query) {
+                    return $query->where('business_id', request()->session()->get('user.business_id'));
+                })
+                ->where(function ($query) {
+                    return $query->where('deleted_at', null);
+                })
+            ], 
         ]);
 
         try {
