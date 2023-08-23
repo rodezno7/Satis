@@ -541,7 +541,6 @@ class EmployeesController extends Controller
             'afp_number'             => 'nullable|regex:/^[0-9]+$/',
             'social_security_number' => 'nullable|regex:/^[0-9]+$/',
         ]);
-        \Log::info($request);
 
         try {
             $input_details = $request->only([

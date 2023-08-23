@@ -92,12 +92,12 @@
 
 	function files(id) 
 	{
-		$("#modal_content_personnel_action").html('');
+		$("#modal_content_edit_document").html('');
 		var url = "{!!URL::to('/rrhh-personnel-action-files/:id')!!}";
 		url = url.replace(':id', id);
 		$.get(url, function(data) {
-			$("#modal_content_personnel_action").html(data);
-			$('#modal_personnel_action').modal({backdrop: 'static'});
+			$("#modal_content_edit_document").html(data);
+			$('#modal_edit_action').modal({backdrop: 'static'});
 		});
 		$('#modal_action').modal('hide').data('bs.modal', null);
 	}

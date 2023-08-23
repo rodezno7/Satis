@@ -78,13 +78,13 @@
 
 <script type="text/javascript">
     function viewFilesContract(id, employee_id) {
-        $("#modal_content_edit_document").html('');
+        $("#modal_content_show").html('');
         var url = "{!! URL::to('/rrhh-contracts-show/:id/:employee_id') !!}";
         url = url.replace(':id', id);
         url = url.replace(':employee_id', employee_id)
         $.get(url, function(data) {
-            $("#modal_content_edit_document").html(data);
-            $('#modal_edit_action').modal({
+            $("#modal_content_show").html(data);
+            $('#modal_show').modal({
                 backdrop: 'static'
             });
         });

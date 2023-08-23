@@ -434,7 +434,6 @@ class AssistanceEmployeeController extends Controller
 
                                             $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
                                             $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
-                                            \Log::emergency("mens ".$minutes);
                                         }
                                     }
 

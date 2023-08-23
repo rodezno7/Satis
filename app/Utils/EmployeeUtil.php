@@ -74,7 +74,6 @@ class EmployeeUtil extends Util
             return strtolower($day . ' de ' . $month . ' ' . $year);
         } else {
             if ($day == '01') {
-                \Log::info(mb_strtolower('Al primer día del mes de ' . $month . ' de ' . $year));
                 return 'Al ' . mb_strtolower('primer día del mes de ' . $month . ' de ' . $year);
             } else {
                 return 'A ' . mb_strtolower('los ' . $day . ' días del mes de ' . $month . ' de ' . $year);

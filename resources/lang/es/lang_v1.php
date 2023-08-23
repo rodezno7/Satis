@@ -975,5 +975,6 @@ return [
 	"malformed_file" => "Archivo con formato inválido",
 	"instruction_line7" => "Utilizar la plantilla provista.",
 	"enable_sell_delete" => "Habilitar borrado de ventas",
-	"module_rrhh" => "Módulo de RRHH"
+	"module_rrhh" => "Módulo de RRHH",
+	"City" => "Municipio"
 ];

@@ -321,7 +321,6 @@ class RrhhDocumentsController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        \Log::info($request);
         $item = RrhhDocuments::where('id', $request->id)->where('employee_id', $request->employee_id)->firstOrFail();
         $business_id = request()->session()->get('user.business_id');
         $type = DB::table('rrhh_datas')
