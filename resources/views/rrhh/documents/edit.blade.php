@@ -178,6 +178,7 @@
                 let html = data.text;
                 return html;
             },
+			placeholder: LANG.city,
     	});	
 	}
 

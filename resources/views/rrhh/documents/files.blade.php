@@ -38,12 +38,12 @@
 
 <script type="text/javascript">
     function viewFile(id) {
-        $("#modal_content_photo").html('');
+        $("#modal_content_show").html('');
         var url = "{!! URL::to('/rrhh-documents-viewFile/:id') !!}";
         url = url.replace(':id', id);
         $.get(url, function(data) {
-            $("#modal_content_photo").html(data);
-            $('#modal_photo').modal({
+            $("#modal_content_show").html(data);
+            $('#modal_show').modal({
                 backdrop: 'static'
             });
         });

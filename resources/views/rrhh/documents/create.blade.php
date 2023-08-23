@@ -168,6 +168,7 @@
 				//state_id = $('#city_id').val(data.name);
                 return html;
             },
+			placeholder: LANG.city,
     	});	
 	}
 
