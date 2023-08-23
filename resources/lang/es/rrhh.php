@@ -120,6 +120,13 @@ return[
     'mobile_phone' => 'Teléfono móvil',
     'date_required' => 'Fecha de expiración es requerida',
     'Date_required' => 'Fecha de expiración',
+
+    'expedition_place' => 'Lugar de expedición es requerida',
+    'Expedition_place' => 'Lugar de expedición',
+
+    'number_required' => 'Número del documento es requerido',
+    'Number_required' => 'Número del documento',
+    
     'date_expedition' => 'Fecha de expedición',
     'date_expiration' => 'Fecha de expiración',
     'no_file' => 'Falta que suba un documento de este tipo',

@@ -73,6 +73,7 @@ class PlanillaController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->get();
         $calculationTypes = CalculationType::where('business_id', $business_id)->get();
+        
         return view('planilla.create', compact('paymentPeriods', 'calculationTypes'));
     }
 
