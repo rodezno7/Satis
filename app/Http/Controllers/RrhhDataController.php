@@ -469,7 +469,7 @@ class RrhhDataController extends Controller
                     ];
                 } else {
                     $item = RrhhData::findOrFail($id);
-                    //$item->delete();
+                    $item->delete();
                     $output = [
                         'success' => true,
                         'msg' => __('rrhh.deleted_successfully')
