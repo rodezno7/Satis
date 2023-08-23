@@ -98,6 +98,23 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             false, //AFP
             false, //Constancia de antedentes penales
         ];
+
+        $numberRequiredTiposDocumento = [
+            true, //DUI
+            true, //NIT
+            true, //ISSS
+            true, //AFP
+            true, //Constancia de antedentes penales
+        ];
+
+        $expeditionPlaceTiposDocumento = [
+            true, //DUI
+            false, //NIT
+            false, //ISSS
+            false, //AFP
+            false, //Constancia de antedentes penales
+        ];
+
         
         $capacidadesEspeciales = [
             'Perdida de la vista en un ojo', 
@@ -258,6 +275,8 @@ class RrhhCatalogueHeaderSeeder extends Seeder
                             'value' => $tipoDocumento,
                             'status' => 1,
                             'date_required' => $dateRequiredTiposDocumento[$key],
+                            'expedition_place' => $expeditionPlaceTiposDocumento[$key],
+                            'number_required' => $numberRequiredTiposDocumento[$key],
                             'rrhh_header_id' => $header->id,
                             'business_id' => $item->id
                         ]);

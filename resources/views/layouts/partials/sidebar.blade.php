@@ -115,8 +115,9 @@
       @endif
       {{-- fin modulo de usuarios --}}
 
-      {{-- Inicio Recurso humano --}}
+      
       @if(in_array('module_rrhh', $enabled_modules))
+        {{-- Inicio Recurso humano --}}
         @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_import_employees.create') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
         <li
           class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-import-employees', 'rrhh-contracts-masive', 'rrhh-personnel-action-masive', 'rrhh-assistances', 'rrhh-catalogues', 'rrhh-setting']) ? 'active active-sub' : '' }}"
@@ -213,8 +214,71 @@
           </ul>
         </li>
         @endif
+        {{-- Fin Recurso humano --}}
+
+        {{-- Inicio Planilla --}}
+        @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
+          <li
+            class="treeview {{ in_array($request->segment(1), ['planilla', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
+            id="tour_step4">
+            <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu" id="rrhh_over">
+              @can('planilla.view')
+              <li class="{{ $request->segment(1) == 'planilla' ? 'active' : '' }}">
+                <a href="{{action('PlanillaController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                  @lang('planilla.planilla')
+                </a>
+              </li>
+              @endcan
+              @can('planilla-catalogues.view')
+              <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
+                <a href="#">
+                  <i class="fa fa-table"></i>
+                  <span class="title">
+                    @lang('planilla.catalogues')
+                  </span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li class="{{ $request->segment(1) == 'institution-law' ? 'active' : '' }}">
+                    <a href="{{ action('InstitutionLawController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.institution_laws')
+                      </span>
+                    </a>
+                  </li>
+                  <li class="{{ $request->segment(1) == 'law-discount' ? 'active' : '' }}">
+                    <a href="{{ action('LawDiscountController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.discounts_table')
+                      </span>
+                    </a>
+                  </li>
+                  <li class="{{ $request->segment(1) == 'bonus-calculation' ? 'active' : '' }}">
+                    <a href="{{ action('BonusCalculationController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.bonus_table')
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              @endcan
+            </ul>
+          </li>
+        @endif
+        {{-- Fin Planilla --}}
       @endif
-      {{-- Fin Recurso humano --}}
+      
 
       <!-- Accounting Menu -->
       @if (auth()->user()->can('catalogue')

@@ -43,10 +43,10 @@ class RrhhDocumentsController extends Controller
         $employee = Employees::findOrFail($id);
         $business_id = request()->session()->get('user.business_id');
         $documents = DB::table('rrhh_documents as document')
-        ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
-        ->select('document.id as id', 'type.value as type', 'document.number as number', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
-        ->where('document.employee_id', $employee->id)
-        ->get();
+            ->join('rrhh_datas as type', 'type.id', '=', 'document.document_type_id')
+            ->select('document.id as id', 'type.value as type', 'type.date_required as date_required', 'document.number as number', 'document.date_expedition as date_expedition', 'document.date_expiration as date_expiration')
+            ->where('document.employee_id', $employee->id)
+            ->get();
         $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->get();
         
         return view('rrhh.documents.documents', compact('documents', 'employee', 'types'));
@@ -102,30 +102,55 @@ class RrhhDocumentsController extends Controller
         if ( !auth()->user()->can('rrhh_document_employee.create') ) {
             abort(403, 'Unauthorized action.');
         }
+
+        $requiredDate = 'nullable';
+        $requiredNumber = 'nullable';
+        $requiredPlace = 'nullable';
         if($request->document_type_id != null){
             $business_id = request()->session()->get('user.business_id');
-            $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $request->document_type_id)->first();
+            $type = DB::table('rrhh_datas')
+                ->where('business_id', $business_id)
+                ->where('rrhh_header_id', 9)
+                ->where('status', 1)
+                ->where('id', $request->document_type_id)
+                ->first();
+
             if($type){
+                if($type->date_required == true){
+                    $requiredDate = 'required';
+                }
+        
+                if($type->number_required == true){
+                    $requiredNumber = 'required';
+                }
+        
+                if($type->expedition_place == true){
+                    $requiredPlace = 'required';
+                }
+    
                 $request->validate([
-                    'number'                => 'required',
-                    'date_expedition'       => 'required',
-                    'date_expiration'       => 'required',
-                    'files'                 => 'required',
+                    'number'          => $requiredNumber,
+                    'date_expedition' => 'required',
+                    'date_expiration' => $requiredDate,
+                    'state_id'        => $requiredPlace,
+                    'city_id'         => $requiredPlace,
+                    'files'           => 'required',
                 ]);
             }else{
                 $request->validate([
-                    'number'                => 'required',
-                    'files'                 => 'required',
-                    'date_expedition'       => 'required',
+                    'document_type_id' => 'required|exists:rrhh_datas,id,status,1,rrhh_header_id,9,business_id,'.$business_id,
+                    'number'           => 'required',
+                    'files'            => 'required',
+                    'date_expedition'  => 'required',
                 ]);
             }
         }
         else{
             $request->validate([
-                'document_type_id'      => 'required',
-                'number'                => 'required',
-                'files'                 => 'required',
-                'date_expedition'       => 'required',
+                'document_type_id' => 'required',
+                'number'           => 'required',
+                'files'            => 'required',
+                'date_expedition'  => 'required',
             ]);
         }
 
@@ -274,7 +299,6 @@ class RrhhDocumentsController extends Controller
         $states = DB::table('states')->pluck('name', 'id');
         $cities = DB::table('cities')->where('state_id', $document->state_id)->pluck('name', 'id');
         $type = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->where('id', $document->document_type_id)->first();
-        //$types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'ASC')->pluck('value', 'id');
         $employee_id = $document->employee_id;
 
         return view('rrhh.documents.edit', compact('type', 'document', 'states', 'cities', 'employee_id'));
@@ -297,23 +321,45 @@ class RrhhDocumentsController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $item = RrhhDocuments::findOrFail($request->id);
+        \Log::info($request);
+        $item = RrhhDocuments::where('id', $request->id)->where('employee_id', $request->employee_id)->firstOrFail();
         $business_id = request()->session()->get('user.business_id');
-        $type = DB::table('rrhh_datas')->where('business_id', $business_id)->where('rrhh_header_id', 9)->where('status', 1)->where('date_required', 1)->where('id', $item->document_type_id)->first();
+        $type = DB::table('rrhh_datas')
+            ->where('business_id', $business_id)
+            ->where('rrhh_header_id', 9)
+            ->where('status', 1)
+            ->where('id', $item->document_type_id)
+            ->first();
+
+        $requiredDate = 'nullable';
+        $requiredNumber = 'nullable';
+        $requiredPlace = 'nullable';
         if($type){
+            if($type->date_required == true){
+                $requiredDate = 'required';
+            }
+        
+            if($type->number_required == true){
+                $requiredNumber = 'required';
+            }
+        
+            if($type->expedition_place == true){
+                $requiredPlace = 'required';
+            }
+    
             $request->validate([
-                'number'                => 'required',
-                'date_expedition'       => 'required',
-                'date_expiration'       => 'required',
-                //'files'                  => 'required',
+                'number'          => $requiredNumber,
+                'date_expedition' => 'required',
+                'date_expiration' => $requiredDate,
+                'state_id'        => $requiredPlace,
+                'city_id'         => $requiredPlace,
             ]);
         }else{
             $request->validate([
-                'number'                => 'required',
-                //'files'                  => 'required',
                 'date_expedition'       => 'required',
             ]);
         }
+
         try {
             $input_details = $request->only([
                 'date_expiration', 
@@ -321,7 +367,6 @@ class RrhhDocumentsController extends Controller
                 'number',
                 'state_id', 
                 'city_id'
-                //'files'
             ]);
 
             

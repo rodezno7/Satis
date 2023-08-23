@@ -16,14 +16,14 @@
 					<option value="{{ $type->id }}">{{ $type->value }}</option>
 				</select>
 				
-				<input type="hidden" name="document_type_id" value="{{ $type->id }}" id="document_type_id">
+				<input type="hidden" name="document_type_id" value="{{ $type->id }}" id="document_type_id_ed">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 			</div>
 		</div>
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.number')</label> <span class="text-danger">*</span>
-				<input type="text" name='number' id='number' value='{{ $document->number }}'
+				<label>@lang('rrhh.number')</label>@if ($type->number_required == 1) <span class="text-danger">*</span> @endif 
+				<input type="text" name='number' id='number1' value='{{ $document->number }}'
 					class="form-control form-control-sm" placeholder="@lang('rrhh.number')">
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 		</div>
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.state_expedition')</label>
+				<label>@lang('rrhh.state_expedition')</label> @if ($type->expedition_place == 1) <span class="text-danger">*</span> @endif 
 				{!! Form::select("state_id", $states, $document->state_id,
 				['id' => 'state_id1', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 				__('rrhh.state'), 'style' => 'width: 100%;']) !!}
@@ -51,7 +51,7 @@
 		</div>
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
-				<label>@lang('rrhh.city_expedition')</label>
+				<label>@lang('rrhh.city_expedition')</label>@if ($type->expedition_place == 1) <span class="text-danger">*</span> @endif
 				{!! Form::select("city_id", $cities, $document->city_id,
 				['id' => 'city_id1', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 				__('rrhh.city'), 'style' => 'width: 100%;']) !!}
@@ -77,7 +77,30 @@
 	$( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 		select2 = $('.select2').select2();
-		//updateCitiesD();
+		
+
+		let document_type = $('#document_type_id_ed').val();
+		var type = {!! json_encode($type) !!};
+		$("#date_expiration1").prop('required', false);
+		$("#city_id1").prop('required', false);
+		$("#state_id1").prop('required', false);
+		$("#number1").prop('required', false);
+
+		if (type.id == document_type) {
+			if(type.date_required == 1){
+				$("#date_expiration").prop('required', true);
+			}
+
+			if(type.expedition_place == 1){
+				$("#city_id").prop('required', true);
+				$("#state_id").prop('required', true);
+			}
+
+			if(type.number_required == 1){
+				$("#number").prop('required', true);
+			}
+		}
+
 	});
 
 	$('#state_id1').change(function(){
@@ -97,7 +120,6 @@
 	validExt = ['jpg', 'jpeg', 'png', 'pdf'];
 
 	$('#files').on('change', function() {
-		console.log(this.files);
 		var invalidFormat = 0;
 		for (var i = 0; i < this.files.length; i++) {
 			extension = this.files[i].type.split('/')[1];

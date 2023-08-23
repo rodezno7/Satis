@@ -738,6 +738,29 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     
 
 
+    // Route Module Planilla
+    //Routes Planilla
+    Route::resource('planilla', 'PlanillaController');
+    Route::get('planilla-getPlanillas', 'PlanillaController@getPlanillas');
+    Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
+    Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
+    Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');
+    Route::get('/planilla/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
+
+
+    //Route catalogues
+    Route::resource('institution-law', 'InstitutionLawController');
+    Route::put('institution-law/{id}/edit', 'InstitutionLawController@update');
+    Route::get('institution-law-getInstitutionLaws', 'InstitutionLawController@getInstitutionLaws');
+    
+    Route::resource('law-discount', 'LawDiscountController');
+    Route::put('law-discount/{id}/edit', 'InstitutionLawController@update');
+    Route::get('law-discount-getLawDiscounts', 'LawDiscountController@getLawDiscounts');
+
+    Route::resource('bonus-calculation', 'BonusCalculationController');
+    Route::put('bonus-calculation/{id}/edit', 'InstitutionLawController@update');
+    Route::get('bonus-calculation-getBonusCalculations', 'BonusCalculationController@getBonusCalculations');
+
 
     /** Cost Centers */
     Route::get('cost_centers/get_main_accounts/{cost_center_id}', 'CostCenterController@getMainAccounts');

@@ -15,6 +15,8 @@
 					<thead>
 						<th>@lang('rrhh.name')</th>
 						<th>@lang('rrhh.Date_required')</th>
+						<th>@lang('rrhh.Number_required')</th>
+						<th>@lang('rrhh.Expedition_place')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>

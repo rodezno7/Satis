@@ -24,7 +24,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.number')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.number')</label> <span class="text-danger" id="span_number" style="display: none">*</span>
 					<input type="text" name='number' id='number' class="form-control form-control-sm"
 						placeholder="@lang('rrhh.number')">
 				</div>
@@ -43,7 +43,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.state_expedition')</label>
+					<label>@lang('rrhh.state_expedition')</label> <span class="text-danger" id="span_state" style="display: none">*</span>
 					{!! Form::select("state_id", $states, null,
 					['id' => 'state_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.state'), 'style' => 'width: 100%;']) !!}
@@ -52,7 +52,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.city_expedition')</label>
+					<label>@lang('rrhh.city_expedition')</label> <span class="text-danger" id="span_city" style="display: none">*</span>
 					{!! Form::select("city_id", [], null,
 					['id' => 'city_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.city'), 'style' => 'width: 100%;']) !!}
@@ -110,7 +110,6 @@
 	validExt = ['jpg', 'jpeg', 'png', 'pdf'];
 
 	$('#files').on('change', function() {
-		console.log(this.files);
 		var invalidFormat = 0;
 		for (var i = 0; i < this.files.length; i++) {
 			extension = this.files[i].type.split('/')[1];
@@ -172,24 +171,35 @@
     	});	
 	}
 
-
-	
 	$('#document_type_id').on('change', function() {
 		let document_type = $(this).val();
 		var types = {!! json_encode($type_documents) !!};
-		
+		$('#div_date_expiration').hide();
+		$('#span_state').hide();
+		$('#span_city').hide();
+		$('#span_number').hide();
+		$("#date_expiration").prop('required', false);
+		$("#city_id").prop('required', false);
+		$("#state_id").prop('required', false);
+		$("#number").prop('required', false);
+
 		types.forEach(function(type) {
 			if (type.id == document_type) {
 				if(type.date_required == 1){
-					//$('#div_date_expedition').show();
 					$('#div_date_expiration').show();
-					$("#date_expedition").prop('required', true);
 					$("#date_expiration").prop('required', true);
-				}else{
-					//$('#div_date_expedition').hide();
-					$('#div_date_expiration').hide();
-					$("#date_expedition").prop('required', false);
-					$("#date_expiration").prop('required', false);
+				}
+
+				if(type.expedition_place == 1){
+					$('#span_state').show();
+					$('#span_city').show();
+					$("#city_id").prop('required', true);
+					$("#state_id").prop('required', true);
+				}
+
+				if(type.number_required == 1){
+					$('#span_number').show();
+					$("#number").prop('required', true);
 				}
 			}
 		});
