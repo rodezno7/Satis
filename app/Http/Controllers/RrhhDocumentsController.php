@@ -71,7 +71,7 @@ class RrhhDocumentsController extends Controller
         $states = DB::table('states')->pluck('name', 'id');
         $cities = DB::table('cities')->pluck('name', 'id');
         $business_id = request()->session()->get('user.business_id');
-        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
+        $types = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->where('deleted_at', null)->orderBy('value', 'DESC')->get();
         $documents = DB::table('rrhh_documents')->where('employee_id', $id)->get();
 
         for ($i=0; $i < count($documents); $i++) { 

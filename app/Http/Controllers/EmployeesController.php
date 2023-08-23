@@ -454,7 +454,7 @@ class EmployeesController extends Controller
         ->where('document.employee_id', $employee->id)
         ->get();
 
-        $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->orderBy('value', 'DESC')->get();
+        $type_documents = DB::table('rrhh_datas')->where('rrhh_header_id', 9)->where('business_id', $business_id)->where('status', 1)->where('deleted_at', null)->orderBy('value', 'DESC')->get();
        
         for ($i=0; $i < count($documents); $i++) { 
             if(isset($type_documents)){
@@ -501,7 +501,6 @@ class EmployeesController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        //dd($request);
         $employee = Employees::findOrFail($id);
         $position = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->count();
         $salary = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->count();
