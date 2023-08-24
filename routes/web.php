@@ -727,6 +727,9 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('rrhh-type-wages', 'RrhhTypeWageController');
     Route::get('rrhh/getTypeWagesData', 'RrhhTypeWageController@getTypeWagesData');
 
+    Route::resource('rrhh-types-income-discounts', 'RrhhTypeIncomeDiscountController');
+    Route::get('rrhh/getTypeIncomeDiscountData', 'RrhhTypeIncomeDiscountController@getTypeIncomeDiscountData');
+
     Route::resource('rrhh-type-personnel-action', 'RrhhTypePersonnelActionController');
     Route::get('rrhh/getTypePersonnelActionData', 'RrhhTypePersonnelActionController@getTypePersonnelActionData');
     Route::post('rrhh-type-personnel-action/{id}', 'RrhhTypePersonnelActionController@update');

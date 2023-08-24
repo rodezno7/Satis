@@ -13,7 +13,13 @@
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-condensed table-hover" id="types_income_discounts-table" width="100%">
 					<thead>
+						<th>@lang('rrhh.type')</th>
 						<th>@lang('rrhh.name')</th>
+						<th>@lang('rrhh.percentage')</th>
+						<th>@lang('rrhh.affect_isss')</th>
+						<th>@lang('rrhh.affect_afp')</th>
+						<th>@lang('rrhh.affect_rent')</th>
+						<th>@lang('rrhh.Planilla_column')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>

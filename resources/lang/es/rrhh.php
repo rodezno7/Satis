@@ -421,5 +421,13 @@ return[
     'dni_format' => 'El formato del DUI es 00000000-0',
     'general_format' => 'Debe separarlo por medio de guion (-)',
     'edit_employees' => 'Editar empleados',
-    'curriculum_vitae' => 'Curriculum vitae'
+    'curriculum_vitae' => 'Curriculum vitae',
+    'percentage' => 'Porcentaje',
+    'affect_isss' => 'Afecta isss',
+    'affect_afp' => 'Afecta afp',
+    'affect_rent' => 'Afecta renta',
+    'planilla_column' => 'Columna que afecta en planilla',
+    'Planilla_column' => 'Columna planilla',
+    'income' => 'Ingreso',
+    'discount' => 'Descuento',
 ];

@@ -46,4 +46,9 @@ return[
 	'october' => 'Octubre',
 	'november' => 'Noviembre',
 	'december' => 'Diciembre',
+    'number_daytime_overtime' => 'Número de horas extras diurnas',
+    'number_night_overtime_hours' => 'Número de horas extras nocturnas',
+    'commissions' => 'Comisiones',
+    'other_deductions' => 'Otras deducciones',
+    'rent' => 'Renta',
 ];

@@ -46,4 +46,10 @@ return[
 	'october' => 'October',
 	'november' => 'November',
 	'december' => 'December',
+    'number_daytime_overtime' => 'Number daytime overtime',
+    'number_night_overtime_hours' => 'Number night overtime hours',
+    'commissions' => 'Commissions',
+    'other_deductions' => 'Other deductions',
+    'rent' => 'Rent',
+
 ];
