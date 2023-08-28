@@ -423,4 +423,8 @@ return[
     'Planilla_column' => 'Planilla column',
     'income' => 'Income',
     'discount' => 'Discount',
+    'total_value' => 'Total value',
+    'quota' => 'Quota',
+    'quota_value' => 'Quota value',
+    'apply_in' => 'Apply in',
 ];

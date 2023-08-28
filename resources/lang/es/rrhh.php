@@ -430,4 +430,11 @@ return[
     'Planilla_column' => 'Columna planilla',
     'income' => 'Ingreso',
     'discount' => 'Descuento',
+    'income_discount' => 'Ingresos o descuentos',
+    'total_value' => 'Monto total',
+    'quota' => 'Cuota',
+    'quota_value' => 'Valor de la cuota',
+    'apply_in' => 'Aplicar en',
+    'types_incomes' => 'Tipos de ingresos',
+    'types_discounts' => 'Tipos de descuentos',
 ];

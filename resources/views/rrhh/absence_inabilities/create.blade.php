@@ -121,7 +121,7 @@
     $('#div_type_absence').hide();
     $("#type_absence_id").prop('required', false);
 		
-    //Evaluando si la accion de personal requiere autorizacion
+    //Evaluando si es ausencia o incapacidad
 		if (type == 1) { //Ausencia
 			$('#div_amount').show();
 			$("#amount").prop('required', true);

@@ -22,6 +22,10 @@ class RrhhTypeIncomeDiscount extends Model
         'deleted_at'
     ];
 
+    public function rrhhIncomeDiscounts() {
+        return $this->hasMany('App\RrhhIncomeDiscount');
+    }
+
     public static $planillaColumns = [
         'Número de horas extras diurnas',
         'Número de horas extras nocturnas',

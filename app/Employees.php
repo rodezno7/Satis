@@ -131,6 +131,10 @@ class Employees extends Model
         return $this->hasMany('App\RrhhDocuments');
     }
 
+    public function rrhhIncomeDiscounts(){
+        return $this->hasMany('App\RrhhIncomeDiscount', 'employee_id');
+    }
+
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)
     {
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\RrhhIncomeDiscount;
 use Illuminate\Http\Request;
 use App\RrhhTypeIncomeDiscount;
 use DB;
@@ -32,14 +33,27 @@ class RrhhTypeIncomeDiscountController extends Controller
 
         return DataTables::of($data)
         ->addColumn(
+            'type',
+            function ($row) {
+                if ($row->type == 1) {
+
+                    $html = __('rrhh.income');
+                } else {
+
+                    $html = __('rrhh.discount');
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
             'isss',
             function ($row) {
                 if ($row->isss == 1) {
 
-                    $html = 'Si aplica';
+                    $html = 'Si';
                 } else {
 
-                    $html = 'No aplica';
+                    $html = 'No';
                 }
                 return $html;
             }
@@ -48,10 +62,10 @@ class RrhhTypeIncomeDiscountController extends Controller
             function ($row) {
                 if ($row->afp == 1) {
 
-                    $html = 'Si aplica';
+                    $html = 'Si';
                 } else {
 
-                    $html = 'No aplica';
+                    $html = 'No';
                 }
                 return $html;
             }
@@ -61,10 +75,10 @@ class RrhhTypeIncomeDiscountController extends Controller
             function ($row) {
                 if ($row->rent == 1) {
 
-                    $html = 'Si aplica';
+                    $html = 'Si';
                 } else {
 
-                    $html = 'No aplica';
+                    $html = 'No';
                 }
                 return $html;
             }
@@ -261,9 +275,8 @@ class RrhhTypeIncomeDiscountController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('employees')
-                ->where('type_id', $id)               
-                ->count();
+                $business_id = request()->session()->get('user.business_id');
+                $count = RrhhIncomeDiscount::where('rrhh_type_income_discount_id', $id)->where('business_id', $business_id)->count();
 
                 if ($count > 0) {
                     $output = [
