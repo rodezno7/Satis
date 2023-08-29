@@ -115,42 +115,170 @@
       @endif
       {{-- fin modulo de usuarios --}}
 
-      {{-- Inicio Recurso humano --}}
-      @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize'))
-      <li
-        class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-catalogues', 'rrhh-personnel-action']) ? 'active active-sub' : '' }}"
-        id="tour_step4">
-        <a href="#" id="tour_step4_menu"><i class="fa fa-user" aria-hidden="true"></i><span>RRHH</span>
-          <span class="pull-right-container">
-            <i class="fa fa-angle-left pull-right"></i>
-          </span>
-        </a>
-        <ul class="treeview-menu" id="rrhh_over">
-          @can('rrhh_employees.view')
-          <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
-            <a href="{{action('EmployeesController@index')}}" id="tour_step2"><i class="fa fa-user"></i>
-              @lang('rrhh.employee')
+      
+      @if(in_array('module_rrhh', $enabled_modules))
+        {{-- Inicio Recurso humano --}}
+        @if(auth()->user()->can('rrhh_employees.view') || auth()->user()->can('rrhh_import_employees.create') || auth()->user()->can('rrhh_catalogues.view') || auth()->user()->can('rrhh_personnel_action.authorize') || auth()->user()->can('rrhh_assistance.view') || auth()->user()->can('rrhh_setting.access'))
+        <li
+          class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-import-employees', 'rrhh-contracts-masive', 'rrhh-personnel-action-masive', 'rrhh-assistances', 'rrhh-catalogues', 'rrhh-setting']) ? 'active active-sub' : '' }}"
+          id="tour_step4">
+          <a href="#" id="tour_step4_menu"><i class="fa fa-address-book" aria-hidden="true"></i><span>RRHH</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" id="rrhh_over">
+            @can('rrhh_employees.view')
+            <li class="treeview {{ in_array($request->segment(1), ['rrhh-employees', 'rrhh-import-employees', 'rrhh-personnel-action-masive', 'rrhh-contracts-masive']) ? 'active active-sub' : '' }}">
+              <a href="#">
+                <i class="fa fa-user"></i>
+                <span class="title">
+                  @lang('rrhh.employee')
+                </span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li class="{{ $request->segment(1) == 'rrhh-employees' ? 'active' : '' }}">
+                  <a href="{{ action('EmployeesController@index') }}">
+                    <i class="fa fa-newspaper-o"></i>
+                    <span class="title">
+                      @lang('rrhh.general_payroll')
+                    </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhImportEmployeesController@create') }}">
+                    <i class="fa fa-download"></i>
+                    <span class="title">
+                      @lang('rrhh.import_employees')
+                    </span>
+                  </a>
+                </li>
+                {{-- <li class="{{ $request->segment(1) == 'rrhh-import-employees' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhImportEmployeesController@edit') }}">
+                    <i class="fa fa-download"></i>
+                    <span class="title">
+                      @lang('rrhh.edit_employees')
+                    </span>
+                  </a>
+                </li> --}}
+                <li class="{{ $request->segment(1) == 'rrhh-personnel-action-masive' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhPersonnelActionController@createMasive') }}">
+                    <i class="fa fa-drivers-license"></i>
+                    <span class="title">
+                      @lang('rrhh.personnel_actions')
+                    </span>
+                  </a>
+                </li>
+                <li class="{{ $request->segment(1) == 'rrhh-contracts-masive' ? 'active' : '' }}">
+                  <a href="{{ action('RrhhContractController@createMassive') }}">
+                    <i class="fa fa-file-text"></i>
+                    <span class="title">
+                     @lang('rrhh.massive_contract')
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            @endcan
+            @can('rrhh_personnel_action.authorize')
+            <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
+              <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>
+                @lang('rrhh.authorizations')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_assistance.view')
+            <li class="{{ $request->segment(1) == 'rrhh-assistances' ? 'active' : '' }}">
+              <a href="{{action('AssistanceEmployeeController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                @lang('rrhh.assistance')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_catalogues.view')
+            <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
+              <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-table"></i>
+                @lang('rrhh.catalogues')
+              </a>
+            </li>
+            @endcan
+            @can('rrhh_setting.access')
+            <li class="{{ $request->segment(1) == 'rrhh-setting' ? 'active' : '' }}">
+              <a href="{{action('SettingController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
+                @lang('rrhh.settings')
+              </a>
+            </li>
+            @endcan
+          </ul>
+        </li>
+        @endif
+        {{-- Fin Recurso humano --}}
+
+        {{-- Inicio Planilla --}}
+        @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
+          <li
+            class="treeview {{ in_array($request->segment(1), ['planilla', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
+            id="tour_step4">
+            <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
             </a>
+            <ul class="treeview-menu" id="rrhh_over">
+              @can('planilla.view')
+              <li class="{{ $request->segment(1) == 'planilla' ? 'active' : '' }}">
+                <a href="{{action('PlanillaController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                  @lang('planilla.planilla')
+                </a>
+              </li>
+              @endcan
+              @can('planilla-catalogues.view')
+              <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
+                <a href="#">
+                  <i class="fa fa-table"></i>
+                  <span class="title">
+                    @lang('planilla.catalogues')
+                  </span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li class="{{ $request->segment(1) == 'institution-law' ? 'active' : '' }}">
+                    <a href="{{ action('InstitutionLawController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.institution_laws')
+                      </span>
+                    </a>
+                  </li>
+                  <li class="{{ $request->segment(1) == 'law-discount' ? 'active' : '' }}">
+                    <a href="{{ action('LawDiscountController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.discounts_table')
+                      </span>
+                    </a>
+                  </li>
+                  <li class="{{ $request->segment(1) == 'bonus-calculation' ? 'active' : '' }}">
+                    <a href="{{ action('BonusCalculationController@index') }}">
+                      <i class="fa fa-newspaper-o"></i>
+                      <span class="title">
+                        @lang('planilla.bonus_table')
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              @endcan
+            </ul>
           </li>
-          @endcan
-          @can('rrhh_personnel_action.authorize')
-          <li class="{{ $request->segment(1) == 'rrhh-personnel-action' ? 'active' : '' }}">
-            <a href="{{action('RrhhPersonnelActionController@index')}}" id="tour_step2"><i class="fa fa-check"></i>
-              @lang('rrhh.authorizations')
-            </a>
-          </li>
-          @endcan
-          @can('rrhh_catalogues.view')
-          <li class="{{ $request->segment(1) == 'rrhh-catalogues' ? 'active' : '' }}">
-            <a href="{{action('RrhhHeaderController@index')}}" id="tour_step2"><i class="fa fa-cogs"></i>
-              @lang('rrhh.catalogues')
-            </a>
-          </li>
-          @endcan
-        </ul>
-      </li>
+        @endif
+        {{-- Fin Planilla --}}
       @endif
-      {{-- Fin Recurso humano --}}
+      
 
       <!-- Accounting Menu -->
       @if (auth()->user()->can('catalogue')
@@ -900,6 +1028,7 @@
         'balances_customer',
         'accounts-receivable',
         'collections',
+        'payments',
         'portfolios',
         'credit-documents',
         'business_types',
@@ -929,6 +1058,11 @@
             @can('cxc.collections')
             <li class="{{ $request->segment(1) == 'collections' ? 'active' : '' }}">
                 <a href="{{action('ReportController@getCollections')}}"><i class="fa fa-money"></i> @lang('cxc.collections')</a>
+            </li>
+            @endcan
+            @can('sell.create_payments')
+            <li class="{{ $request->segment(1) == 'payments' && $request->segment(2) == 'multi-payments' ? 'active' : '' }}">
+                <a href="{{action('TransactionPaymentController@multiPayments')}}"><i class="fa fa-money"></i> @lang('payment.multi_payments')</a>
             </li>
             @endcan
 
@@ -1404,7 +1538,8 @@
     auth()->user()->can('contact.create') ||
     auth()->user()->can('contact.import') ||
     auth()->user()->can('payment_commitment.view') ||
-    auth()->user()->can('debts-to-pay.view') ||
+    auth()->user()->can('debts_to_pay.view') ||
+    auth()->user()->can('suggested_purchase.view') ||
     auth()->user()->can('import_expense.view') ||
     auth()->user()->can('import_expense.create') ||
     auth()->user()->can('apportionment.view') ||
@@ -1419,6 +1554,7 @@
           'supplier',
           'payment-commitments',
           'debts-to-pay-report',
+          'suggested-purchase-report',
           'import-expenses',
           'import',
           'apportionments'
@@ -1462,11 +1598,20 @@
         @endcan
 
         {{-- Debts to pay --}}
-        @if(auth()->user()->can('debts-to-pay.view'))
+        @if(auth()->user()->can('debts_to_pay.view'))
         <li
           class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'debts-to-pay-report') ? 'active' : '' }}">
           <a href="{{action('PurchaseController@debtsToPay')}}"><i
               class="fa fa-money"></i>@lang('contact.debts_to_pay')</a>
+        </li>
+        @endcan
+
+        {{-- Suggested purchase --}}
+        @if(auth()->user()->can('suggested_purchase.view'))
+        <li
+            class="{{ ($request->segment(1) == 'purchases' && $request->segment(2) == 'suggested-purchase-report') ? 'active' : '' }}">
+            <a href="{{action('PurchaseController@suggestedPurchase')}}">
+                <i class="fa fa-shopping-cart"></i>@lang('contact.suggested_purchase')</a>
         </li>
         @endcan
 
@@ -2025,7 +2170,7 @@
       </ul>
     </li>
     @endif
-
+  
     @can('backup')
     <li class="treeview {{  in_array( $request->segment(1), ['backup']) ? 'active active-sub' : '' }}">
       <a href="{{action('BackUpController@index')}}"><i class="fa fa-dropbox"></i> <span>@lang('lang_v1.backup')</span>

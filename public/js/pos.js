@@ -285,6 +285,7 @@ $(document).ready(function () {
 		if (data) {
 			$('input#allowed_credit').val(data.allowed_credit);
 			$('input#is_withholding_agent').val(data.is_withholding_agent);
+            $('input#is_exempt').val(data.is_exempt);
 		}
 
 		// Fill select of customer vehicles

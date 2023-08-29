@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Employees;
+use App\RrhhAbsenceInability;
 use App\RrhhData;
+use App\RrhhDocuments;
+use App\RrhhEconomicDependence;
+use App\RrhhPositionHistory;
+use App\RrhhStudy;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -51,6 +57,32 @@ class RrhhDataController extends Controller
             'date_required',
             function ($row) {
                 if ($row->date_required == 1) {
+
+                    $html = 'Requerida';
+                } else {
+
+                    $html = 'No requerida';
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
+            'number_required',
+            function ($row) {
+                if ($row->number_required == 1) {
+
+                    $html = 'Requerida';
+                } else {
+
+                    $html = 'No requerida';
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
+            'expedition_place',
+            function ($row) {
+                if ($row->expedition_place == 1) {
 
                     $html = 'Requerida';
                 } else {
@@ -199,21 +231,37 @@ class RrhhDataController extends Controller
                 $code = $this->getCorrelative($request->input('rrhh_header_id'), $code);
             }
             $date_required = null;
+            $expedition_place = null;
+            $number_required = null;
             if($request->input('rrhh_header_id') == 9) {
                 if($request->input('date_required')){
                     $date_required = 1;
                 }else{
                     $date_required = 0;
                 }
+
+                if($request->input('expedition_place')){
+                    $expedition_place = 1;
+                }else{
+                    $expedition_place = 0;
+                }
+
+                if($request->input('number_required')){
+                    $number_required = 1;
+                }else{
+                    $number_required = 0;
+                }
             }
-            $human_resource_item = new RrhhData();
-            $human_resource_item->business_id = $request->session()->get('user.business_id');
-            $human_resource_item->rrhh_header_id = $request->input('rrhh_header_id');
-            $human_resource_item->status = 1;
-            $human_resource_item->code = $code;
-            $human_resource_item->date_required = $date_required;
-            $human_resource_item->value = $request->input('value');
-            $human_resource_item->save();
+            $item = new RrhhData();
+            $item->business_id = $request->session()->get('user.business_id');
+            $item->rrhh_header_id = $request->input('rrhh_header_id');
+            $item->status = 1;
+            $item->code = $code;
+            $item->date_required = $date_required;
+            $item->expedition_place = $expedition_place;
+            $item->number_required = $number_required;
+            $item->value = $request->input('value');
+            $item->save();
 
             $output = [
                 'success' => 1,
@@ -223,7 +271,7 @@ class RrhhDataController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
         return $output;
@@ -346,15 +394,29 @@ class RrhhDataController extends Controller
         }
 
         $request->validate([
-            'value' => 'required|unique:rrhh_datas,value,'.$id,
+            'value' => [
+                'required',
+                Rule::unique('rrhh_datas')
+                ->where(function ($query) {
+                    return $query->where('rrhh_header_id', request('rrhh_header_id'));
+                })
+                ->where(function ($query) {
+                    return $query->where('business_id', request()->session()->get('user.business_id'));
+                })
+                ->where(function ($query) {
+                    return $query->where('deleted_at', null);
+                })
+            ], 
         ]);
 
         try {
-            $human_resource_item = RrhhData::findOrFail($id);
-            $human_resource_item->status = $request->input('status');
-            $human_resource_item->date_required = $request->input('date_required');
-            $human_resource_item->value = $request->input('value');
-            $human_resource_item->save();
+            $item = RrhhData::findOrFail($id);
+            $item->status = $request->input('status');
+            $item->date_required = $request->input('date_required');
+            $item->expedition_place = $request->input('expedition_place');
+            $item->number_required = $request->input('number_required');
+            $item->value = $request->input('value');
+            $item->save();
 
             $output = [
                 'success' => 1,
@@ -384,17 +446,35 @@ class RrhhDataController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('human_resource_employees')
-                ->where('afp_id', $id)
-                ->orWhere('civil_status_id', $id)
-                ->orWhere('department_id', $id)
-                ->orWhere('nationality_id', $id)
-                ->orWhere('position_id', $id)
-                ->orWhere('profession_id', $id)
-                ->orWhere('type_id', $id)
-                ->count();
+                $countEmployeeAfp = Employees::where('afp_id', $id)->count();
+                $countEmployeeCS = Employees::where('civil_status_id', $id)->count();
+                $countEmployeeNat = Employees::where('nationality_id', $id)->count();
+                $countEmployeeProf = Employees::where('profession_id', $id)->count();
+                $countEmployeeType = Employees::where('type_id', $id)->count();
+                $countEmployeePayment = Employees::where('payment_id', $id)->count();
+                $countPosition = RrhhPositionHistory::where('new_position1_id', $id)->count();
+                $countDepartement = RrhhPositionHistory::where('new_department_id', $id)->count();
+                $countDocument = RrhhDocuments::where('document_type_id', $id)->count();
+                $countStudy = RrhhStudy::where('type_study_id', $id)->count();
+                $countInability = RrhhAbsenceInability::where('type_inability_id', $id)->count();
+                $countAbsence = RrhhAbsenceInability::where('type_absence_id', $id)->count();
+                $countRelationship = RrhhEconomicDependence::where('type_relationship_id', $id)->count();
 
-                if ($count > 0) {
+                if (
+                    $countEmployeeAfp > 0 || 
+                    $countEmployeeCS > 0 || 
+                    $countEmployeeNat > 0 || 
+                    $countEmployeeProf > 0 || 
+                    $countEmployeeType > 0 || 
+                    $countEmployeePayment > 0 || 
+                    $countPosition > 0 || 
+                    $countDepartement > 0 ||
+                    $countDocument > 0 ||
+                    $countStudy > 0 ||
+                    $countInability > 0 ||
+                    $countAbsence > 0 ||
+                    $countRelationship > 0
+                ) {
                     $output = [
                         'success' => false,
                         'msg' => __('rrhh.item_has_childs')
@@ -407,12 +487,11 @@ class RrhhDataController extends Controller
                         'msg' => __('rrhh.deleted_successfully')
                     ];
                 }                
-            }
-            catch (\Exception $e){
+            }catch (\Exception $e){
                 \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => __('rrhh.error')
+                    'msg' => $e->getMessage()
                 ];
             }
 

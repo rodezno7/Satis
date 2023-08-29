@@ -23,7 +23,7 @@ return [
 
     'langs_rtl' => ['ar'],
     
-    'document_size_limit' => '1000000', //in Bytes,
+    'document_size_limit' => '5000000', //in Bytes,
 
     'asset_version' => 31,
 
@@ -36,6 +36,8 @@ return [
     'currency_precision' => 2,
 
     'product_img_path' => 'img',
+    
+    'employee_img_path' => 'img/employee',
 
     'image_size_limit' => '500000', //in Bytes
 

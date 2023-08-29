@@ -96,6 +96,14 @@ class Business extends Model
     }
 
     /**
+     * Get the setting.
+     */
+    public function setting()
+    {
+        return $this->hasOne(\App\Setting::class);
+    }
+
+    /**
      * Creates a new business based on the input provided.
      *
      * @return object

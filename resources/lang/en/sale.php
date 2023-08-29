@@ -108,4 +108,5 @@ return [
     'insurance' => 'Inserance',
     'price_inc_vat' => 'Price inc VAT',
     'price_exc_vat' => 'Price exc VAT',
+    'search_invoices' => 'Search invoices',
 ];

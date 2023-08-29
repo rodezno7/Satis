@@ -36,7 +36,7 @@
 		<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 			<div class="form-group">
 				<label>@lang('rrhh.birthdate')</label> <span class="text-danger">*</span>
-				{!! Form::text("birthdate", @format_date($economicDependence->birthdate), ['class' => 'form-control form-control-sm', 'id' => 'birthdate',
+				{!! Form::text("birthdate", @format_date($economicDependence->birthdate), ['class' => 'form-control form-control-sm', 'id' => 'birthdate1',
 				'required'])!!}
 			</div>
 		</div>
@@ -61,10 +61,9 @@
 <div class="modal-footer">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<input type="hidden" name="id" value="{{ $economicDependence->id }}" id="id">
-	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_ed1">
 	<button type="button" class="btn btn-primary" id="btn_edit_economic_dependence">@lang('rrhh.update')</button>
-	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang(
-		'messages.cancel')</button>
+	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
 {!! Form::close() !!}
 <script>
@@ -76,7 +75,7 @@
 	var fechaMaxima = new Date();
     fechaMaxima = fechaMaxima.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-	$('#birthdate').datepicker({
+	$('#birthdate1').datepicker({
 		autoclose: true,
 		format: datepicker_date_format,
 		endDate: fechaMaxima,
@@ -85,9 +84,11 @@
 	$("#btn_edit_economic_dependence").click(function() {
 		route = "/rrhh-economic-dependence-update";
 		token = $("#token").val();
+		employee_id = $('#employee_id_ed1').val();
 
 		var form = $("#form_edit");
 		var formData = new FormData(form[0]);
+		formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -98,7 +99,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getEconomicDependence($('#employee_id').val());
+					getEconomicDependence(employee_id);
+					//$('#employee_id').val('');
 					Swal.fire
 					({
 						title: result.msg,

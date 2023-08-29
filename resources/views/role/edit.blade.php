@@ -79,7 +79,7 @@
           <div class="col-md-8" style="border-left: 2px solid gray;">
 
             @foreach($permissions as $permission)
-            @if($permission->module_id == $module->id)
+            @if($permission->module_id == $module->id && $permission->name != 'business_settings.access_module')
 
             
             <div class="form-check form-check-inline">

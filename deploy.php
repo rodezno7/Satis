@@ -15,7 +15,12 @@ add('shared_dirs',
         'public/uploads/business_logos',
         'public/uploads/documents',
         'public/uploads/img',
-        'public/uploads/slides'
+        'public/uploads/slides',
+        'public/uploads/employee_photo',
+        'public/uploads/employee_documents',
+        'public/uploads/employee_contracts',
+        'public/uploads/employee_curriculum_vitae',
+        'public/uploads/employee_personnel_actions',
     ]);
 add('writable_dirs', []);
 

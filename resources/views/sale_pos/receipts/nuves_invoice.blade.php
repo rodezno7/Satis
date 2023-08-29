@@ -62,8 +62,13 @@
 						<th style="width: 3.5cm; text-align: center;">&nbsp;</th><!-- DESCRIPCIÓN -->
 						<th style="width: 1cm; text-align: center;">&nbsp;</th><!-- PRECIO UNITARIO -->
 						<th style="width: 0.4cm; text-align: center;">&nbsp;</th><!-- VTA. NO SUJETA -->
-						<th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
-						<th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @if (!$receipt_details->customer_is_exempt)
+                            <th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
+                            <th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @else
+                            <th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
+                            <th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @endif
 					</tr>
 				</thead>
 				<tbody>
@@ -78,16 +83,34 @@
 							@if(!empty($line['product_expiry'])), {{$line['product_expiry_label']}}:  {{$line['product_expiry']}} @endif
 						</td>
 						<td style="text-align: right;">
-							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['unit_price'] }}
-							</span>
+                            @if (!$receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false" data-precision="4">
+                                    {{ $line['unit_price'] }}
+                                </span>
+                            @else
+                                <span class="display_currency" data-currency_symbol="false" data-precision="4">
+                                    {{ $line['unit_price_exc'] }}
+                                </span>
+                            @endif
 						</td>
-						<td>&nbsp;</td>
+						<td style="text-align: right;">
+                            @if ($receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false">
+                                    {{ $line['line_total_exc_tax'] }}
+                                </span>
+                            @else
+                                &nbsp;
+                            @endif
+                        </td>
 						<td>&nbsp;</td>
 						<td style="text-align: right;">
-							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['line_total'] }}
-							</span>
+                            @if (!$receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false">
+                                    {{ $line['line_total'] }}
+                                </span>
+                            @else
+                                &nbsp;
+                            @endif
 						</td>
 					</tr>
 					@empty
@@ -144,15 +167,27 @@
 				<tr>
 					<td>&nbsp;</td> <!-- VTA. NO SUJETA -->
 				</tr>
-				<tr>
-					<td>&nbsp;</td> <!-- VTA. EXENTA -->
+				<tr> <!-- VTA. EXENTA -->
+                    @if ($receipt_details->customer_is_exempt)
+                        <td style="text-align: right;">
+                            <span class="display_currency" data-currency_symbol="false">
+                                {{ $receipt_details->total }}
+                            </span>
+                        </td>
+                    @else
+                        <td>&nbsp;</td>
+                    @endif
 				</tr>
 				<tr>
-					<td style="text-align: right;">
-						<span class="display_currency" data-currency_symbol="false">
-							{{ $receipt_details->total }}
-						</span>
-					</td>
+                    @if (!$receipt_details->customer_is_exempt)
+                        <td style="text-align: right;">
+                            <span class="display_currency" data-currency_symbol="false">
+                                {{ $receipt_details->total }}
+                            </span>
+                        </td>
+                    @else
+                        <td>&nbsp;</td>
+                    @endif
 				</tr>
 			</table>
 		</div>
@@ -192,8 +227,13 @@
 						<th style="width: 3.5cm; text-align: center;">&nbsp;</th><!-- DESCRIPCIÓN -->
 						<th style="width: 1cm; text-align: center;">&nbsp;</th><!-- PRECIO UNITARIO -->
 						<th style="width: 0.4cm; text-align: center;">&nbsp;</th><!-- VTA. NO SUJETA -->
-						<th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
-						<th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @if (!$receipt_details->customer_is_exempt)
+                            <th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
+                            <th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @else
+                            <th style="width: 1.2cm; text-align: center;">&nbsp;</th><!-- VTA. EXENTA -->
+                            <th style="width: 0.8cm; text-align: center;">&nbsp;</th><!-- VTAS. GRABADAS -->
+                        @endif
 					</tr>
 				</thead>
 				<tbody>
@@ -205,19 +245,37 @@
 							{{ $line['name']}} {{$line['variation'] }}
 							@if(!empty($line['sell_line_note']))({{$line['sell_line_note']}}) @endif 
 							@if(!empty($line['lot_number']))<br> {{$line['lot_number_label']}}:  {{$line['lot_number']}} @endif 
-							@if(!empty($line['product_expiry'])), {{$line['product_expiry_label']}}:  {{$line['product_expiry']}} @endif 
+							@if(!empty($line['product_expiry'])), {{$line['product_expiry_label']}}:  {{$line['product_expiry']}} @endif
 						</td>
 						<td style="text-align: right;">
-							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['unit_price'] }}
-							</span>
+                            @if (!$receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false" data-precision="4">
+                                    {{ $line['unit_price'] }}
+                                </span>
+                            @else
+                                <span class="display_currency" data-currency_symbol="false" data-precision="4">
+                                    {{ $line['unit_price_exc'] }}
+                                </span>
+                            @endif
 						</td>
-						<td>&nbsp;</td>
+						<td style="text-align: right;">
+                            @if ($receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false">
+                                    {{ $line['line_total_exc_tax'] }}
+                                </span>
+                            @else
+                                &nbsp;
+                            @endif
+                        </td>
 						<td>&nbsp;</td>
 						<td style="text-align: right;">
-							<span class="display_currency" data-currency_symbol="false">
-								{{ $line['line_total'] }}
-							</span>
+                            @if (!$receipt_details->customer_is_exempt)
+                                <span class="display_currency" data-currency_symbol="false">
+                                    {{ $line['line_total'] }}
+                                </span>
+                            @else
+                                &nbsp;
+                            @endif
 						</td>
 					</tr>
 					@empty
@@ -262,15 +320,27 @@
 				<tr>
 					<td>&nbsp;</td> <!-- VTA. NO SUJETA -->
 				</tr>
-				<tr>
-					<td>&nbsp;</td> <!-- VTA. EXENTA -->
+				<tr> <!-- VTA. EXENTA -->
+                    @if ($receipt_details->customer_is_exempt)
+                        <td style="text-align: right;">
+                            <span class="display_currency" data-currency_symbol="false">
+                                {{ $receipt_details->total }}
+                            </span>
+                        </td>
+                    @else
+                        <td>&nbsp;</td>
+                    @endif
 				</tr>
 				<tr>
-					<td style="text-align: right;">
-						<span class="display_currency" data-currency_symbol="false">
-							{{ $receipt_details->total }}
-						</span>
-					</td>
+                    @if (!$receipt_details->customer_is_exempt)
+                        <td style="text-align: right;">
+                            <span class="display_currency" data-currency_symbol="false">
+                                {{ $receipt_details->total }}
+                            </span>
+                        </td>
+                    @else
+                        <td>&nbsp;</td>
+                    @endif
 				</tr>
 			</table>
 		</div>

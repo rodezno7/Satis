@@ -4,9 +4,10 @@
 			<h3 class="box-title">@lang( 'rrhh.all_your_types_contracts' )</h3>
 			<div class="box-tools">
 				@can('rrhh_catalogues.create')
-				<button type="button" class="btn btn-primary" id="add_types_contracts" value='14'><i class="fa fa-plus"></i> @lang( 'messages.add' )
-				</button>
-				@endcan
+                    <a href="{!!URL::to('/rrhh-catalogues/type-contract/create')!!}" type="button" class="btn btn-primary" id="btn_type_contract"><i
+                        class="fa fa-plus"></i> @lang('messages.add')
+                    </a>
+                @endcan
 			</div>
 		</div>
 		<div class="box-body">

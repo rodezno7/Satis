@@ -24,7 +24,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.number')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.number')</label> <span class="text-danger" id="span_number" style="display: none">*</span>
 					<input type="text" name='number' id='number' class="form-control form-control-sm"
 						placeholder="@lang('rrhh.number')">
 				</div>
@@ -43,7 +43,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.state_expedition')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.state_expedition')</label> <span class="text-danger" id="span_state" style="display: none">*</span>
 					{!! Form::select("state_id", $states, null,
 					['id' => 'state_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.state'), 'style' => 'width: 100%;']) !!}
@@ -52,7 +52,7 @@
 			</div>
 			<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.city_expedition')</label> <span class="text-danger">*</span>
+					<label>@lang('rrhh.city_expedition')</label> <span class="text-danger" id="span_city" style="display: none">*</span>
 					{!! Form::select("city_id", [], null,
 					['id' => 'city_id', 'class' => 'form-control form-control-sm select2', 'placeholder' =>
 					__('rrhh.city'), 'style' => 'width: 100%;']) !!}
@@ -60,8 +60,8 @@
 			</div>
 			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<div class="form-group">
-					<label>@lang('rrhh.file')</label> <span class="text-danger">*</span>
-					<input type="file" name="file" id='file' class="form-control form-control-sm">
+					<label>@lang('rrhh.files')</label> <span class="text-danger">*</span>
+					<input type="file" name="files[]" id='files' class="form-control form-control-sm" accept="image/png, image/jpeg, image/jpg, .pdf" multiple>
 				</div>
 			</div>
 		</div>
@@ -71,7 +71,7 @@
 <div class="modal-footer">
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<input type="hidden" name="date_required" id="date_required">
-	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id">
+	<input type="hidden" name="employee_id" value="{{ $employee_id }}" id="employee_id_doc">
 	<button type="button" class="btn btn-primary" id="btn_add_document">@lang('rrhh.add')</button>
 	<button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel' )</button>
 </div>
@@ -81,15 +81,25 @@
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 		select2 = $('.select2').select2();
 
+		var fechaActual = new Date();
+    	fechaActual = fechaActual.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+		var fechaPosterior = new Date();
+		fechaPosterior.setDate(fechaPosterior.getDate() + 1);
+    	fechaPosterior = fechaPosterior.toLocaleDateString("es-ES", { day: '2-digit', month: '2-digit', year: 'numeric' });
+
 		$('#date_expiration').datepicker({
 			autoclose: true,
 			format: datepicker_date_format,
 		});
+		$("#date_expiration").datepicker("setDate", fechaPosterior);
 
 		$('#date_expedition').datepicker({
 			autoclose: true,
 			format: datepicker_date_format
 		});
+		$("#date_expedition").datepicker("setDate", fechaActual);
+
 		updateCitiesD();
 	});
 
@@ -99,28 +109,29 @@
 
 	validExt = ['jpg', 'jpeg', 'png', 'pdf'];
 
-	$('#file').on('change', function() {
-		extension = this.files[0].type.split('/')[1];
-		//console.log(this.files[0].type);
+	$('#files').on('change', function() {
+		var invalidFormat = 0;
+		for (var i = 0; i < this.files.length; i++) {
+			extension = this.files[i].type.split('/')[1];
 
-		if(validExt.indexOf(extension) == -1){
-			$('#file').val('');
+			if(validExt.indexOf(extension) == -1){
+				$('#files').val('');
+				invalidFormat++;
+			} else {
+				size = this.files[i].size;
+				if(size > 5242880) {
+
+					$('#files').val('');
+					invalidFormat++;
+				}
+			}
+		}
+		if(invalidFormat > 0){
 			Swal.fire
 			({
-				title: '@lang('rrhh.only_pdf')',
+				title: '@lang('rrhh.validation_file')',
 				icon: "error",
 			});
-		} else {
-			size = this.files[0].size;
-			if(size > 5242880) {
-
-				$('#file').val('');
-				Swal.fire
-				({
-					title: '@lang('rrhh.bad_size_img')',
-					icon: "error",
-				});
-			}
 		}
 	});
 
@@ -157,27 +168,39 @@
 				//state_id = $('#city_id').val(data.name);
                 return html;
             },
+			placeholder: LANG.city,
     	});	
 	}
 
-
-	
 	$('#document_type_id').on('change', function() {
 		let document_type = $(this).val();
 		var types = {!! json_encode($type_documents) !!};
-		
+		$('#div_date_expiration').hide();
+		$('#span_state').hide();
+		$('#span_city').hide();
+		$('#span_number').hide();
+		$("#date_expiration").prop('required', false);
+		$("#city_id").prop('required', false);
+		$("#state_id").prop('required', false);
+		$("#number").prop('required', false);
+
 		types.forEach(function(type) {
 			if (type.id == document_type) {
 				if(type.date_required == 1){
-					//$('#div_date_expedition').show();
 					$('#div_date_expiration').show();
-					$("#date_expedition").prop('required', true);
 					$("#date_expiration").prop('required', true);
-				}else{
-					//$('#div_date_expedition').hide();
-					$('#div_date_expiration').hide();
-					$("#date_expedition").prop('required', false);
-					$("#date_expiration").prop('required', false);
+				}
+
+				if(type.expedition_place == 1){
+					$('#span_state').show();
+					$('#span_city').show();
+					$("#city_id").prop('required', true);
+					$("#state_id").prop('required', true);
+				}
+
+				if(type.number_required == 1){
+					$('#span_number').show();
+					$("#number").prop('required', true);
 				}
 			}
 		});
@@ -186,9 +209,11 @@
 	$("#btn_add_document").click(function() {
 		route = "/rrhh-documents";    
 		token = $("#token").val();
+		employee_id = $('#employee_id_doc').val();
 
 		var form = $("#form_add_document");
 		var formData = new FormData(form[0]);
+		formData.append('employee_id', employee_id);
 		
 		$.ajax({
 			url: route,
@@ -199,7 +224,8 @@
 			data: formData,
 			success:function(result) {
 				if(result.success == true) {
-					getDocuments($('#employee_id').val());
+					getDocuments(employee_id);
+					//$('#employee_id_doc').val('');
 					Swal.fire
 					({
 						title: result.msg,

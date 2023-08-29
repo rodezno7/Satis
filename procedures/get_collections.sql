@@ -19,6 +19,7 @@ BEGIN
 			tp.transaction_id,
 			tp.paid_on AS transaction_date,
 			t.tax_amount AS withheld,
+			t.final_total,
 			tp.`method`,
 			SUM(IF(tp.is_return = 0, tp.amount, tp.amount * -1)) AS amount
 		FROM transactions AS t
@@ -64,18 +65,19 @@ BEGIN
 		p.amount,
 		p.withheld,
 		b.amount AS balance,
-		sr.final_total AS sell_return
+		sr.final_total AS sell_return,
+		p.final_total
 	FROM payments AS p
 	LEFT JOIN balance AS b ON p.transaction_id = b.transaction_id
 	LEFT JOIN sell_returns AS sr ON p.transaction_id = sr.id
 	ORDER BY DATE(p.transaction_date);
 
 	DROP TEMPORARY TABLE IF EXISTS payments;
-	DROP TEMPORARY TABLE IF EXISTS balance;
+	DROP TEMPORARY TABLE IF EXISTS balance; 
 END; $$
 DELIMITER ;
 
-CALL get_collections(3, 0, '2023-07-07', '2023-07-30');
+CALL get_collections(3, 0, '2023-01-01', '2023-06-01');
 
 
 DROP PROCEDURE IF EXISTS get_collection_transactions;
@@ -141,6 +143,6 @@ BEGIN
 END; $$
 DELIMITER ;
 
-CALL get_collection_transactions(3, 0, 0, '2023-07-01', '2023-07-13');
+CALL get_collection_transactions(3, 0, 0, '2023-06-01', '2023-06-30');
 
 

@@ -343,6 +343,7 @@ return [
     'product_image' => 'Product image',
     'aspect_ratio_should_be_1_1' => 'Aspect ratio should be 1:1',
     'previous_image_will_be_replaced' => 'Previously uploaded image will be replaced',
+    'previous_file_will_be_replaced' => 'Previously uploaded file will be replaced',
     'all_category' => 'All Categories',
     'all_brands' => 'All Brands',
     'backup' => 'Administer Backup',
@@ -737,4 +738,6 @@ return [
     "malformed_file" => "Malformed file",
     "instruction_line7" => "Use the provided template.",
     "enable_sell_delete" => "Enable sell delete",
+    "module_rrhh" => "Module RRHH",
+    "City" => "City"
 ];

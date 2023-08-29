@@ -224,7 +224,7 @@ return [
 	'column' => 'Columna',
 	"col_name" => "Nombre de columna",
 	"instruction" => "Instrucción",
-	"required" => "Necesario",
+	"required" => "Requerido",
 	"optional" => "Opcional",
 	"name_ins" => "Nombre del producto",
 	"brand_ins" => "Nombre de la marca",
@@ -344,6 +344,7 @@ return [
 	'product_image' => 'Imagen del producto',
 	'aspect_ratio_should_be_1_1' => 'La relación de aspecto debe ser 1: 1',
 	'previous_image_will_be_replaced' => 'La imagen cargada previamente será reemplazada',
+	'previous_file_will_be_replaced' => 'El archivo cargado previamente será reemplazado',
 	'all_category' => 'todas las categorias',
 	'all_brands' => 'Todas las marcas',
 	'backup' => 'Respaldo de Seguridad',
@@ -974,5 +975,6 @@ return [
 	"malformed_file" => "Archivo con formato inválido",
 	"instruction_line7" => "Utilizar la plantilla provista.",
 	"enable_sell_delete" => "Habilitar borrado de ventas",
-
+	"module_rrhh" => "Módulo de RRHH",
+	"City" => "Municipio"
 ];

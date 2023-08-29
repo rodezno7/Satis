@@ -32,6 +32,11 @@
             <strong><i class="fa fa-window-close fa-lg"></i></strong>
           </button>
         @endif
+
+        <a href="#" title="{{ __('rrhh.mark_assistance') }}" class="btn-flat pull-left m-8 hidden-sm btn-sm mt-10">
+          <strong><i class="fa fa-list"></i>&nbsp; @lang("rrhh.mark_assistance")</strong>
+        </a>
+
         @php
           use App\Business;
           use App\User;
@@ -41,8 +46,9 @@
             ->get();
         $businessCount = Business::whereIn('id', $businessIds->toArray())->count();
         @endphp
+        
         @if($businessCount > 1)
-        <a href="{{ action('BusinessController@getChangeBusiness')}}" title="{{ __('home.conected_business') }}" class="btn-flat pull-left m-8 hidden-xs btn-sm mt-10 btn_business_modal">
+        <a href="{{ action('BusinessController@getChangeBusiness')}}" title="{{ __('home.conected_business') }}" class="btn-flat pull-left m-8 hidden-sm btn-sm mt-10 btn_business_modal">
             <strong><i class="fa fa-briefcase"></i>&nbsp; @lang("business.change_business")</strong>
         </a>
         @endif
