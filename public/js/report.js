@@ -274,13 +274,15 @@ $(document).ready( function(){
         });
     });
 
-    /** Generate accounting entry */
-    $(document).on("click", "button.create_acc_entry", function(e){
+    /** Recalculate cashier closure */
+    $(document).on('click', 'a.recalc_cc', function (e) {
         e.preventDefault();
-        var btn = $(this);
+        let btn = $(this);
+        btn.addClass("disabled");
 
         swal({
-			title: LANG.generate_accounting_entry,
+			title: LANG.sure,
+            text: LANG.cashier_closure_update,
 			icon: "warning",
 			buttons: true,
 			dangerMode: true,
@@ -288,7 +290,41 @@ $(document).ready( function(){
 			if (confirm) {
                 $.ajax({
                     method: "get",
-                    url: btn.data("href"),
+                    url: btn.attr('href'),
+                    success: function(response){
+                        if(response.success){
+                            toastr.success(response.msg);
+                            daily_z_cut_report_table.ajax.reload();
+                            
+                        } else{
+                            toastr.error(response.msg);
+                        }
+
+                        btn.removeClass('disabled');
+                    }
+                });
+			} else {
+                btn.removeClass('disabled');
+            }
+		});
+    });
+
+    /** Generate accounting entry */
+    $(document).on("click", "a.create_acc_entry", function(e){
+        e.preventDefault();
+        var btn = $(this);
+
+        swal({
+            title: LANG.sure,
+			text: LANG.generate_accounting_entry,
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then((confirm) => {
+			if (confirm) {
+                $.ajax({
+                    method: "get",
+                    url: btn.attr("href"),
                     success: function(response){
                         if(response.success){
                             toastr.success(response.msg);

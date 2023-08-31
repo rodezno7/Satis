@@ -21,4 +21,6 @@ return [
     'select_cashier' => 'Caja registradora',
     'open' => 'Open',
     'close' => 'Close',
+    'recalc_cc' => 'Update cashier closure',
+    'cc_updated_successfully' => 'Cashier closure updated successfully',
 ];

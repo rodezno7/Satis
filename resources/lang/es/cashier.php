@@ -24,4 +24,6 @@ return [
     'close' => 'Cerrada',
     'opened' => 'Apertura',
     'closed' => 'Cierre',
+    'recalc_cc' => 'Actualizar cierre de caja',
+    'cc_updated_successfully' => 'Cierre de caja actualizado con éxito',
 ];
