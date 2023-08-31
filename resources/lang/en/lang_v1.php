@@ -739,5 +739,6 @@ return [
     "instruction_line7" => "Use the provided template.",
     "enable_sell_delete" => "Enable sell delete",
     "module_rrhh" => "Module RRHH",
-    "City" => "City"
+    "City" => "City",
+    'error_list' => 'Error list',
 ];

@@ -414,5 +414,17 @@ return[
     'dni_format' => 'The DUI format is 00000000-0',
     'general_format' => 'You must separate it by a leading (-)',
     'edit_employees' => 'Edit employees',
-    'curriculum_vitae' => 'Curriculum vitae'
+    'curriculum_vitae' => 'Curriculum vitae',
+    'percentage' => 'Percentage',
+    'affect_isss' => 'Affect isss',
+    'affect_afp' => 'Affect afp',
+    'affect_rent' => 'Affect rent',
+    'planilla_column' => 'Column that affects the planilla',
+    'Planilla_column' => 'Planilla column',
+    'income' => 'Income',
+    'discount' => 'Discount',
+    'total_value' => 'Total value',
+    'quota' => 'Quota',
+    'quota_value' => 'Quota value',
+    'apply_in' => 'Apply in',
 ];

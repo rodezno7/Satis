@@ -146,7 +146,7 @@
 
         var form = $("#form_edit_law_discount");
         var formData = new FormData(form[0]);
-        console.log(formData);
+        
         $.ajax({
             url: route,
             headers: {

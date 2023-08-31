@@ -105,7 +105,7 @@
 
 		var form = $("#form_add_law_discount");
 		var formData = new FormData(form[0]);
-		console.log(formData);
+		
 		$.ajax({
 			url: route,
 			headers: {'X-CSRF-TOKEN': token},

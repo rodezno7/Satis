@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\RrhhIncomeDiscount;
 use Illuminate\Http\Request;
-use App\RrhhTypeWage;
+use App\RrhhTypeIncomeDiscount;
 use DB;
 use DataTables;
 
-class RrhhTypeWageController extends Controller
+class RrhhTypeIncomeDiscountController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,28 +19,41 @@ class RrhhTypeWageController extends Controller
     {
         //
     }
-    public function getTypeWagesData() {
+    public function getTypeIncomeDiscountData() {
 
         if ( !auth()->user()->can('rrhh_catalogues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id =  request()->session()->get('user.business_id');
-        $data = DB::table('rrhh_type_wages')
-        ->select('rrhh_type_wages.*')
+        $data = DB::table('rrhh_type_income_discounts')
+        ->select('rrhh_type_income_discounts.*')
         ->where('business_id', $business_id)
         ->where('deleted_at', null);
 
         return DataTables::of($data)
         ->addColumn(
+            'type',
+            function ($row) {
+                if ($row->type == 1) {
+
+                    $html = __('rrhh.income');
+                } else {
+
+                    $html = __('rrhh.discount');
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
             'isss',
             function ($row) {
                 if ($row->isss == 1) {
 
-                    $html = 'Si aplica';
+                    $html = 'Si';
                 } else {
 
-                    $html = 'No aplica';
+                    $html = 'No';
                 }
                 return $html;
             }
@@ -48,10 +62,35 @@ class RrhhTypeWageController extends Controller
             function ($row) {
                 if ($row->afp == 1) {
 
-                    $html = 'Si aplica';
+                    $html = 'Si';
                 } else {
 
-                    $html = 'No aplica';
+                    $html = 'No';
+                }
+                return $html;
+            }
+        )
+        ->addColumn(
+            'rent',
+            function ($row) {
+                if ($row->rent == 1) {
+
+                    $html = 'Si';
+                } else {
+
+                    $html = 'No';
+                }
+                return $html;
+            }
+        )->addColumn(
+            'status',
+            function ($row) {
+                if ($row->status == 1) {
+
+                    $html = 'Activo';
+                } else {
+
+                    $html = 'Inactivo';
                 }
                 return $html;
             }
@@ -69,7 +108,8 @@ class RrhhTypeWageController extends Controller
             abort(403, 'Unauthorized action.');
         }        
 
-        return view('rrhh.catalogues.types_wages.create');
+        $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
+        return view('rrhh.catalogues.types_income_discounts.create', compact('planillaColumns'));
     }
 
     /**
@@ -78,32 +118,44 @@ class RrhhTypeWageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) { 
-        //dd($request);       
+    public function store(Request $request) {      
         if ( !auth()->user()->can('rrhh_catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
-            'name' => 'required',           
+            'name' => 'required',     
+            'type' => 'required',
+            'planilla_column' => 'required',           
         ]);
 
         try {
-            $input_details = $request->only(['name']);
+            $input_details = $request->all();
+            $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
+            for ($i=0; $i < count($planillaColumns); $i++) { 
+                if($request->planilla_column == $i){
+                    $input_details['planilla_column'] = $planillaColumns[$i];
+                }
+            }
+
             $input_details['business_id'] =  request()->session()->get('user.business_id');
             if($request->has('isss')){
                 $input_details['isss'] = true;
+            }else{
+                $input_details['isss'] = false;
             }
             if($request->has('afp')){
                 $input_details['afp'] = true;
+            }else{
+                $input_details['afp'] = false;
             }
-            if($request->input('wage_law')){
-                $input_details['type'] = 'Ley de salario';
+            if($request->has('rent')){
+                $input_details['rent'] = true;
+            }else{
+                $input_details['rent'] = false;
             }
-            if($request->input('honorary')){
-                $input_details['type'] = 'Honorario';
-            }
-            $typeWage =  RrhhTypeWage::create($input_details);
+
+            RrhhTypeIncomeDiscount::create($input_details);
             $output = [
                 'success' => true,
                 'msg' => __('rrhh.added_successfully')
@@ -121,10 +173,10 @@ class RrhhTypeWageController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\RrhhTypeWage  $rrhhTypeWage
+     * @param  \App\RrhhTypeIncomeDiscount  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
-    public function show(RrhhTypeWage $rrhhTypeWage)
+    public function show(RrhhTypeIncomeDiscount $rrhhTypeWage)
     {
         //
     }
@@ -132,7 +184,7 @@ class RrhhTypeWageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\RrhhTypeWage  $rrhhTypeWage
+     * @param  \App\RrhhTypeIncomeDiscount  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -141,30 +193,41 @@ class RrhhTypeWageController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $item = RrhhTypeWage::findOrFail($id);
+        $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
+        $item = RrhhTypeIncomeDiscount::findOrFail($id);
 
-        return view('rrhh.catalogues.types_wages.edit', compact('item'));
+        return view('rrhh.catalogues.types_income_discounts.edit', compact('planillaColumns', 'item'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\RrhhTypeWage  $rrhhTypeWage
+     * @param  \App\RrhhTypeIncomeDiscount  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
 
+        \Log::info($request);
         if ( !auth()->user()->can('rrhh_catalogues.update') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
-            'name' => 'required',
+            'name' => 'required',     
+            'type' => 'required',
+            'planilla_column' => 'required',           
         ]);
 
         try {
-            $input_details = $request->only(['name']);
+            $input_details = $request->all();
+            $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
+            for ($i=0; $i < count($planillaColumns); $i++) { 
+                if($request->planilla_column == $i){
+                    $input_details['planilla_column'] = $planillaColumns[$i];
+                }
+            }
+
             if($request->has('isss')){
                 $input_details['isss'] = true;
             }else{
@@ -175,14 +238,14 @@ class RrhhTypeWageController extends Controller
             }else{
                 $input_details['afp'] = false;
             }
-            if($request->input('wage_law')){
-                $input_details['type'] = 'Ley de salario';
+            if($request->has('rent')){
+                $input_details['rent'] = true;
+            }else{
+                $input_details['rent'] = false;
             }
-            if($request->input('honorary')){
-                $input_details['type'] = 'Honorario';
-            }
+            
 
-            $item = RrhhTypeWage::findOrFail($id);
+            $item = RrhhTypeIncomeDiscount::findOrFail($id);
             $item->update($input_details);
             $output = [
                 'success' => true,
@@ -192,7 +255,7 @@ class RrhhTypeWageController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
         return $output;
@@ -201,7 +264,7 @@ class RrhhTypeWageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\RrhhTypeWage  $rrhhTypeWage
+     * @param  \App\RrhhTypeIncomeDiscount  $rrhhTypeWage
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
@@ -212,9 +275,8 @@ class RrhhTypeWageController extends Controller
         if (request()->ajax()) {
 
             try {
-                $count = DB::table('employees')
-                ->where('type_id', $id)               
-                ->count();
+                $business_id = request()->session()->get('user.business_id');
+                $count = RrhhIncomeDiscount::where('rrhh_type_income_discount_id', $id)->where('business_id', $business_id)->count();
 
                 if ($count > 0) {
                     $output = [
@@ -222,7 +284,7 @@ class RrhhTypeWageController extends Controller
                         'msg' => __('rrhh.item_has_childs')
                     ];
                 } else {
-                    $item = RrhhTypeWage::findOrFail($id);
+                    $item = RrhhTypeIncomeDiscount::findOrFail($id);
                     $item->delete();
                     $output = [
                         'success' => true,

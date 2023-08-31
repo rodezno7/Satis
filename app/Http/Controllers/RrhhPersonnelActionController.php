@@ -68,6 +68,7 @@ class RrhhPersonnelActionController extends Controller
             ->join('employees as employees', 'employees.id', '=', 'personnel_action.employee_id')
             ->select('personnel_action.id as id', DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"), 'personnel_action.created_at as created_at', 'personnel_action.authorization_date as 	authorization_date', 'type.name as type', 'personnel_action.status as status', 'personnel_action_authorizer.authorized as authorized')
             ->where('personnel_action_authorizer.user_id', $user_id)
+            ->where('personnel_action.deleted_at', null)
             ->get();
 
         return DataTables::of($data)->editColumn('created_at', '{{ @format_date($created_at) }} {{ @format_time($created_at) }}')
@@ -91,6 +92,7 @@ class RrhhPersonnelActionController extends Controller
             ->join('rrhh_type_personnel_actions as type', 'type.id', '=', 'personnel_action.rrhh_type_personnel_action_id')
             ->select('personnel_action.id as id', 'personnel_action.description as description', 'personnel_action.created_at as created_at', 'type.name as type', 'type.required_authorization as required_authorization', 'personnel_action.status as status')
             ->where('personnel_action.employee_id', $employee->id)
+            ->where('personnel_action.deleted_at', null)
             ->get();
 
         $personnelActionAuthorizers = RrhhPersonnelActionAuthorizer::all();
@@ -394,7 +396,7 @@ class RrhhPersonnelActionController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
             ];
         }
 
@@ -1331,6 +1333,10 @@ class RrhhPersonnelActionController extends Controller
                 $positionHistories = RrhhPositionHistory::where('rrhh_personnel_action_id', $item->id)->get();
                 if (count($positionHistories) != 0) {
                     RrhhPositionHistory::where('rrhh_personnel_action_id', $item->id)->delete();
+                }
+                $personnelActionAuthorizers = RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $item->id)->get();
+                if (count($personnelActionAuthorizers) != 0) {
+                    RrhhPersonnelActionAuthorizer::where('rrhh_personnel_action_id', $item->id)->delete();
                 }
                 $item->delete();
 

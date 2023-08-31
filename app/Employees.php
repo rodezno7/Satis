@@ -91,7 +91,7 @@ class Employees extends Model
         return $this->belongsTo('App\RrhhData');
     }
 
-    public function type() {
+    public function rrhhTypeWage() {
         return $this->belongsTo('App\RrhhTypeWage');
     }
 
@@ -116,11 +116,11 @@ class Employees extends Model
     }
 
     public function positionHistories(){
-        return $this->hasMany('App\RrhhPositionHistory');
+        return $this->hasMany('App\RrhhPositionHistory', 'employee_id');
     }
 
     public function salaryHistories(){
-        return $this->hasMany('App\RrhhSalaryHistory');
+        return $this->hasMany('App\RrhhSalaryHistory', 'employee_id');
     }
     
     public function rrhhContracts(){
@@ -129,6 +129,14 @@ class Employees extends Model
 
     public function rrhhDocuments(){
         return $this->hasMany('App\RrhhDocuments');
+    }
+
+    public function rrhhIncomeDiscounts(){
+        return $this->hasMany('App\RrhhIncomeDiscount', 'employee_id');
+    }
+
+    public function planillaDetails(){
+        return $this->hasMany('App\PlanillaDetail', 'employee_id');
     }
 
     public static function forDropdown($business_id, $prepend_none = true, $prepend_all = false)
