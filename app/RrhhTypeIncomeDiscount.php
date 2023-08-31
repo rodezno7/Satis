@@ -31,8 +31,8 @@ class RrhhTypeIncomeDiscount extends Model
         'Número de horas extras nocturnas',
         'Comisiones',
         'Otras deducciones',
-        'ISSS',
-        'AFP',
-        'Renta',
+        // 'ISSS',
+        // 'AFP',
+        // 'Renta',
     ];
 }

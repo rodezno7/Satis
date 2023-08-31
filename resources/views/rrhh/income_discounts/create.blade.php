@@ -207,7 +207,7 @@
 
     //Calculate Date
     function calculateDate(){
-        let payment_period = $('#payment_period_id').val();
+        let payment_period = $('select[name="payment_period_id"] option:selected').text();
         let start_date = $('#start_date').val();
         start_date = start_date.replace(/\//g, '-');
         let quota = $('#quota').val();
@@ -217,11 +217,11 @@
             var fecha = Date.parse(start_date);
             fecha = new Date(start_date);
 
-            if(payment_period == 3){
+            if(payment_period == 'Quincenal'){
                 $("#end_date").datepicker("setDate", applyQuincena(fecha, quota));
             }
 
-            if(payment_period == 4){
+            if(payment_period == 'Mensual'){
                 $("#end_date").datepicker("setDate", applyMensual(fecha, quota));
             }
         }

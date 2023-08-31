@@ -750,6 +750,11 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     //Routes Planilla
     Route::resource('planilla', 'PlanillaController');
     Route::get('planilla-getPlanillas', 'PlanillaController@getPlanillas');
+    Route::get('planilla/{id}/generate', 'PlanillaController@generate');
+    Route::post('planilla/{id}/approve', 'PlanillaController@approve');
+    Route::get('planilla-getPlanillaDetail/{id}', 'PlanillaController@getPlanillaDetail');
+    Route::post('planilla/{id}/update', 'PlanillaController@updatePlanilla');
+
     Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
     Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
     Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');

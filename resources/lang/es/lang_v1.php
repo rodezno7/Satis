@@ -976,5 +976,6 @@ return [
 	"instruction_line7" => "Utilizar la plantilla provista.",
 	"enable_sell_delete" => "Habilitar borrado de ventas",
 	"module_rrhh" => "Módulo de RRHH",
-	"City" => "Municipio"
+	"City" => "Municipio",
+	'error_list' => 'Lista de errores',
 ];

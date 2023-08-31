@@ -23,12 +23,16 @@ class CreatePlanillaDetailsTable extends Migration
             $table->decimal('daytime_overtime', 10, 2)->nullable();
             $table->integer('number_night_overtime_hours')->nullable();
             $table->decimal('night_overtime_hours', 10, 2)->nullable();
+            $table->decimal('total_hours', 10, 2)->nullable();
+            $table->decimal('subtotal', 10, 2)->nullable();
 
             $table->decimal('isss', 10, 2)->nullable();
             $table->decimal('afp', 10, 2)->nullable();
-            $table->decimal('renta', 10, 2)->nullable();
+            $table->decimal('rent', 10, 2)->nullable();
             $table->decimal('other_deductions', 10, 2)->nullable();
+            $table->decimal('total_to_pay', 10, 2)->nullable();
 
+            //$table->string('type')->nullable();
             $table->integer('employee_id')->unsigned()->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->integer('planilla_id')->unsigned()->nullable();

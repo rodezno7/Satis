@@ -68,7 +68,7 @@ class RrhhIncomeDiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $typeIncomes = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 1)->get();
         $typeDiscounts = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 2)->get();
-        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->get();
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->where('id', '<>', 4)->where('id', '<>', 5)->get();
         $employee_id = $id;
 
         return view('rrhh.income_discounts.create', compact('employee_id', 'typeDiscounts', 'typeIncomes', 'paymentPeriods'));
@@ -173,7 +173,7 @@ class RrhhIncomeDiscountController extends Controller
         $incomeDiscount = RrhhIncomeDiscount::findOrFail($id);
         $typeIncomes = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 1)->get();
         $typeDiscounts = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 2)->get();
-        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->get();
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->where('id', '<>', 4)->where('id', '<>', 5)->get();
         $employee_id = $incomeDiscount->employee_id;
 
         return view('rrhh.income_discounts.edit', compact('employee_id', 'incomeDiscount', 'typeDiscounts', 'typeIncomes', 'paymentPeriods'));

@@ -16,7 +16,7 @@ class CreateLawDiscountsTable extends Migration
         Schema::create('law_discounts', function (Blueprint $table) {
             $table->increments('id');
             $table->decimal('from', 10, 2);
-            $table->decimal('until', 10, 2);
+            $table->decimal('until', 12, 2);
             $table->decimal('base', 10, 2);
             $table->decimal('fixed_fee', 10, 2);
             $table->decimal('employee_percentage', 10, 2);

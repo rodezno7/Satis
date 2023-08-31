@@ -531,6 +531,7 @@ class PlanillaController extends Controller
                     }
 
                     if($planilla->typePlanilla->name == 'Planilla de honorarios'){
+                        \Log::info("holaaaaaaaaaaa");
                         if($typeWage->type == 'Honorario'){ //----------------------HONORARIO----------------------
                             $details['rent'] = $salary * 0.1;
                             $details['total_to_pay'] = round($salary - $details['rent'], 2);
@@ -553,6 +554,249 @@ class PlanillaController extends Controller
             }
         }else{
             //Mensaje que no hay empleados
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function calculate1($planilla)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        if ($planilla->planillaStatus->name == 'Iniciada') {
+            if (mb_strtolower($planilla->paymentPeriod->name) == mb_strtolower('Primera quincena') || mb_strtolower($planilla->paymentPeriod->name) == mb_strtolower('Segunda quincena')) {
+                $paymentPeriod = 'Quincenal';
+            } else {
+                $paymentPeriod = $planilla->paymentPeriod->name;
+            }
+
+            //Obtener empleados
+            $employees = Employees::where('business_id', $business_id)
+            ->where('date_admission', '<=', $planilla->end_date)
+            ->where('status', 1)
+            ->get();
+
+            if(count($employees) > 0){
+                foreach ($employees as $employee) {
+                    $salaryHistory = RrhhSalaryHistory::where('employee_id', $employee->id)
+                        ->where('current', 1)
+                        ->orderBy('id', 'DESC')
+                        ->first();
+
+                    $incapacidades = RrhhAbsenceInability::where('type', 'Incapacidad')
+                        ->where('start_date', '<=', $planilla->end_date)
+                        ->where('employee_id', $employee->id)
+                        ->get();
+
+                    $incomeDiscounts = RrhhIncomeDiscount::join('rrhh_type_income_discounts as type', 'type.id', '=', 'rrhh_income_discounts.rrhh_type_income_discount_id')
+                        ->select('rrhh_income_discounts.id as id', 'rrhh_income_discounts.*', 'type.planilla_column')
+                        ->where('rrhh_income_discounts.employee_id', $employee->id)
+                        ->where('rrhh_income_discounts.start_date', '<=', $planilla->end_date)
+                        ->where('rrhh_income_discounts.deleted_at', null)
+                        ->get();
+
+                    $lawDiscounts = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
+                        ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'law_discounts.calculation_type_id')
+                        ->select('law_discounts.id as id', 'law_discounts.*', 'calculation_type.name as calculation_type', 'institution_law.name as institution_law')
+                        ->where('calculation_type.name', $paymentPeriod)
+                        ->where('law_discounts.business_id', $business_id)
+                        ->where('law_discounts.deleted_at', null)
+                        ->get();
+
+                    $lawDiscountsRenta = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
+                        ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'law_discounts.calculation_type_id')
+                        ->select('law_discounts.id as id', 'law_discounts.*', 'institution_law.name as institution_law', 'calculation_type.name as calculation_type')
+                        ->where('institution_law.name', 'Renta')
+                        ->where('calculation_type.name', $paymentPeriod)
+                        ->where('law_discounts.business_id', $business_id)
+                        ->where('law_discounts.deleted_at', null)
+                        ->get();
+
+                    //Calcular los días de incapacidad
+                    $diasIncapacidad = 0;
+                    $start_date_planilla = Carbon::parse($planilla->start_date);
+                    $end_date_planilla = Carbon::parse($planilla->end_date);
+
+                    foreach($incapacidades as $incapacidad){
+                        $start_date_incapacidad = Carbon::parse($incapacidad->start_date);
+                        $end_date_incapacidad = Carbon::parse($incapacidad->end_date);
+
+                        if($incapacidad->start_date >= $planilla->start_date && $incapacidad->end_date <= $planilla->end_date){
+                            $diasIncapacidad += $end_date_incapacidad->diffInDays($start_date_incapacidad);
+                        }
+
+                        if($incapacidad->start_date >= $planilla->start_date && $incapacidad->end_date > $planilla->end_date){
+                            $diasIncapacidad += $end_date_planilla->diffInDays($start_date_incapacidad);
+                        }
+
+                        if($incapacidad->start_date < $planilla->start_date && $incapacidad->end_date <= $planilla->end_date){
+                            $diasIncapacidad += $end_date_incapacidad->diffInDays($start_date_planilla);
+                        }
+
+                        if($incapacidad->start_date < $planilla->start_date && $incapacidad->end_date > $planilla->end_date){
+                            $diasIncapacidad += $end_date_planilla->diffInDays($start_date_planilla);
+                        }
+                    }
+
+                    $discountDO = 0;
+                    $discountNOH = 0;
+                    $discountCom = 0; 
+                    $discountOD = 0;
+
+                    $incomeDO = 0;
+                    $incomeNOH = 0;
+                    $incomeCom = 0;
+                    $incomeOD = 0;
+
+                    //Obteniendo el calculo total de cada ingreso o descuento
+                    foreach($incomeDiscounts as $incomeDiscount){
+                        $planillaColumnDO = 'Número de horas extras diurnas';
+                        $planillaColumnNOH = 'Número de horas extras nocturnas';
+                        $planillaColumnCom = 'Comisiones';
+                        $planillaColumnOD = 'Otras deducciones';
+                        if($incomeDiscount->start_date >= $planilla->start_date && $incomeDiscount->end_date <= $planilla->end_date){
+
+                            ($incomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO);
+                            ($incomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH);
+                            ($incomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom);
+                            ($incomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD);
+
+                        }
+
+                        if($incomeDiscount->start_date >= $planilla->start_date && $incomeDiscount->end_date > $planilla->end_date){
+                            
+                            ($incomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO);
+                            ($incomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH);
+                            ($incomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom);
+                            ($incomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD);
+
+                        }
+
+                        if($incomeDiscount->start_date < $planilla->start_date && $incomeDiscount->end_date <= $planilla->end_date){
+                            
+                            ($incomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO);
+                            ($incomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH);
+                            ($incomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom);
+                            ($incomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD);
+
+                        }
+
+                        if($incomeDiscount->start_date < $planilla->start_date && $incomeDiscount->end_date > $planilla->end_date){
+                            
+                            ($incomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $planillaColumnDO);
+                            ($incomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $planillaColumnNOH);
+                            ($incomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $planillaColumnCom);
+                            ($incomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $planillaColumnOD);
+
+                        }
+                    }
+
+                    if ($salaryHistory) {
+                        $salary = $salaryHistory->new_salary;
+                        $typeWage = RrhhTypeWage::where('id', $employee->type_id)->first();
+
+                        if($typeWage->type == 'Ley de salario'){ //----------------------LEY DE SALARIO----------------------
+                            //Calcular los días trabajados
+                            if($employee->date_admission >= $planilla->start_date){
+                                $daysPlanilla = $end_date_planilla->diffInDays($employee->date_admission);
+                                //$date_admission = Carbon::parse($employee->date_admission)->format('d');
+                                $details['days'] = $daysPlanilla - $diasIncapacidad;
+                            }else{
+                                $details['days'] = abs($planilla->paymentPeriod->days - $diasIncapacidad);
+                            }
+    
+                            $details['hours'] = 8;
+                            $details['commissions'] = abs(0 - $discountCom + $incomeCom);
+                            $details['number_daytime_overtime'] = 0;
+                            $details['daytime_overtime'] =abs( 0 - $discountDO + $incomeDO);
+                            $details['number_night_overtime_hours'] = 0;
+                            $details['night_overtime_hours'] = abs(0 - $discountNOH + $incomeNOH);
+                            $details['total_hours'] = $details['daytime_overtime'] + $details['night_overtime_hours'];
+                            $details['subtotal'] = ($salary / 30 * $details['days']) + $details['commissions'] + $details['total_hours'];
+                            \Log::info($details['subtotal']);
+                            //Calcular ISSS y AFP
+                            foreach ($lawDiscounts as $lawDiscount) {
+                                //---------------------------------ISSS---------------------------------
+                                if (mb_strtolower($lawDiscount->institution_law) == mb_strtolower('ISSS')) {
+                                    if (mb_strtolower($lawDiscount->calculation_type) == mb_strtolower($paymentPeriod)) {
+                                        if ($details['subtotal'] >= $lawDiscount->until) {
+                                            $details['isss'] = $lawDiscount->until * $lawDiscount->employee_percentage / 100;
+                                        } else {
+                                            $details['isss'] = $details['subtotal'] * $lawDiscount->employee_percentage / 100;
+                                        }
+                                    }
+                                }
+        
+                                //---------------------------------AFP---------------------------------
+                                if ($lawDiscount->institution_law == 'AFP Confia' || $lawDiscount->institution_law == 'AFP Crecer') {
+                                    if (mb_strtolower($lawDiscount->calculation_type) == mb_strtolower($paymentPeriod)) {
+                                        $details['afp'] = $details['subtotal'] * $lawDiscount->employee_percentage / 100;
+                                    }
+                                }
+                            }
+        
+                            //Calcular Renta        
+                            for ($i = 0; $i < count($lawDiscountsRenta); $i++) {
+                                if (($details['subtotal'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[0]->until) {
+                                    $details['rent'] = 0;
+                                } else {
+                                    if (($details['subtotal'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[1]->until) {
+                                        // ((M7-N7-O7)-$J$13)*$I$13+$H$13,
+                                        $details['rent'] = round(((($details['subtotal'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[1]->base) * ($lawDiscountsRenta[1]->employee_percentage / 100)) + $lawDiscountsRenta[1]->fixed_fee, 2);
+                                    } else {
+                                        if (($details['subtotal'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[2]->until) {
+                                            // ((M7-N7-O7)-$J$14)*$I$14+$H$14
+                                            $details['rent'] = round(((($details['subtotal'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[2]->base) * ($lawDiscountsRenta[2]->employee_percentage / 100)) + $lawDiscountsRenta[2]->fixed_fee, 2);
+                                        } else {
+                                            if (($details['subtotal'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[3]->until) {
+                                                //((M7-N7-O7)-$J$15)*$I$15+$H$15
+                                                $details['rent'] = round(((($details['subtotal'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[3]->base) * ($lawDiscountsRenta[3]->employee_percentage / 100)) + $lawDiscountsRenta[3]->fixed_fee, 2);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            
+                            $details['other_deductions'] = abs(0 - $discountOD + $incomeOD);
+                            $details['total_to_pay'] = round(($details['subtotal'] - $details['isss'] - $details['afp'] - $details['rent'] - $details['other_deductions']), 2);
+                            $details['type']         = 'Ley de salario';
+                            $details['employee_id']  = $employee->id;
+                            $details['planilla_id']  = $planilla->id;
+                            \Log::info($details);
+                            PlanillaDetail::create($details);
+                        }else{//----------------------SERVICIOSPROFESIONALES----------------------
+                            $details['rent'] = $salary * 0.1;
+                            $details['total_to_pay'] = round($salary - $details['rent'], 2);
+                            $details['type']         = 'Honorario';
+                            $details['employee_id']  = $employee->id;
+                            $details['planilla_id']  = $planilla->id;
+
+                            PlanillaDetail::create($details);
+                        }
+                        
+                        $status = PlanillaStatus::where('name', 'Calculada')->where('business_id', $business_id)->first();
+                        $planilla->planilla_status_id = $status->id;
+                        $planilla->update();
+                    }
+                }
+            }else{
+
+            }
         }
     }
 

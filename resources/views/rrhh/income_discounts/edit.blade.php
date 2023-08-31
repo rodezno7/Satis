@@ -222,22 +222,22 @@
 
     //Calculate Date
     function calculateDate(){
-        let payment_period = $('#payment_period_id1').val();
-        let start_date = $('#start_date1').val();
+        let payment_period = $('select[name="payment_period_id"] option:selected').text();
+        let start_date = $('#start_date').val();
         start_date = start_date.replace(/\//g, '-');
-        let quota = $('#quota1').val();
+        let quota = $('#quota').val();
 
         if (payment_period != "" && quota != "" && start_date != null) {
             start_date = start_date.split("-").reverse().join("-");
             var fecha = Date.parse(start_date);
             fecha = new Date(start_date);
 
-            if(payment_period == 3){
-                $("#end_date1").datepicker("setDate", applyQuincena(fecha, quota));
+            if(payment_period == 'Quincenal'){
+                $("#end_date").datepicker("setDate", applyQuincena(fecha, quota));
             }
 
-            if(payment_period == 4){
-                $("#end_date1").datepicker("setDate", applyMensual(fecha, quota));
+            if(payment_period == 'Mensual'){
+                $("#end_date").datepicker("setDate", applyMensual(fecha, quota));
             }
         }
     }

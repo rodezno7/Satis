@@ -73,7 +73,7 @@
 
 		var form = $("#form_edit_bonus_calculation");
 		var formData = new FormData(form[0]);
-		console.log(formData);
+
 		$.ajax({
 			url: route,
 			headers: {'X-CSRF-TOKEN': token},
