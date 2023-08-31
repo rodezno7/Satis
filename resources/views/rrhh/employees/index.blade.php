@@ -138,6 +138,7 @@
                 html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
                 html += '<li> <a href="#" onClick="addAbsenceInhability('+data.id+')"><i class="fa fa-id-badge"></i>@lang('rrhh.absence_inability')</a></li>';
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
+                html += '<li> <a href="#" onClick="addIncomeDiscount('+data.id+')"><i class="fa fa-money"></i>@lang('rrhh.income_discount')</a></li>';
                 
                 @can('rrhh_employees.delete')
                 html += '<li> <a href="#" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
@@ -256,6 +257,16 @@
         $("#modal_action").load(route, function() {
             $(this).modal({
             backdrop: 'static'
+            });
+        });
+    }
+
+    function addIncomeDiscount(id){
+        $("#modal_action").html('');
+        var route = '/rrhh-income-discount-getByEmployee/'+id;
+        $("#modal_action").load(route, function() {
+            $(this).modal({
+                backdrop: 'static'
             });
         });
     }

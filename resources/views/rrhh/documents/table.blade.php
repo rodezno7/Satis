@@ -36,7 +36,7 @@
                         @endif
                     </td>
                     <td>
-                        @if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d'))
+                        @if ($item->date_expiration == null || $item->date_expiration >= Carbon::now()->format('Y-m-d') || $item->date_required == 0)
                             <span class="badge" style="background: #449D44">{{ __('rrhh.current') }}</span>
                         @else
                             <span class="badge" style="background: #C9302C">{{ __('rrhh.expired') }}</span>

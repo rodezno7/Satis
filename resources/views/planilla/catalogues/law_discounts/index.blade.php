@@ -102,6 +102,7 @@
                 return html;
             } , orderable: false, searchable: false, className: "text-center"}
             ],
+            order: [[7, 'desc'], [0, 'asc'], [1, 'asc']],
             dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
     }

@@ -151,49 +151,4 @@
 		}
 	}
 
-	// $("#btn_add_type_wages").click(function() {
-	// 	route = "/rrhh-type-wages";
-	// 	datastring = $("#form_add").serialize();
-	// 	token = $("#token").val();
-	// 	$.ajax({
-	// 		url: route,
-	// 		headers: {'X-CSRF-TOKEN': token},
-	// 		type: 'POST',
-	// 		dataType: 'json',
-	// 		data: datastring,
-	// 		success:function(result){
-	// 			if(result.success == true) {
-	// 				Swal.fire
-	// 				({
-	// 					title: result.msg,
-	// 					icon: "success",
-	// 					timer: 2000,
-	// 					showConfirmButton: false,
-	// 				});
-	// 				$("#types_wages-table").DataTable().ajax.reload(null, false);
-	// 				$('#modal').modal('hide');
-				
-	// 			} else {
-	// 				Swal.fire
-	// 				({
-	// 					title: result.msg,
-	// 					icon: "error",
-	// 				});
-	// 			}
-	// 		},
-	// 		error:function(msj){
-	// 			errormessages = "";
-	// 			$.each(msj.responseJSON.errors, function(i, field){
-	// 				errormessages+="<li>"+field+"</li>";
-	// 			});
-	// 			Swal.fire
-	// 			({
-	// 				title: "@lang('rrhh.error_list')",
-	// 				icon: "error",
-	// 				html: "<ul>"+ errormessages+ "</ul>",
-	// 			});
-	// 		}
-	// 	});
-	// });
-
 </script>

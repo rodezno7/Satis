@@ -675,20 +675,26 @@
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/rrhh/getCataloguesData/16",
+            ajax: "/rrhh/getTypeIncomeDiscountData",
             columns: [
-            {data: 'value'},
+            {data: 'type'},
+            {data: 'name'},
+            {data: 'percentage'},
+            {data: 'isss'},
+            {data: 'afp'},
+            {data: 'rent'},
+            {data: 'planilla_column'},
             {data: 'status'},
             {data: null, render: function(data){
 
                 html = "";
                 
                 @can('rrhh_catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
+                html += '<a class="btn btn-xs btn-primary" onClick="editTypeIncomeDiscount('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
                 @can('rrhh_catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteTypeIncomeDiscount('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -698,36 +704,6 @@
         });
     }
 
-    // function loadBanks() {
-    //     var table = $("#banks-table").DataTable();
-    //     table.destroy();
-    //     var table = $("#banks-table").DataTable({
-
-    //         deferRender: true,
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: "/rrhh/getBanksData",
-    //         columns: [
-    //         {data: 'name'},
-    //         {data: null, render: function(data){
-
-    //             html = "";
-                
-    //             @can('rrhh_catalogues.update')
-    //             html += '<a class="btn btn-xs btn-primary" onClick="editBank('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
-    //             @endcan
-
-    //             @can('rrhh_catalogues.delete')
-    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteBank('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
-    //             @endcan
-                
-    //             return html;
-    //         } , orderable: false, searchable: false}
-    //         ],
-    //         dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
-    //     });
-
-    // }
 
     function loadTypesPersonnelActions() {
         var table5 = $("#types_personnel_actions-table").DataTable();
@@ -862,11 +838,22 @@
     // }
 
 
-    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_income_discounts, #add_types_absences, #add_types_inabilities, #add_types_relationships").click(function(){
+    $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_absences, #add_types_inabilities, #add_types_relationships").click(function(){
         $("#modal_content").html('');
         catalogue_id = $(this).val();
         var url = '{!!URL::to('/rrhh/create-item/:catalogue_id')!!}';
         url = url.replace(':catalogue_id', catalogue_id);
+        $.get(url, function(data) {
+
+            $("#modal_content").html(data);
+            $('#modal').modal({backdrop: 'static'});
+            
+        });
+    });
+
+    $("#add_types_income_discounts").click(function(){
+        $("#modal_content").html('');        
+        var url = '{!!URL::to('/rrhh-types-income-discounts/create')!!}';
         $.get(url, function(data) {
 
             $("#modal_content").html(data);
@@ -896,17 +883,6 @@
         });
     });
 
-    // $("#add_bank").click(function(){
-    //     $("#modal_content").html('');        
-    //     var url = '{!!URL::to('/rrhh-banks/create')!!}';
-    //     $.get(url, function(data) {
-
-    //         $("#modal_content").html(data);
-    //         $('#modal').modal({backdrop: 'static'});
-            
-    //     });
-    // });
-
     function editItem(id) {
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh/edit-item/:id')!!}';
@@ -922,6 +898,19 @@
     function editTypeWage(id) {
         $("#modal_content").html('');
         var url = '{!!URL::to('/rrhh-type-wages/:id/edit')!!}';
+        url = url.replace(':id', id);
+        $.get(url, function(data) {
+
+            $("#modal_content").html(data);
+            $('#modal').modal({backdrop: 'static'});
+            
+        });
+    }
+
+
+    function editTypeIncomeDiscount(id) {
+        $("#modal_content").html('');
+        var url = '{!!URL::to('/rrhh-types-income-discounts/:id/edit')!!}';
         url = url.replace(':id', id);
         $.get(url, function(data) {
 
@@ -1051,6 +1040,51 @@
         });
     }
 
+
+    function deleteTypeIncomeDiscount(id) {
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-types-income-discounts/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#types_income_discounts-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
+                    }
+                });
+            }
+        
+        });
+    }
+
     function deleteTypePersonnelAction(id) {
         Swal.fire({
             title: LANG.sure,
@@ -1139,49 +1173,5 @@
         
         });
     }
-
-    // function deleteBank(id) {
-    //     Swal.fire({
-    //         title: LANG.sure,
-    //         text: "{{ __('messages.delete_content') }}",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         confirmButtonText: "{{ __('messages.accept') }}",
-    //         cancelButtonText: "{{ __('messages.cancel') }}"
-    //     }).then((willDelete) => {
-    //         if (willDelete.value) {
-    //             route = '/rrhh-banks/'+id;
-    //             token = $("#token").val();
-    //             $.ajax({
-    //                 url: route,
-    //                 headers: {'X-CSRF-TOKEN': token},
-    //                 type: 'DELETE',
-    //                 dataType: 'json',                       
-    //                 success:function(result){
-    //                     if(result.success == true) {
-    //                         Swal.fire
-    //                         ({
-    //                             title: result.msg,
-    //                             icon: "success",
-    //                             timer: 2000,
-    //                             showConfirmButton: false,
-    //                         });
-    //                         $("#banks-table").DataTable().ajax.reload(null, false);
-    //                         $('#modal').modal('hide');
-    //                     } else {
-    //                         Swal.fire
-    //                         ({
-    //                             title: result.msg,
-    //                             icon: "error",
-    //                         });
-    //                     }
-    //                 }
-    //             });
-    //         }
-        
-    //     });
-    // }
 </script>
 @endsection
