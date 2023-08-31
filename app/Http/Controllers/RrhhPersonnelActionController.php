@@ -1348,7 +1348,7 @@ class RrhhPersonnelActionController extends Controller
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 $output = [
                     'success' => false,
-                    'msg' => $e->getMessage()
+                    'msg' => __('rrhh.error')
                 ];
             }
 
