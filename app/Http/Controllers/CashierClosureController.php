@@ -348,7 +348,7 @@ class CashierClosureController extends Controller
                 $cc->total_credit_amount = $cc_info[0]->credit_amount;
                 $cc->total_check_amount = $cc_info[0]->check_amount;
                 $cc->total_bank_transfer_amount = $cc_info[0]->bank_transfer_amount;
-                $cc->differences = ($cc->total_physical_amount - $cc->total_system_amount) + $cc_info[0]->return_amount;
+                $cc->differences = ($cc->total_physical_amount - $cc->total_system_amount);
                 $cc->save();
             }
 
