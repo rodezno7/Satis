@@ -301,13 +301,12 @@ class ExpenseController extends Controller
             [
                 'document_types_id' => 'required',
                 'document' => 'file|max:' . (config('constants.document_size_limit') / 1000),
-                'ref_no' => 'required|alpha_num',
+                'ref_no' => 'required',
                 'document' => 'file|max:' . (config('constants.document_size_limit') / 1000)
             ],
             [
                 'document_types_id.required' => trans('expense.expense_document_types_required'),
-                'ref_no.required' => trans('expense.expense_ref_no_required'),
-                'ref_no.alpha_num' => trans('expense.expense_alpha_num')
+                'ref_no.required' => trans('expense.expense_ref_no_required')
             ]
         );
 
@@ -462,13 +461,12 @@ class ExpenseController extends Controller
             [
                 'document_types_id' => 'required',
                 'document' => 'file|max:' . (config('constants.document_size_limit') / 1000),
-                'ref_no' => 'required|alpha_num',
+                'ref_no' => 'required',
                 'document' => 'file|max:' . (config('constants.document_size_limit') / 1000)
             ],
             [
                 'document_types_id.required' => trans('expense.expense_document_types_required'),
-                'ref_no.required' => trans('expense.expense_ref_no_required'),
-                'ref_no.alpha_num' => trans('expense.expense_alpha_num')
+                'ref_no.required' => trans('expense.expense_ref_no_required')
             ]
         );
 
