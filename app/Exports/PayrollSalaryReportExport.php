@@ -10,24 +10,24 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
 {
-    private $planilla;
-    private $planillaDetails;
+    private $payroll;
+    private $payrollDetails;
     private $business;
     private $moduleUtil;
 
     /**
      * Constructor.
      * 
-     * @param  array  $planilla
-     * @param  array  $planillaDetails
+     * @param  array  $payroll
+     * @param  array  $payrollDetails
      * @param  \App\Business  $business
      * @param  $moduleUtil
      * @return void
      */
-    public function __construct($planilla, $planillaDetails, $business, $moduleUtil)
+    public function __construct($payroll, $payrollDetails, $business, $moduleUtil)
     {
-    	$this->planilla = $planilla;
-        $this->planillaDetails = $planillaDetails;
+    	$this->payroll = $payroll;
+        $this->payrollDetails = $payrollDetails;
         $this->business = $business;
         $this->moduleUtil = $moduleUtil;
     }
@@ -51,8 +51,8 @@ class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
     {
     	return [            
     		AfterSheet::class => function(AfterSheet $event) {
-                $items = count($this->planillaDetails) + 4;
-                $planilla = $this->planilla;
+                $items = count($this->payrollDetails) + 4;
+                $payroll = $this->payroll;
 
                 /** General setup */
     			$event->sheet->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
@@ -85,7 +85,7 @@ class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
                 $event->sheet->getDelegate()->getStyle('A2:M2')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A2:M2')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A2:M2');
-                $event->sheet->setCellValue('A2', mb_strtoupper($planilla->name));
+                $event->sheet->setCellValue('A2', mb_strtoupper($payroll->name));
 
 
                 /** Type Payroll */
@@ -93,14 +93,14 @@ class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
                 $event->sheet->getDelegate()->getStyle('A3:M3')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A3:M3')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A3:M3');
-                $event->sheet->setCellValue('A3', mb_strtoupper($planilla->typePlanilla->name));
+                $event->sheet->setCellValue('A3', mb_strtoupper($payroll->payrollType->name));
 
                 /** Period Payroll */
                 $event->sheet->horizontalAlign('A4:M4', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->getDelegate()->getStyle('A4:M4')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A4:M4')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A4:M4');
-                $event->sheet->setCellValue('A4', $this->moduleUtil->format_date($planilla->start_date). ' - '. $this->moduleUtil->format_date($planilla->end_date));
+                $event->sheet->setCellValue('A4', $this->moduleUtil->format_date($payroll->start_date). ' - '. $this->moduleUtil->format_date($payroll->end_date));
 
 
                 /** table body */
@@ -112,37 +112,37 @@ class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
                 $event->sheet->getStyle('A'. $count.':M'. $count,  $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
                 $event->sheet->getDelegate()->getRowDimension($count)->setRowHeight(25);
                 $event->sheet->setCellValue('A'.$count, mb_strtoupper(__('rrhh.employee')));
-                $event->sheet->setCellValue('B'.$count, mb_strtoupper(__('planilla.days')));
-                $event->sheet->setCellValue('C'.$count, mb_strtoupper(__('planilla.hours')));
+                $event->sheet->setCellValue('B'.$count, mb_strtoupper(__('payroll.days')));
+                $event->sheet->setCellValue('C'.$count, mb_strtoupper(__('payroll.hours')));
                 $event->sheet->setCellValue('D'.$count, mb_strtoupper(__('rrhh.salary')));
-                $event->sheet->setCellValue('E'.$count, mb_strtoupper(__('planilla.daytime_overtime')));
-                $event->sheet->setCellValue('F'.$count, mb_strtoupper(__('planilla.night_overtime_hours')));
-                $event->sheet->setCellValue('G'.$count, mb_strtoupper(__('planilla.total_hours')));
-                $event->sheet->setCellValue('H'.$count, mb_strtoupper(__('planilla.subtotal')));
+                $event->sheet->setCellValue('E'.$count, mb_strtoupper(__('payroll.daytime_overtime')));
+                $event->sheet->setCellValue('F'.$count, mb_strtoupper(__('payroll.night_overtime_hours')));
+                $event->sheet->setCellValue('G'.$count, mb_strtoupper(__('payroll.total_hours')));
+                $event->sheet->setCellValue('H'.$count, mb_strtoupper(__('payroll.subtotal')));
                 $event->sheet->setCellValue('I'.$count, 'ISSS');
                 $event->sheet->setCellValue('J'.$count, 'AFP');
-                $event->sheet->setCellValue('K'.$count, mb_strtoupper(__('planilla.rent')));
-                $event->sheet->setCellValue('L'.$count, mb_strtoupper(__('planilla.other_deductions')));
-                $event->sheet->setCellValue('M'.$count, mb_strtoupper(__('planilla.total_to_pay')));
+                $event->sheet->setCellValue('K'.$count, mb_strtoupper(__('payroll.rent')));
+                $event->sheet->setCellValue('L'.$count, mb_strtoupper(__('payroll.other_deductions')));
+                $event->sheet->setCellValue('M'.$count, mb_strtoupper(__('payroll.total_to_pay')));
 
                 /** table body */
                 $count = $count+1;
-                $planillaDetails = $this->planillaDetails;
-                foreach($planillaDetails as $planillaDetail){
+                $payrollDetails = $this->payrollDetails;
+                foreach($payrollDetails as $payrollDetail){
                     $event->sheet->horizontalAlign('A'. $count.':M'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    $event->sheet->setCellValue('A'. $count, $planillaDetail->employee->first_name.' '.$planillaDetail->employee->last_name);
-                    $event->sheet->setCellValue('B'. $count, $planillaDetail->days);
-                    $event->sheet->setCellValue('C'. $count, $planillaDetail->hours);
-                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->num_f($planillaDetail->salary, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('E'. $count, $this->moduleUtil->num_f($planillaDetail->daytime_overtime, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('F'. $count, $this->moduleUtil->num_f($planillaDetail->night_overtime_hours, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('G'. $count, $this->moduleUtil->num_f($planillaDetail->total_hours, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('H'. $count, $this->moduleUtil->num_f($planillaDetail->subtotal, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('I'. $count, $this->moduleUtil->num_f($planillaDetail->isss, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('J'. $count, $this->moduleUtil->num_f($planillaDetail->afp, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('K'. $count, $this->moduleUtil->num_f($planillaDetail->rent, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('L'. $count, $this->moduleUtil->num_f($planillaDetail->other_deductions, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('M'. $count, $this->moduleUtil->num_f($planillaDetail->total_to_pay, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('A'. $count, $payrollDetail->employee->first_name.' '.$payrollDetail->employee->last_name);
+                    $event->sheet->setCellValue('B'. $count, $payrollDetail->days);
+                    $event->sheet->setCellValue('C'. $count, $payrollDetail->hours);
+                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->num_f($payrollDetail->salary, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('E'. $count, $this->moduleUtil->num_f($payrollDetail->daytime_overtime, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('F'. $count, $this->moduleUtil->num_f($payrollDetail->night_overtime_hours, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('G'. $count, $this->moduleUtil->num_f($payrollDetail->total_hours, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('H'. $count, $this->moduleUtil->num_f($payrollDetail->subtotal, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('I'. $count, $this->moduleUtil->num_f($payrollDetail->isss, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('J'. $count, $this->moduleUtil->num_f($payrollDetail->afp, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('K'. $count, $this->moduleUtil->num_f($payrollDetail->rent, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('L'. $count, $this->moduleUtil->num_f($payrollDetail->other_deductions, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('M'. $count, $this->moduleUtil->num_f($payrollDetail->total_to_pay, $add_symbol = true, $precision = 2));
 
                     $count++;
                 }

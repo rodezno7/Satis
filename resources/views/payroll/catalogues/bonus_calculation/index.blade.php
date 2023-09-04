@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', __('planilla.law_discount_table'))
+@section('title', __('payroll.bonus_calculations_table'))
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('planilla.law_discount_table')
+    <h1> @lang('payroll.bonus_calculations_table')
         <small></small>
     </h1>
 </section>
@@ -16,8 +16,8 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                @can('planilla-catalogues.create')
-                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addLawDiscount()">
+                @can('payroll-catalogues.create')
+                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addBonusCalculation()">
                         <i class="fa fa-plus"></i> @lang('messages.add')
                     </a>
                 @endcan
@@ -25,18 +25,14 @@
         </div>
         <div class="box-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed table-hover" id="law-discount-table"
+                <table class="table table-striped table-bordered table-condensed table-hover" id="bonus-calculation-table"
                     width="100%">
                     <thead>
-                        <th>@lang('planilla.institution_law')</th>
-                        <th>@lang('planilla.from')</th>
-                        <th>@lang('planilla.until')</th>
-                        <th>@lang('planilla.base')</th>
-                        <th>@lang('planilla.fixed_fee')</th>
-                        <th>@lang('planilla.employee_percentage')</th>
-                        <th>@lang('planilla.employer_value')</th>
-                        <th>@lang('planilla.calculation_type')</th>
-                        <th>@lang('planilla.status')</th>
+                        <th>@lang('payroll.from_year')</th>
+                        <th>@lang('payroll.until_year')</th>
+                        <th>@lang('payroll.days')</th>
+                        <th>@lang('payroll.percentage')</th>
+                        <th>@lang('payroll.status')</th>
                         <th width="12%">@lang('rrhh.actions')</th>
                     </thead>
                 </table>
@@ -65,49 +61,44 @@
 @section('javascript')
 <script>
     $(document).ready(function() {
-        loadLawDiscount();      
+        loadBonusCalculation();      
         $.fn.dataTable.ext.errMode = 'none';      
 	});
 
-    function loadLawDiscount() {
-        var table = $("#law-discount-table").DataTable();
+    function loadBonusCalculation() {
+        var table = $("#bonus-calculation-table").DataTable();
         table.destroy();
-        var table = $("#law-discount-table").DataTable({
+        var table = $("#bonus-calculation-table").DataTable({
             select: true,
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/law-discount-getLawDiscounts",
+            ajax: "/bonus-calculation-getBonusCalculations",
             columns: [
-            {data: 'institution_law', name: 'institution_law', className: "text-center"},
             {data: 'from', name: 'from', className: "text-center"},
             {data: 'until', name: 'until', className: "text-center"},
-            {data: 'base', name: 'base', className: "text-center"},
-            {data: 'fixed_fee', name: 'fixed_fee', className: "text-center"},
-            {data: 'employee_percentage', name: 'employee_percentage', className: "text-center"},
-            {data: 'employer_value', name: 'employer_value', className: "text-center"},
-            {data: 'payment_period', name: 'payment_period', className: "text-center"}, 
+            {data: 'days', name: 'days', className: "text-center"},
+            {data: 'percentage', name: 'percentage', className: "text-center"},
             {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = "";
                 
-                @can('planilla-catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editLawDiscount('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
+                @can('payroll-catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editBonusCalculation('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
-                @can('planilla-catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteLawDiscount('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
+                @can('payroll-catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteBonusCalculation('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
             } , orderable: false, searchable: false, className: "text-center"}
             ],
-            order: [[7, 'desc'], [0, 'asc'], [1, 'asc']],
             dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
         });
     }
 
-    function deleteLawDiscount(id) {
+    function deleteBonusCalculation(id) {
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -119,7 +110,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/law-discount/'+id;
+                route = '/bonus-calculation/'+id;
                 token = $("#token").val();
                 $.ajax({
                     url: route,
@@ -136,7 +127,7 @@
                                 showConfirmButton: false,
                             });
                             
-                            $("#law-discount-table").DataTable().ajax.reload(null, false);   
+                            $("#bonus-calculation-table").DataTable().ajax.reload(null, false);   
                         } else {
                             Swal.fire
                             ({
@@ -151,9 +142,9 @@
         });
     }
 
-    function addLawDiscount() {
+    function addBonusCalculation() {
         $("#modal_content_add").html('');
-        var url = "{!! URL::to('/law-discount/create') !!}";
+        var url = "{!! URL::to('/bonus-calculation/create') !!}";
         $.get(url, function(data) {
             $("#modal_content_add").html(data);
             $('#modal_add').modal({
@@ -162,9 +153,9 @@
         });
     }
 
-    function editLawDiscount(id) {
+    function editBonusCalculation(id) {
         $("#modal_content_edit").html('');
-        var url = "{!! URL::to('/law-discount/:id/edit') !!}";
+        var url = "{!! URL::to('/bonus-calculation/:id/edit') !!}";
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_edit").html(data);

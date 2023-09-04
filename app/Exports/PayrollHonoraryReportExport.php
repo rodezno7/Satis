@@ -10,24 +10,24 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class PayrollHonoraryReportExport implements WithEvents, WithTitle, ShouldAutoSize
 {
-    private $planilla;
-    private $planillaDetails;
+    private $payroll;
+    private $payrollDetails;
     private $business;
     private $moduleUtil;
 
     /**
      * Constructor.
      * 
-     * @param  array  $planilla
-     * @param  array  $planillaDetails
+     * @param  array  $payroll
+     * @param  array  $payrollDetails
      * @param  \App\Business  $business
      * @param  $moduleUtil
      * @return void
      */
-    public function __construct($planilla, $planillaDetails, $business, $moduleUtil)
+    public function __construct($payroll, $payrollDetails, $business, $moduleUtil)
     {
-    	$this->planilla = $planilla;
-        $this->planillaDetails = $planillaDetails;
+    	$this->payroll = $payroll;
+        $this->payrollDetails = $payrollDetails;
         $this->business = $business;
         $this->moduleUtil = $moduleUtil;
     }
@@ -51,8 +51,8 @@ class PayrollHonoraryReportExport implements WithEvents, WithTitle, ShouldAutoSi
     {
     	return [            
     		AfterSheet::class => function(AfterSheet $event) {
-                $items = count($this->planillaDetails) + 4;
-                $planilla = $this->planilla;
+                $items = count($this->payrollDetails) + 4;
+                $payroll = $this->payroll;
 
                 /** General setup */
     			$event->sheet->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
@@ -76,7 +76,7 @@ class PayrollHonoraryReportExport implements WithEvents, WithTitle, ShouldAutoSi
                 $event->sheet->getDelegate()->getStyle('A2:D2')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A2:D2')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A2:D2');
-                $event->sheet->setCellValue('A2', mb_strtoupper($planilla->name));
+                $event->sheet->setCellValue('A2', mb_strtoupper($payroll->name));
 
 
                 /** Type Payroll */
@@ -84,14 +84,14 @@ class PayrollHonoraryReportExport implements WithEvents, WithTitle, ShouldAutoSi
                 $event->sheet->getDelegate()->getStyle('A3:D3')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A3:D3')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A3:D3');
-                $event->sheet->setCellValue('A3', mb_strtoupper($planilla->typePlanilla->name));
+                $event->sheet->setCellValue('A3', mb_strtoupper($payroll->payrollType->name));
 
                 /** Period Payroll */
                 $event->sheet->horizontalAlign('A4:D4', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $event->sheet->getDelegate()->getStyle('A4:D4')->getFont()->setBold(true);
                 $event->sheet->getDelegate()->getStyle('A4:D4')->getFont()->setSize(13);
                 $event->sheet->mergeCells('A4:D4');
-                $event->sheet->setCellValue('A4', $this->moduleUtil->format_date($planilla->start_date). ' - '. $this->moduleUtil->format_date($planilla->end_date));
+                $event->sheet->setCellValue('A4', $this->moduleUtil->format_date($payroll->start_date). ' - '. $this->moduleUtil->format_date($payroll->end_date));
 
 
                 /** table body */
@@ -103,19 +103,19 @@ class PayrollHonoraryReportExport implements WithEvents, WithTitle, ShouldAutoSi
                 $event->sheet->getStyle('A'. $count.':D'. $count,  $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
                 //$event->sheet->getDelegate()->getRowDimension($count)->setRowHeight(25);
                 $event->sheet->setCellValue('A'.$count, mb_strtoupper(__('rrhh.employee')));
-                $event->sheet->setCellValue('B'.$count, mb_strtoupper(__('planilla.subtotal')));
-                $event->sheet->setCellValue('C'.$count, mb_strtoupper(__('planilla.rent')));
-                $event->sheet->setCellValue('D'.$count, mb_strtoupper(__('planilla.total_to_pay')));
+                $event->sheet->setCellValue('B'.$count, mb_strtoupper(__('payroll.subtotal')));
+                $event->sheet->setCellValue('C'.$count, mb_strtoupper(__('payroll.rent')));
+                $event->sheet->setCellValue('D'.$count, mb_strtoupper(__('payroll.total_to_pay')));
 
                 /** table body */
                 $count = $count+1;
-                $planillaDetails = $this->planillaDetails;
-                foreach($planillaDetails as $planillaDetail){
+                $payrollDetails = $this->payrollDetails;
+                foreach($payrollDetails as $payrollDetail){
                     $event->sheet->horizontalAlign('A'. $count.':D'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    $event->sheet->setCellValue('A'. $count, $planillaDetail->employee->first_name.' '.$planillaDetail->employee->last_name);
-                    $event->sheet->setCellValue('B'. $count, $this->moduleUtil->num_f($planillaDetail->subtotal, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('C'. $count, $this->moduleUtil->num_f($planillaDetail->rent, $add_symbol = true, $precision = 2));
-                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->num_f($planillaDetail->total_to_pay, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('A'. $count, $payrollDetail->employee->first_name.' '.$payrollDetail->employee->last_name);
+                    $event->sheet->setCellValue('B'. $count, $this->moduleUtil->num_f($payrollDetail->subtotal, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('C'. $count, $this->moduleUtil->num_f($payrollDetail->rent, $add_symbol = true, $precision = 2));
+                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->num_f($payrollDetail->total_to_pay, $add_symbol = true, $precision = 2));
 
                     $count++;
                 }

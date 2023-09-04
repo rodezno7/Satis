@@ -6,12 +6,12 @@ use App\InstitutionLaw;
 use App\LawDiscount;
 use App\Business;
 use App\Module;
-use App\PlanillaStatus;
-use App\TypePlanilla;
+use App\PayrollStatus;
+use App\PayrollType;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
-class PlanillaCatalogueSeeder extends Seeder
+class PayrollCatalogueSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -73,39 +73,39 @@ class PlanillaCatalogueSeeder extends Seeder
 
             
 
-            TypePlanilla::firstOrCreate([
+            PayrollType::firstOrCreate([
                 'name' => 'Planilla de sueldos',
                 'business_id' => $item->id,
             ]);
 
-            TypePlanilla::firstOrCreate([
+            PayrollType::firstOrCreate([
                 'name' => 'Planilla de honorarios',
                 'business_id' => $item->id,
             ]);
 
-            TypePlanilla::firstOrCreate([
+            PayrollType::firstOrCreate([
                 'name' => 'Planilla de comisiones',
                 'business_id' => $item->id,
             ]);
 
-            TypePlanilla::firstOrCreate([
+            PayrollType::firstOrCreate([
                 'name' => 'Planilla de aguinaldos',
                 'business_id' => $item->id,
             ]);
 
 
 
-            PlanillaStatus::firstOrCreate([
+            PayrollStatus::firstOrCreate([
                 'name' => 'Iniciada',
                 'business_id' => $item->id,
             ]);
 
-            PlanillaStatus::firstOrCreate([
+            PayrollStatus::firstOrCreate([
                 'name' => 'Calculada',
                 'business_id' => $item->id,
             ]);
 
-            PlanillaStatus::firstOrCreate([
+            PayrollStatus::firstOrCreate([
                 'name' => 'Aprobada',
                 'business_id' => $item->id,
             ]);
@@ -426,54 +426,54 @@ class PlanillaCatalogueSeeder extends Seeder
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla_catalogues.view'],
+            ['name' => 'payroll_catalogues.view'],
             ['description' => 'Ver catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla_catalogues.create'],
+            ['name' => 'payroll_catalogues.create'],
             ['description' => 'Crear catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla_catalogues.update'],
+            ['name' => 'payroll_catalogues.update'],
             ['description' => 'Actualizar catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla_catalogues.delete'],
+            ['name' => 'payroll_catalogues.delete'],
             ['description' => 'Eliminar catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
 
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.view'],
+            ['name' => 'payroll.view'],
             ['description' => 'Ver planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.create'],
+            ['name' => 'payroll.create'],
             ['description' => 'Crear planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.approve'],
+            ['name' => 'payroll.approve'],
             ['description' => 'Aprobar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.recalculate'],
+            ['name' => 'payroll.recalculate'],
             ['description' => 'Recalcular planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.update'],
+            ['name' => 'payroll.update'],
             ['description' => 'Actualizar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(
-            ['name' => 'planilla.delete'],
+            ['name' => 'payroll.delete'],
             ['description' => 'Eliminar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
     }

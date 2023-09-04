@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePlanillaStatusesTable extends Migration
+class CreatePayrollTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePlanillaStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('planilla_statuses', function (Blueprint $table) {
+        Schema::create('payroll_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->integer('business_id')->unsigned()->nullable();
@@ -29,6 +29,6 @@ class CreatePlanillaStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('planilla_statuses');
+        Schema::dropIfExists('payroll_types');
     }
 }

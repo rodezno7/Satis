@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class PlanillaDetail extends Model
+class PayrollDetail extends Model
 {
     use SoftDeletes;
 
@@ -25,11 +25,11 @@ class PlanillaDetail extends Model
         'other_deductions',
         'total_to_pay',
         'employee_id', 
-        'planilla_id'
+        'payroll_id'
     ];
     
-    public function planilla(){
-        return $this->belongsTo('App\Planilla');
+    public function payroll(){
+        return $this->belongsTo('App\Payroll');
     }
 
     public function employee(){

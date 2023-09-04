@@ -216,30 +216,30 @@
         @endif
         {{-- Fin Recurso humano --}}
 
-        {{-- Inicio Planilla --}}
-        @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
+        {{-- Inicio Payroll --}}
+        @if(auth()->user()->can('payroll.view') || auth()->user()->can('payroll-catalogues.view'))
           <li
             class="treeview {{ in_array($request->segment(1), ['payroll', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
             id="tour_step4">
-            <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
+            <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('payroll.payroll') }}</span>
               <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
             </a>
             <ul class="treeview-menu" id="rrhh_over">
-              @can('planilla.view')
+              @can('payroll.view')
               <li class="{{ $request->segment(1) == 'payroll' ? 'active' : '' }}">
-                <a href="{{action('PlanillaController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
-                  @lang('planilla.planilla')
+                <a href="{{action('PayrollController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                  @lang('payroll.payroll')
                 </a>
               </li>
               @endcan
-              @can('planilla-catalogues.view')
+              @can('payroll-catalogues.view')
               <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
                 <a href="#">
                   <i class="fa fa-table"></i>
                   <span class="title">
-                    @lang('planilla.catalogues')
+                    @lang('payroll.catalogues')
                   </span>
                   <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
@@ -250,7 +250,7 @@
                     <a href="{{ action('InstitutionLawController@index') }}">
                       <i class="fa fa-newspaper-o"></i>
                       <span class="title">
-                        @lang('planilla.institution_laws')
+                        @lang('payroll.institution_laws')
                       </span>
                     </a>
                   </li>
@@ -258,7 +258,7 @@
                     <a href="{{ action('LawDiscountController@index') }}">
                       <i class="fa fa-newspaper-o"></i>
                       <span class="title">
-                        @lang('planilla.discounts_table')
+                        @lang('payroll.discounts_table')
                       </span>
                     </a>
                   </li>
@@ -266,7 +266,7 @@
                     <a href="{{ action('BonusCalculationController@index') }}">
                       <i class="fa fa-newspaper-o"></i>
                       <span class="title">
-                        @lang('planilla.bonus_table')
+                        @lang('payroll.bonus_table')
                       </span>
                     </a>
                   </li>
@@ -276,7 +276,7 @@
             </ul>
           </li>
         @endif
-        {{-- Fin Planilla --}}
+        {{-- Fin Payroll --}}
       @endif
       
 

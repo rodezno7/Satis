@@ -679,7 +679,7 @@
             columns: [
             {data: 'type'},
             {data: 'name'},
-            {data: 'planilla_column'},
+            {data: 'payroll_column'},
             {data: 'status'},
             {data: null, render: function(data){
 

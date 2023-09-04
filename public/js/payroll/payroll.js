@@ -104,20 +104,20 @@ function monthly(month, year){
 }
 
 
-$("#btn_add_planilla").click(function() {
-    createPlanilla(false);
+$("#btn_add_payroll").click(function() {
+    createPayroll(false);
 });
 
-$("#btn_add_calculate_planilla").click(function() {
-    createPlanilla(true);
+$("#btn_add_calculate_payroll").click(function() {
+    createPayroll(true);
 });
 
 
-function createPlanilla(calculate){
+function createPayroll(calculate){
     route = "/payroll";    
     token = $("#token").val();
 
-    var form = $("#form_add_planilla");
+    var form = $("#form_add_payroll");
     var formData = new FormData(form[0]);
     formData.append('calculate', calculate);
 
@@ -137,7 +137,7 @@ function createPlanilla(calculate){
                     timer: 1000,
                     showConfirmButton: false,
                 });
-                $("#planilla-table").DataTable().ajax.reload(null, false);
+                $("#payroll-table").DataTable().ajax.reload(null, false);
                 $('#modal_add').modal( 'hide' ).data( 'bs.modal', null );
             }
             else {

@@ -1,6 +1,6 @@
 {!! Form::open(['method' => 'put', 'id' => 'form_edit_law_discount']) !!}
 <div class="modal-header">
-    <h4 class="modal-title" id="formModal">@lang('planilla.law_discount_table')
+    <h4 class="modal-title" id="formModal">@lang('payroll.law_discount_table')
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -12,10 +12,10 @@
 
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.institution_laws')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.institution_laws')</label> <span class="text-danger">*</span>
                 <select name="institution_law_id" id="institution_law_id" class="form-control form-control-sm select2"
-                    placeholder="{{ __('planilla.institution_laws') }}" style="width: 100%;" required>
-                    <option value="">{{ __('planilla.institution_laws') }}</option>
+                    placeholder="{{ __('payroll.institution_laws') }}" style="width: 100%;" required>
+                    <option value="">{{ __('payroll.institution_laws') }}</option>
                     @foreach ($institutions as $institution)
                         @if ($institution->id == $lawDiscount->institution_law_id)
                             <option value="{{ $institution->id }}" selected>{{ $institution->name }}</option>
@@ -29,10 +29,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.from')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.from')</label> <span class="text-danger">*</span>
                 {!! Form::number('from', $lawDiscount->from, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.from'),
+                    'placeholder' => __('payroll.from'),
                     'id' => 'from',
                     'required',
                 ]) !!}
@@ -41,10 +41,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.until')</label>
+                <label>@lang('payroll.until')</label>
                 {!! Form::number('until', $lawDiscount->until, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.until'),
+                    'placeholder' => __('payroll.until'),
                     'id' => 'until',
                     'required',
                 ]) !!}
@@ -53,10 +53,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.base')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.base')</label> <span class="text-danger">*</span>
                 {!! Form::number('base', $lawDiscount->base, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.base'),
+                    'placeholder' => __('payroll.base'),
                     'id' => 'base',
                     'required',
                 ]) !!}
@@ -65,10 +65,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.employee_percentage')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.employee_percentage')</label> <span class="text-danger">*</span>
                 {!! Form::number('employee_percentage', $lawDiscount->employee_percentage, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.employee_percentage'),
+                    'placeholder' => __('payroll.employee_percentage'),
                     'id' => 'employee_percentage',
                     'required',
                 ]) !!}
@@ -77,10 +77,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.fixed_fee')</label>
+                <label>@lang('payroll.fixed_fee')</label>
                 {!! Form::number('fixed_fee', $lawDiscount->fixed_fee, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.fixed_fee'),
+                    'placeholder' => __('payroll.fixed_fee'),
                     'id' => 'fixed_fee',
                     'required',
                 ]) !!}
@@ -89,10 +89,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.employer_value')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.employer_value')</label> <span class="text-danger">*</span>
                 {!! Form::number('employer_value', $lawDiscount->employer_value, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.employer_value'),
+                    'placeholder' => __('payroll.employer_value'),
                     'id' => 'employer_value',
                     'required',
                 ]) !!}
@@ -101,9 +101,9 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.calculation_types')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.calculation_types')</label> <span class="text-danger">*</span>
                 <select name="payment_period_id" id="payment_period_id" class="form-control form-control-sm select2"
-                    placeholder="{{ __('planilla.calculation_types') }}" style="width: 100%;" required>
+                    placeholder="{{ __('payroll.calculation_types') }}" style="width: 100%;" required>
                     @foreach ($paymentPeriods as $paymentPeriod)
                         @if ($paymentPeriod->id == $lawDiscount->payment_period_id)
                             <option value="{{ $paymentPeriod->id }}" selected>{{ $paymentPeriod->name }}</option>
@@ -127,7 +127,7 @@
 <div class="modal-footer">
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	<input type="hidden" name="id" value="{{ $lawDiscount->id }}" id="id">
-    <button type="button" class="btn btn-primary" id="btn_edit_law_discount">@lang('planilla.edit')</button>
+    <button type="button" class="btn btn-primary" id="btn_edit_law_discount">@lang('payroll.edit')</button>
     <button type="button" class="btn btn-danger" data-dismiss="modal"
         onClick="closeModal()">@lang('messages.cancel')</button>
 </div>
@@ -179,7 +179,7 @@
                     errormessages += "<li>" + field + "</li>";
                 });
                 Swal.fire({
-                    title: "@lang('planilla.error_list')",
+                    title: "@lang('payroll.error_list')",
                     icon: "error",
                     html: "<ul>" + errormessages + "</ul>",
                 });

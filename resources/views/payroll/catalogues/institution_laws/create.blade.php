@@ -1,6 +1,6 @@
-{!! Form::open(['method' => 'post', 'id' => 'form_add_bonus_calculation' ]) !!}
+{!! Form::open(['method' => 'post', 'id' => 'form_add_institution_law' ]) !!}
 <div class="modal-header">
-  <h4 class="modal-title" id="formModal">@lang('planilla.bonus_calculations_table')
+  <h4 class="modal-title" id="formModal">@lang('payroll.institution_laws')
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -12,41 +12,33 @@
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.from_year')</label> <span class="text-danger">*</span>
-        {!! Form::number("from", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.from'), 
-        'id' => 'from', 'required'])!!}
+        <label>@lang('payroll.name')</label> <span class="text-danger">*</span>
+        {!! Form::text("name", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.name'), 
+        'id' => 'name', 'required'])!!}
       </div>
     </div>
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.until_year')</label>
-        {!! Form::number("until", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.until'), 
-        'id' => 'until'])!!}
+        <label>@lang('payroll.employeer_number')</label>
+        {!! Form::text("employeer_number", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.employeer_number'), 
+        'id' => 'employeer_number', 'pattern' => '[0-9]+'])!!}
       </div>
     </div>
 
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.days')</label> <span class="text-danger">*</span>
-        {!! Form::number("days", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.days'), 
-        'id' => 'days', 'required'])!!}
+        <label>@lang('payroll.description')</label> <span class="text-danger">*</span>
+        {!! Form::text("description", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.description'), 
+        'id' => 'description', 'required'])!!}
       </div>
     </div>
-
-	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-		<div class="form-group">
-		  <label>@lang('planilla.percentage')</label> <span class="text-danger">*</span>
-		  {!! Form::number("percentage", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.percentage'), 
-		  'id' => 'percentage', 'required'])!!}
-		</div>
-	  </div>
 
   </div>
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <button type="button" class="btn btn-primary" id="btn_add_bonus_calculation">@lang('planilla.add')</button>
+  <button type="button" class="btn btn-primary" id="btn_add_institution_law">@lang('payroll.add')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel'
     )</button>
 </div>
@@ -54,15 +46,14 @@
 <script>
   $( document ).ready(function() {
 		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-		$('.select2').select2();
 	});
 
 
-	$("#btn_add_bonus_calculation").click(function() {
-		route = "/bonus-calculation";    
+	$("#btn_add_institution_law").click(function() {
+		route = "/institution-law";    
 		token = $("#token").val();
 
-		var form = $("#form_add_bonus_calculation");
+		var form = $("#form_add_institution_law");
 		var formData = new FormData(form[0]);
 		
 		$.ajax({
@@ -81,8 +72,8 @@
 						timer: 1000,
 						showConfirmButton: false,
 					});
-					$("#bonus-calculation-table").DataTable().ajax.reload(null, false);
-					$('#modal_add').modal( 'hide' ).data( 'bs.modal', null );
+          $("#institution-law-table").DataTable().ajax.reload(null, false);
+          $('#modal_add').modal( 'hide' ).data( 'bs.modal', null );
 				}
 				else {
 					Swal.fire
@@ -99,7 +90,7 @@
 				});
 				Swal.fire
 				({
-					title: "@lang('planilla.error_list')",
+					title: "@lang('payroll.error_list')",
 					icon: "error",
 					html: "<ul>"+ errormessages+ "</ul>",
 				});

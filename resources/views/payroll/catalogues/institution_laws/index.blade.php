@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', __('planilla.bonus_calculations_table'))
+@section('title', __('payroll.payroll'))
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('planilla.bonus_calculations_table')
+    <h1> @lang('payroll.institution_laws')
         <small></small>
     </h1>
 </section>
@@ -16,8 +16,8 @@
         <div class="box-header">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                @can('planilla-catalogues.create')
-                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addBonusCalculation()">
+                @can('payroll-catalogues.create')
+                    <a href="#" class="btn btn-primary" type="button" id="btn_add" onClick="addInstitutionLaw()">
                         <i class="fa fa-plus"></i> @lang('messages.add')
                     </a>
                 @endcan
@@ -25,15 +25,13 @@
         </div>
         <div class="box-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed table-hover" id="bonus-calculation-table"
+                <table class="table table-striped table-bordered table-condensed table-hover" id="institution-law-table"
                     width="100%">
                     <thead>
-                        <th>@lang('planilla.from_year')</th>
-                        <th>@lang('planilla.until_year')</th>
-                        <th>@lang('planilla.days')</th>
-                        <th>@lang('planilla.percentage')</th>
-                        <th>@lang('planilla.status')</th>
-                        <th width="12%">@lang('rrhh.actions')</th>
+                        <th width="22%">@lang('payroll.name')</th>
+                        <th>@lang('payroll.description')</th>
+                        <th>@lang('payroll.employeer_number')</th>
+                        <th width="20%">@lang('payroll.actions')</th>
                     </thead>
                 </table>
                 <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -41,6 +39,7 @@
         </div>
     </div>
 </section>
+
 <div class="modal fade" id="modal_edit" tabindex="-1">
 	<div class="modal-dialog">
 		<div class="modal-content" id="modal_content_edit">
@@ -61,34 +60,32 @@
 @section('javascript')
 <script>
     $(document).ready(function() {
-        loadBonusCalculation();      
+        loadInstitutionLaw();      
         $.fn.dataTable.ext.errMode = 'none';      
 	});
 
-    function loadBonusCalculation() {
-        var table = $("#bonus-calculation-table").DataTable();
+    function loadInstitutionLaw() {
+        var table = $("#institution-law-table").DataTable();
         table.destroy();
-        var table = $("#bonus-calculation-table").DataTable({
+        var table = $("#institution-law-table").DataTable({
             select: true,
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/bonus-calculation-getBonusCalculations",
+            ajax: "/institution-law-getInstitutionLaws",
             columns: [
-            {data: 'from', name: 'from', className: "text-center"},
-            {data: 'until', name: 'until', className: "text-center"},
-            {data: 'days', name: 'days', className: "text-center"},
-            {data: 'percentage', name: 'percentage', className: "text-center"},
-            {data: 'status', name: 'status', className: "text-center"},
+            {data: 'name', name: 'name', className: "text-center"},
+            {data: 'description', name: 'description', className: "text-center"},
+            {data: 'employeer_number', name: 'employeer_number', className: "text-center"},
             {data: null, render: function(data) {
                 html = "";
                 
-                @can('planilla-catalogues.update')
-                html += '<a class="btn btn-xs btn-primary" onClick="editBonusCalculation('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
+                @can('payroll-catalogues.update')
+                html += '<a class="btn btn-xs btn-primary" onClick="editInstitutionLaw('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
                 @endcan
 
-                @can('planilla-catalogues.delete')
-                html += ' <a class="btn btn-xs btn-danger" onClick="deleteBonusCalculation('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
+                @can('payroll-catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteInstitutionLaw('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
                 @endcan
                 
                 return html;
@@ -98,7 +95,7 @@
         });
     }
 
-    function deleteBonusCalculation(id) {
+    function deleteInstitutionLaw(id) {
         Swal.fire({
             title: LANG.sure,
             text: "{{ __('messages.delete_content') }}",
@@ -110,7 +107,7 @@
             cancelButtonText: "{{ __('messages.cancel') }}"
         }).then((willDelete) => {
             if (willDelete.value) {
-                route = '/bonus-calculation/'+id;
+                route = '/institution-law/'+id;
                 token = $("#token").val();
                 $.ajax({
                     url: route,
@@ -127,7 +124,7 @@
                                 showConfirmButton: false,
                             });
                             
-                            $("#bonus-calculation-table").DataTable().ajax.reload(null, false);   
+                            $("#institution-law-table").DataTable().ajax.reload(null, false);   
                         } else {
                             Swal.fire
                             ({
@@ -142,9 +139,9 @@
         });
     }
 
-    function addBonusCalculation() {
+    function addInstitutionLaw() {
         $("#modal_content_add").html('');
-        var url = "{!! URL::to('/bonus-calculation/create') !!}";
+        var url = "{!! URL::to('/institution-law/create') !!}";
         $.get(url, function(data) {
             $("#modal_content_add").html(data);
             $('#modal_add').modal({
@@ -153,9 +150,9 @@
         });
     }
 
-    function editBonusCalculation(id) {
+    function editInstitutionLaw(id) {
         $("#modal_content_edit").html('');
-        var url = "{!! URL::to('/bonus-calculation/:id/edit') !!}";
+        var url = "{!! URL::to('/institution-law/:id/edit') !!}";
         url = url.replace(':id', id);
         $.get(url, function(data) {
             $("#modal_content_edit").html(data);

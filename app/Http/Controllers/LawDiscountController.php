@@ -20,10 +20,10 @@ class LawDiscountController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('planilla-catalogues.view')){
+        if(!auth()->user()->can('payroll-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.law_discounts.index');
+        return view('payroll.catalogues.law_discounts.index');
     }
 
     public function getLawDiscounts(){
@@ -56,7 +56,7 @@ class LawDiscountController extends Controller
      */
     public function create()
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -67,7 +67,7 @@ class LawDiscountController extends Controller
             ->where('id', '<>', 4) //Primera quincena
             ->where('id', '<>', 5) //Segunda quincena
             ->get();
-        return view('planilla.catalogues.law_discounts.create', compact('institutions', 'paymentPeriods'));
+        return view('payroll.catalogues.law_discounts.create', compact('institutions', 'paymentPeriods'));
     }
 
     /**
@@ -78,7 +78,7 @@ class LawDiscountController extends Controller
      */
     public function store(Request $request)
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -136,7 +136,7 @@ class LawDiscountController extends Controller
      */
     public function edit($id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -148,7 +148,7 @@ class LawDiscountController extends Controller
             ->where('id', '<>', 4) //Primera quincena
             ->where('id', '<>', 5) //Segunda quincena
             ->get();
-        return view('planilla.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'paymentPeriods'));
+        return view('payroll.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'paymentPeriods'));
     }
 
     /**
@@ -160,7 +160,7 @@ class LawDiscountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -209,7 +209,7 @@ class LawDiscountController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->can('planilla-catalogues.delete')) {
+        if (!auth()->user()->can('payroll-catalogues.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

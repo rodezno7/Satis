@@ -28,10 +28,10 @@
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <label>@lang('rrhh.planilla_column')</label> <span class="text-danger">*</span>
-                    <select id="planilla_column" name="planilla_column" class="form-control select2" style="width: 100%" required>
-                        @for ($i = 0; $i < count($planillaColumns); $i++)
-                            <option value="{{ $i }}"> {{ __($planillaColumns[$i]) }}</option>
+                    <label>@lang('rrhh.payroll_column')</label> <span class="text-danger">*</span>
+                    <select id="payroll_column" name="payroll_column" class="form-control select2" style="width: 100%" required>
+                        @for ($i = 0; $i < count($payrollColumns); $i++)
+                            <option value="{{ $i }}"> {{ __($payrollColumns[$i]) }}</option>
                         @endfor
                     </select>
                 </div>

@@ -15,7 +15,7 @@
 					<thead>
 						<th>@lang('rrhh.type')</th>
 						<th>@lang('rrhh.name')</th>
-						<th>@lang('rrhh.planilla_column')</th>
+						<th>@lang('rrhh.payroll_column')</th>
 						<th>@lang('rrhh.status')</th>
 						<th>@lang('rrhh.actions' )</th>
 					</thead>

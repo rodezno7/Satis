@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePlanillasTable extends Migration
+class CreatePayrollsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreatePlanillasTable extends Migration
      */
     public function up()
     {
-        Schema::create('planillas', function (Blueprint $table) {
+        Schema::create('payrolls', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('type_planilla_id')->unsigned();
-            $table->foreign('type_planilla_id')->references('id')->on('type_planillas')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('payroll_type_id')->unsigned();
+            $table->foreign('payroll_type_id')->references('id')->on('payroll_types')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->integer('year');
             $table->integer('month');
@@ -24,8 +24,8 @@ class CreatePlanillasTable extends Migration
             $table->date('end_date');
             $table->date('approval_date')->nullable();
             
-            $table->integer('planilla_status_id')->unsigned();
-            $table->foreign('planilla_status_id')->references('id')->on('planilla_statuses')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('payroll_status_id')->unsigned();
+            $table->foreign('payroll_status_id')->references('id')->on('payroll_statuses')->onDelete('cascade')->onUpdate('cascade');
 
             $table->integer('payment_period_id')->unsigned();
             $table->foreign('payment_period_id')->references('id')->on('payment_periods')->onDelete('cascade')->onUpdate('cascade');
@@ -44,6 +44,6 @@ class CreatePlanillasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('planillas');
+        Schema::dropIfExists('payrolls');
     }
 }

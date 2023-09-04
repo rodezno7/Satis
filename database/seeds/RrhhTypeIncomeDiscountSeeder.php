@@ -20,7 +20,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Anticipo de sueldo', 
-                'planilla_column' => 'Otras deducciones', 
+                'payroll_column' => 'Otras deducciones', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -28,7 +28,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 2, 
                 'name' => 'Anticipo de sueldo', 
-                'planilla_column' => 'Otras deducciones', 
+                'payroll_column' => 'Otras deducciones', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -36,7 +36,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Horas extras diurnas', 
-                'planilla_column' => 'Número de horas extras diurnas', 
+                'payroll_column' => 'Número de horas extras diurnas', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -44,7 +44,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Horas extras nocturnas', 
-                'planilla_column' => 'Número de horas extras nocturnas', 
+                'payroll_column' => 'Número de horas extras nocturnas', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -52,7 +52,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Comisiones', 
-                'planilla_column' => 'Comisiones', 
+                'payroll_column' => 'Comisiones', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -60,7 +60,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Aguinaldo', 
-                'planilla_column' => 'Aguinaldo', 
+                'payroll_column' => 'Aguinaldo', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -68,7 +68,7 @@ class RrhhTypeIncomeDiscountSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Vacaciones', 
-                'planilla_column' => 'Vacaciones', 
+                'payroll_column' => 'Vacaciones', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);

@@ -1,6 +1,6 @@
 {!! Form::open(['method' => 'put', 'id' => 'form_edit_bonus_calculation' ]) !!}
 <div class="modal-header">
-  <h4 class="modal-title" id="formModal">@lang('planilla.bonus_calculations_table')
+  <h4 class="modal-title" id="formModal">@lang('payroll.bonus_calculations_table')
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -12,32 +12,32 @@
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.from_year')</label> <span class="text-danger">*</span>
-        {!! Form::number("from", $bonusCalculation->from, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.from'), 
+        <label>@lang('payroll.from_year')</label> <span class="text-danger">*</span>
+        {!! Form::number("from", $bonusCalculation->from, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.from'), 
         'id' => 'from', 'required'])!!}
       </div>
     </div>
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.until_year')</label>
-        {!! Form::number("until", $bonusCalculation->until, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.until'), 
+        <label>@lang('payroll.until_year')</label>
+        {!! Form::number("until", $bonusCalculation->until, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.until'), 
         'id' => 'until'])!!}
       </div>
     </div>
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('planilla.days')</label> <span class="text-danger">*</span>
-        {!! Form::number("days", $bonusCalculation->days, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.days'), 
+        <label>@lang('payroll.days')</label> <span class="text-danger">*</span>
+        {!! Form::number("days", $bonusCalculation->days, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.days'), 
         'id' => 'days', 'required'])!!}
       </div>
     </div>
 
 	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 		<div class="form-group">
-		  <label>@lang('planilla.percentage')</label> <span class="text-danger">*</span>
-		  {!! Form::number("percentage", $bonusCalculation->percentage, ['class' => 'form-control form-control-sm', 'placeholder' => __('planilla.percentage'), 
+		  <label>@lang('payroll.percentage')</label> <span class="text-danger">*</span>
+		  {!! Form::number("percentage", $bonusCalculation->percentage, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.percentage'), 
 		  'id' => 'percentage', 'required'])!!}
 		</div>
 	</div>
@@ -54,7 +54,7 @@
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
   <input type="hidden" name="id" value="{{ $bonusCalculation->id }}" id="id">
-  <button type="button" class="btn btn-primary" id="btn_edit_bonus_calculation">@lang('planilla.edit')</button>
+  <button type="button" class="btn btn-primary" id="btn_edit_bonus_calculation">@lang('payroll.edit')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel'
     )</button>
 </div>
@@ -108,7 +108,7 @@
 				});
 				Swal.fire
 				({
-					title: "@lang('planilla.error_list')",
+					title: "@lang('payroll.error_list')",
 					icon: "error",
 					html: "<ul>"+ errormessages+ "</ul>",
 				});

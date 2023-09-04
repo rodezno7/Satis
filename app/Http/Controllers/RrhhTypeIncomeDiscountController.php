@@ -70,8 +70,8 @@ class RrhhTypeIncomeDiscountController extends Controller
             abort(403, 'Unauthorized action.');
         }        
 
-        $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
-        return view('rrhh.catalogues.types_income_discounts.create', compact('planillaColumns'));
+        $payrollColumns = RrhhTypeIncomeDiscount::$payrollColumns;
+        return view('rrhh.catalogues.types_income_discounts.create', compact('payrollColumns'));
     }
 
     /**
@@ -88,15 +88,15 @@ class RrhhTypeIncomeDiscountController extends Controller
         $request->validate([
             'name' => 'required',     
             'type' => 'required',
-            'planilla_column' => 'required',           
+            'payroll_column' => 'required',           
         ]);
 
         try {
             $input_details = $request->all();
-            $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
-            for ($i=0; $i < count($planillaColumns); $i++) { 
-                if($request->planilla_column == $i){
-                    $input_details['planilla_column'] = $planillaColumns[$i];
+            $payrollColumns = RrhhTypeIncomeDiscount::$payrollColumns;
+            for ($i=0; $i < count($payrollColumns); $i++) { 
+                if($request->payroll_column == $i){
+                    $input_details['payroll_column'] = $payrollColumns[$i];
                 }
             }
 
@@ -140,10 +140,10 @@ class RrhhTypeIncomeDiscountController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
+        $payrollColumns = RrhhTypeIncomeDiscount::$payrollColumns;
         $item = RrhhTypeIncomeDiscount::findOrFail($id);
 
-        return view('rrhh.catalogues.types_income_discounts.edit', compact('planillaColumns', 'item'));
+        return view('rrhh.catalogues.types_income_discounts.edit', compact('payrollColumns', 'item'));
     }
 
     /**
@@ -161,15 +161,15 @@ class RrhhTypeIncomeDiscountController extends Controller
         $request->validate([
             'name' => 'required',     
             'type' => 'required',
-            'planilla_column' => 'required',           
+            'payroll_column' => 'required',           
         ]);
 
         try {
             $input_details = $request->all();
-            $planillaColumns = RrhhTypeIncomeDiscount::$planillaColumns;
-            for ($i=0; $i < count($planillaColumns); $i++) { 
-                if($request->planilla_column == $i){
-                    $input_details['planilla_column'] = $planillaColumns[$i];
+            $payrollColumns = RrhhTypeIncomeDiscount::$payrollColumns;
+            for ($i=0; $i < count($payrollColumns); $i++) { 
+                if($request->payroll_column == $i){
+                    $input_details['payroll_column'] = $payrollColumns[$i];
                 }
             }            
 

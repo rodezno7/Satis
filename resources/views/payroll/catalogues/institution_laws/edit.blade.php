@@ -1,6 +1,6 @@
 {!! Form::open(['method' => 'put', 'id' => 'form_edit_institution_law']) !!}
 <div class="modal-header">
-    <h4 class="modal-title" id="formModal">@lang('planilla.institution_laws')
+    <h4 class="modal-title" id="formModal">@lang('payroll.institution_laws')
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="closeModal()">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -12,10 +12,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.name')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.name')</label> <span class="text-danger">*</span>
                 {!! Form::text('name', $institutionLaw->name, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.name'),
+                    'placeholder' => __('payroll.name'),
                     'id' => 'name',
                     'required',
                 ]) !!}
@@ -24,10 +24,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.employeer_number')</label>
+                <label>@lang('payroll.employeer_number')</label>
                 {!! Form::text('employeer_number', $institutionLaw->employeer_number, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.employeer_number'),
+                    'placeholder' => __('payroll.employeer_number'),
                     'id' => 'employeer_number',
                     'pattern' => '[0-9]+'
                 ]) !!}
@@ -36,10 +36,10 @@
 
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.description')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.description')</label> <span class="text-danger">*</span>
                 {!! Form::text('description', $institutionLaw->description, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.description'),
+                    'placeholder' => __('payroll.description'),
                     'id' => 'description',
                     'required'
                 ]) !!}
@@ -51,7 +51,7 @@
 <div class="modal-footer">
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
     <button type="button" class="btn btn-primary" onClick="editInstitutionLaw({{ $institutionLaw->id }})">
-		@lang('planilla.edit')
+		@lang('payroll.edit')
 	</button>
     <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">
         @lang('messages.cancel')
@@ -102,7 +102,7 @@
                     errormessages += "<li>" + field + "</li>";
                 });
                 Swal.fire({
-                    title: "@lang('planilla.error_list')",
+                    title: "@lang('payroll.error_list')",
                     icon: "error",
                     html: "<ul>" + errormessages + "</ul>",
                 });

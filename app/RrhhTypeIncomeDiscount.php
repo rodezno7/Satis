@@ -12,7 +12,7 @@ class RrhhTypeIncomeDiscount extends Model
     protected $fillable = [
         'type', 
         'name', 
-        'planilla_column', 
+        'payroll_column', 
         'status', 
         'business_id', 
         'deleted_at'
@@ -22,7 +22,7 @@ class RrhhTypeIncomeDiscount extends Model
         return $this->hasMany('App\RrhhIncomeDiscount');
     }
 
-    public static $planillaColumns = [
+    public static $payrollColumns = [
         'Número de horas extras diurnas',
         'Número de horas extras nocturnas',
         'Comisiones',

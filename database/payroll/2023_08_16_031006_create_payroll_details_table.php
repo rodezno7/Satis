@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePlanillaDetailsTable extends Migration
+class CreatePayrollDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePlanillaDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('planilla_details', function (Blueprint $table) {
+        Schema::create('payroll_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('days');
             $table->integer('hours');
@@ -32,11 +32,10 @@ class CreatePlanillaDetailsTable extends Migration
             $table->decimal('other_deductions', 10, 2)->nullable();
             $table->decimal('total_to_pay', 10, 2)->nullable();
 
-            //$table->string('type')->nullable();
             $table->integer('employee_id')->unsigned()->nullable();
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
-            $table->integer('planilla_id')->unsigned()->nullable();
-            $table->foreign('planilla_id')->references('id')->on('planillas')->onDelete('cascade');
+            $table->integer('payroll_id')->unsigned()->nullable();
+            $table->foreign('payroll_id')->references('id')->on('payrolls')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -49,6 +48,6 @@ class CreatePlanillaDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('planilla_details');
+        Schema::dropIfExists('payroll_details');
     }
 }

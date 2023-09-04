@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PlanillaStatus extends Model
+class PayrollType extends Model
 {
     protected $fillable = [
         'name',  
         'business_id'
     ];
     
-    public function planillas(){
-        return $this->hasMany('App\planilla');
+    public function payrolls(){
+        return $this->hasMany('App\Payroll');
     }
 }

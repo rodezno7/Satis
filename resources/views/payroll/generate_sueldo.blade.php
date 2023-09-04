@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', __('planilla.planilla'))
+@section('title', __('payroll.payroll'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1> @lang('planilla.planilla') de sueldos
-            @if ($planilla->planillaStatus->name == 'Aprobada')
-                <span class="badge" style="background: #449D44">{{ $planilla->planillaStatus->name }}</span>
+        <h1> @lang('payroll.payroll') de sueldos
+            @if ($payroll->payrollStatus->name == 'Aprobada')
+                <span class="badge" style="background: #449D44">{{ $payroll->payrollStatus->name }}</span>
             @endif
-            @if ($planilla->planillaStatus->name == 'Calculada')
-                <span class="badge" style="background: #00A6DC">{{ $planilla->planillaStatus->name }}</span>
+            @if ($payroll->payrollStatus->name == 'Calculada')
+                <span class="badge" style="background: #00A6DC">{{ $payroll->payrollStatus->name }}</span>
             @endif
             <small></small>
         </h1>
@@ -19,21 +19,21 @@
     <!-- Main content -->
     <section class="content">
         <div class="boxform_u box-solid_u">
-            @if ($planilla->planillaStatus->name == 'Calculada')
+            @if ($payroll->payrollStatus->name == 'Calculada')
                 <div class="box-header">
                     <h3 class="box-title"></h3>
                     <div class="box-tools">
-                        <a href="/payroll/{{ $planilla->id }}/exportPayrollSalary" class="btn btn-success" type="button">
+                        <a href="/payroll/{{ $payroll->id }}/exportPayrollSalary" class="btn btn-success" type="button">
                             <i class="fa fa-file"></i> @lang('report.export')
                         </a>
                         <a href="#" class="btn btn-info" type="button"
-                            onClick="recalculatePlanilla({{ $planilla->id }})">
-                            <i class="fa fa-plus"></i> @lang('planilla.recalculate')
+                            onClick="recalculatePayroll({{ $payroll->id }})">
+                            <i class="fa fa-plus"></i> @lang('payroll.recalculate')
                         </a>
 
                         <a href="#" class="btn btn-primary" type="button"
-                            onClick="approvePlanilla({{ $planilla->id }})">
-                            <i class="fa fa-check-square"></i> @lang('planilla.approve')
+                            onClick="approvePayroll({{ $payroll->id }})">
+                            <i class="fa fa-check-square"></i> @lang('payroll.approve')
                         </a>
                     </div>
                 </div>
@@ -41,23 +41,23 @@
             <div class="box-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-condensed table-text-center" style="font-size: inherit; width: 100%"
-                        id="planilla-detail-table">
+                        id="payroll-detail-table">
                         <thead>
                             <tr class="active">
                                 <th width="11%">@lang('rrhh.employee')</th>
-                                <th>@lang('planilla.days')</th>
-                                <th>@lang('planilla.hours')</th>
+                                <th>@lang('payroll.days')</th>
+                                <th>@lang('payroll.hours')</th>
                                 <th>@lang('rrhh.salary')</th>
-                                <th>@lang('planilla.daytime_overtime')</th>
-                                <th>@lang('planilla.night_overtime_hours')</th>
-                                <th>@lang('planilla.total_hours')</th>
-                                <th>@lang('planilla.subtotal')</th>
+                                <th>@lang('payroll.daytime_overtime')</th>
+                                <th>@lang('payroll.night_overtime_hours')</th>
+                                <th>@lang('payroll.total_hours')</th>
+                                <th>@lang('payroll.subtotal')</th>
                                 <th>ISSS</th>
                                 <th>AFP</th>
-                                <th>@lang('planilla.rent')</th>
-                                <th>@lang('planilla.other_deductions')</th>
-                                <th>@lang('planilla.total_to_pay')</th>
-                                {{-- <th>@lang('planilla.actions')</th> --}}
+                                <th>@lang('payroll.rent')</th>
+                                <th>@lang('payroll.other_deductions')</th>
+                                <th>@lang('payroll.total_to_pay')</th>
+                                {{-- <th>@lang('payroll.actions')</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -112,7 +112,7 @@
             </div>
         </div>
         <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-        <input type="hidden" name="id" value="{{ $planilla->id }}" id="id">
+        <input type="hidden" name="id" value="{{ $payroll->id }}" id="id">
     </section>
 
     <div class="modal fade" id="modal_edit" tabindex="-1">
@@ -128,7 +128,7 @@
     <script src="{{ asset('js/functions.js?v=' . $asset_v) }}"></script>
     <script>
         $(document).ready(function() {
-            loadPlanillaDetails();
+            loadPayrollDetails();
             $.fn.dataTable.ext.errMode = 'none';
 
             $('#modal_action').on('shown.bs.modal', function() {
@@ -138,14 +138,14 @@
             })
         });
 
-        function loadPlanillaDetails() {
+        function loadPayrollDetails() {
             var id = $("#id").val();
-            var table = $("#planilla-detail-table").DataTable();
+            var table = $("#payroll-detail-table").DataTable();
             table.destroy();
-            var table = $("#planilla-detail-table").DataTable({
+            var table = $("#payroll-detail-table").DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "/payroll-getPlanillaDetail/" + id,
+                ajax: "/payroll-getPayrollDetail/" + id,
                 columns: [{
                         data: 'employee',
                         name: 'employee',
@@ -214,10 +214,10 @@
                     // {data: null, render: function(data) {
                     //     html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang('messages.actions') <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
-                    //     html += '<li><a href="/payroll/'+data.id+'/generate"><i class="fa fa-user"></i>@lang('planilla.generate')</a></li>';
+                    //     html += '<li><a href="/payroll/'+data.id+'/generate"><i class="fa fa-user"></i>@lang('payroll.generate')</a></li>';
 
-                    //     @can('planilla.delete')
-                    //     html += '<li> <a href="#" onClick="deletePlanilla('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
+                    //     @can('payroll.delete')
+                    //     html += '<li> <a href="#" onClick="deletePayroll('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                     //     @endcan
 
                     //     html += '</ul></div>';
@@ -226,29 +226,29 @@
                     // } , orderable: false, searchable: false, className: "text-center"}
                 ],
                 "fnDrawCallback": function(oSettings) {
-                    $('span#total_salary').text(sum_table_col_name($('table#planilla-detail-table'), 'salary'));
-                    $('span#total_daytime_overtime').text(sum_table_col_name($('table#planilla-detail-table'),
+                    $('span#total_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
+                    $('span#total_daytime_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
                         'daytime_overtime'));
                     $('span#total_night_overtime_hours').text(sum_table_col_name($(
-                        'table#planilla-detail-table'), 'night_overtime_hours'));
-                    $('span#total_overtime').text(sum_table_col_name($('table#planilla-detail-table'),
+                        'table#payroll-detail-table'), 'night_overtime_hours'));
+                    $('span#total_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
                         'total_hours'));
-                    $('span#total_subtotal').text(sum_table_col_name($('table#planilla-detail-table'),
+                    $('span#total_subtotal').text(sum_table_col_name($('table#payroll-detail-table'),
                         'subtotal'));
-                    $('span#total_isss').text(sum_table_col_name($('table#planilla-detail-table'), 'isss'));
-                    $('span#total_afp').text(sum_table_col_name($('table#planilla-detail-table'), 'afp'));
-                    $('span#tota_rent').text(sum_table_col_name($('table#planilla-detail-table'), 'rent'));
-                    $('span#total_other_deductions').text(sum_table_col_name($('table#planilla-detail-table'),
+                    $('span#total_isss').text(sum_table_col_name($('table#payroll-detail-table'), 'isss'));
+                    $('span#total_afp').text(sum_table_col_name($('table#payroll-detail-table'), 'afp'));
+                    $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
+                    $('span#total_other_deductions').text(sum_table_col_name($('table#payroll-detail-table'),
                         'other_deductions'));
-                    $('span#total_total_to_pay').text(sum_table_col_name($('table#planilla-detail-table'),
+                    $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'),
                         'total_to_pay'));
-                    __currency_convert_recursively($('table#planilla-detail-table'));
+                    __currency_convert_recursively($('table#payroll-detail-table'));
                 },
                 dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
             });
         }
 
-        function addPlanilla() {
+        function addPayroll() {
             $("#modal_content_add").html('');
             var url = "{!! URL::to('/payroll/create') !!}";
             $.get(url, function(data) {
@@ -259,7 +259,7 @@
             });
         }
 
-        function recalculatePlanilla(id) {
+        function recalculatePayroll(id) {
             route = "/payroll/" + id + "/recalculate";
             token = $("#token").val();
 
@@ -279,7 +279,7 @@
                             timer: 1000,
                             showConfirmButton: false,
                         });
-                        $("#planilla-detail-table").DataTable().ajax.reload(null, false);
+                        $("#payroll-detail-table").DataTable().ajax.reload(null, false);
                     } else {
                         Swal.fire({
                             title: result.msg,
@@ -301,7 +301,7 @@
             });
         }
 
-        function approvePlanilla(id) {
+        function approvePayroll(id) {
             Swal.fire({
                 title: "{{ __('messages.approve_question') }}",
                 text: "{{ __('messages.approve_content') }}",
@@ -379,7 +379,7 @@
                                     timer: 2000,
                                     showConfirmButton: false,
                                 });
-                                $("#planilla-detail-table").DataTable().ajax
+                                $("#payroll-detail-table").DataTable().ajax
                                     .reload(null, false);
                             } else {
                                 Swal.fire({

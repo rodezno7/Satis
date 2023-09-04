@@ -28,13 +28,13 @@
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <label>@lang('rrhh.planilla_column')</label> <span class="text-danger">*</span>
-                    <select id="planilla_column1" name="planilla_column" class="form-control select2" style="width: 100%" required>
-                        @for ($i = 0; $i < count($planillaColumns); $i++)
-                            @if ($item->planilla_column == $planillaColumns[$i])
-                                <option value="{{ $i }}" selected> {{ __($planillaColumns[$i]) }}</option>
+                    <label>@lang('rrhh.payroll_column')</label> <span class="text-danger">*</span>
+                    <select id="payroll_column1" name="payroll_column" class="form-control select2" style="width: 100%" required>
+                        @for ($i = 0; $i < count($payrollColumns); $i++)
+                            @if ($item->payroll_column == $payrollColumns[$i])
+                                <option value="{{ $i }}" selected> {{ __($payrollColumns[$i]) }}</option>
                             @else
-                                <option value="{{ $i }}"> {{ __($planillaColumns[$i]) }}</option>
+                                <option value="{{ $i }}"> {{ __($payrollColumns[$i]) }}</option>
                             @endif
                         @endfor
                     </select>
