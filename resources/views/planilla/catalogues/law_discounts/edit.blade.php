@@ -102,13 +102,13 @@
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
                 <label>@lang('planilla.calculation_types')</label> <span class="text-danger">*</span>
-                <select name="calculation_type_id" id="calculation_type_id" class="form-control form-control-sm select2"
+                <select name="payment_period_id" id="payment_period_id" class="form-control form-control-sm select2"
                     placeholder="{{ __('planilla.calculation_types') }}" style="width: 100%;" required>
-                    @foreach ($calculation_types as $calculation_type)
-                        @if ($calculation_type->id == $lawDiscount->calculation_type_id)
-                            <option value="{{ $calculation_type->id }}" selected>{{ $calculation_type->name }}</option>
+                    @foreach ($paymentPeriods as $paymentPeriod)
+                        @if ($paymentPeriod->id == $lawDiscount->payment_period_id)
+                            <option value="{{ $paymentPeriod->id }}" selected>{{ $paymentPeriod->name }}</option>
                         @else
-                            <option value="{{ $calculation_type->id }}">{{ $calculation_type->name }}</option>
+                            <option value="{{ $paymentPeriod->id }}">{{ $paymentPeriod->name }}</option>
                         @endif
                     @endforeach
                 </select>

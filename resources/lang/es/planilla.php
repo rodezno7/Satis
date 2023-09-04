@@ -65,4 +65,11 @@ return[
     'total_calculation' => 'Total del cálculo',
     'approve' => 'Aprobar',
     'type_planilla' => 'Tipo de planilla',
+    'type' => 'Tipo',
+    'recalculate' => 'Recalcular',
+    'view_detail' => 'Ver detalle',
+    'recalculation_done_successfully' => 'Recalculo realizado exitosamente',
+    'failed_to_recalculate' => 'Error, el estado de la planilla debe ser Calculada',
+    'send_approve_payroll' => 'Se enviaron los archivos y se aprobó exitosamente la planilla',
+    'approve_payroll' => 'Se aprobó exitosamente la planilla',
 ];

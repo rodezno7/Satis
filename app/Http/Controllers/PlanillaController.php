@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Business;
 use App\CalculationType;
 use App\Employees;
+use App\Exports\PayrollSalaryReportExport;
+use App\Exports\PayrollHonoraryReportExport;
 use App\LawDiscount;
 use App\PaymentPeriod;
 use App\Planilla;
@@ -19,6 +22,7 @@ use App\Utils\ModuleUtil;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
+use Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -63,9 +67,8 @@ class PlanillaController extends Controller
         $data = DB::table('planillas as planilla')
             ->join('type_planillas as type_planilla', 'type_planilla.id', '=', 'planilla.type_planilla_id')
             ->join('payment_periods as payment_period', 'payment_period.id', '=', 'planilla.payment_period_id')
-            ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'planilla.calculation_type_id')
             ->join('planilla_statuses as planilla_status', 'planilla_status.id', '=', 'planilla.planilla_status_id')
-            ->select('planilla.id as id', 'planilla.*', 'planilla_status.name as status', 'type_planilla.name as type', 'payment_period.name as payment_period', 'calculation_type.name as calculation_type')
+            ->select('planilla.id as id', 'planilla.*', 'planilla_status.name as status', 'type_planilla.name as type', 'payment_period.name as payment_period')
             ->where('planilla.business_id', $business_id)
             ->where('planilla.deleted_at', null)
             ->get();
@@ -75,7 +78,24 @@ class PlanillaController extends Controller
             ->editColumn('month', function ($data) {
                 $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
                 return $meses[$data->month - 1];
-            })->toJson();
+            })->editColumn('status', function ($data) {
+                $html = '';
+                if ($data->status == 'Aprobada'){
+                    $html = '<span class="badge" style="background: #449D44">'.$data->status.'</span>';
+                }
+                if ($data->status == 'Calculada'){
+                    $html = '<span class="badge" style="background: #00A6DC">'.$data->status.'</span>';
+                }
+                if ($data->status == 'Iniciada'){
+                    $html = '<span class="badge">'.$data->status.'</span>';
+                }
+                return $html;
+            })
+            ->addColumn('statusPlanilla', function ($data) {
+                return $data->status;
+            })
+            ->rawColumns(['type', 'name', 'payment_period', 'period', 'status', 'statusPlanilla'])
+            ->make(true);
     }
 
     /**
@@ -90,11 +110,16 @@ class PlanillaController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->where('id', '<>', 3)->get();
-        $calculationTypes = CalculationType::where('business_id', $business_id)->get();
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
+            ->where('id', '<>', 1) //Semanal
+            ->where('id', '<>', 2) //Catorcenal
+            ->where('id', '<>', 3) //Quincenal
+            ->where('id', '<>', 7) //Semestral
+            ->where('id', '<>', 8) //Anual
+            ->get();
         $typePlanillas = TypePlanilla::where('business_id', $business_id)->get();
 
-        return view('planilla.create', compact('paymentPeriods', 'calculationTypes', 'typePlanillas'));
+        return view('planilla.create', compact('paymentPeriods', 'typePlanillas'));
     }
 
     /**
@@ -114,18 +139,19 @@ class PlanillaController extends Controller
             'year'                => 'required',
             'month'               => 'required',
             'payment_period_id'   => 'required',
-            //'calculation_type_id' => 'required',
             'start_date'          => 'required',
             'end_date'            => 'required',
-            //'days'                => 'required',
         ]);
 
         try {
             $input_details = $request->all();
-            $input_details['business_id'] = request()->session()->get('user.business_id');
+            $business_id = request()->session()->get('user.business_id');
+            $paymentPeriod = PaymentPeriod::where('id', $request->input('payment_period_id'))->where('business_id', $business_id)->first();
+            $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+            $input_details['name'] = __('planilla.planilla').' '.$paymentPeriod->name.' - '.$meses[$request->month - 1].' '.$request->year;
+            $input_details['business_id'] = $business_id;
             $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
             $input_details['end_date'] = $this->moduleUtil->uf_date($request->input('end_date'));
-            $input_details['calculation_type_id'] = 1;
             $status = PlanillaStatus::where('name', 'Iniciada')->where('business_id', $input_details['business_id'])->first();
             $input_details['planilla_status_id'] = $status->id;
 
@@ -147,7 +173,8 @@ class PlanillaController extends Controller
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                'msg' => __('rrhh.error')
+                'msg' => $e->getMessage()
+                //'msg' => __('rrhh.error')
             ];
         }
 
@@ -162,17 +189,6 @@ class PlanillaController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function generate($id)
-    {
         $business_id = request()->session()->get('user.business_id');
         $planilla = Planilla::where('id', $id)->where('business_id', $business_id)->with('paymentPeriod')->firstOrFail();
         if ($planilla->planillaStatus->name == 'Iniciada') {
@@ -186,7 +202,6 @@ class PlanillaController extends Controller
         if($planilla->typePlanilla->name == 'Planilla de honorarios'){
             return view('planilla.generate_honorario', compact('planilla'));
         }
-        
     }
 
 
@@ -254,6 +269,46 @@ class PlanillaController extends Controller
         }
     }
 
+    public function recalculate($id)
+    {
+        if (!auth()->user()->can('plantilla.recalculate')) {
+            abort(403, 'Unauthorized action.');
+        }
+        try{
+            $business_id = request()->session()->get('user.business_id');
+            $planilla = Planilla::where('id', $id)->where('business_id', $business_id)->with('paymentPeriod', 'typePlanilla')->firstOrFail();
+            
+            if ($planilla->planillaStatus->name == 'Calculada') {
+                DB::beginTransaction();
+
+                PlanillaDetail::where('planilla_id', $planilla->id)->delete();
+                $this->calculate($planilla);
+
+                DB::commit();
+
+                $output = [
+                    'success' => 1,
+                    'msg' => __('planilla.recalculation_done_successfully')
+                ];
+            }else{
+                $output = [
+                    'success' => 0,
+                    'msg' => __('planilla.failed_to_recalculate')
+                ];
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+            $output = [
+                'success' => 0,
+                'msg' => __('rrhh.error')
+            ];
+        }
+
+        return $output;
+    }
+    
+
     /** Authorizer personnel action */
     function approve(Request $request, $id)
     {
@@ -275,10 +330,17 @@ class PlanillaController extends Controller
                     $planilla->approval_date = Carbon::now();
                     $planilla->update();
 
-                    $output = [
-                        'success' => 1,
-                        'msg' => __('rrhh.authorized_successfully')
-                    ];
+                    if($request->input('sendEmail') == 1){
+                        $output = [
+                            'success' => 1,
+                            'msg' => __('planilla.send_approve_payroll')
+                        ];
+                    }else{
+                        $output = [
+                            'success' => 1,
+                            'msg' => __('planilla.approve_payroll')
+                        ];
+                    }
                 } else {
                     $output = [
                         'success' => 0,
@@ -377,18 +439,18 @@ class PlanillaController extends Controller
                                 ->get();
             
                             $lawDiscounts = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
-                                ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'law_discounts.calculation_type_id')
-                                ->select('law_discounts.id as id', 'law_discounts.*', 'calculation_type.name as calculation_type', 'institution_law.name as institution_law')
-                                ->where('calculation_type.name', $paymentPeriod)
+                                ->join('payment_periods as payment_period', 'payment_period.id', '=', 'law_discounts.payment_period_id')
+                                ->select('law_discounts.id as id', 'law_discounts.*', 'payment_period.name as payment_period', 'institution_law.name as institution_law')
+                                ->where('payment_period.name', $paymentPeriod)
                                 ->where('law_discounts.business_id', $business_id)
                                 ->where('law_discounts.deleted_at', null)
                                 ->get();
             
                             $lawDiscountsRenta = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
-                                ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'law_discounts.calculation_type_id')
-                                ->select('law_discounts.id as id', 'law_discounts.*', 'institution_law.name as institution_law', 'calculation_type.name as calculation_type')
+                                ->join('payment_periods as payment_period', 'payment_period.id', '=', 'law_discounts.payment_period_id')
+                                ->select('law_discounts.id as id', 'law_discounts.*', 'institution_law.name as institution_law', 'payment_period.name as payment_period')
                                 ->where('institution_law.name', 'Renta')
-                                ->where('calculation_type.name', $paymentPeriod)
+                                ->where('payment_period.name', $paymentPeriod)
                                 ->where('law_discounts.business_id', $business_id)
                                 ->where('law_discounts.deleted_at', null)
                                 ->get();
@@ -475,12 +537,12 @@ class PlanillaController extends Controller
                             $details['night_overtime_hours'] = abs(0 - $discountNOH + $incomeNOH);
                             $details['total_hours'] = $details['daytime_overtime'] + $details['night_overtime_hours'];
                             $details['subtotal'] = ($salary / 30 * $details['days']) + $details['commissions'] + $details['total_hours'];
-                            \Log::info($details['subtotal']);
+                            
                             //Calcular ISSS y AFP
                             foreach ($lawDiscounts as $lawDiscount) {
                                 //---------------------------------ISSS---------------------------------
                                 if (mb_strtolower($lawDiscount->institution_law) == mb_strtolower('ISSS')) {
-                                    if (mb_strtolower($lawDiscount->calculation_type) == mb_strtolower($paymentPeriod)) {
+                                    if (mb_strtolower($lawDiscount->payment_period) == mb_strtolower($paymentPeriod)) {
                                         if ($details['subtotal'] >= $lawDiscount->until) {
                                             $details['isss'] = $lawDiscount->until * $lawDiscount->employee_percentage / 100;
                                         } else {
@@ -491,7 +553,7 @@ class PlanillaController extends Controller
         
                                 //---------------------------------AFP---------------------------------
                                 if ($lawDiscount->institution_law == 'AFP Confia' || $lawDiscount->institution_law == 'AFP Crecer') {
-                                    if (mb_strtolower($lawDiscount->calculation_type) == mb_strtolower($paymentPeriod)) {
+                                    if (mb_strtolower($lawDiscount->payment_period) == mb_strtolower($paymentPeriod)) {
                                         $details['afp'] = $details['subtotal'] * $lawDiscount->employee_percentage / 100;
                                     }
                                 }
@@ -519,9 +581,8 @@ class PlanillaController extends Controller
                                 }
                             }
 
-                            
                             $details['other_deductions'] = abs(0 - $discountOD + $incomeOD);
-                            $details['total_to_pay'] = round(($details['subtotal'] - $details['isss'] - $details['afp'] - $details['rent'] - $details['other_deductions']), 2);
+                            $details['total_to_pay'] = bcdiv(($details['subtotal'] - $details['isss'] - $details['afp'] - $details['rent'] - $details['other_deductions']), 1, 2);
                             $details['employee_id']  = $employee->id;
                             $details['planilla_id']  = $planilla->id;
                             
@@ -533,7 +594,7 @@ class PlanillaController extends Controller
                     if($planilla->typePlanilla->name == 'Planilla de honorarios'){
                         if($typeWage->type == 'Honorario'){ //----------------------HONORARIO----------------------
                             $details['rent'] = $salary * 0.1;
-                            $details['total_to_pay'] = round($salary - $details['rent'], 2);
+                            $details['total_to_pay'] = bcdiv($salary - $details['rent'], 1, 2);
                             $details['employee_id']  = $employee->id;
                             $details['planilla_id']  = $planilla->id;
                             
@@ -554,6 +615,28 @@ class PlanillaController extends Controller
         }else{
             //Mensaje que no hay empleados
         }
+    }
+
+
+    public function exportPayrollSalary($id){
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+        $planilla = Planilla::where('id', $id)->where('business_id', $business_id)->with('typePlanilla')->firstOrFail();
+        $planillaDetails = PlanillaDetail::where('planilla_id', $id)->with('planilla')->get();
+        
+        if($planilla->typePlanilla->name == 'Planilla de sueldos'){
+            return Excel::download(
+                new PayrollSalaryReportExport($planilla, $planillaDetails, $business, $this->moduleUtil),
+                'Planilla de sueldos - '.$planilla->name . '.xlsx'
+            );
+        }
+        if($planilla->typePlanilla->name == 'Planilla de honorarios'){
+            return Excel::download(
+                new PayrollHonoraryReportExport($planilla, $planillaDetails, $business, $this->moduleUtil),
+                'Planilla de honorarios - '.$planilla->name . '.xlsx'
+            );
+        }
+        
     }
 
     public function incomeDiscount($incomeDiscount, $planilla_column){

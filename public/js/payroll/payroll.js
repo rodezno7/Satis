@@ -114,7 +114,7 @@ $("#btn_add_calculate_planilla").click(function() {
 
 
 function createPlanilla(calculate){
-    route = "/planilla";    
+    route = "/payroll";    
     token = $("#token").val();
 
     var form = $("#form_add_planilla");

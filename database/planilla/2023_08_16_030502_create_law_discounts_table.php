@@ -26,8 +26,8 @@ class CreateLawDiscountsTable extends Migration
             $table->integer('institution_law_id')->unsigned()->nullable();
             $table->foreign('institution_law_id')->references('id')->on('institution_laws')->onDelete('cascade')->onUpdate('cascade');
             
-            $table->integer('calculation_type_id')->unsigned()->nullable();
-            $table->foreign('calculation_type_id')->references('id')->on('calculation_types')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('payment_period_id')->unsigned();
+            $table->foreign('payment_period_id')->references('id')->on('payment_periods')->onDelete('cascade')->onUpdate('cascade');
             
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');

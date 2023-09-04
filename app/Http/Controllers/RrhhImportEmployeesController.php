@@ -134,7 +134,7 @@ class RrhhImportEmployeesController extends Controller
                         'profession' => trim($value[24]),
                         'payment' => trim($value[25]),
                         'bank' => trim($value[26]),
-                        'bank_acount' => trim($value[27]),
+                        'bank_account' => trim($value[27]),
                     ];
 
                     $result = $this->checkRow($row, $row_no);
@@ -358,7 +358,7 @@ class RrhhImportEmployeesController extends Controller
 
                     array_push($error_msg, $error_line);
                 }else {
-                    $employee['nationality'] = $nationality->id;
+                    $employee['nationality_id'] = $nationality->id;
                 }
             }   
         }
@@ -375,8 +375,7 @@ class RrhhImportEmployeesController extends Controller
             array_push($error_msg, $error_line);
         } else {
             // Check format date
-            $row['birth_date'] = str_replace("-", "/", $row['birth_date']);
-            if (date('d/m/Y', strtotime($row['birth_date'])) != $row['birth_date'] || strlen($row['birth_date']) > 11) {
+            if (date('d-m-Y', strtotime($row['birth_date'])) != $row['birth_date']) {
                 $error_line = [
                     'row' => $row_no,
                     'msg' => __('rrhh.birth_date_valid')
@@ -384,6 +383,7 @@ class RrhhImportEmployeesController extends Controller
 
                 array_push($error_msg, $error_line);
             }else{
+                $row['birth_date'] = str_replace("-", "/", $row['birth_date']);
                 $employee['birth_date'] = $this->moduleUtil->uf_date($row['birth_date']);
             }
         }
@@ -821,8 +821,7 @@ class RrhhImportEmployeesController extends Controller
             array_push($error_msg, $error_line);
         } else {
             // Check format date
-            $row['date_admission'] = str_replace("-", "/", $row['date_admission']);
-            if (date('d/m/Y', strtotime($row['date_admission'])) != $row['date_admission'] || strlen($row['date_admission']) > 11) {
+            if (date('d-m-Y', strtotime($row['date_admission'])) != $row['date_admission']) {
                 $error_line = [
                     'row' => $row_no,
                     'msg' => __('rrhh.date_admission_valid')
@@ -830,6 +829,7 @@ class RrhhImportEmployeesController extends Controller
 
                 array_push($error_msg, $error_line);
             }else{
+                $row['date_admission'] = str_replace("-", "/", $row['date_admission']);
                 $employee['date_admission'] = $this->moduleUtil->uf_date($row['date_admission']);
             }
         }
@@ -1202,7 +1202,7 @@ class RrhhImportEmployeesController extends Controller
                         'profession_id' => $data['profession_id'],
                         'payment_id' => $data['payment_id'],
                         'bank_id' => $data['bank_id'],
-                        'bank_acount' => $data['bank_acount'],
+                        'bank_account' => $data['bank_account'],
                         'business_id' => $data['business_id'],
                         'created_by' => $data['created_by'],
                     ];

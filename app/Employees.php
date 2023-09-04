@@ -92,7 +92,7 @@ class Employees extends Model
     }
 
     public function rrhhTypeWage() {
-        return $this->belongsTo('App\RrhhTypeWage');
+        return $this->belongsTo('App\RrhhTypeWage', 'type_id');
     }
 
     public function payment() {

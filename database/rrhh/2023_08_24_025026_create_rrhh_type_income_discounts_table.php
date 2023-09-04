@@ -18,10 +18,6 @@ class CreateRrhhTypeIncomeDiscountsTable extends Migration
             $table->string('type');
             $table->string('name');
             $table->string('planilla_column');
-            $table->string('percentage')->nullable();
-            $table->string('isss')->default(0);
-            $table->string('afp')->default(0);
-            $table->string('rent')->default(0);
             $table->string('status')->default(1);
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');

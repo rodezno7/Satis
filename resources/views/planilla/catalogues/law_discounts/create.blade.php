@@ -74,10 +74,10 @@
 	  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 		<div class="form-group">
 			<label>@lang('planilla.calculation_types')</label> <span class="text-danger">*</span>
-			<select name="calculation_type_id" id="calculation_type_id" class="form-control form-control-sm select2" 
+			<select name="payment_period_id" id="payment_period_id" class="form-control form-control-sm select2" 
 				placeholder="{{ __('planilla.calculation_types') }}" style="width: 100%;">
-				@foreach ($calculation_types as $calculation_type)
-					<option value="{{ $calculation_type->id }}">{{ $calculation_type->name }}</option>
+				@foreach ($paymentPeriods as $paymentPeriod)
+					<option value="{{ $paymentPeriod->id }}">{{ $paymentPeriod->name }}</option>
 				@endforeach
 			</select>
 		</div>

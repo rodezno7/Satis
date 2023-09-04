@@ -219,7 +219,7 @@
         {{-- Inicio Planilla --}}
         @if(auth()->user()->can('planilla.view') || auth()->user()->can('planilla-catalogues.view'))
           <li
-            class="treeview {{ in_array($request->segment(1), ['planilla', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
+            class="treeview {{ in_array($request->segment(1), ['payroll', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
             id="tour_step4">
             <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('planilla.planilla') }}</span>
               <span class="pull-right-container">
@@ -228,7 +228,7 @@
             </a>
             <ul class="treeview-menu" id="rrhh_over">
               @can('planilla.view')
-              <li class="{{ $request->segment(1) == 'planilla' ? 'active' : '' }}">
+              <li class="{{ $request->segment(1) == 'payroll' ? 'active' : '' }}">
                 <a href="{{action('PlanillaController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
                   @lang('planilla.planilla')
                 </a>

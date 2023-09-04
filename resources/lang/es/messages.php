@@ -66,5 +66,11 @@
     'question_content' => 'Recuerde que no podrá revertir esta acción',
     'password_required' => 'El campo de la contraseña es requerido.',
     'validate_file' => 'Validar archivo',
-    'download_cv' => 'Descargar cv'
+    'download_cv' => 'Descargar cv',
+    "approve_question" => '¿Está a punto de aprobar esta planilla?',
+    'approve_content' => 'Recuerde que este proceso no se puede revertir',
+    "pay_question" => '¿Desea generar los archivos de pagos?',
+    'confirm_approval' => 'Confirmar aprobación',
+    'message_to_confirm' => 'Ingrese su contraseña',
+    'approve' => 'Aprobar',
 ];

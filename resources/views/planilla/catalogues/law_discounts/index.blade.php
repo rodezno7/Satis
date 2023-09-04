@@ -86,7 +86,7 @@
             {data: 'fixed_fee', name: 'fixed_fee', className: "text-center"},
             {data: 'employee_percentage', name: 'employee_percentage', className: "text-center"},
             {data: 'employer_value', name: 'employer_value', className: "text-center"},
-            {data: 'calculation_type', name: 'calculation_type', className: "text-center"}, 
+            {data: 'payment_period', name: 'payment_period', className: "text-center"}, 
             {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = "";

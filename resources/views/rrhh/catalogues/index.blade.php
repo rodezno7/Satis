@@ -679,10 +679,6 @@
             columns: [
             {data: 'type'},
             {data: 'name'},
-            {data: 'percentage'},
-            {data: 'isss'},
-            {data: 'afp'},
-            {data: 'rent'},
             {data: 'planilla_column'},
             {data: 'status'},
             {data: null, render: function(data){

@@ -13,10 +13,6 @@ class RrhhTypeIncomeDiscount extends Model
         'type', 
         'name', 
         'planilla_column', 
-        'percentage', 
-        'isss', 
-        'afp', 
-        'rent', 
         'status', 
         'business_id', 
         'deleted_at'
@@ -31,6 +27,8 @@ class RrhhTypeIncomeDiscount extends Model
         'Número de horas extras nocturnas',
         'Comisiones',
         'Otras deducciones',
+        'Aguinaldo',
+        'Vacaciones'
         // 'ISSS',
         // 'AFP',
         // 'Renta',

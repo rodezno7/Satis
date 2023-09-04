@@ -10,7 +10,8 @@ class PlanillaDetail extends Model
 
     protected $fillable = [
         'days', 
-        'hours', 
+        'hours',
+        'salary', 
         'commissions', 
         'number_daytime_overtime', 
         'daytime_overtime',

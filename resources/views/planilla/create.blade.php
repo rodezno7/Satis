@@ -64,18 +64,6 @@
 		</div>
 	</div>
 
-	{{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-		<div class="form-group">
-			<label>@lang('planilla.ISR_table')</label> <span class="text-danger">*</span>
-			<select name="calculation_type_id" id="calculation_type_id" class="form-control form-control-sm select2" 
-				placeholder="{{ __('planilla.ISR_table') }}" style="width: 100%;">
-				@foreach ($calculationTypes as $calculationType)
-					<option value="{{ $calculationType->id }}">{{ $calculationType->name }}</option>
-				@endforeach
-			</select>
-		</div>
-	</div> --}}
-
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
         <label>@lang('planilla.start_date')</label> <span class="text-danger">*</span>
@@ -96,10 +84,10 @@
 </div>
 <div class="modal-footer">
   <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-  <button type="button" class="btn btn-info" id="btn_add_calculate_planilla">@lang('planilla.create_calculate')</button>
+  <button type="button" class="btn btn-info" id="btn_add_calculate_planilla">@lang('planilla.generate')</button>
   <button type="button" class="btn btn-primary" id="btn_add_planilla">@lang('planilla.create')</button>
   <button type="button" class="btn btn-danger" data-dismiss="modal" onClick="closeModal()">@lang( 'messages.cancel'
     )</button>
 </div>
 {!! Form::close() !!}
-<script src="{{ asset('js/planilla/planilla.js?v=' . $asset_v) }}"></script>
+<script src="{{ asset('js/payroll/payroll.js?v=' . $asset_v) }}"></script>

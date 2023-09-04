@@ -36,36 +36,6 @@
                     </select>
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="form-group">
-                    <label>@lang('planilla.percentage')</label>
-                    {!! Form::number('percentage', null, [
-                        'class' => 'form-control form-control-sm',
-                        'placeholder' => __('planilla.percentage'),
-                        'id' => 'percentage',
-                        'required',
-                    ]) !!}
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" name='isss' id='isss'>
-                        {{ __('rrhh.affect_isss') }}
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" name='afp' id='afp'>
-                        {{ __('rrhh.affect_afp') }}
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" name='rent' id='rent'>
-                        {{ __('rrhh.affect_rent') }}
-                    </label>
-                </div>
-            </div>
         </div>
     </form>
 </div>

@@ -65,4 +65,10 @@ return[
     'approve' => 'Approve',
     'type_planilla' => 'Type of planilla',
     'type' => 'Type',
+    'recalculate' => 'Recalculate',
+    'view_detail' => 'View detail',
+    'recalculation_done_successfully' => 'Recalculation done successfully',
+    'failed_to_recalculate' => 'Error, the status of the spreadsheet must be Calculated',
+    'send_approve_payroll' => 'The files were sent and the form was successfully approved',
+    'approve_payroll' => 'The form was successfully approved',
 ];

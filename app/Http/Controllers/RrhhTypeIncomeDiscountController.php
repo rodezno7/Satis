@@ -44,44 +44,6 @@ class RrhhTypeIncomeDiscountController extends Controller
                 }
                 return $html;
             }
-        )
-        ->addColumn(
-            'isss',
-            function ($row) {
-                if ($row->isss == 1) {
-
-                    $html = 'Si';
-                } else {
-
-                    $html = 'No';
-                }
-                return $html;
-            }
-        )->addColumn(
-            'afp',
-            function ($row) {
-                if ($row->afp == 1) {
-
-                    $html = 'Si';
-                } else {
-
-                    $html = 'No';
-                }
-                return $html;
-            }
-        )
-        ->addColumn(
-            'rent',
-            function ($row) {
-                if ($row->rent == 1) {
-
-                    $html = 'Si';
-                } else {
-
-                    $html = 'No';
-                }
-                return $html;
-            }
         )->addColumn(
             'status',
             function ($row) {
@@ -139,21 +101,6 @@ class RrhhTypeIncomeDiscountController extends Controller
             }
 
             $input_details['business_id'] =  request()->session()->get('user.business_id');
-            if($request->has('isss')){
-                $input_details['isss'] = true;
-            }else{
-                $input_details['isss'] = false;
-            }
-            if($request->has('afp')){
-                $input_details['afp'] = true;
-            }else{
-                $input_details['afp'] = false;
-            }
-            if($request->has('rent')){
-                $input_details['rent'] = true;
-            }else{
-                $input_details['rent'] = false;
-            }
 
             RrhhTypeIncomeDiscount::create($input_details);
             $output = [
@@ -207,8 +154,6 @@ class RrhhTypeIncomeDiscountController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-
-        \Log::info($request);
         if ( !auth()->user()->can('rrhh_catalogues.update') ) {
             abort(403, 'Unauthorized action.');
         }
@@ -226,24 +171,7 @@ class RrhhTypeIncomeDiscountController extends Controller
                 if($request->planilla_column == $i){
                     $input_details['planilla_column'] = $planillaColumns[$i];
                 }
-            }
-
-            if($request->has('isss')){
-                $input_details['isss'] = true;
-            }else{
-                $input_details['isss'] = false;
-            }
-            if($request->has('afp')){
-                $input_details['afp'] = true;
-            }else{
-                $input_details['afp'] = false;
-            }
-            if($request->has('rent')){
-                $input_details['rent'] = true;
-            }else{
-                $input_details['rent'] = false;
-            }
-            
+            }            
 
             $item = RrhhTypeIncomeDiscount::findOrFail($id);
             $item->update($input_details);

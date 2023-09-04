@@ -58,6 +58,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://satis.test'),
+    'url_assistance' => env('APP_URL_ASSISTANCE', 'http://satis.test'),
 
     /*
     |--------------------------------------------------------------------------

@@ -11,13 +11,13 @@ class Planilla extends Model
 
     protected $fillable = [
         'type_planilla_id',
+        'name',
         'year', 
         'month', 
         'start_date', 
         'end_date', 
         'planilla_status_id',
-        'payment_period_id', 
-        'calculation_type_id', 
+        'payment_period_id',  
         'business_id', 
         'deleted_at'
     ];

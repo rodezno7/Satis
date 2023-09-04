@@ -748,17 +748,17 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     // Route Module Planilla
     //Routes Planilla
-    Route::resource('planilla', 'PlanillaController');
-    Route::get('planilla-getPlanillas', 'PlanillaController@getPlanillas');
-    Route::get('planilla/{id}/generate', 'PlanillaController@generate');
-    Route::post('planilla/{id}/approve', 'PlanillaController@approve');
-    Route::get('planilla-getPlanillaDetail/{id}', 'PlanillaController@getPlanillaDetail');
-    Route::post('planilla/{id}/update', 'PlanillaController@updatePlanilla');
+    Route::resource('payroll', 'PlanillaController');
+    Route::get('payroll-getPlanillas', 'PlanillaController@getPlanillas');
+    Route::post('payroll/{id}/approve', 'PlanillaController@approve');
+    Route::post('payroll/{id}/recalculate', 'PlanillaController@recalculate');
+    Route::get('payroll-getPlanillaDetail/{id}', 'PlanillaController@getPlanillaDetail');
+    Route::get('payroll/{id}/exportPayrollSalary', 'PlanillaController@exportPayrollSalary');
 
-    Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
-    Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
-    Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');
-    Route::get('/planilla/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
+    Route::get('payroll-getPhoto/{id}', 'PlanillaController@getPhoto');
+    Route::get('payroll-downloadCv/{id}', 'PlanillaController@downloadCv');
+    Route::post('payroll/uploadPhoto', 'PlanillaController@uploadPhoto');
+    Route::get('/payroll/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
 
 
     //Route catalogues

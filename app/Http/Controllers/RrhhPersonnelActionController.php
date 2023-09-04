@@ -583,12 +583,12 @@ class RrhhPersonnelActionController extends Controller
                 }
             }
 
-            if ($employeeIncompleteInfo != 0) {
-                $output = [
-                    'success' => 0,
-                    'msg' => __('rrhh.incomplete_information_employees')
-                ];
-            } else {
+            // if ($employeeIncompleteInfo > 0) {
+            //     $output = [
+            //         'success' => 0,
+            //         'msg' => __('rrhh.incomplete_information_employees')
+            //     ];
+            // } else {
                 $input_details = $request->only(['rrhh_type_personnel_action_id', 'description', 'employee_id']);
                 $input_details['user_id'] = auth()->user()->id;
 
@@ -744,7 +744,7 @@ class RrhhPersonnelActionController extends Controller
                     'success' => 1,
                     'msg' => __('rrhh.added_successfully')
                 ];
-            }
+            //}
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());

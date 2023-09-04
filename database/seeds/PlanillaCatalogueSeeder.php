@@ -59,6 +59,18 @@ class PlanillaCatalogueSeeder extends Seeder
                 'business_id' => $item->id,
             ]);
 
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Semestral',
+                'days' => 365,
+                'business_id' => $item->id,
+            ]);
+
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Anual',
+                'days' => 365,
+                'business_id' => $item->id,
+            ]);
+
             
 
             TypePlanilla::firstOrCreate([
@@ -98,32 +110,6 @@ class PlanillaCatalogueSeeder extends Seeder
                 'business_id' => $item->id,
             ]);
 
-
-
-            CalculationType::firstOrCreate([
-                'name' => 'Semanal',
-                'business_id' => $item->id,
-            ]);
-
-            CalculationType::firstOrCreate([
-                'name' => 'Quincenal',
-                'business_id' => $item->id,
-            ]);
-
-            CalculationType::firstOrCreate([
-                'name' => 'Mensual',
-                'business_id' => $item->id,
-            ]);
-
-            CalculationType::firstOrCreate([
-                'name' => 'Semestral',
-                'business_id' => $item->id,
-            ]);
-
-            CalculationType::firstOrCreate([
-                'name' => 'Anual',
-                'business_id' => $item->id,
-            ]);
 
 
 
@@ -178,7 +164,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 3, 
                 'employer_value' => 7.5, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 2, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -192,7 +178,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 3, 
                 'employer_value' => 7.5, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 2, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -207,7 +193,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 0, 
                 'employer_value' => 1, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 5, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -223,7 +209,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 7.25, 
                 'employer_value' => 7.75, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 3, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -236,7 +222,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 7.25, 
                 'employer_value' => 7.75, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 4, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -251,7 +237,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 7.25, 
                 'employer_value' => 7.75, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 3, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -264,7 +250,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 7.25, 
                 'employer_value' => 7.75, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 4, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -280,7 +266,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 0, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 1, 
+                'payment_period_id' => 1, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -293,7 +279,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 4.42, 
                 'employee_percentage' => 10, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 1, 
+                'payment_period_id' => 1, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -306,7 +292,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 15, 
                 'employee_percentage' => 20, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 1, 
+                'payment_period_id' => 1, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -319,7 +305,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 72.14, 
                 'employee_percentage' => 30, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 1, 
+                'payment_period_id' => 1, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -333,7 +319,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 0, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -346,7 +332,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 8.83, 
                 'employee_percentage' => 10, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -359,7 +345,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 30, 
                 'employee_percentage' => 20, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -372,7 +358,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 144.28, 
                 'employee_percentage' => 30, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 2, 
+                'payment_period_id' => 3, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -386,7 +372,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 0, 
                 'employee_percentage' => 0, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -399,7 +385,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 17.67, 
                 'employee_percentage' => 10, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -412,7 +398,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 60, 
                 'employee_percentage' => 20, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
@@ -425,7 +411,7 @@ class PlanillaCatalogueSeeder extends Seeder
                 'fixed_fee' => 288.57, 
                 'employee_percentage' => 30, 
                 'employer_value' => 0, 
-                'calculation_type_id' => 3, 
+                'payment_period_id' => 6, 
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
