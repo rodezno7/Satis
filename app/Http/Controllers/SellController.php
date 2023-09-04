@@ -714,6 +714,7 @@ class SellController extends Controller
 
             $transaction = Transaction::findOrFail($id);
 
+            $old_date = $transaction->transaction_date;
             $input_date = $this->transactionUtil->uf_date($request->input('transaction_date'));
             $new_date = substr($input_date, 0, 10) . ' ' . substr($transaction->transaction_date, 11, 18);
 
@@ -734,6 +735,11 @@ class SellController extends Controller
                 $transaction->parent_correlative = $request->get('parent_correlative', null);
             }
 
+            /** Update paid on date */
+            if ($old_date != $new_date) {
+                $this->updatePaidOn($id, $old_date, $new_date);
+            }
+
             $transaction->save();
             
             DB::commit();
@@ -752,15 +758,23 @@ class SellController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update transactions payments paid_on date
+     * 
+     * @param int $transaction_id
+     * @param datetime $old_date
+     * @param datetime $new_date
+     * @return void
      */
-    // public function destroy($id)
-    // {
-    //     //
-    // }
+    private function updatePaidOn($transaction_id, $old_date, $new_date) {
+        $payments = TransactionPayment::where('transaction_id', $transaction_id)
+            ->whereRaw('DATE(paid_on) = DATE(?)', [$old_date])
+            ->get();
+
+        foreach ($payments as $p) {
+            $p->paid_on = $new_date;
+            $p->save();
+        }
+    }
 
     /**
      * Display a listing sell drafts.
