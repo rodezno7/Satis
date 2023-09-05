@@ -336,7 +336,7 @@ class EmployeesController extends Controller
             'civilStatus',
             'nationality',
             'profession',
-            'type',
+            'rrhhTypeWage',
             'bank',
             'city',
             'state',

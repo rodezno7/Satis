@@ -844,6 +844,7 @@ return [
 	"text_confirm_delete" => "¡No podrás revertir esto!",
 	"confirm_button_delete" => "¡Sí, elimínalo!",
 	"instruction_line3" => "El archivo a subir debe ser un XLSX delimitado por comas.",
+	"instruction_line3v2" => "El archivo a subir debe ser un XLSX.",
 	"instruction_line4" => "Si el campo es nulo o no aplica, dejarlo vacío.",
 	'no_records' => 'No hay registros para mostrar',
 	'supplier_id_help_text' => 'ID de contacto del proveedor',

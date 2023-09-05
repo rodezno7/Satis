@@ -252,8 +252,8 @@
                                         <td>
                                             <strong>@lang('rrhh.type_employee'):</strong><br>
                                             @if( !empty($employee->type_id))
-                                            @if( isset($employee->type->name))
-                                            {{ $employee->type->name }}
+                                            @if( isset($employee->rrhhTypeWage->name))
+                                            {{ $employee->rrhhTypeWage->name }}
                                             @else
                                             N/A
                                             @endif

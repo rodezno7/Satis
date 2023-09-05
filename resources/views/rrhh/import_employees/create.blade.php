@@ -133,7 +133,7 @@
                 <div class="box-body">
                     <strong>@lang('lang_v1.instruction_line1')</strong><br>
                     <ol style="margin-left: 20px;">
-                        <li style="list-style-type: decimal;">@lang('lang_v1.instruction_line3')</li>
+                        <li style="list-style-type: decimal;">@lang('lang_v1.instruction_line3v2')</li>
                         <li style="list-style-type: decimal;">@lang('lang_v1.instruction_line4')</li>
                         <li style="list-style-type: decimal;">@lang('lang_v1.instruction_line2')</li>
                         <li style="list-style-type: decimal;">@lang('lang_v1.instruction_line5')</li>
