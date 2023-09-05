@@ -758,11 +758,12 @@ class SellController extends Controller
     }
 
     /**
-     * Update transactions payments paid_on date
+     * Update transaction payments paid_on date
      * 
      * @param int $transaction_id
      * @param datetime $old_date
      * @param datetime $new_date
+     * 
      * @return void
      */
     private function updatePaidOn($transaction_id, $old_date, $new_date) {
