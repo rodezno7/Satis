@@ -464,45 +464,6 @@ $(document).ready(function () {
         }
     });
 
-    <tfoot>
-                        <tr class="bg-gray font-14 footer-total text-center">
-                                        <td><strong>@lang('report.grand_total')</strong></td>
-                                        <td><span class="display_currency" id="footer_total_salary" data-currency_symbol="true"></span></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td><span class="display_currency" id="footer_total_hours" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_final" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_salary" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_weight" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_final" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_salary" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_weight" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_final" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_salary" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_weight" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_final" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_salary" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_weight" data-currency_symbol="true"></span></td>
-                                        <td><span class="display_currency" id="footer_total_final" data-currency_symbol="true"></span></td>
-                                    </tr>
-                    </tfoot>
-
-<th width="15%">@lang('rrhh.employee')</th>
-<th>@lang('rrhh.salary')</th>
-<th>@lang('planilla.days')</th>
-<th>@lang('planilla.hours')</th>
-<th>@lang('planilla.commissions')</th>
-<th>@lang('planilla.daytime_overtime')</th>
-<th>@lang('planilla.night_overtime_hours')</th>
-<th>@lang('planilla.total_hours')</th>
-<th>@lang('planilla.subtotal')</th>
-<th>ISSS</th>
-<th>AFP</th>
-<th>@lang('planilla.rent')</th>
-<th>@lang('planilla.other_deductions')</th>
-<th>@lang('planilla.total_to_pay')</th>
-<th>@lang('planilla.actions')</th>
-
     $(document).on("change", "form#input_output_form select.location, form#input_output_form select.brand, form#input_output_form select.category",
         function () {
             input_output.ajax.reload();
