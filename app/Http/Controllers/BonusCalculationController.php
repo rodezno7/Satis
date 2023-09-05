@@ -19,10 +19,10 @@ class BonusCalculationController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('planilla-catalogues.view')){
+        if(!auth()->user()->can('payroll-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.bonus_calculation.index');
+        return view('payroll.catalogues.bonus_calculation.index');
     }
 
     public function getBonusCalculations(){
@@ -53,12 +53,12 @@ class BonusCalculationController extends Controller
      */
     public function create()
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
-        return view('planilla.catalogues.bonus_calculation.create');
+        return view('payroll.catalogues.bonus_calculation.create');
     }
 
     /**
@@ -69,7 +69,7 @@ class BonusCalculationController extends Controller
      */
     public function store(Request $request)
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -125,13 +125,13 @@ class BonusCalculationController extends Controller
      */
     public function edit($id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $bonusCalculation = BonusCalculation::where('id', $id)->where('business_id', $business_id)->first();
-        return view('planilla.catalogues.bonus_calculation.edit', compact('bonusCalculation'));
+        return view('payroll.catalogues.bonus_calculation.edit', compact('bonusCalculation'));
     }
 
     /**
@@ -143,7 +143,7 @@ class BonusCalculationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -189,7 +189,7 @@ class BonusCalculationController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->can('planilla-catalogues.delete')) {
+        if (!auth()->user()->can('payroll-catalogues.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

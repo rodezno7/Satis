@@ -299,7 +299,6 @@ return [
         'rrhh_type_contract_id'     => 'type of contract',
         'rrhh_type_personnel_action_id' => 'type personnel action',
         'payment_period_id'             => 'payment period',
-        'calculation_type_id'           => 'ISR table to apply',
     ),
 'custom-messages' => [
     'quantity_not_available' => 'Only :qty :unit available',

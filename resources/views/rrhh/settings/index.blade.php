@@ -17,6 +17,7 @@
                 'files' => true,
             ]) !!}
             <div class="box-body">
+                <label for="">CONTROL DE ASISTENCIAS</label>
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
                         <div class="form-group">
@@ -38,6 +39,24 @@
                         </div>
                     </div>
                 </div>
+                {{-- <hr>
+                <label for="">HORAS EXTRAS</label>
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
+                        <div class="form-group">
+                            <label>Hora extra diurna</label> <span class="text-danger">*</span>
+                            {!! Form::text('time', 2, ['class' => 'form-control form-control-sm', 
+                                'placeholder' => __('rrhh.exit_time'),'id' => 'time']) !!}
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
+                        <div class="form-group">
+                            <label>Hora extra nocturna</label> <span class="text-danger">*</span>
+                            {!! Form::text('time', 2.5, ['class' => 'form-control form-control-sm', 
+                                'placeholder' => __('rrhh.exit_time'),'id' => 'time']) !!}
+                        </div>
+                    </div>
+                </div> --}}
             </div>
             <div class="box-footer text-right">
                 <button type="submit" class="btn btn-primary" id="btn_edit_item">@lang('rrhh.save')</button>

@@ -95,10 +95,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.start_date')</label> <span class="text-danger">*</span>
+                <label>@lang('payroll.start_date')</label> <span class="text-danger">*</span>
                 {!! Form::text('start_date', @format_date('now'), [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.start_date'),
+                    'placeholder' => __('payroll.start_date'),
                     'id' => 'start_date',
                 ]) !!}
             </div>
@@ -106,10 +106,10 @@
 
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="form-group">
-                <label>@lang('planilla.end_date')</label>
+                <label>@lang('payroll.end_date')</label>
                 {!! Form::text('end_date', null, [
                     'class' => 'form-control form-control-sm',
-                    'placeholder' => __('planilla.end_date'),
+                    'placeholder' => __('payroll.end_date'),
                     'id' => 'end_date',
                     'readonly' => 'readonly',
                 ]) !!}

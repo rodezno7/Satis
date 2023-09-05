@@ -28,46 +28,16 @@
             </div>
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="form-group">
-                    <label>@lang('rrhh.planilla_column')</label> <span class="text-danger">*</span>
-                    <select id="planilla_column1" name="planilla_column" class="form-control select2" style="width: 100%" required>
-                        @for ($i = 0; $i < count($planillaColumns); $i++)
-                            @if ($item->planilla_column == $planillaColumns[$i])
-                                <option value="{{ $i }}" selected> {{ __($planillaColumns[$i]) }}</option>
+                    <label>@lang('rrhh.payroll_column')</label> <span class="text-danger">*</span>
+                    <select id="payroll_column1" name="payroll_column" class="form-control select2" style="width: 100%" required>
+                        @for ($i = 0; $i < count($payrollColumns); $i++)
+                            @if ($item->payroll_column == $payrollColumns[$i])
+                                <option value="{{ $i }}" selected> {{ __($payrollColumns[$i]) }}</option>
                             @else
-                                <option value="{{ $i }}"> {{ __($planillaColumns[$i]) }}</option>
+                                <option value="{{ $i }}"> {{ __($payrollColumns[$i]) }}</option>
                             @endif
                         @endfor
                     </select>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="form-group">
-                    <label>@lang('planilla.percentage')</label>
-                    {!! Form::number('percentage', null, [
-                        'class' => 'form-control form-control-sm',
-                        'placeholder' => __('planilla.percentage'),
-                        'id' => 'percentage1',
-                        'required',
-                    ]) !!}
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" name='isss' id='isss1' onclick="isssChecked()" value="{{ $item->isss }}">
-                        {{ __('rrhh.affect_isss') }}
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" name='afp' id='afp1' onclick="afpChecked()" value="{{ $item->afp }}">
-                        {{ __('rrhh.affect_afp') }}
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" name='rent' id='rent1' onclick="rentChecked()" value="{{ $item->rent }}">
-                        {{ __('rrhh.affect_rent') }}
-                    </label>
                 </div>
             </div>
         </div>
@@ -83,27 +53,6 @@
     $( document ).ready(function() {
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
         $('.select2').select2();
-
-        let isss = $("#isss1").val();
-        if (isss == 1) {
-            $("#isss1").prop("checked", true);
-        } else {
-            $("#isss1").prop("checked", false);
-        }
-
-        let afp = $("#afp1").val();
-        if (afp == 1) {
-            $("#afp1").prop("checked", true);
-        } else {
-            $("#afp1").prop("checked", false);
-        }
-
-        let rent = $("#rent1").val();
-        if (rent == 1) {
-            $("#rent1").prop("checked", true);
-        } else {
-            $("#rent1").prop("checked", false);
-        }
     });
 
     $("#btn_edit_type_income_discounts").click(function() {
@@ -150,28 +99,4 @@
             }
         });
     });
-
-    function isssChecked() {
-		if ($("#isss").is(":checked")) {
-			$("#isss").val('1');
-		} else {
-			$("#isss").val('0');
-		}
-	}
-
-	function afpChecked() {
-		if ($("#afp").is(":checked")) {
-			$("#afp").val('1');
-		} else {
-			$("#afp").val('0');
-		}
-	}
-
-    function rentChecked() {
-		if ($("#rent").is(":checked")) {
-			$("#rent").val('1');
-		} else {
-			$("#rent").val('0');
-		}
-	}
 </script>
