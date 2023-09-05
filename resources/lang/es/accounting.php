@@ -6,6 +6,7 @@ return[
 	"tittle_ledgers" => "Mayores",
 	"tittle_balances" => "Balances",
 	"accounting_menu" => "Contabilidad",
+    'accounting' => 'Contabilizar',
 	"catalogue_menu" => "Catálogo de Cuentas",
 	"entries_menu" => "Partidas contables",
 	"auxiliars_menu" => "Libros Auxiliares",

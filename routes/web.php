@@ -436,6 +436,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/cashier-closure/get-opening-cash-register/{cashier_closure_id}', 'CashierClosureController@openingCashRegister');
     Route::get('/cashier-closure/show-daily-z-cut/{id}', 'CashierClosureController@showDailyZCut');
     Route::get('/reports/daily-z-cut-report', 'ReportController@getDailyZCutReport');
+    Route::get('/reports/recalc-cashier-closure/{id}/{location_id}', 'CashierClosureController@recalcCashierClosure');
     Route::resource('cashier-closure', 'CashierClosureController');
 
     //Import products

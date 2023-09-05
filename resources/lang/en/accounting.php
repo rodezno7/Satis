@@ -6,6 +6,7 @@ return[
 	"tittle_ledgers" => "Ledgers",
 	"tittle_balances" => "Balances",
 	"accounting_menu" => "Accounting",
+    'accounting' => 'Accounting',
 	"catalogue_menu" => "Catalogue",
 	"entries_menu" => "Entries",
 	"auxiliars_menu" => "Auxiliars",
