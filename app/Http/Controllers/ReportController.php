@@ -1080,6 +1080,7 @@ class ReportController extends Controller
                     ->select(
                         'cashier_closures.id',
                         'c.id as cashier_id',
+                        'c.business_location_id as location_id',
                         'c.name as cashier_name',
                         'cashier_closures.close_date',
                         'cashier_closures.close_correlative',
@@ -1103,13 +1104,34 @@ class ReportController extends Controller
             }
 
             return DataTables::of($cashier_closures)
-                ->addColumn('action', function($row){
-                    $actions = '<a class="btn btn-info btn-xs view_daily_z_cut" href="' . action('CashierClosureController@showDailyZCut', [$row->id]) .'"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                ->addColumn('action', function($row) {
+                    $actions = '<div class="btn-group">
+                        <button type="button"
+                            class="btn btn-primary dropdown-toggle btn-xs"
+                            data-toggle="dropdown" aria-expanded="false">' .__("messages.actions") .
+                            ' <span class="caret"></span><span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a class="view_daily_z_cut"
+                                    href="' . action('CashierClosureController@showDailyZCut', [$row->id]) .'">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>'. __('messages.view') .'</a>
+                                </li>
+                                <li><a class="recalc_cc" title="'. __('cashier.recalc_cc')
+                                    .'" href="'. url('/reports/recalc-cashier-closure', [$row->id, $row->location_id]).'">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>'. __('messages.update') .'</a>
+                                </li>';
 
                     if(auth()->user()->can('entries.create')){
-                        $actions .= "&nbsp;<button class='btn btn-info btn-xs create_acc_entry' title='" . __("accounting.generate_accounting_entry") . "' data-href='" .
-                            action('CashierClosureController@createSaleAccountingEntry', [$row->id]) . "'><i class='fa fa-check-circle'></button>";
+                        $actions .= '
+                            <li><a class="create_acc_entry"
+                                title="' . __("accounting.generate_accounting_entry") . '"
+                                href="' . action('CashierClosureController@createSaleAccountingEntry', [$row->id]) . '">
+                                <i class="fa fa-check-circle"></i> '. __('accounting.accounting') .'</a>
+                            </li>';
                     }
+
+                    $actions .= '</ul></div>';
+
                     return $actions;
                 })
                 ->editColumn('close_date', '{{ @format_date($close_date) ." ". @format_time($close_date) }}')

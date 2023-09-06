@@ -436,6 +436,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/cashier-closure/get-opening-cash-register/{cashier_closure_id}', 'CashierClosureController@openingCashRegister');
     Route::get('/cashier-closure/show-daily-z-cut/{id}', 'CashierClosureController@showDailyZCut');
     Route::get('/reports/daily-z-cut-report', 'ReportController@getDailyZCutReport');
+    Route::get('/reports/recalc-cashier-closure/{id}/{location_id}', 'CashierClosureController@recalcCashierClosure');
     Route::resource('cashier-closure', 'CashierClosureController');
 
     //Import products
@@ -750,17 +751,17 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     // Route Module Planilla
     //Routes Planilla
-    Route::resource('planilla', 'PlanillaController');
-    Route::get('planilla-getPlanillas', 'PlanillaController@getPlanillas');
-    Route::get('planilla/{id}/generate', 'PlanillaController@generate');
-    Route::post('planilla/{id}/approve', 'PlanillaController@approve');
-    Route::get('planilla-getPlanillaDetail/{id}', 'PlanillaController@getPlanillaDetail');
-    Route::post('planilla/{id}/update', 'PlanillaController@updatePlanilla');
+    Route::resource('payroll', 'PayrollController');
+    Route::get('payroll-getPayrolls', 'PayrollController@getPayrolls');
+    Route::post('payroll/{id}/approve', 'PayrollController@approve');
+    Route::post('payroll/{id}/recalculate', 'PayrollController@recalculate');
+    Route::get('payroll-getPayrollDetail/{id}', 'PayrollController@getPayrollDetail');
+    Route::get('payroll/{id}/exportPayrollSalary', 'PayrollController@exportPayrollSalary');
 
-    Route::get('planilla-getPhoto/{id}', 'PlanillaController@getPhoto');
-    Route::get('planilla-downloadCv/{id}', 'PlanillaController@downloadCv');
-    Route::post('planilla/uploadPhoto', 'PlanillaController@uploadPhoto');
-    Route::get('/planilla/verified_document/{type}/{value}/{id?}', 'PlanillaController@verifiedIfExistsDocument');
+    Route::get('payroll-getPhoto/{id}', 'PayrollController@getPhoto');
+    Route::get('payroll-downloadCv/{id}', 'PayrollController@downloadCv');
+    Route::post('payroll/uploadPhoto', 'PayrollController@uploadPhoto');
+    Route::get('/payroll/verified_document/{type}/{value}/{id?}', 'PayrollController@verifiedIfExistsDocument');
 
 
     //Route catalogues

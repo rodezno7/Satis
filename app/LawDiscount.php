@@ -16,16 +16,16 @@ class LawDiscount extends Model
         'employee_percentage', 
         'employer_value', 
         'status',
-        'calculation_type_id', 
+        'payment_period_id', 
         'institution_law_id', 
         'business_id', 
         'deleted_at'
     ];
     
-    public function calculationType(){
-        return $this->belongsTo('App\CalculationType');
+    public function paymentPeriod(){
+        return $this->belongsTo('App\PaymentPeriod');
     }
-
+    
     public function institutionLaw(){
         return $this->belongsTo('App\InstitutionLaw');
     }

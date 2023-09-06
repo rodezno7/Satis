@@ -231,7 +231,7 @@
         $('#effective_date').datepicker({
             autoclose: true,
             format: datepicker_date_format,
-            startDate: fechaMaxima,
+            //startDate: fechaMaxima,
         });
 
         $("#effective_date").datepicker("setDate", fechaMaxima);

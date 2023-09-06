@@ -16,10 +16,10 @@ class InstitutionLawController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('planilla-catalogues.view')){
+        if(!auth()->user()->can('payroll-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.institution_laws.index');
+        return view('payroll.catalogues.institution_laws.index');
     }
 
     public function getInstitutionLaws(){
@@ -50,11 +50,11 @@ class InstitutionLawController extends Controller
      */
     public function create()
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
-        return view('planilla.catalogues.institution_laws.create');
+        return view('payroll.catalogues.institution_laws.create');
     }
 
     /**
@@ -65,7 +65,7 @@ class InstitutionLawController extends Controller
      */
     public function store(Request $request)
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -119,13 +119,13 @@ class InstitutionLawController extends Controller
      */
     public function edit($id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');
         $institutionLaw = InstitutionLaw::where('id', $id)->where('business_id', $business_id)->first();
 
-        return view('planilla.catalogues.institution_laws.edit', compact('institutionLaw'));
+        return view('payroll.catalogues.institution_laws.edit', compact('institutionLaw'));
     }
 
     /**
@@ -137,7 +137,7 @@ class InstitutionLawController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -181,7 +181,7 @@ class InstitutionLawController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->can('planilla-catalogues.delete')) {
+        if (!auth()->user()->can('payroll-catalogues.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

@@ -310,7 +310,6 @@ return [
 
         'rrhh_type_personnel_action_id' => 'tipo de acción de personal',
         'payment_period_id'             => 'periodo de pago',
-        'calculation_type_id'           => 'tabla de ISR a aplicar',
     ),
 
 ];

@@ -6,6 +6,7 @@ use App\Business;
 use App\CalculationType;
 use App\InstitutionLaw;
 use App\LawDiscount;
+use App\PaymentPeriod;
 use Illuminate\Http\Request;
 use DB;
 use DataTables;
@@ -19,10 +20,10 @@ class LawDiscountController extends Controller
      */
     public function index()
     {
-        if(!auth()->user()->can('planilla-catalogues.view')){
+        if(!auth()->user()->can('payroll-catalogues.view')){
             abort(403, "Unauthorized action.");
         }
-        return view('planilla.catalogues.law_discounts.index');
+        return view('payroll.catalogues.law_discounts.index');
     }
 
     public function getLawDiscounts(){
@@ -33,8 +34,8 @@ class LawDiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('law_discounts as ld')
             ->join('institution_laws as institution_law', 'institution_law.id', '=', 'ld.institution_law_id')
-            ->join('calculation_types as calculation_type', 'calculation_type.id', '=', 'ld.calculation_type_id')
-            ->select('ld.id as id', 'ld.from', 'ld.until', 'ld.base', 'ld.fixed_fee', 'ld.employee_percentage', 'ld.employer_value', 'ld.status', 'institution_law.name as institution_law', 'calculation_type.name as calculation_type')
+            ->join('payment_periods as payment_period', 'payment_period.id', '=', 'ld.payment_period_id')
+            ->select('ld.id as id', 'ld.from', 'ld.until', 'ld.base', 'ld.fixed_fee', 'ld.employee_percentage', 'ld.employer_value', 'ld.status', 'institution_law.name as institution_law', 'payment_period.name as payment_period')
             ->where('ld.business_id', $business_id)
             ->where('ld.deleted_at', null)
             ->get();
@@ -55,14 +56,18 @@ class LawDiscountController extends Controller
      */
     public function create()
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
-        $calculation_types = CalculationType::where('business_id', $business_id)->get();
-        return view('planilla.catalogues.law_discounts.create', compact('institutions', 'calculation_types'));
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
+            ->where('id', '<>', 2) //Catorcenal
+            ->where('id', '<>', 4) //Primera quincena
+            ->where('id', '<>', 5) //Segunda quincena
+            ->get();
+        return view('payroll.catalogues.law_discounts.create', compact('institutions', 'paymentPeriods'));
     }
 
     /**
@@ -73,7 +78,7 @@ class LawDiscountController extends Controller
      */
     public function store(Request $request)
     {
-        if ( !auth()->user()->can('planilla-catalogues.create') ) {
+        if ( !auth()->user()->can('payroll-catalogues.create') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -85,7 +90,7 @@ class LawDiscountController extends Controller
             'employer_value'      => 'required|numeric',
             'fixed_fee'           => 'required|numeric',
             'employee_percentage' => 'required|numeric',
-            'calculation_type_id' => 'required',
+            'payment_period_id'   => 'required',
         ]);
 
         try {
@@ -131,15 +136,19 @@ class LawDiscountController extends Controller
      */
     public function edit($id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $lawDiscount = LawDiscount::where('id', $id)->where('business_id', $business_id)->first();
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
-        $calculation_types = CalculationType::where('business_id', $business_id)->get();
-        return view('planilla.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'calculation_types'));
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
+            ->where('id', '<>', 2) //Catorcenal
+            ->where('id', '<>', 4) //Primera quincena
+            ->where('id', '<>', 5) //Segunda quincena
+            ->get();
+        return view('payroll.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'paymentPeriods'));
     }
 
     /**
@@ -151,7 +160,7 @@ class LawDiscountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ( !auth()->user()->can('planilla-catalogues.edit') ) {
+        if ( !auth()->user()->can('payroll-catalogues.edit') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -163,7 +172,7 @@ class LawDiscountController extends Controller
             'employer_value'      => 'required|numeric',
             'fixed_fee'           => 'required|numeric',
             'employee_percentage' => 'required|numeric',
-            'calculation_type_id' => 'required',
+            'payment_period_id'   => 'required',
         ]);
 
         try {
@@ -200,7 +209,7 @@ class LawDiscountController extends Controller
      */
     public function destroy($id)
     {
-        if (!auth()->user()->can('planilla-catalogues.delete')) {
+        if (!auth()->user()->can('payroll-catalogues.delete')) {
             abort(403, 'Unauthorized action.');
         }
 

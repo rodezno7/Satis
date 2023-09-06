@@ -161,7 +161,7 @@ class CashierClosureController extends Controller
         }
 
         $business_id = request()->session()->get("user.business_id");
-        
+
         /** if cashier closure id is null, get it */
         if(is_null($cashier_closure_id)){
             if(!is_null($cashier_id)){
@@ -306,6 +306,70 @@ class CashierClosureController extends Controller
 
         return view('cashier.partials.show_daily_z_cut_report')
             ->with(compact('closure_details'));
+    }
+
+    /**
+     * Recalculate Cashier Closure
+     * 
+     * @param int $cashier_closure_id
+     * @param int $location_id
+     * 
+     * @return array
+     */
+    public function recalcCashierClosure($id, $location_id) {
+        try {
+            $cc = CashierClosure::findOrFail($id);
+            $cc_date = date('Y-m-d', strtotime($cc->close_date));
+            $business_id = auth()->user()->business_id;
+
+            $transactions = Transaction::where('location_id', $location_id)
+                ->where('business_id', $business_id)
+                ->whereRaw('DATE(transaction_date) = DATE(?)', [$cc_date])
+                ->whereIn('type', ['sell', 'sell_return'])
+                ->select('id', 'cashier_closure_id')
+                ->get();
+
+            DB::beginTransaction();
+
+            /** Update cashier closure on transactions */
+            foreach ($transactions as $t) {
+                if ($t->cashier_closure_id != $cc->id) {
+                    $t->cashier_closure_id = $cc->id;
+                    $t->save();
+                }
+            }
+
+            $cc_info = collect(DB::select('CALL getCashierClosureInfo(?)', [$id]));
+
+            if (!empty($cc_info)) {
+                $cc->total_system_amount = ($cc_info[0]->final_total - $cc_info[0]->return_amount);
+                $cc->total_cash_amount = $cc_info[0]->cash_amount;
+                $cc->total_card_amount = $cc_info[0]->card_amount;
+                $cc->total_credit_amount = $cc_info[0]->credit_amount;
+                $cc->total_check_amount = $cc_info[0]->check_amount;
+                $cc->total_bank_transfer_amount = $cc_info[0]->bank_transfer_amount;
+                $cc->differences = ($cc->total_physical_amount - $cc->total_system_amount);
+                $cc->save();
+            }
+
+            DB::commit();
+            
+            $output = [
+                'success' => true,
+                'msg' => __('cashier.cc_updated_successfully')
+            ];
+
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            DB::rollback();
+
+            $output = [
+                'success' => 0,
+                'msg' => __("messages.something_went_wrong")
+            ];
+        }
+
+        return $output;
     }
 
     /**
