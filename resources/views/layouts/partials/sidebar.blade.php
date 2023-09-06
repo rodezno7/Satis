@@ -1875,6 +1875,16 @@
         </li>
         @endcan
 
+        {{-- Sale cost per product report --}}
+        @can('sale_cost_product_report.view')
+        <li class="{{ $request->segment(2) == 'sale-cost-product-report' ? 'active' : '' }}">
+            <a href="{{ action('ReportController@getSaleCostProductReport') }}">
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+            @lang('report.connect_report')
+            </a>
+        </li>
+        @endcan
+
         {{-- Price list report --}}
         @can('price_lists_report.view')
         <li class="{{ $request->segment(2) == 'price-lists-report' ? 'active' : '' }}">

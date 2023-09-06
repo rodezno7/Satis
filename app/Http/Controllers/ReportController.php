@@ -3874,6 +3874,48 @@ class ReportController extends Controller
     }
 
     /**
+     * Sale cost by product report
+     * 
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
+    public function saleCostProductReport(Request $request) {
+        if (!auth()->user()->can('sale_cost_product_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = $request->user()->business_id;
+
+        if ($request->ajax()) {
+            $location_ = $request->input('location') ? $request->input('location') : 0;
+            $brand_id = $request->input('brand') ? $request->input('brand') : 0;
+            $start_date = $request->input('start_date') ? $request->input('start_date') : date('Y-m-d');
+            $end_date = $request->input('end_date') ? $request->input('end_date') : date('Y-m-d');
+
+            $sale_cost = collect(DB::select('CALL sale_cost_by_product(?, ?, ?, ?, ?)',
+                [$business_id, $location_id, $brand_id, $start_date, $end_date]));
+
+            return $sale_cost;
+        }
+
+        $locations = BusinessLocation::forDropdown($business_id);
+        $brands = Brands::brandsDropdown($business_id, false, false);
+
+        return view('report.sale_cost_product',
+            compact('locations', 'brands'));
+    }
+
+    /**
+     * Get sale cost by product report
+     * 
+     * @param Illuminate\Http\Request
+     * @return Illuminate\Http\Response
+     */
+    public function getSaleCostProductReport(Request $request) {
+        
+    }
+
+    /**
      * Get price lists report
      * 
      * @return Illuminate\Http\Response
