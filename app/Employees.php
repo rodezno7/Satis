@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node\Expr\AssignOp\Concat;
 Use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Notifications\Notifiable;
 class Employees extends Model
 {
-    
+    use Notifiable;
     use SoftDeletes;
 
     /**
@@ -74,6 +74,10 @@ class Employees extends Model
         'short_name',
         'deleted_at'
     ];
+
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
 
     public function afp() {
         return $this->belongsTo('App\RrhhData');
@@ -174,5 +178,10 @@ class Employees extends Model
         }
 
         return $users;
+    }
+
+    public function newNotification()
+    {
+        $this->notify(new Notification);
     }
 }

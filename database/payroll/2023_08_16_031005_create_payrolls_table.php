@@ -23,6 +23,7 @@ class CreatePayrollsTable extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->date('approval_date')->nullable();
+            $table->date('pay_date')->nullable();
             
             $table->integer('payroll_status_id')->unsigned();
             $table->foreign('payroll_status_id')->references('id')->on('payroll_statuses')->onDelete('cascade')->onUpdate('cascade');

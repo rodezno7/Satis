@@ -117,16 +117,29 @@
 
                             
                             if (data.statusPayroll == 'Calculada') {
-                                html += '<li><a href="#" onClick="recalculatePayroll('+data.id+
+                                @can('payroll.recalculate')
+                                    html += '<li><a href="#" onClick="recalculatePayroll('+data.id+
                                     ')"><i class="fa fa-plus"></i>{{ __('payroll.recalculate') }}</a></li>';
+                                @endcan
                                 
-                                html += '<li><a href="#" onClick="approvePayroll(' + data.id +
+                                @can('payroll.approve')
+                                    html += '<li><a href="#" onClick="approvePayroll(' + data.id +
                                     ')"><i class="fa fa-check-square"></i>{{ __('payroll.approve') }}</a></li>';
+                                @endcan
                             }
 
-                            html += '<li><a href="/payroll/' + data.id +
+                            @can('payroll.export')
+                                html += '<li><a href="/payroll/' + data.id +
                                 '/exportPayrollSalary"><i class="fa fa-file"></i>@lang('report.export')</a></li>';
-                            
+                            @endcan
+
+                            if (data.statusPayroll == 'Aprobada') {
+                                html += '<li><a href="#" onClick="payPayroll('+ data.id +')"><i class="fa fa-money"></i>@lang('payroll.pay')</a></li>';
+                            }
+
+                            if (data.statusPayroll == 'Aprobada' || data.statusPayroll == 'Pagada') {
+                                html += '<li><a href="#" onClick="sendPaymentSlips('+ data.id +')"><i class="fa fa-credit-card-alt"></i>Enviar boletas de pago</a></li>';
+                            }
                             html += '</ul></div>';
 
                             return html;
@@ -181,6 +194,173 @@
             });
         }
 
+
+        function sendPaymentSlips(id) {
+            Swal.fire({
+                title: "{{ __('messages.pay_question') }}",
+                text: "{{ __('messages.approve_content') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{ __('messages.yes') }}",
+                cancelButtonText: "{{ __('messages.no') }}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var route = "{!! URL::to('/payroll/:id/paymentSlips') !!}";
+                    route = route.replace(':id', id);
+                    token = $("#token").val();
+
+                    $.ajax({
+                        url: route,
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(result) {
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: result.msg,
+                                    icon: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false,
+                                });
+                                $("#payroll-table").DataTable().ajax.reload(null, false);
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: result.msg,
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function(msj) {
+                            errormessages = "";
+                            $.each(msj.responseJSON.errors, function(i,
+                                field) {
+                                errormessages += "<li>" + field +
+                                    "</li>";
+                            });
+                            Swal.fire({
+                                title: "@lang('rrhh.error_list')",
+                                icon: "error",
+                                html: "<ul>" + errormessages +
+                                    "</ul>",
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+
+        function payPayroll(id) {
+            Swal.fire({
+                title: "{{ __('messages.pay_question') }}",
+                text: "{{ __('messages.approve_content') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{ __('messages.yes') }}",
+                cancelButtonText: "{{ __('messages.no') }}",
+            }).then((willDelete) => {
+                if (willDelete.value) {
+
+                    Swal.fire({
+                        title: "{{ __('messages.pay_slips_question') }}",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: "{{ __('messages.yes') }}",
+                        cancelButtonText: "{{ __('messages.no') }}",
+                    }).then((result) => {
+                        var sendEmail = 0;
+                        if (result.isConfirmed) {
+                            sendEmail = 1;
+                            sendPay(id, sendEmail);
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            sendPay(id, sendEmail);
+                        }
+                    })
+                }
+            });
+        }
+
+        function sendPay(id, sendEmail) {
+            Swal.fire({
+                title: "{{ __('messages.confirm_pay') }}",
+                text: "{{ __('messages.message_to_confirm') }}",
+                input: 'password',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{ __('messages.pay') }}",
+                cancelButtonText: "{{ __('messages.cancel') }}",
+                showLoaderOnConfirm: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return "{{ __('messages.password_required') }}"
+                    }
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var route = "{!! URL::to('/payroll/:id/pay') !!}";
+                    route = route.replace(':id', id);
+                    token = $("#token").val();
+
+                    $.ajax({
+                        url: route,
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            'password': result.value,
+                            'sendEmail': sendEmail
+                        },
+                        success: function(result) {
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: result.msg,
+                                    icon: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false,
+                                });
+                                $("#payroll-table").DataTable().ajax.reload(null, false);
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: result.msg,
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function(msj) {
+                            errormessages = "";
+                            $.each(msj.responseJSON.errors, function(i,
+                                field) {
+                                errormessages += "<li>" + field +
+                                    "</li>";
+                            });
+                            Swal.fire({
+                                title: "@lang('rrhh.error_list')",
+                                icon: "error",
+                                html: "<ul>" + errormessages +
+                                    "</ul>",
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
         function approvePayroll(id) {
             Swal.fire({
                 title: "{{ __('messages.approve_question') }}",
@@ -195,7 +375,7 @@
                 if (willDelete.value) {
 
                     Swal.fire({
-                        title: "{{ __('messages.pay_question') }}",
+                        title: "{{ __('messages.payment_file_question') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -259,8 +439,7 @@
                                     timer: 2000,
                                     showConfirmButton: false,
                                 });
-                                $("#payroll-table").DataTable().ajax
-                                    .reload(null, false);
+                                $("#payroll-table").DataTable().ajax.reload(null, false);
                             } else {
                                 Swal.fire({
                                     title: 'Error',

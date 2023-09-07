@@ -69,8 +69,12 @@
     'download_cv' => 'Descargar cv',
     "approve_question" => '¿Está a punto de aprobar esta planilla?',
     'approve_content' => 'Recuerde que este proceso no se puede revertir',
-    "pay_question" => '¿Desea generar los archivos de pagos?',
+    "payment_file_question" => '¿Desea generar los archivos de pagos?',
+    "pay_question" => '¿Está a punto de pagar esta planilla?',
+    "pay_slips_question" => '¿Desea enviar las boletas de pagos?',
     'confirm_approval' => 'Confirmar aprobación',
+    'confirm_pay' => 'Confirmar pago',
     'message_to_confirm' => 'Ingrese su contraseña',
     'approve' => 'Aprobar',
+    'pay' => 'Pagar',
 ];
