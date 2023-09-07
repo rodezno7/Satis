@@ -371,6 +371,10 @@
         loadCategoriesData();
         updateSelects();
         $.fn.dataTable.ext.errMode = 'none';
+
+        $('select#period_fiscal_year').on('change', function () {
+            loadPeriodsData();
+        });
     });
 
     function loadYearsData()
@@ -403,7 +407,14 @@
             deferRender: true,
             processing: true,
             serverSide: true,
-            ajax: "/accounting-periods/getPeriodsData",
+            aaSorting: [[1, 'desc'], [2, 'desc']],
+            ajax: {
+                method: 'get',
+                url: "/accounting-periods/getPeriodsData",
+                data: function (d) {
+                    d.year = $('select#period_fiscal_year').val();
+                }
+            },
             columns: [
             {data: 'name'},
             {data: 'year'},

@@ -159,12 +159,18 @@ class AccountingPeriodController extends Controller {
     public function getPeriodsData() {
 
         $business_id = request()->session()->get('user.business_id');
+        $year = request()->get('year', null);
 
         $periods = DB::table('accounting_periods')
-        ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
-        ->select('accounting_periods.*', 'fiscal_years.year')
-        ->where('accounting_periods.business_id', $business_id)
-        ->get();
+            ->join('fiscal_years', 'fiscal_years.id', '=', 'accounting_periods.fiscal_year_id')
+            ->select('accounting_periods.*', 'fiscal_years.year')
+            ->where('accounting_periods.business_id', $business_id);
+
+        if (!empty($year)) {
+            $periods->where('fiscal_years.id', $year);
+        }
+
+        $periods = $periods->get();
 
         return DataTables::of($periods)->toJson();
     }
