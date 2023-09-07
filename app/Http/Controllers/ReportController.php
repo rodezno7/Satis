@@ -61,6 +61,7 @@ use App\Exports\PaymentNoteReportExport;
 use App\Exports\PaymentReportExport;
 use App\Exports\PriceListsReport;
 use App\Exports\ProductsReportExport;
+use App\Exports\SaleCostProductReportExport;
 use App\Exports\SalesPerSellerReportExport;
 use App\Exports\TransferSheetReportExport;
 use App\Optics\ExternalLab;
@@ -68,6 +69,8 @@ use App\Optics\Patient;
 use App\Optics\StatusLabOrder;
 use App\Utils\BusinessUtil;
 use App\Utils\TaxUtil;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\DataTables as DataTablesDataTables;
 
 class ReportController extends Controller
 {
@@ -3887,7 +3890,7 @@ class ReportController extends Controller
         $business_id = $request->user()->business_id;
 
         if ($request->ajax()) {
-            $location_ = $request->input('location') ? $request->input('location') : 0;
+            $location_id = $request->input('location') ? $request->input('location') : 0;
             $brand_id = $request->input('brand') ? $request->input('brand') : 0;
             $start_date = $request->input('start_date') ? $request->input('start_date') : date('Y-m-d');
             $end_date = $request->input('end_date') ? $request->input('end_date') : date('Y-m-d');
@@ -3895,7 +3898,15 @@ class ReportController extends Controller
             $sale_cost = collect(DB::select('CALL sale_cost_by_product(?, ?, ?, ?, ?)',
                 [$business_id, $location_id, $brand_id, $start_date, $end_date]));
 
-            return $sale_cost;
+            return DataTables::of($sale_cost)
+                ->editColumn('quantity',
+                    '<span class="display_currency quantity" data-currency_symbol="false" data-precision="0" data-orig-value="{{ $quantity }}">{{ $quantity }}</span>')
+                ->editColumn('cost',
+                    '<span class="display_currency cost" data-currency_symbol="true" data-orig-value="{{ $cost }}">{{ $cost }}</span>')
+                ->editColumn('total',
+                    '<span class="display_currency total" data-currency_symbol="true" data-orig-value="{{ $total }}">{{ $total }}</span>')
+                ->rawColumns(['quantity', 'cost', 'total'])
+                ->toJson();
         }
 
         $locations = BusinessLocation::forDropdown($business_id);
@@ -3912,7 +3923,23 @@ class ReportController extends Controller
      * @return Illuminate\Http\Response
      */
     public function getSaleCostProductReport(Request $request) {
-        
+        if (!auth()->user()->can('sale_cost_product_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = $request->user()->business_id;
+        $location_id = $request->input('location') ? $request->input('location') : 0;
+        $brand_id = $request->input('brand') ? $request->input('brand') : 0;
+        $start_date = $request->input('start_date') ? $request->input('start_date') : date('Y-m-d');
+        $end_date = $request->input('end_date') ? $request->input('end_date') : date('Y-m-d');
+
+        $sale_cost = collect(DB::select('CALL sale_cost_by_product(?, ?, ?, ?, ?)',
+            [$business_id, $location_id, $brand_id, $start_date, $end_date]));
+
+        $business_name = Business::find($business_id)->business_full_name;
+        $report_name = __('report.sale_cost_product') ." ".  __("accounting.from_date") ." ". $this->transactionUtil->format_date($start_date) ." ". __("accounting.to_date") ." ". $this->transactionUtil->format_date($end_date);
+    
+        return Excel::download(new SaleCostProductReportExport($sale_cost, $business_name, $report_name), __('report.sale_cost_product'). '.xlsx');
     }
 
     /**

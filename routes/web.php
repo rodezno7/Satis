@@ -971,8 +971,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('/reports/connect-report', 'ReportController@postConnectReport');
 
     /** Sale cost by product report */
-    Route::get('/reports/sale-cost-produc-report', 'ReportController@saleCostProductReport');
-    Route::post('/reports/sale-cost-produc-report', 'ReportController@getSaleCostProductReport');
+    Route::get('/reports/sale-cost-product-report', 'ReportController@saleCostProductReport');
+    Route::post('/reports/sale-cost-product-report', 'ReportController@getSaleCostProductReport');
 
     /** Price List report for Nuves/AGL */
     Route::get('/reports/price-lists-report', 'ReportController@getPriceListsReport');

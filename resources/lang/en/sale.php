@@ -89,6 +89,8 @@ return [
     'all_sellers' => 'All sellers',
     'document_no' => 'Document no.',
     'cost' => 'Cost',
+    'unit_cost' => 'Unit cost',
+    'total_cost' => 'Total cost',
     'utility' => 'Utility',
     'no_order' => 'No. order',
     'paid' => 'Paid',

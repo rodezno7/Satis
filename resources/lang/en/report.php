@@ -228,6 +228,8 @@ return [
     'no_data_available' => 'No data available',
     'total_price' => 'Total cost',
     'suggested_purchase_report' => 'Suggested purchase report',
+    'sale_cost_product' => 'Sale cost by product',
+    'sale_cost_product_report' => 'SC by product',
     'min_val' => 'Min val.',
     'max_val' => 'Max val.',
     'avg_val' => 'Avg val.',

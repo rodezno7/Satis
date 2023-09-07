@@ -1775,6 +1775,7 @@
     || auth()->user()->can('sales_by_seller_report.view')
     || auth()->user()->can('dispatched_products_report.view')
     || auth()->user()->can('connect_report.view')
+    || auth()->user()->can('sale_cost_product_report.view')
     || auth()->user()->can('price_lists_report.view')
     || auth()->user()->can('sell_n_adjustment_report.view')
     || auth()->user()->can('cost_of_sale_detail_report.view')
@@ -1877,10 +1878,10 @@
 
         {{-- Sale cost per product report --}}
         @can('sale_cost_product_report.view')
-        <li class="{{ $request->segment(2) == 'sale-cost-product-report' ? 'active' : '' }}">
-            <a href="{{ action('ReportController@getSaleCostProductReport') }}">
+        <li class="{{ $request->segment(2) == 'sale-cost-product-report' ? 'active' : '' }}" title="@lang('report.sale_cost_product')">
+            <a href="{{ action('ReportController@saleCostProductReport') }}">
             <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-            @lang('report.connect_report')
+            @lang('report.sale_cost_product_report')
             </a>
         </li>
         @endcan

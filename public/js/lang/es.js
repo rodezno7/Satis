@@ -13,6 +13,7 @@ LANG = {
     "ref_no_already_exists": "Número de referencia ya utilizado.",
     "out_of_stock": "Artículo sin stock",
     "stock" : "Stock",
+    'filter_by_day': 'Filtrar por fecha',
     "reserved": "Reservado",
     "qty_higher_than_stock_available" : "La cantidad sobrepasa el stock disponible",
     "price" : "Precio",

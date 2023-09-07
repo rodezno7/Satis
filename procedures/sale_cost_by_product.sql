@@ -1,7 +1,7 @@
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
-DROP PROCEDURE IF EXISTS sale_cost_by_product;
+DROP PROCEDURE IF EXISTS;
 
 DELIMITER $$
 CREATE PROCEDURE sale_cost_by_product(
