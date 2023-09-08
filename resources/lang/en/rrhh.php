@@ -422,9 +422,13 @@ return[
     'payroll_column' => 'Column that affects the payroll',
     'Payroll_column' => 'Planilla column',
     'income' => 'Income',
+    'incomes' => 'Income',
+    'withholdings_deductions' => 'Withholdings and deductions',
     'discount' => 'Discount',
     'total_value' => 'Total value',
     'quota' => 'Quota',
     'quota_value' => 'Quota value',
     'apply_in' => 'Apply in',
+    'balance_to_date' => 'Balance to date',
+    'quotas_applied' => 'Quotas applied'
 ];

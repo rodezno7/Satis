@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use App\Utils\TaxUtil;
 
 use App\BusinessLocation;
+use App\FiscalYear;
 use App\Utils\ModuleUtil;
 use App\Utils\BusinessUtil;
 use Illuminate\Http\Request;
@@ -608,6 +609,9 @@ class BusinessController extends Controller
         $receivable_type_selected = $business->receivable_type;
         
         $check_format_kits = $this->check_format_kits;
+        $fiscal_years = FiscalYear::where('business_id', $business_id)
+            ->orderBy('year', 'desc')
+            ->pluck('year', 'id');
 
         return view('business.settings_accounting', compact(
             'business',
@@ -616,7 +620,8 @@ class BusinessController extends Controller
             'shortcuts',
             'debt_to_pay_type_selected',
             'receivable_type_selected',
-            'check_format_kits'
+            'check_format_kits',
+            'fiscal_years'
         ));
 
         //To get the index of the enum fields        

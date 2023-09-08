@@ -721,7 +721,7 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('rrhh-absence-inability-update', 'RrhhAbsenceInabilityController@updateAbsenceInability');
 
     //Routes income and discount by employees
-    Route::resource('rrhh-income-discount', 'RrhhIncomeDiscountController')->except(['index', 'create', 'show', 'update']);
+    Route::resource('rrhh-income-discount', 'RrhhIncomeDiscountController')->except(['index', 'create', 'update']);
     Route::get('rrhh-income-discount-getByEmployee/{id}', 'RrhhIncomeDiscountController@getByEmployee');
     Route::get('rrhh-income-discount-create/{id}', 'RrhhIncomeDiscountController@createIncomeDiscount');
     Route::post('rrhh-income-discount-update', 'RrhhIncomeDiscountController@updateIncomeDiscount');
@@ -749,11 +749,14 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     
 
 
-    // Route Module Planilla
-    //Routes Planilla
+    // Route Module Payroll
+    //Routes Payroll
     Route::resource('payroll', 'PayrollController');
     Route::get('payroll-getPayrolls', 'PayrollController@getPayrolls');
     Route::post('payroll/{id}/approve', 'PayrollController@approve');
+    Route::post('payroll/{id}/pay', 'PayrollController@pay');
+    Route::post('payroll/{id}/paymentSlips', 'PayrollController@paymentSlips');
+    Route::get('/payroll/{id}/generatePaymentSlips', 'PayrollController@generatePaymentSlips');
     Route::post('payroll/{id}/recalculate', 'PayrollController@recalculate');
     Route::get('payroll-getPayrollDetail/{id}', 'PayrollController@getPayrollDetail');
     Route::get('payroll/{id}/exportPayrollSalary', 'PayrollController@exportPayrollSalary');
@@ -969,6 +972,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     /** Connect report for Disproci */
     Route::get('/reports/connect-report', 'ReportController@getConnectReport');
     Route::post('/reports/connect-report', 'ReportController@postConnectReport');
+
+    /** Sale cost by product report */
+    Route::get('/reports/sale-cost-product-report', 'ReportController@saleCostProductReport');
+    Route::post('/reports/sale-cost-product-report', 'ReportController@getSaleCostProductReport');
 
     /** Price List report for Nuves/AGL */
     Route::get('/reports/price-lists-report', 'ReportController@getPriceListsReport');

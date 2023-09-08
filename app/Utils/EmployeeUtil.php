@@ -71,7 +71,7 @@ class EmployeeUtil extends Util
         $year = Carbon::parse($date)->format('Y');
 
         if ($normal_format == true) {
-            return strtolower($day . ' de ' . $month . ' ' . $year);
+            return strtolower($day . ' de ' . $month . ' de ' . $year);
         } else {
             if ($day == '01') {
                 return 'Al ' . mb_strtolower('primer día del mes de ' . $month . ' de ' . $year);

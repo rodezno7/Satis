@@ -298,7 +298,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     @if((auth()->user()->can('purchase.payments') && (in_array($transaction->type,
-                                    ['purchase', 'purchase_return']) )) || (->user()->can('sell.payments') &&
+                                    ['purchase', 'purchase_return']) )) || (auth()->user()->can('sell.payments') &&
                                     (in_array($transaction->type, ['sell', 'sell_return']))) ||
                                     auth()->user()->can('expense.access'))
                                     <li>

@@ -1775,6 +1775,7 @@
     || auth()->user()->can('sales_by_seller_report.view')
     || auth()->user()->can('dispatched_products_report.view')
     || auth()->user()->can('connect_report.view')
+    || auth()->user()->can('sale_cost_product_report.view')
     || auth()->user()->can('price_lists_report.view')
     || auth()->user()->can('sell_n_adjustment_report.view')
     || auth()->user()->can('cost_of_sale_detail_report.view')
@@ -1875,6 +1876,16 @@
         </li>
         @endcan
 
+        {{-- Sale cost per product report --}}
+        @can('sale_cost_product_report.view')
+        <li class="{{ $request->segment(2) == 'sale-cost-product-report' ? 'active' : '' }}" title="@lang('report.sale_cost_product')">
+            <a href="{{ action('ReportController@saleCostProductReport') }}">
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+            @lang('report.sale_cost_product_report')
+            </a>
+        </li>
+        @endcan
+
         {{-- Price list report --}}
         @can('price_lists_report.view')
         <li class="{{ $request->segment(2) == 'price-lists-report' ? 'active' : '' }}">
@@ -1896,37 +1907,37 @@
         @endcan
 
         {{-- Profit loss report --}}
-        @can('profit_loss_report.view')
+        {{--@can('profit_loss_report.view')
         <li class="{{ $request->segment(2) == 'profit-loss' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getProfitLoss') }}">
             <i class="fa fa-money"></i>
             @lang('report.profit_loss')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- Purchase sell report --}}
-        @can('purchase_n_sell_report.view')
+        {{--@can('purchase_n_sell_report.view')
         <li class="{{ $request->segment(2) == 'purchase-sell' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getPurchaseSell') }}">
             <i class="fa fa-exchange"></i>
             @lang('report.purchase_sell_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- Tax report --}}
-        @can('tax_report.view')
+        {{--@can('tax_report.view')
         <li class="{{ $request->segment(2) == 'tax-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getTaxReport') }}">
             <i class="fa fa-tumblr" aria-hidden="true"></i>
             @lang('report.tax_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
-        @can('contacts_report.view')
         {{-- Customer suppliers report --}}
+        {{--@can('contacts_report.view')
         <li class="{{ $request->segment(2) == 'customer-supplier' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getCustomerSuppliers') }}">
             <i class="fa fa-address-book"></i>
@@ -1935,13 +1946,13 @@
         </li>
 
         {{-- Customer group report --}}
-        <li class="{{ $request->segment(2) == 'customer-group' ? 'active' : '' }}">
+        {{--<li class="{{ $request->segment(2) == 'customer-group' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getCustomerGroup') }}">
             <i class="fa fa-users"></i>
             @lang('report.customer_groups_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- Stock expiry report --}}
         @can('stock_expiry_report.view')
@@ -1956,14 +1967,14 @@
         @endcan
 
         {{-- Lot report --}}
-        @can('lot_report.view')
+        {{--@can('lot_report.view')
         <li class="{{ $request->segment(2) == 'lot-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getLotReport') }}">
             <i class="fa fa-hourglass-half" aria-hidden="true"></i>
             @lang('lang_v1.lot_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- Trending products report --}}
         @can('trending_product_report.view')
@@ -1976,48 +1987,48 @@
         @endcan
 
         {{-- Stock adjustment report --}}
-        @can('stock_adjustment_report.view')
+        {{--@can('stock_adjustment_report.view')
         <li class="{{ $request->segment(2) == 'stock-adjustment-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getStockAdjustmentReport') }}">
             <i class="fa fa-sliders"></i>
             @lang('report.stock_adjustment_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
-        @can('product_purchase_report.view')
         {{-- Product purchase report --}}
+        {{--@can('product_purchase_report.view')
         <li class="{{ $request->segment(2) == 'product-purchase-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getproductPurchaseReport') }}">
             <i class="fa fa-arrow-circle-down"></i>
             @lang('lang_v1.product_purchase_report')
           </a>
-        </li>
+        </li>--}}
 
         {{-- Product sell report --}}
-        <li class="{{ $request->segment(2) == 'product-sell-report' ? 'active' : '' }}">
+        {{--<li class="{{ $request->segment(2) == 'product-sell-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getproductSellReport') }}">
             <i class="fa fa-arrow-circle-up"></i>
             @lang('lang_v1.report_small_business_owner')
           </a>
-        </li>
+        </li>--}}
 
         {{-- Purchase payment report --}}
-        <li class="{{ $request->segment(2) == 'purchase-payment-report' ? 'active' : '' }}">
+        {{--<li class="{{ $request->segment(2) == 'purchase-payment-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@purchasePaymentReport') }}">
             <i class="fa fa-money"></i>
             @lang('lang_v1.purchase_payment_report')
           </a>
-        </li>
+        </li>--}}
 
         {{-- Sell payment report --}}
-        <li class="{{ $request->segment(2) == 'sell-payment-report' ? 'active' : '' }}">
+        {{--<li class="{{ $request->segment(2) == 'sell-payment-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@sellPaymentReport') }}">
             <i class="fa fa-money"></i>
             @lang('lang_v1.sell_payment_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- Cash register report --}}
         @can('cash_register_report.view')
@@ -2050,13 +2061,13 @@
         @endcan
 
         {{-- Sales and stock adjustments report --}}
-        @can('sell_n_adjustment_report.view')
+        {{--@can('sell_n_adjustment_report.view')
         <li class="{{ $request->segment(2) == 'sales-n-adjustments-report' ? 'active' : '' }}">
           <a href="{{ action('ReportController@getSalesAndAdjustmentsReport') }}">
             <i class="fa fa-exchange" aria-hidden="true"></i>@lang('report.consumption_report')
           </a>
         </li>
-        @endcan
+        @endcan--}}
 
         {{-- History of clients that comprise a product report --}}
         @can('purchase.view')

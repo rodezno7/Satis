@@ -228,6 +228,8 @@
     'no_data_available' => 'No hay datos disponibles',
     'total_price' => 'Costo total',
     'suggested_purchase_report' => 'Reporte sugerido de compra',
+    'sale_cost_product' => 'Costo de venta por producto',
+    'sale_cost_product_report' => 'CV por producto',
     'min_val' => 'Valor min.',
     'max_val' => 'Valor max.',
     'avg_val' => 'Valor prom.',

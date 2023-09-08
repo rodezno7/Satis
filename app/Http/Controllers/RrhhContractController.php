@@ -253,12 +253,13 @@ class RrhhContractController extends Controller
                         }
                     }
 
+                    
+                    $input_details = $request->all();
                     if ($request->contract_end_date != '') {
                         $input_details['contract_end_date']         = $this->moduleUtil->uf_date($request->input('contract_end_date'));
                     } else {
                         $input_details['contract_end_date']         = null;
                     }
-                    $input_details = $request->all();
                     $input_details['contract_start_date']           = $this->moduleUtil->uf_date($request->input('contract_start_date'));
                     $input_details['employee_name']                 = $employee->first_name . ' ' . $employee->last_name;
                     $input_details['employee_age']                  = $this->employeeUtil->getAge($employee->birth_date);
