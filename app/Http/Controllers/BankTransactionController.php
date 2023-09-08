@@ -1715,25 +1715,25 @@ class BankTransactionController extends Controller {
         }
 
         if ($format == 'agricola') {
-            $place_date = $place . $day . $of . $month . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $year;
+            $place_date = $place . $day . $of . $month . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $year;
             $place_date_x = 2.5;
-            $place_date_y = 2.5;
+            $place_date_y = 1.7;
 
-            $amount_x = 12.3;
-            $amount_y = 2.5;
+            $amount_x = 11.4;
+            $amount_y = 1.7;
 
-            $person_x = 1.8;
-            $person_y = 3.3;
+            $person_x = 2.5;
+            $person_y = 2.4;
 
-            $value_letters_x = 1.8;
-            $value_letters_y = 4.1;
+            $value_letters_x = 2.5;
+            $value_letters_y = 3;
 
             $asterisks_x = 0.5;
-            $asterisks_y = 5.0;
+            $asterisks_y = 3.5;
 
             $person_check = str_pad('**' . $person, 60, '*', STR_PAD_RIGHT);
             $letters_check = str_pad('**' . $value_letters, 60, '*', STR_PAD_RIGHT);
-            $asterisks = str_pad('', 22, '*', STR_PAD_RIGHT);
+            $asterisks = str_pad('', 12, '*', STR_PAD_RIGHT);
 
             $flag_labels = 0;
             $show_check = 0;

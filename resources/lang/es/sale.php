@@ -81,6 +81,8 @@
     'all_sellers' => 'Todos los vendedores',
     'document_no' => 'Documento no.',
     'cost' => 'Costo',
+    'unit_cost' => 'Costo unitario',
+    'total_cost' => 'Costo total',
     'utility' => 'Utilidad',
     'no_order' => 'No. orden',
     'paid' => 'Cancelado',

@@ -160,6 +160,7 @@ LANG = {
     "what_print": "What do you want to print?",
     'price' : 'Price',
     'stock': 'Stock',
+    'filter_by_day': 'Filter by date',
     'reserved': 'Reserved',
     'generate_accounting_entry': 'Generate accounting entry?',
     'no_import_expense_found': 'No matching import expense found',

@@ -29,6 +29,7 @@ return[
 	"name" => 'Nombre',
 	"month" => 'Mes',
 	"year" => 'Año',
+    "all_years" => "Todos los años",
 	"all_your_banks" => "Todos tus bancos",
 	"all_your_bank_accounts" => "Todas tus cuentas bancarias",
 	"add_bank" => "Agregar banco",
@@ -375,7 +376,6 @@ return[
 	"header_purchases" => "Libro de compras",
 	"business_name" => "Nombre del establecimiento",
 	"month" => "Mes",
-	"year" => "Año",
 	"nit" => "NIT",
 	"nrc" => "NRC",
 

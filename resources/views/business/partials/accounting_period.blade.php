@@ -43,17 +43,30 @@
 								</div>
 							</div>
 							<div class="box-body">
-								<div class="table-responsive">
-									<table class="table table-striped table-bordered table-condensed table-hover" id="periods-table" width="100%">
-										<thead>
-											<th>@lang('accounting.name')</th>
-											<th>@lang('accounting.year')</th>
-											<th>@lang('accounting.month')</th>
-											<th>@lang('accounting.status')</th>
-											<th>@lang( 'messages.actions' )</th>
-										</thead>
-									</table>
-								</div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-4">
+                                        <div class="form-group">
+                                            <label for="fiscal_year">@lang('lang_v1.year')</label>
+                                            {!! Form::select(null, $fiscal_years, null, ['class' => 'form-control',
+                                                'id' => 'period_fiscal_year', 'placeholder' => __('accounting.all_years')]) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-condensed table-hover" id="periods-table" width="100%">
+                                                <thead>
+                                                    <th>@lang('accounting.name')</th>
+                                                    <th>@lang('accounting.year')</th>
+                                                    <th>@lang('accounting.month')</th>
+                                                    <th>@lang('accounting.status')</th>
+                                                    <th>@lang( 'messages.actions' )</th>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
 							</div>
 						</div>
 					</div>
