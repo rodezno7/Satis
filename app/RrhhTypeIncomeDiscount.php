@@ -26,6 +26,7 @@ class RrhhTypeIncomeDiscount extends Model
         'Número de horas extras diurnas',
         'Número de horas extras nocturnas',
         'Comisiones',
+        'Otros ingresos',
         'Otras deducciones',
         'Aguinaldo',
         'Vacaciones'

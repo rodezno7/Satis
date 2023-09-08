@@ -4,11 +4,11 @@
         <tr class="active">
             <th>@lang('rrhh.type')</th>
             <th>@lang('rrhh.name')</th>
+            <th>@lang('rrhh.apply_in')</th>
             <th>@lang('rrhh.total_value')</th>
             <th>@lang('rrhh.quota')</th>
             <th>@lang('rrhh.quota_value')</th>
-            <th>@lang('rrhh.start_date')</th>
-            <th>@lang('rrhh.end_date')</th>
+            <th>@lang('rrhh.period')</th>
 			@if(!isset($show))
                 <th id="dele">@lang('rrhh.actions')</th>
 			@endif
@@ -26,6 +26,7 @@
                         @endif
                     </td>
                     <td>{{ $item->rrhhTypeIncomeDiscount->name }}</td>
+                    <td>{{ $item->paymentPeriod->name }}</td>
                     <td>
                         @if ($business->currency_symbol_placement == 'after')
                             {{ @num_format($item->total_value) }} {{ $business->currency->symbol }}
@@ -41,19 +42,22 @@
                             {{ $business->currency->symbol }} {{ @num_format($item->quota_value) }}
                         @endif
                     </td>
-                    <td>{{ @format_date($item->start_date) }}</td>
-                    <td>{{ @format_date($item->end_date) }}</td>
+                    <td>{{ @format_date($item->start_date) }} - {{ @format_date($item->end_date) }}</td>
 					@if(!isset($show))
-                    <td>
-                        @can('rrhh_income_discount.update')
-                            <button type="button" onClick='editIncomeDiscount({{ $item->id }})'
-                                class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
-                        @endcan
-                        @can('rrhh_income_discount.delete')
-                            <button type="button" onClick='deleteIncomeDiscount({{ $item->id }})'
-                                class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-                        @endcan
-                    </td>
+                        <td>
+                            @can('rrhh_income_discount.update')
+                                <button type="button" onClick='showIncomeDiscount({{ $item->id }})'
+                                    class="btn btn-info btn-xs"><i class="fa fa-eye"></i></button>
+                            @endcan
+                            @can('rrhh_income_discount.update')
+                                <button type="button" onClick='editIncomeDiscount({{ $item->id }})'
+                                    class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i></button>
+                            @endcan
+                            @can('rrhh_income_discount.delete')
+                                <button type="button" onClick='deleteIncomeDiscount({{ $item->id }})'
+                                    class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+                            @endcan
+                        </td>
 					@endif
                 </tr>
             @endforeach
@@ -73,6 +77,19 @@
 
 
 <script type="text/javascript">
+    function showIncomeDiscount(id) {
+        $("#modal_content_edit_document").html('');
+        var url = "{!! URL::to('/rrhh-income-discount/:id') !!}";
+        url = url.replace(':id', id);
+        $.get(url, function(data) {
+            $("#modal_content_edit_document").html(data);
+            $('#modal_edit_action').modal({
+                backdrop: 'static'
+            });
+        });
+        $('#modal_action').modal('hide').data('bs.modal', null);
+    }
+
     function editIncomeDiscount(id) {
         $("#modal_content_edit_document").html('');
         var url = "{!! URL::to('/rrhh-income-discount/:id/edit') !!}";

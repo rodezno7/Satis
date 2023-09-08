@@ -429,6 +429,8 @@ return[
     'payroll_column' => 'Columna que afecta en planilla',
     'Payroll_column' => 'Columna planilla',
     'income' => 'Ingreso',
+    'incomes' => 'Ingresos',
+    'withholdings_deductions' => 'Retenciones y deducciones',
     'discount' => 'Descuento',
     'income_discount' => 'Ingresos o descuentos',
     'total_value' => 'Monto total',
@@ -437,4 +439,6 @@ return[
     'apply_in' => 'Aplicar en',
     'types_incomes' => 'Tipos de ingresos',
     'types_discounts' => 'Tipos de descuentos',
+    'balance_to_date' => 'Saldo pendiente hasta la fecha',
+    'quotas_applied' => 'Cuotas aplicadas'
 ];

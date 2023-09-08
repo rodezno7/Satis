@@ -110,6 +110,11 @@ class PayrollCatalogueSeeder extends Seeder
                 'business_id' => $item->id,
             ]);
 
+            PayrollStatus::firstOrCreate([
+                'name' => 'Pagada',
+                'business_id' => $item->id,
+            ]);
+
 
 
 
@@ -465,6 +470,11 @@ class PayrollCatalogueSeeder extends Seeder
         Permission::firstOrCreate(
             ['name' => 'payroll.recalculate'],
             ['description' => 'Recalcular planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'payroll.export'],
+            ['description' => 'Exportar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
         Permission::firstOrCreate(

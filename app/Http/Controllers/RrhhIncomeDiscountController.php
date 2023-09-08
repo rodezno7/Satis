@@ -130,6 +130,8 @@ class RrhhIncomeDiscountController extends Controller
             
             $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
             $input_details['end_date'] = $this->moduleUtil->uf_date($request->input('end_date'));
+            $input_details['quotas_applied'] = 0;
+            $input_details['balance_to_date'] = $input_details['total_value'];
 
             DB::beginTransaction();
     
@@ -159,9 +161,18 @@ class RrhhIncomeDiscountController extends Controller
      * @param  \App\RrhhIncomeDiscount  $rrhhDocuments
      * @return \Illuminate\Http\Response
      */
-    public function show(RrhhIncomeDiscount $rrhhDocuments)
+    public function show($id)
     {
-        //
+        if ( !auth()->user()->can('rrhh_income_discount.show') ) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::where('id', $business_id)->first();
+        $incomeDiscount = RrhhIncomeDiscount::where('id', $id)->with('rrhhTypeIncomeDiscount', 'paymentPeriod')->firstOrFail();
+        $employee_id = $incomeDiscount->employee_id;
+
+        return view('rrhh.income_discounts.show', compact('employee_id', 'incomeDiscount', 'business'));
     }
 
     /**
