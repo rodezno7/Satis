@@ -64,6 +64,7 @@ return[
     'other_income' => 'Otros ingresos',
     'total_income' => 'Total de ingresos',
     'total_withholdings_deductions' => 'Total de retenciones y deducciones',
+    'total_deductions' => 'Total de deducciones',
     'total_discounts' => 'Total de descuentos',
     'total_to_pay' => 'Total a pagar',
     'total_calculation' => 'Total del cálculo',
@@ -85,8 +86,10 @@ return[
     'message_period_payroll_2' => 'al',
     'montly_salary' => 'Salario mensual',
     'regular_salary' => 'Salario por los días trabajados',
+    'regular_salary1' => 'Salario regular',
     'worked_days' => 'Días trabajados',
     'bank_data' => 'Datos bancarios',
     'message_payment_1' => 'Recibí de',
-    'message_payment_2' => 'a mi entera satisfacción y conformidad los conceptos que se indican en el presente recibo, los cuales se causaron en el periodo que el mismo se refieren. A si mismo reconozco la plena validez y conformidad con los descuentos que se aplican en el mismo.'
+    'message_payment_2' => 'a mi entera satisfacción y conformidad los conceptos que se indican en el presente recibo, los cuales se causaron en el periodo que el mismo se refieren. A si mismo reconozco la plena validez y conformidad con los descuentos que se aplican en el mismo.',
+    'totals' => 'Totales',
 ];

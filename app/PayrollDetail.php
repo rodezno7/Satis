@@ -22,11 +22,12 @@ class PayrollDetail extends Model
         'vacation',
         'bonus',
         'other_income',
-        'subtotal', 
+        'total_income', 
         'isss', 
         'afp',
         'rent', 
         'other_deductions', 
+        'total_deductions',
         'total_to_pay', 
         'employee_id', 
         'payroll_id'

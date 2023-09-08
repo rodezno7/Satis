@@ -15,13 +15,14 @@
                 <span class="badge" style="background: #367FA9">{{ $payroll->payrollStatus->name }}</span>
             @endif
         </h1>
+        <small>{{ $payroll->name }}</small>
     </section>
 
     <!-- Main content -->
     <section class="content">
         <div class="boxform_u box-solid_u">
             <div class="box-header">
-                <h3></h3>
+                <h1></h1>
                 <div class="box-tools">
                     @can('payroll.export')
                         <a href="/payroll/{{ $payroll->id }}/exportPayrollSalary" class="btn btn-success" type="button">
@@ -140,20 +141,20 @@
                             name: 'night_overtime_hours',
                             className: "text-center night_overtime_hours"
                         },
-                        {
-                            data: 'total_hours',
-                            name: 'total_hours',
-                            className: "text-center total_hours"
-                        },
+                        // {
+                        //     data: 'total_hours',
+                        //     name: 'total_hours',
+                        //     className: "text-center total_hours"
+                        // },
                         {
                             data: 'other_income',
                             name: 'other_income',
                             className: "text-center other_income"
                         },
                         {
-                            data: 'subtotal',
-                            name: 'subtotal',
-                            className: "text-center subtotal"
+                            data: 'total_income',
+                            name: 'total_income',
+                            className: "text-center total_income"
                         },
                         {
                             data: 'isss',
@@ -176,28 +177,35 @@
                             className: "text-center other_deductions"
                         },
                         {
+                            data: 'total_deductions',
+                            name: 'total_deductions',
+                            className: "text-center total_deductions"
+                        },
+                        {
                             data: 'total_to_pay',
                             name: 'total_to_pay',
                             className: "text-center total_to_pay"
                         },
                     ],
                     "fnDrawCallback": function(oSettings) {
-                        $('span#regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
                         $('span#total_daytime_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
                             'daytime_overtime'));
                         $('span#total_night_overtime_hours').text(sum_table_col_name($(
                             'table#payroll-detail-table'), 'night_overtime_hours'));
-                        $('span#total_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'total_hours'));
+                        // $('span#total_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
+                        //     'total_hours'));
                         $('span#other_income').text(sum_table_col_name($('table#payroll-detail-table'),
                             'other_income'));
-                        $('span#total_subtotal').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'subtotal'));
+                        $('span#total_income').text(sum_table_col_name($('table#payroll-detail-table'),
+                            'total_income'));
                         $('span#total_isss').text(sum_table_col_name($('table#payroll-detail-table'), 'isss'));
                         $('span#total_afp').text(sum_table_col_name($('table#payroll-detail-table'), 'afp'));
                         $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
                         $('span#total_other_deductions').text(sum_table_col_name($('table#payroll-detail-table'),
                             'other_deductions'));
+                        $('span#total_deductions').text(sum_table_col_name($('table#payroll-detail-table'),
+                            'total_deductions'));
                         $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'),
                             'total_to_pay'));
                         __currency_convert_recursively($('table#payroll-detail-table'));
@@ -213,14 +221,19 @@
                     ajax: "/payroll-getPayrollDetail/" + id,
                     columns: [
                         {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        }, 
+                        {
                             data: 'employee',
                             name: 'employee',
                             className: "text-center"
                         },
                         {
-                            data: 'salary',
-                            name: 'salary',
-                            className: "text-center salary"
+                            data: 'regular_salary',
+                            name: 'regular_salary',
+                            className: "text-center regular_salary"
                         },
                         {
                             data: 'rent',
@@ -234,7 +247,7 @@
                         },
                     ],
                     "fnDrawCallback": function(oSettings) {
-                        $('span#total_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'regular_salary'));
                         $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
                         $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'),
                             'total_to_pay'));
@@ -253,7 +266,7 @@
 
             $.ajax({
                 url: route,
-                type: 'GET',
+                type: 'POST',
                 processData: false,
                 contentType: false,
                 success: function(result) {

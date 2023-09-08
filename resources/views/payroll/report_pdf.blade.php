@@ -19,6 +19,12 @@
             text-align: center;
             margin: 5px 0 0 0;
         }
+        h3 {
+            text-align: center;
+            margin: 1px 0 0 0;
+            text-transform: uppercase;
+            font-size: 15px;
+        }
 
         h4 {
             text-align: center;
@@ -60,15 +66,22 @@
 
 <body>
     <h2>{{ mb_strtoupper(__('payroll.payment_slips')) }}</h2>
+    <h3>{{ $business->name }}</h3>
     <h4>{{ __('payroll.message_period_payroll_1') }} {{ $start_date }} {{ __('payroll.message_period_payroll_2') }} {{ $end_date }}</h4>
     <br>
     <table>
         <tbody>
             <tr>
-                <th width="18%">{{ __('business.business') }}:</th>
-                <td width="32%">{{ $business->name }}</td>
-                <th width="18%">{{ __('rrhh.name') }}:</th>
+                <th width="17%">{{ __('rrhh.name') }}:</th>
                 <td width="32%">{{ $payrollDetail->employee->first_name }} {{ $payrollDetail->employee->last_name }}</td>
+                <th width="20%">{{ __('rrhh.department') }}:</th>
+                <td width="32%">
+                    @foreach ($payrollDetail->employee->positionHistories as $positionHistory)
+                        @if ($positionHistory->current == 1)
+                            {{ $positionHistory->newDepartment->value }}
+                        @endif
+                    @endforeach
+                </td>
             </tr>
             <tr>
                 <th>{{ __('rrhh.position') }}:</th>
@@ -79,16 +92,6 @@
                         @endif
                     @endforeach
                 </td>
-                <th>{{ __('rrhh.department') }}:</th>
-                <td>
-                    @foreach ($payrollDetail->employee->positionHistories as $positionHistory)
-                        @if ($positionHistory->current == 1)
-                            {{ $positionHistory->newDepartment->value }}
-                        @endif
-                    @endforeach
-                </td>
-            </tr>
-            <tr>
                 <th>{{ __('payroll.montly_salary') }}:</th>
                 <td>
                     @if ($business->currency_symbol_placement == 'after')
@@ -97,37 +100,34 @@
                         {{ $business->currency->symbol }} {{ @num_format($payrollDetail->montly_salary) }}
                     @endif
                 </td>
-                <th>{{ __('payroll.worked_days') }}:</th>
-                <td>{{ $payrollDetail->days }}</td>
             </tr>
             <tr>
-                @if ($payrollDetail->employee->payment->value == "Transferencia bancaria")
-                    <th>
-                        {{ __('rrhh.way_to_pay') }}<br><br>
+                
+                <th>{{ __('payroll.worked_days') }}:</th>
+                <td>{{ $payrollDetail->days }}</td>
+                <th>
+                    {{ __('rrhh.way_to_pay') }}
+                </th>
+                <td>
+                    {{ $payrollDetail->employee->payment->value }}
+                </td>
+            </tr>
+            @if ($payrollDetail->employee->payment->value == "Transferencia bancaria")
+                <tr>
+                    <th width="19%">
+                        {{ __('rrhh.bank') }}:
                     </th>
                     <td>
-                        {{ $payrollDetail->employee->payment->value }}<br><br>
+                        {{ $payrollDetail->employee->bank->name }}
                     </td>
-                    <th width="19%">
-                        {{ __('rrhh.bank') }}: <br>
+                    <th>
                         {{ __('rrhh.bank_account') }}:
                     </th>
                     <td>
-                        {{ $payrollDetail->employee->bank->name }}<br>
                         {{ $payrollDetail->employee->bank_account }}
                     </td>
-                @else
-                    <th>
-                        {{ __('rrhh.way_to_pay') }}
-                    </th>
-                    <td>
-                        {{ $payrollDetail->employee->payment->value }}
-                    </td>
-                    <th></th>
-                    <td></td>
-                @endif
-            </tr>  
-            
+                </tr> 
+            @endif
         </tbody>
     </table>
     <table class="payroll-detail">
@@ -217,24 +217,18 @@
             <tr>
                 <th>{{ __('payroll.total_income') }}</th>
                 <th style="text-align: right;">
-                    @php
-                        $total_income = $payrollDetail->regular_salary + $payrollDetail->daytime_overtime + $payrollDetail->night_overtime_hours + $payrollDetail->other_income;
-                    @endphp
                     @if ($business->currency_symbol_placement == 'after')
-                        {{ @num_format($total_income) }} {{ $business->currency->symbol }}
+                        {{ @num_format($payrollDetail->total_income) }} {{ $business->currency->symbol }}
                     @else
-                        {{ $business->currency->symbol }} {{ @num_format($total_income) }}
+                        {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_income) }}
                     @endif
                 </th>
                 <th>{{ __('payroll.total_withholdings_deductions') }}</th>
                 <th style="text-align: right;">
-                    @php
-                        $total_discount = $payrollDetail->isss + $payrollDetail->afp + $payrollDetail->rent + $payrollDetail->other_deductions;
-                    @endphp
                     @if ($business->currency_symbol_placement == 'after')
-                        {{ @num_format($total_discount) }} {{ $business->currency->symbol }}
+                        {{ @num_format($payrollDetail->total_discount) }} {{ $business->currency->symbol }}
                     @else
-                        {{ $business->currency->symbol }} {{ @num_format($total_discount) }}
+                        {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_discount) }}
                     @endif
                 </th>
             </tr>

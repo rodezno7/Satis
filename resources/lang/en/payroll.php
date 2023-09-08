@@ -63,6 +63,7 @@ return[
     'other_income' => 'Other income',
     'total_income' => 'Total income',
     'total_withholdings_deductions' => 'Total withholdings and deductions',
+    'total_deductions' => 'Total deductions',
     'total_discounts' => 'Total discount',
     'total_to_pay' => 'Total to pay',
     'total_calculation' => 'Total calculation',
@@ -82,8 +83,10 @@ return[
     'message_period_payroll_2' => 'to the',
     'montly_salary' => 'Montly salary',
     'regular_salary' => 'Salary for days worked',
+    'regular_salary1' => 'Regular salary',
     'worked_days' => 'Worked days',
     'bank_data' => 'Bank data',
     'message_payment_1' => 'Received from',
-    'message_payment_2' => 'to my entire satisfaction and agreement the concepts indicated in this receipt, which were caused in the period that it refers to. I myself acknowledge the full validity and compliance with the discounts that apply therein.'
+    'message_payment_2' => 'to my entire satisfaction and agreement the concepts indicated in this receipt, which were caused in the period that it refers to. I myself acknowledge the full validity and compliance with the discounts that apply therein.',
+    'totals' => 'Totals',
 ];
