@@ -154,10 +154,10 @@ class PayrollSalaryReportExport implements WithEvents, WithTitle, ShouldAutoSize
                     $event->sheet->setCellValue('J'. $count, $this->moduleUtil->num_f($payrollDetail->isss, $add_symbol = true, $precision = 2));
                     $event->sheet->setCellValue('K'. $count, $this->moduleUtil->num_f($payrollDetail->afp, $add_symbol = true, $precision = 2));
                     $event->sheet->setCellValue('L'. $count, $this->moduleUtil->num_f($payrollDetail->rent, $add_symbol = true, $precision = 2));
-                    $event->sheet->getDelegate()->getStyle('M'. $count)->getFont()->setBold(true);
                     $event->sheet->setCellValue('M'. $count, $this->moduleUtil->num_f($payrollDetail->other_deductions, $add_symbol = true, $precision = 2));
                     $event->sheet->getDelegate()->getStyle('N'. $count)->getFont()->setBold(true);
                     $event->sheet->setCellValue('N'. $count, $this->moduleUtil->num_f($payrollDetail->total_deductions, $add_symbol = true, $precision = 2));
+                    $event->sheet->getDelegate()->getStyle('O'. $count)->getFont()->setBold(true);
                     $event->sheet->setCellValue('O'. $count, $this->moduleUtil->num_f($payrollDetail->total_to_pay, $add_symbol = true, $precision = 2));
 
                     $regular_salary += $payrollDetail->regular_salary;

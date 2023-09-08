@@ -197,8 +197,8 @@
 
         function sendPaymentSlips(id) {
             Swal.fire({
-                title: "{{ __('messages.pay_question') }}",
-                text: "{{ __('messages.approve_content') }}",
+                title: "{{ __('messages.payment_slips_question') }}",
+                //text: "{{ __('messages.approve_content') }}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

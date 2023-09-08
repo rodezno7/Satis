@@ -358,7 +358,7 @@ class PayrollController extends Controller
         $business = Business::findOrFail($business_id);
         foreach ($payroll->payrollDetails as $payrollDetail) {
             $employee = Employees::where('id', $payrollDetail->employee_id)->where('business_id', $business_id)->with('user')->firstOrFail();
-            $employee->notify(new PaymentSplisNotification($payrollDetail->id, $employee->first_name, $employee->last_name));
+            $employee->notify(new PaymentSplisNotification($payroll, $payrollDetail->id, $employee->first_name, $employee->last_name));
         }  
     }
 
@@ -373,7 +373,7 @@ class PayrollController extends Controller
 
         $pdf = \PDF::loadView('payroll.report_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
 
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper(array(0, 0, 612, 396), 'portrait');
         return $pdf->stream(__('payroll.personnel_action') . '.pdf');  
     }
 
@@ -381,6 +381,7 @@ class PayrollController extends Controller
     /** Pay payroll */
     public function pay(Request $request, $id)
     {
+        \Log::info($request);
         if (!auth()->user()->can('payroll.pay')) {
             abort(403, 'Unauthorized action.');
         }
@@ -398,8 +399,6 @@ class PayrollController extends Controller
                     $payroll->payroll_status_id = $status->id;
                     $payroll->pay_date = Carbon::now();
                     $payroll->update();
-
-                    $rrhhIncomeDiscount = RrhhIncomeDiscount::where('')->get();
 
                     if ($request->input('sendEmail') == 1) {
                         $this->sendEmail($payroll);

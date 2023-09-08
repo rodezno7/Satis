@@ -411,6 +411,7 @@
         }
 
 
+        /** Approve payroll*/
         function approvePayroll(id) {
             Swal.fire({
                 title: "{{ __('messages.approve_question') }}",
@@ -425,7 +426,7 @@
                 if (willDelete.value) {
 
                     Swal.fire({
-                        title: "{{ __('messages.pay_question') }}",
+                        title: "{{ __('messages.payment_file_question') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

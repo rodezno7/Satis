@@ -23,11 +23,13 @@ class PaymentSplisNotification extends Notification
      *
      * @return void
      */
+    public $payroll;
     public $idPayrollDetail;
     public $employeeFirstName;
     public $employeeLastName;
-    public function __construct($idPayrollDetail, $employeeFirstName, $employeeLastName)
+    public function __construct($payroll, $idPayrollDetail, $employeeFirstName, $employeeLastName)
     {
+        $this->payroll = $payroll;
         $this->idPayrollDetail = $idPayrollDetail;
         $this->employeeFirstName = $employeeFirstName;
         $this->employeeLastName = $employeeLastName;
@@ -52,10 +54,12 @@ class PaymentSplisNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $mes = $meses[$this->payroll->month - 1];
         return (new MailMessage)
             ->subject('Boleta de pago - Planilla')
-            ->greeting('Hola '.$this->employeeFirstName.' '.$this->employeeLastName.'')
-            ->line('Por este medio le hacemos llegar su boleta de pago del mes de Agosgo 2023'.$this->employeeFirstName.' '.$this->employeeLastName.'.')
+            ->greeting('Hola, '.$this->employeeFirstName.' '.$this->employeeLastName.'')
+            ->line('Por este medio le hacemos llegar su boleta de pago que corresponde al mes de '.$mes.' de '.$this->payroll->year.' - '.$this->payroll->paymentPeriod->name.'.')
             ->action('Ver boleta de pago', url(config('app.url').'payroll/'.$this->idPayrollDetail.'/generatePaymentSlips'));
             // ->attachData(config('app.url').'/payroll/'.$this->idPayrollDetail.'/generatePaymentSlips', 'name.pdf', [
             //     'mime' => 'application/pdf',
