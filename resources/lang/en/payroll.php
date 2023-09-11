@@ -89,4 +89,7 @@ return[
     'message_payment_1' => 'Received from',
     'message_payment_2' => 'to my entire satisfaction and agreement the concepts indicated in this receipt, which were caused in the period that it refers to. I myself acknowledge the full validity and compliance with the discounts that apply therein.',
     'totals' => 'Totals',
+    'salary' => 'Salary',
+    'honorary' => 'Honorary',
+    'extra_hours' => 'Extras hours',
 ];

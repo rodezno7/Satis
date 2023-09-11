@@ -48,7 +48,7 @@ return[
 	'october' => 'Octubre',
 	'november' => 'Noviembre',
 	'december' => 'Diciembre',
-    'number_daytime_overtime' => 'Número de horas extras diurnas',
+    'number_daytime_overtime' => 'Horas extras',
     'number_night_overtime_hours' => 'Número de horas extras nocturnas',
     'hours' => 'Horas trabajadas',
     'daytime_overtime' => 'Horas extras diurnas',
@@ -92,4 +92,7 @@ return[
     'message_payment_1' => 'Recibí de',
     'message_payment_2' => 'a mi entera satisfacción y conformidad los conceptos que se indican en el presente recibo, los cuales se causaron en el periodo que el mismo se refieren. A si mismo reconozco la plena validez y conformidad con los descuentos que se aplican en el mismo.',
     'totals' => 'Totales',
+    'salary' => 'Sueldo',
+    'honorary' => 'Honorarios',
+    'extra_hours' => 'Horas extras',
 ];

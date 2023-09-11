@@ -191,7 +191,14 @@ class RrhhIncomeDiscountController extends Controller
         $incomeDiscount = RrhhIncomeDiscount::findOrFail($id);
         $typeIncomes = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 1)->get();
         $typeDiscounts = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 2)->get();
-        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)->where('id', '<>', 4)->where('id', '<>', 5)->get();
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
+            ->where('id', '<>', 1)
+            ->where('id', '<>', 2)
+            ->where('id', '<>', 4)
+            ->where('id', '<>', 5)
+            ->where('id', '<>', 7)
+            ->where('id', '<>', 8)
+            ->get();
         $employee_id = $incomeDiscount->employee_id;
 
         return view('rrhh.income_discounts.edit', compact('employee_id', 'incomeDiscount', 'typeDiscounts', 'typeIncomes', 'paymentPeriods'));
@@ -249,6 +256,8 @@ class RrhhIncomeDiscountController extends Controller
             
             $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
             $input_details['end_date'] = $this->moduleUtil->uf_date($request->input('end_date'));
+            $input_details['quotas_applied'] = 0;
+            $input_details['balance_to_date'] = $input_details['total_value'];
 
             DB::beginTransaction();
     

@@ -26,6 +26,7 @@ use Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\PaymentSplisNotification;
+use App\RrhhTypeIncomeDiscount;
 use App\Utils\EmployeeUtil;
 
 class PayrollController extends Controller
@@ -223,8 +224,7 @@ class PayrollController extends Controller
             return DataTables::of($data)
                 ->editColumn('code', function ($data) {
                     return $data->employee->agent_code;
-                })    
-                ->editColumn('employee', function ($data) {
+                })->editColumn('employee', function ($data) {
                     return $data->employee->first_name . ' ' . $data->employee->last_name;
                 })->editColumn('montly_salary', function ($data) {
                     return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
@@ -232,15 +232,9 @@ class PayrollController extends Controller
                     return $this->moduleUtil->num_f($data->regular_salary, $add_symbol = true, $precision = 2);
                 })->editColumn('commissions', function ($data) {
                     return $this->moduleUtil->num_f($data->commissions, $add_symbol = true, $precision = 2);
-                })->editColumn('daytime_overtime', function ($data) {
-                    return $this->moduleUtil->num_f($data->daytime_overtime, $add_symbol = true, $precision = 2);
-                })->editColumn('night_overtime_hours', function ($data) {
-                    return $this->moduleUtil->num_f($data->night_overtime_hours, $add_symbol = true, $precision = 2);
-                })
-                // ->editColumn('total_hours', function ($data) {
-                //     return $this->moduleUtil->num_f($data->total_hours, $add_symbol = true, $precision = 2);
-                // })
-                ->editColumn('other_income', function ($data) {
+                })->editColumn('extra_hours', function ($data) {
+                    return $this->moduleUtil->num_f($data->extra_hours, $add_symbol = true, $precision = 2);
+                })->editColumn('other_income', function ($data) {
                     return $this->moduleUtil->num_f($data->other_income, $add_symbol = true, $precision = 2);
                 })->editColumn('total_income', function ($data) {
                     return '<b>'.$this->moduleUtil->num_f($data->total_income, $add_symbol = true, $precision = 2).'</b>';
@@ -257,7 +251,7 @@ class PayrollController extends Controller
                 })->editColumn('total_to_pay', function ($data) {
                     return '<b>'.$this->moduleUtil->num_f($data->total_to_pay, $add_symbol = true, $precision = 2).'</b>';
                 })
-                ->rawColumns(['code', 'employee', 'montly_salary', 'days', 'regular_salary', 'commissions', 'daytime_overtime', 'night_overtime_hours','other_income', 'total_income', 'isss', 'afp', 'rent', 'other_deductions', 'total_deductions', 'total_to_pay'])
+                ->rawColumns(['code', 'employee', 'montly_salary', 'days', 'regular_salary', 'commissions', 'extra_hours', 'other_income', 'total_income', 'isss', 'afp', 'rent', 'other_deductions', 'total_deductions', 'total_to_pay'])
                 ->make(true);
         }
 
@@ -267,6 +261,8 @@ class PayrollController extends Controller
                     return $data->employee->agent_code;
                 })->editColumn('employee', function ($data) {
                     return $data->employee->first_name . ' ' . $data->employee->last_name;
+                })->editColumn('dni', function ($data) {
+                    return $data->employee->dni;
                 })->editColumn('regular_salary', function ($data) {
                     return $this->moduleUtil->num_f($data->regular_salary, $add_symbol = true, $precision = 2);
                 })->editColumn('rent', function ($data) {
@@ -274,7 +270,7 @@ class PayrollController extends Controller
                 })->editColumn('total_to_pay', function ($data) {
                     return '<b>'.$this->moduleUtil->num_f($data->total_to_pay, $add_symbol = true, $precision = 2).'</b>';
                 })
-                ->rawColumns(['code', 'employee', 'montly_salary', 'rent', 'total_to_pay'])
+                ->rawColumns(['code', 'employee', 'dni', 'montly_salary', 'rent', 'total_to_pay'])
                 ->make(true);
         }
     }
@@ -358,7 +354,7 @@ class PayrollController extends Controller
         $business = Business::findOrFail($business_id);
         foreach ($payroll->payrollDetails as $payrollDetail) {
             $employee = Employees::where('id', $payrollDetail->employee_id)->where('business_id', $business_id)->with('user')->firstOrFail();
-            $employee->notify(new PaymentSplisNotification($payroll, $payrollDetail->id, $employee->first_name, $employee->last_name));
+            $employee->notify(new PaymentSplisNotification($payroll, $business_id, $payrollDetail, $employee->first_name, $employee->last_name, $this->employeeUtil));
         }  
     }
 
@@ -374,7 +370,7 @@ class PayrollController extends Controller
         $pdf = \PDF::loadView('payroll.report_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
 
         $pdf->setPaper(array(0, 0, 612, 396), 'portrait');
-        return $pdf->stream(__('payroll.personnel_action') . '.pdf');  
+        return $pdf->output();  
     }
 
 
@@ -399,6 +395,38 @@ class PayrollController extends Controller
                     $payroll->payroll_status_id = $status->id;
                     $payroll->pay_date = Carbon::now();
                     $payroll->update();
+
+                    foreach($payroll->payrollDetails as $payrollDetail){
+                        $incomeDiscounts = RrhhIncomeDiscount::where('employee_id', $payrollDetail->employee_id)
+                        ->where('start_date', '<=', $payroll->end_date)->get();
+                        
+                        foreach($incomeDiscounts as $incomeDiscount){
+                            $numIncomeDiscount = $incomeDiscount->paymentPeriod->days * $incomeDiscount->quota;
+                            $numPayroll = $payroll->paymentPeriod->days;
+                            $cantQuota = $numPayroll / $numIncomeDiscount;
+
+                            if($cantQuota < 1){
+                                $quotasApplied = $incomeDiscount->quota * $cantQuota;
+                                $incomeDiscount->quotas_applied = $quotasApplied;
+                                $incomeDiscount->balance_to_date = $incomeDiscount->balance_to_date - ($incomeDiscount->quota_value * $incomeDiscount->quotas_applied);
+                                $incomeDiscount->update();
+                            }
+
+                            if($cantQuota == 1){
+                                $quotasApplied = $incomeDiscount->quota * $cantQuota;
+                                $incomeDiscount->quotas_applied = $quotasApplied;
+                                $incomeDiscount->balance_to_date = $incomeDiscount->balance_to_date - ($incomeDiscount->quota_value * $incomeDiscount->quotas_applied);
+                                $incomeDiscount->update();
+                            }
+
+                            if($cantQuota > 1){
+                                $quotasApplied = $incomeDiscount->quota * 1;
+                                $incomeDiscount->quotas_applied = $quotasApplied;
+                                $incomeDiscount->balance_to_date = $incomeDiscount->balance_to_date - ($incomeDiscount->quota_value * $incomeDiscount->quotas_applied);
+                                $incomeDiscount->update();
+                            }
+                        }
+                    }
 
                     if ($request->input('sendEmail') == 1) {
                         $this->sendEmail($payroll);
@@ -425,7 +453,7 @@ class PayrollController extends Controller
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 $output = [
                     'success' => 0,
-                    'msg' => __('rrhh.error')
+                    'msg' => $e->getMessage()
                 ];
             }
             return $output;
@@ -535,14 +563,12 @@ class PayrollController extends Controller
 
                     if ($payroll->payrollType->name == 'Planilla de sueldos') {
                         if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
-                            $discountDO = 0;
-                            $discountNOH = 0;
+                            $discountHO = 0;
                             $discountCom = 0; 
                             $discountOD = 0;
                             $discountOI = 0;
             
-                            $incomeDO = 0;
-                            $incomeNOH = 0;
+                            $incomeHO = 0;
                             $incomeCom = 0;
                             $incomeOD = 0;
                             $incomeOI = 0;
@@ -605,50 +631,16 @@ class PayrollController extends Controller
 
                             //Obteniendo el calculo total de cada ingreso o descuento
                             foreach ($incomeDiscounts as $incomeDiscount) {
-                                $payrollColumnDO = 'Número de horas extras diurnas';
-                                $payrollColumnNOH = 'Número de horas extras nocturnas';
+                                $payrollColumnHO = 'Horas extras';
                                 $payrollColumnCom = 'Comisiones';
                                 $payrollColumnOD = 'Otras deducciones';
                                 $payrollColumnOI = 'Otros ingresos';
-                                if ($incomeDiscount->start_date >= $payroll->start_date && $incomeDiscount->end_date <= $payroll->end_date) {
+                                
+                                ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeHO += $this->incomeDiscount($incomeDiscount, $payrollColumnHO, $payroll) : $discountHO += $this->incomeDiscount($incomeDiscount, $payrollColumnHO, $payroll);
+                                ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom, $payroll) : $discountCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom, $payroll);
+                                ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD, $payroll) : $discountOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD, $payroll);
+                                ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI, $payroll) : $discountOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI, $payroll);
 
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI) : $discountOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI);
-
-                                }
-
-                                if ($incomeDiscount->start_date >= $payroll->start_date && $incomeDiscount->end_date > $payroll->end_date) {
-
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI) : $discountOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI);
-
-                                }
-
-                                if ($incomeDiscount->start_date < $payroll->start_date && $incomeDiscount->end_date <= $payroll->end_date) {
-
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI) : $discountOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI);
-
-                                }
-
-                                if ($incomeDiscount->start_date < $payroll->start_date && $incomeDiscount->end_date > $payroll->end_date) {
-
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO) : $discountDO += $this->incomeDiscount($incomeDiscount, $payrollColumnDO);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH) : $discountNOH += $this->incomeDiscount($incomeDiscount, $payrollColumnNOH);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom) : $discountCom += $this->incomeDiscount($incomeDiscount, $payrollColumnCom);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD) : $discountOD += $this->incomeDiscount($incomeDiscount, $payrollColumnOD);
-                                    ($incomeDiscount->rrhhTypeIncomeDiscount->type == 1) ? $incomeOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI) : $discountOI += $this->incomeDiscount($incomeDiscount, $payrollColumnOI);
-
-                                }
                             }
 
                             //Calcular los días trabajados
@@ -661,11 +653,7 @@ class PayrollController extends Controller
 
                             $details['hours'] = 8;
                             $details['commissions'] = $incomeCom - $discountCom;
-                            $details['number_daytime_overtime'] = 0;
-                            $details['daytime_overtime'] = $incomeDO - $discountDO;
-                            $details['number_night_overtime_hours'] = 0;
-                            $details['night_overtime_hours'] = $incomeNOH - $discountNOH;
-                            $details['total_hours'] = $details['daytime_overtime'] + $details['night_overtime_hours'];
+                            $details['extra hours'] = $incomeHO - $discountHO;
                             $details['other_income'] = $incomeOI - $discountOI;
                             $details['regular_salary'] = $details['montly_salary'] / 30 * $details['days'];
                             $details['total_income'] = $details['regular_salary'] + $details['commissions'] + $details['total_hours'] + $details['other_income'];
@@ -777,11 +765,28 @@ class PayrollController extends Controller
         }
     }
 
-    public function incomeDiscount($incomeDiscount, $payroll_column)
+    public function incomeDiscount($incomeDiscount, $payroll_column, $payroll)
     {
         $incomeOrDiscount = 0;
         if ($incomeDiscount->payroll_column == $payroll_column) {
-            $incomeOrDiscount = $incomeDiscount->quota_value;
+            $numIncomeDiscount = $incomeDiscount->paymentPeriod->days * $incomeDiscount->quota;
+            $numPayroll = $payroll->paymentPeriod->days;
+            $cantQuota = $numPayroll / $numIncomeDiscount;
+
+            if($cantQuota < 1){
+                $quotasApplied = $incomeDiscount->quota * $cantQuota;
+                $incomeOrDiscount = $incomeDiscount->quota_value * $quotasApplied;
+            }
+
+            if($cantQuota == 1){
+                $quotasApplied = $incomeDiscount->quota * $cantQuota;
+                $incomeOrDiscount = $incomeDiscount->quota_value * $quotasApplied;
+            }
+
+            if($cantQuota > 1){
+                $quotasApplied = $incomeDiscount->quota * 1;
+                $incomeOrDiscount = $incomeDiscount->quota_value * $quotasApplied;
+            }
         }
 
         return $incomeOrDiscount;

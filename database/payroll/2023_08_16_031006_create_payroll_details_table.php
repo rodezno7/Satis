@@ -21,11 +21,7 @@ class CreatePayrollDetailsTable extends Migration
             $table->decimal('montly_salary', 10, 2);
             $table->decimal('regular_salary', 10, 2);
             $table->decimal('commissions', 10, 2)->nullable();
-            $table->integer('number_daytime_overtime')->nullable();
-            $table->decimal('daytime_overtime', 10, 2)->nullable();
-            $table->integer('number_night_overtime_hours')->nullable();
-            $table->decimal('night_overtime_hours', 10, 2)->nullable();
-            $table->decimal('total_hours', 10, 2)->nullable();
+            $table->decimal('extra_hours', 10, 2)->nullable();
             $table->decimal('vacation', 10, 2)->nullable();
             $table->decimal('bonus', 10, 2)->nullable();
             $table->decimal('other_income', 10, 2)->nullable();

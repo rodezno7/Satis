@@ -10,9 +10,7 @@
                     <th>@lang('payroll.days')</th>
                     {{-- <th>@lang('payroll.hours')</th> --}}
                     <th>@lang('payroll.regular_salary1')</th>
-                    <th>@lang('payroll.daytime_overtime')</th>
-                    <th>@lang('payroll.night_overtime_hours')</th>
-                    {{-- <th>@lang('payroll.total_hours')</th> --}}
+                    <th>@lang('payroll.extra_hours')</th>
                     <th>@lang('payroll.other_income')</th>
                     <th>@lang('payroll.total_income')</th>
                     <th>ISSS</th>
@@ -33,14 +31,8 @@
                         <span class="display_currency" id="total_regular_salary" data-currency_symbol="true"></span>
                     </td>
                     <td>
-                        <span class="display_currency" id="total_daytime_overtime" data-currency_symbol="true"></span>
+                        <span class="display_currency" id="total_extra_hours" data-currency_symbol="true"></span>
                     </td>
-                    <td>
-                        <span class="display_currency" id="total_night_overtime_hours" data-currency_symbol="true"></span>
-                    </td>
-                    {{-- <td>
-                        <span class="display_currency" id="total_overtime" data-currency_symbol="true"></span>
-                    </td> --}}
                     <td>
                         <span class="display_currency" id="other_income" data-currency_symbol="true"></span>
                     </td>

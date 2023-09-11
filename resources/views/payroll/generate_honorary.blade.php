@@ -4,8 +4,9 @@
             style="font-size: inherit; width: 100%" id="payroll-detail-table">
             <thead>
                 <tr class="active">
-                    <th width="18%">@lang('rrhh.code')</th>
+                    <th width="15%">@lang('rrhh.code')</th>
                     <th width="30%">@lang('rrhh.employee')</th>
+                    <th width="12%">@lang('rrhh.dni')</th>
                     <th>@lang('payroll.total_calculation')</th>
                     <th>@lang('payroll.rent')</th>
                     <th>@lang('payroll.total_to_pay')</th>
@@ -16,7 +17,7 @@
             </tbody>
             <tfoot>
                 <tr class="bg-gray font-14 footer-total text-center" style="font-weight: bold;">
-                    <td colspan="2"><strong>@lang('payroll.totals')</strong></td>
+                    <td colspan="3"><strong>@lang('payroll.totals')</strong></td>
                     <td>
                         <span class="display_currency" id="total_regular_salary" data-currency_symbol="true"></span>
                     </td>

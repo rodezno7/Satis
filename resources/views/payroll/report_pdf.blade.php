@@ -17,13 +17,13 @@
 
         h2 {
             text-align: center;
-            margin: 5px 0 0 0;
+            margin: 3px 0 0 0;
         }
         h3 {
             text-align: center;
-            margin: 1px 0 0 0;
+            margin: 0 0 0 0;
             text-transform: uppercase;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         h4 {
@@ -65,7 +65,15 @@
 </head>
 
 <body>
-    <h2>{{ mb_strtoupper(__('payroll.payment_slips')) }}</h2>
+    <h2>
+        {{ mb_strtoupper(__('payroll.payment_slips')) }} - 
+        @if ($payrollDetail->payroll->payrollType->name == "Planilla de sueldos")
+            {{ mb_strtoupper(__('payroll.salary')) }}
+        @endif
+        @if ($payrollDetail->payroll->payrollType->name == "Planilla de honorarios")
+            {{ mb_strtoupper(__('payroll.honorary')) }}
+        @endif
+    </h2>
     <h3>{{ $business->name }}</h3>
     <h4>{{ __('payroll.message_period_payroll_1') }} {{ $start_date }} {{ __('payroll.message_period_payroll_2') }} {{ $end_date }}</h4>
     <table>

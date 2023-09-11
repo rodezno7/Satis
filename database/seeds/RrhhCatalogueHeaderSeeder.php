@@ -376,7 +376,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Horas extras diurnas', 
-                'payroll_column' => 'Número de horas extras diurnas', 
+                'payroll_column' => 'Horas extras', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);
@@ -384,7 +384,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             RrhhTypeIncomeDiscount::firstOrCreate([
                 'type' => 1, 
                 'name' => 'Horas extras nocturnas', 
-                'payroll_column' => 'Número de horas extras nocturnas', 
+                'payroll_column' => 'Horas extras', 
                 'status' => 1, 
                 'business_id' => $item->id,
             ]);

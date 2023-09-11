@@ -223,21 +223,22 @@
     //Calculate Date
     function calculateDate(){
         let payment_period = $('select[name="payment_period_id"] option:selected').text();
-        let start_date = $('#start_date').val();
+        let start_date = $('#start_date1').val();
         start_date = start_date.replace(/\//g, '-');
-        let quota = $('#quota').val();
+        let quota = $('#quota1').val();
 
         if (payment_period != "" && quota != "" && start_date != null) {
             start_date = start_date.split("-").reverse().join("-");
             var fecha = Date.parse(start_date);
             fecha = new Date(start_date);
+            fecha.setDate(fecha.getDate() + 1);
 
             if(payment_period == 'Quincenal'){
-                $("#end_date").datepicker("setDate", applyQuincena(fecha, quota));
+                $("#end_date1").datepicker("setDate", applyQuincena(fecha, quota));
             }
 
             if(payment_period == 'Mensual'){
-                $("#end_date").datepicker("setDate", applyMensual(fecha, quota));
+                $("#end_date1").datepicker("setDate", applyMensual(fecha, quota));
             }
         }
     }
@@ -248,42 +249,40 @@
         let currentDay = date.getDate();
         let currentMonth = date.getMonth() + 1; 
         let currentYear = date.getFullYear();
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        var lastDay = new Date(currentYear, currentMonth, 0);
         let quotaNumber = 0;
         let quincena = 0;
         let fecha = '';
 
         while (quotaNumber <= quota) {
             if(quincena == 0){
-                if(currentDay >= 0 && currentDay < 15 || currentDay == lastDay.getDate()){
+                if(currentDay >= 0 && currentDay < 15){
                     quotaNumber++;
                     quincena = 1;
                 }
-                if(currentDay >= 15 && currentDay < lastDay.getDate()){
+                if(currentDay >= 15 && currentDay <= lastDay.getDate()){
                     quotaNumber++;
                     quincena = 2;
                 }
             }
-
+            
             if(quincena > 0){
                 if(currentMonth >= 1 && currentMonth <= 12){
                     if(quincena%2==0){ // par
                         lastDay = new Date(currentYear, currentMonth, 0);
                         lastDay = lastDay.getDate();
                         fecha = new Date(currentYear, currentMonth-1, lastDay);
-                        quotaNumber++;
-                        quincena++;
-                    }else{//impar
-                        quotaNumber++;
-                        quincena++;
                         currentMonth++;
+                    }else{//impar
                         lastDay = 15;
                         fecha = new Date(currentYear, currentMonth-1, lastDay);
                         if(currentMonth > 12){
                             currentMonth = 1;
                             currentYear++;
                         }
-                    }      
+                    }  
+                    quotaNumber++;
+                    quincena++;    
                 }
             }            
         }        
@@ -299,10 +298,10 @@
         let fecha = "";
 
         while (quotaNumber < quota) {
-            if(currentMonth >= 1 && currentMonth <= 12){
+            if(currentMonth >= 0 && currentMonth <= 13){
                 currentMonth++;
                 quotaNumber++;
-                if(currentMonth > 12){
+                if(currentMonth > 13){
                     currentMonth = 1;
                     currentYear++;
                 }
@@ -344,7 +343,7 @@
                         timer: 1000,
                         showConfirmButton: false,
                     });
-                    $('#modal_doc').modal('hide').data('bs.modal', null);
+                    $('#modal_edit_action').modal('hide').data('bs.modal', null);
                 } else {
                     Swal.fire({
                         title: result.msg,
@@ -370,6 +369,6 @@
         $('#modal_action').modal({
             backdrop: 'static'
         });
-        $('#modal_doc').modal('hide').data('bs.modal', null);
+        $('#modal_edit_action').modal('hide').data('bs.modal', null);
     }
 </script>

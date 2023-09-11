@@ -132,20 +132,10 @@
                             className: "text-center salary"
                         },
                         {
-                            data: 'daytime_overtime',
-                            name: 'daytime_overtime',
-                            className: "text-center daytime_overtime"
+                            data: 'extra_hours',
+                            name: 'extra_hours',
+                            className: "text-center extra_hours"
                         },
-                        {
-                            data: 'night_overtime_hours',
-                            name: 'night_overtime_hours',
-                            className: "text-center night_overtime_hours"
-                        },
-                        // {
-                        //     data: 'total_hours',
-                        //     name: 'total_hours',
-                        //     className: "text-center total_hours"
-                        // },
                         {
                             data: 'other_income',
                             name: 'other_income',
@@ -189,12 +179,8 @@
                     ],
                     "fnDrawCallback": function(oSettings) {
                         $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
-                        $('span#total_daytime_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'daytime_overtime'));
-                        $('span#total_night_overtime_hours').text(sum_table_col_name($(
-                            'table#payroll-detail-table'), 'night_overtime_hours'));
-                        // $('span#total_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
-                        //     'total_hours'));
+                        $('span#total_extra_hours').text(sum_table_col_name($(
+                            'table#payroll-detail-table'), 'extra_hours'));
                         $('span#other_income').text(sum_table_col_name($('table#payroll-detail-table'),
                             'other_income'));
                         $('span#total_income').text(sum_table_col_name($('table#payroll-detail-table'),
@@ -228,6 +214,11 @@
                         {
                             data: 'employee',
                             name: 'employee',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'dni',
+                            name: 'dni',
                             className: "text-center"
                         },
                         {
