@@ -16,6 +16,7 @@ use App\Business;
 use App\Contact;
 use App\FiscalYear;
 use App\BusinessLocation;
+use App\Transaction;
 use DataTables;
 use DB;
 use Validator;
@@ -387,16 +388,23 @@ class AccountingEntrieController extends Controller {
         try {
 
             $count = BankTransaction::where('accounting_entrie_id', $entrie->id)
-            ->count();
+                ->count();
+
+            $transaction = Transaction::where('accounting_entry_id', $id)
+                ->first();
             
             if($count > 0) {
-
                 $output = [
                     'success' => false,
                     'msg' => __("accounting.entrie_has_transaction")
                 ];
 
             } else {
+                /** If sell transaction assoc, set null */
+                if (!empty($transaction)) {
+                    $transaction->accounting_entry_id = null;
+                    $transaction->save();
+                }
 
                 $entrie->forceDelete();
                 $output = [

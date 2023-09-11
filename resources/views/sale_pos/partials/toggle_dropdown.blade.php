@@ -90,13 +90,19 @@
         @endif
     @endif
     @if($sale_accounting_entry_mode == 'transaction')
-        @can('entries.create')
+        @if (auth()->user()->can('entrie.create') && is_null($accounting_entry_id))
         <li>
             <a class="gen-account-entry" href="{{ action('SellPosController@createTransAccountingEntry', [$id]) }}">
                 <i class="fa fa-book" aria-hidden="true"></i> @lang("accounting.generate_accounting_entry")
             </a>
         </li>
-        @endcan
+        @elseif(auth()->user()->can('entrie.view') && !is_null($accounting_entry_id))
+        <li>
+            <a class="show-account-entry" href="{{ url('/entries/singleEntrie', [$accounting_entry_id, 'pdf']) }}" target="_blank">
+                <i class="fa fa-book" aria-hidden="true"></i> @lang("accounting.accounting_entry")
+            </a>
+        </li>
+        @endif
     @endif
     <li class="divider"></li> 
     @if ($payment_status != 'paid')

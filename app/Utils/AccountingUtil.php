@@ -67,7 +67,8 @@ Class AccountingUtil extends Util {
 
                 return [
                     'success' => true,
-                    'msg' => __("accounting.accounting_entry_generated_success")
+                    'msg' => __("accounting.accounting_entry_generated_success"),
+                    'id' => $accounting_entry->id
                 ];
 
             } else {
