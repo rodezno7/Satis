@@ -2146,15 +2146,15 @@ class SellPosController extends Controller
      */
     public function createTransAccountingEntry($transaction_id) {
         $transaction = Transaction::join('customers as c', 'transactions.customer_id', 'c.id')
-        ->join('document_types as dt', 'transactions.document_types_id', 'dt.id')
-        ->where('transactions.id', $transaction_id)
-        ->select(
-            'transactions.transaction_date as date',
-            'transactions.location_id',
-            DB::raw('IFNULL(c.business_name, c.name) as customer_name'),
-            'dt.short_name as doc_type',
-            'transactions.correlative'
-        )->first();
+            ->join('document_types as dt', 'transactions.document_types_id', 'dt.id')
+            ->where('transactions.id', $transaction_id)
+            ->select(
+                'transactions.transaction_date as date',
+                'transactions.location_id',
+                DB::raw('IFNULL(c.business_name, c.name) as customer_name'),
+                'dt.short_name as doc_type',
+                'transactions.correlative'
+            )->first();
 
         try {
             $date = $this->accountingUtil->format_date($transaction->date);
@@ -2168,14 +2168,21 @@ class SellPosController extends Controller
                 'status_bank_transaction' => 1
             ];
 
-            $entry['type_entrie_id'] = 
-            TypeEntrie::where('name', 'Diarios')
-                ->orWhere('name', 'Diario')
-                ->first()->id;
+            $entry['type_entrie_id'] =
+                TypeEntrie::where('name', 'Diarios')
+                    ->orWhere('name', 'Diario')
+                    ->first()->id;
 
             $entry_lines = $this->createTransAccountingEntryLines($transaction_id);
 
             $output = $this->accountingUtil->createAccountingEntry($entry, $entry_lines, $entry['date']);
+
+            /** Update accounting entry id on transactions */
+            if ($output['success']) {
+                $transaction = Transaction::findOrFail($transaction_id);
+                $transaction->accounting_entry_id = $output['id'];
+                $transaction->save();
+            }
 
         }  catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
@@ -2230,12 +2237,12 @@ class SellPosController extends Controller
 
         $location_accounts =
             AccountBusinessLocation::where('location_id', $transaction->location_id)
-            ->select(
-                'general_cash_id',
-                'vat_final_customer_id',
-                'vat_taxpayer_id',
-                'account_receivable_id'
-            )->first();
+                ->select(
+                    'general_cash_id',
+                    'vat_final_customer_id',
+                    'vat_taxpayer_id',
+                    'account_receivable_id'
+                )->first();
 
         $entry_lines = [];
         /** sale */
