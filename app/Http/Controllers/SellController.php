@@ -1200,6 +1200,7 @@ class SellController extends Controller
             $payment_status = $transaction->payment_status;
             $status = $transaction->status;
             $transaction_date = $transaction->transaction_date;
+            $accounting_entry_id = $transaction->accounting_entry_id;
             $business_id = request()->session()->get('user.business_id');
             $business = Business::where('id', $business_id)->select('annull_sale_expiry', 'enable_sell_delete', 'sale_accounting_entry_mode')->first();
             $enable_sell_delete = $business->enable_sell_delete;
@@ -1217,7 +1218,9 @@ class SellController extends Controller
             }
 
             return view('sale_pos.partials.toggle_dropdown')
-                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status', 'parent_doc', 'transaction_date', 'business', 'doc_type', 'enable_sell_delete', 'sale_accounting_entry_mode'))
+                ->with(compact('id', 'is_direct_sale', 'payment_status', 'status',
+                    'parent_doc', 'transaction_date', 'business', 'doc_type', 'enable_sell_delete',
+                    'sale_accounting_entry_mode', 'accounting_entry_id'))
                 ->render();
             
         } catch (\Exception $e) {
