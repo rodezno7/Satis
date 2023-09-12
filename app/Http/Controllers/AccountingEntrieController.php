@@ -1042,7 +1042,7 @@ class AccountingEntrieController extends Controller {
 
         $accounts_credit = DB::table('catalogues as catalogue')
         ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
-        ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
+        ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and YEAR(accounting_entries.date) = YEAR('".$date."')) as balance"))
         ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
         ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
         ->where('catalogue.code', 'like', ''.$account_creditor->code.'%')
@@ -1065,7 +1065,7 @@ class AccountingEntrieController extends Controller {
 
         $accounts_debit = DB::table('catalogues as catalogue')
         ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
-        ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date <= '".$date."') as balance"))
+        ->select(DB::raw("catalogue.code as code_query"), 'catalogue.id', 'catalogue.code', 'catalogue.name', DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and YEAR(accounting_entries.date) = YEAR('".$date."')) as balance"))
         ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
         ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
         ->where('catalogue.code', 'like', ''.$account_debtor->code.'%')
@@ -1245,9 +1245,12 @@ class AccountingEntrieController extends Controller {
     }
 
     public function getApertureDebitAccounts($date) {
-
         $business_id = request()->session()->get('user.business_id');
         $business = Business::where('id', $business_id)->first();
+        
+        $date_initial_year = Carbon::parse($date);
+        $date_initial_year->subDays(1)->startOfYear();
+        
 
         $accounts_debit = DB::table('catalogues as catalogue')
         ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
@@ -1256,9 +1259,8 @@ class AccountingEntrieController extends Controller {
             'catalogue.id',
             'catalogue.code',
             'catalogue.name',
-            DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date < '".$date."') as balance")
+            DB::raw("(select (SUM(debit) - SUM(credit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date >= '".$date_initial_year."' and accounting_entries.date < '".$date."') as balance")
         )
-        ->where('catalogue.business_id', $business_id)
         ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
         ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
         ->where('catalogue.code', 'like', '1%')
@@ -1270,9 +1272,11 @@ class AccountingEntrieController extends Controller {
     }
 
     public function getApertureCreditAccounts($date) {
-
         $business_id = request()->session()->get('user.business_id');
         $business = Business::where('id', $business_id)->first();
+
+        $date_initial_year = Carbon::parse($date);
+        $date_initial_year->subDays(1)->startOfYear();
 
         $accounts_credit = DB::table('catalogues as catalogue')
         ->leftJoin('accounting_entries_details as detail', 'detail.account_id', '=', 'catalogue.id')
@@ -1281,9 +1285,8 @@ class AccountingEntrieController extends Controller {
             'catalogue.id',
             'catalogue.code',
             'catalogue.name',
-            DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date < '".$date."') as balance")
+            DB::raw("(select (SUM(credit) - SUM(debit)) from accounting_entries_details inner join catalogues on accounting_entries_details.account_id = catalogues.id inner join accounting_entries on accounting_entries_details.entrie_id = accounting_entries.id where catalogues.code = code_query and accounting_entries.status = 1 and accounting_entries.date >= '".$date_initial_year."' and accounting_entries.date < '".$date."') as balance")
         )
-        ->where('catalogue.business_id', $business_id)
         ->whereNOTIn('catalogue.id', [DB::raw("select parent from catalogues")])
         ->whereIn('catalogue.id', [DB::raw("select account_id from accounting_entries_details")])
         ->where('catalogue.code', 'like', '2%')
