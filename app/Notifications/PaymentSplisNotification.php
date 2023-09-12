@@ -75,7 +75,7 @@ class PaymentSplisNotification extends Notification
         $start_date = $this->employeeUtil->getDate($payrollDetail->payroll->start_date, true);
         $end_date = $this->employeeUtil->getDate($payrollDetail->payroll->end_date, true);
 
-        $pdf = \PDF::loadView('payroll.report_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
+        $pdf = \PDF::loadView('payroll.generate_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
         $pdf->setPaper(array(0, 0, 612, 396), 'portrait');
 
         return (new MailMessage)

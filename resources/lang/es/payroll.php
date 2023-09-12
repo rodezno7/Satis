@@ -95,4 +95,6 @@ return[
     'salary' => 'Sueldo',
     'honorary' => 'Honorarios',
     'extra_hours' => 'Horas extras',
+    'print_payment_slips' => 'Imprimir boletas de pago',
+    'send_payment_slips1' => 'Enviar boletas de pago'
 ];

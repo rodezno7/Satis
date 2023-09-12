@@ -138,7 +138,8 @@
                             }
 
                             if (data.statusPayroll == 'Aprobada' || data.statusPayroll == 'Pagada') {
-                                html += '<li><a href="#" onClick="sendPaymentSlips('+ data.id +')"><i class="fa fa-credit-card-alt"></i>Enviar boletas de pago</a></li>';
+                                html += '<li><a href="#" onClick="sendPaymentSlips('+ data.id +')"><i class="fa fa-credit-card-alt"></i>@lang('payroll.send_payment_slips1')</a></li>';
+                                html += '<li><a href="/payroll/' + data.id +'/generatePaymentSlips"><i class="fa fa-print"></i>@lang('payroll.print_payment_slips')</a></li>';
                             }
                             html += '</ul></div>';
 

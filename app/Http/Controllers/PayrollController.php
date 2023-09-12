@@ -363,14 +363,14 @@ class PayrollController extends Controller
     {
         $business_id = request()->session()->get('user.business_id');
         $business = Business::find($business_id);
-        $payrollDetail = PayrollDetail::where('id', $id)->firstOrFail();
-        $start_date = $this->employeeUtil->getDate($payrollDetail->payroll->start_date, true);
-        $end_date = $this->employeeUtil->getDate($payrollDetail->payroll->end_date, true);
+        $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
+        $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
+        $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
 
-        $pdf = \PDF::loadView('payroll.report_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
+        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'end_date'));
 
-        $pdf->setPaper(array(0, 0, 612, 396), 'portrait');
-        return $pdf->output();  
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream('payrollDetail.pdf');  
     }
 
 

@@ -92,4 +92,6 @@ return[
     'salary' => 'Salary',
     'honorary' => 'Honorary',
     'extra_hours' => 'Extras hours',
+    'print_payment_slips' => 'Print payment slips',
+    'send_payment_slips1' => 'Send payment slips'
 ];
