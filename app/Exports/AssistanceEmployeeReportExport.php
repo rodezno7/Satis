@@ -57,10 +57,10 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
     			$event->sheet->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
 
                 /** Columns style */
-                $event->sheet->columnWidth('A', 25); // employee
+                $event->sheet->columnWidth('A', 35); // employee
                 $event->sheet->columnWidth('B', 20); // start date
                 $event->sheet->columnWidth('C', 20); // end date
-                $event->sheet->columnWidth('D', 25); // time worked
+                $event->sheet->columnWidth('D', 23); // time worked
                 $event->sheet->setFormat('A5:D' . $items, \PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_TEXT);
 
                 /** Business name */
@@ -84,6 +84,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                 $event->sheet->setCellValue('A4', mb_strtoupper(__('rrhh.employee')));
                 $event->sheet->mergeCells('B4:C4');
                 $event->sheet->setCellValue('B4', mb_strtoupper(__('rrhh.schedule')));
+                $event->sheet->mergeCells('D4:E4');
                 $event->sheet->setCellValue('D4', mb_strtoupper(__('rrhh.time_worked')));
 
 
@@ -94,6 +95,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
                     $event->sheet->setCellValue('A'. $count, $s->employee);
                     $event->sheet->setCellValue('B'. $count, $s->start_date);
                     $event->sheet->setCellValue('C'. $count, $s->end_date);
+                    $event->sheet->mergeCells('D'.$count.':E'. $count);
                     $event->sheet->setCellValue('D'. $count, $s->time_worked);
 
                     $count++;
@@ -103,7 +105,7 @@ class AssistanceEmployeeReportExport implements WithEvents, WithTitle
 
                 /** Columns style */
                 //$event->sheet->columnWidth('D', 15); // country
-                $event->sheet->columnWidth('E', 20); // city
+                $event->sheet->columnWidth('E', 23); // city
                 $event->sheet->columnWidth('F', 15); // latitude
                 $event->sheet->columnWidth('G', 15); // longitude
                 $event->sheet->columnWidth('H', 15); // type
