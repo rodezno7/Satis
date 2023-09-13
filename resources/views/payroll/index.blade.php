@@ -130,7 +130,7 @@
 
                             @can('payroll.export')
                                 html += '<li><a href="/payroll/' + data.id +
-                                '/exportPayrollSalary"><i class="fa fa-file"></i>@lang('report.export')</a></li>';
+                                '/exportPayroll"><i class="fa fa-file"></i>@lang('report.export')</a></li>';
                             @endcan
 
                             if (data.statusPayroll == 'Aprobada') {

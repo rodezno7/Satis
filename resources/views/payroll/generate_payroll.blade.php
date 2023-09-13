@@ -25,7 +25,7 @@
                 <h1></h1>
                 <div class="box-tools">
                     @can('payroll.export')
-                        <a href="/payroll/{{ $payroll->id }}/exportPayrollSalary" class="btn btn-success" type="button">
+                        <a href="/payroll/{{ $payroll->id }}/exportPayroll" class="btn btn-success" type="button">
                             <i class="fa fa-file"></i> @lang('report.export')
                         </a>
                     @endcan
@@ -59,6 +59,9 @@
             @endif
             @if ($payroll->payrollType->name == 'Planilla de honorarios')
                 @include('payroll.generate_honorary')
+            @endif
+            @if ($payroll->payrollType->name == 'Planilla de aguinaldos')
+                @include('payroll.generate_bonus')
             @endif
         </div>
 
@@ -113,7 +116,7 @@
                         },
                         {
                             data: 'montly_salary',
-                            name: 'days',
+                            name: 'montly_salary',
                             className: "text-center"
                         },
                         {
@@ -248,6 +251,68 @@
                 });
             }
             
+            if(type == 'Planilla de aguinaldos'){
+                var table = $("#payroll-detail-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "/payroll-getPayrollDetail/" + id,
+                    columns: [
+                        {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        },    
+                        {
+                            data: 'employee',
+                            name: 'employee',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'date_admission',
+                            name: 'date_admission',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'end_date',
+                            name: 'end_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'montly_salary',
+                            name: 'montly_salary',
+                            className: "text-center montly_salary"
+                        },
+                        {
+                            data: 'days',
+                            name: 'days',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'bonus',
+                            name: 'bonus',
+                            className: "text-center bonus"
+                        },
+                        {
+                            data: 'rent',
+                            name: 'rent',
+                            className: "text-center rent"
+                        },
+                        {
+                            data: 'total_to_pay',
+                            name: 'total_to_pay',
+                            className: "text-center total_to_pay"
+                        },
+                    ],
+                    "fnDrawCallback": function(oSettings) {
+                        $('span#total_montly_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'montly_salary'));
+                        $('span#total_bonus').text(sum_table_col_name($('table#payroll-detail-table'), 'bonus'));
+                        $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
+                        $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'), 'total_to_pay'));
+                        __currency_convert_recursively($('table#payroll-detail-table'));
+                    },
+                    dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+                });
+            }
         }
 
 

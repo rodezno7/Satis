@@ -28,7 +28,8 @@ class RrhhTypeIncomeDiscount extends Model
         'Otros ingresos',
         'Otras deducciones',
         'Aguinaldo',
-        'Vacaciones'
+        'Vacaciones',
+        'Bonificaciones',
         // 'ISSS',
         // 'AFP',
         // 'Renta',

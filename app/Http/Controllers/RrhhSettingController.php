@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Business;
-use App\Setting;
+use App\RrhhSetting;
 use DB;
 
-class SettingController extends Controller
+class RrhhSettingController extends Controller
 {
     public function index(){
         if ( !auth()->user()->can('rrhh_assistance.view') ) {
@@ -15,7 +15,7 @@ class SettingController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $setting = Setting::where('business_id', $business_id)->first();
+        $setting = RrhhSetting::where('business_id', $business_id)->first();
         return view('rrhh.settings.index', compact('setting'));
     }
 
@@ -25,7 +25,8 @@ class SettingController extends Controller
         }
 
         $request->validate([
-            'exit_time'         => 'required_if:automatic_closing,1',
+            'exit_time'    => 'required_if:automatic_closing,1',
+            'exempt_bonus' => 'required'
             //'automatic_closing' => 'required',
         ]);
         try{
@@ -41,16 +42,26 @@ class SettingController extends Controller
                 $request->automatic_closing = 0;
             }
 
-            $setting = Setting::where('business_id', $business_id)->first();
+            $setting = RrhhSetting::where('business_id', $business_id)->first();
             if($setting) {
-                $setting->update(['exit_time' => $exit_time, 'automatic_closing' => $request->automatic_closing]);
+                $setting->update([
+                    'exit_time' => $exit_time, 
+                    'automatic_closing' => $request->automatic_closing, 
+                    'exempt_bonus' => $request->exempt_bonus
+                ]);
+                
                 $output = [
                     'success' => true,
                     'msg' => __('rrhh.settings_updated_successfully')
                 ];
 
             } else {
-                Setting::create(['business_id' => $business_id, 'exit_time' => $exit_time, 'automatic_closing' => $request->automatic_closing]);
+                RrhhSetting::create([
+                    'business_id' => $business_id, 
+                    'exit_time' => $exit_time, 
+                    'automatic_closing' => $request->automatic_closing,
+                    'exempt_bonus' => $request->exempt_bonus
+                ]);
 
                 $output = [
                     'success' => true,

@@ -635,8 +635,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     //RRHH Routes
     //Routes settings 
-    Route::get('rrhh-setting', 'SettingController@index');
-    Route::post('rrhh-setting', 'SettingController@store');
+    Route::get('rrhh-setting', 'RrhhSettingController@index');
+    Route::post('rrhh-setting', 'RrhhSettingController@store');
 
     //Routes Employees
     Route::resource('rrhh-employees', 'EmployeesController');
@@ -743,12 +743,13 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     Route::resource('/rrhh-catalogues/type-contract', 'RrhhTypeContractController');
     Route::get('/rrhh/getTypes', 'RrhhTypeContractController@getTypes');
-    
 
 
     // Route Module Payroll
     //Routes Payroll
     Route::resource('payroll', 'PayrollController');
+    Route::get('payroll-getPaymentPeriod/{id}', 'PayrollController@getPaymentPeriod');
+    Route::get('payroll-getPayrollType/{id}', 'PayrollController@getPayrollType');
     Route::get('payroll-getPayrolls', 'PayrollController@getPayrolls');
     Route::post('payroll/{id}/approve', 'PayrollController@approve');
     Route::post('payroll/{id}/pay', 'PayrollController@pay');
@@ -756,12 +757,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/payroll/{id}/generatePaymentSlips', 'PayrollController@generatePaymentSlips');
     Route::post('payroll/{id}/recalculate', 'PayrollController@recalculate');
     Route::get('payroll-getPayrollDetail/{id}', 'PayrollController@getPayrollDetail');
-    Route::get('payroll/{id}/exportPayrollSalary', 'PayrollController@exportPayrollSalary');
+    Route::get('payroll/{id}/exportPayroll', 'PayrollController@exportPayroll');
 
-    Route::get('payroll-getPhoto/{id}', 'PayrollController@getPhoto');
-    Route::get('payroll-downloadCv/{id}', 'PayrollController@downloadCv');
-    Route::post('payroll/uploadPhoto', 'PayrollController@uploadPhoto');
-    Route::get('/payroll/verified_document/{type}/{value}/{id?}', 'PayrollController@verifiedIfExistsDocument');
 
 
     //Route catalogues

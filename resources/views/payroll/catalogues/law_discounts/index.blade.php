@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('payroll.law_discount_table')
+    <h1> @lang('payroll.law_discount_table') @show_tooltip(__('payroll.not_modify'))
         <small></small>
     </h1>
 </section>

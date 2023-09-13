@@ -5,7 +5,7 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1> @lang('payroll.bonus_calculations_table')
+    <h1> @lang('payroll.bonus_calculations_table') @show_tooltip(__('payroll.not_modify'))
         <small></small>
     </h1>
 </section>
@@ -31,7 +31,7 @@
                         <th>@lang('payroll.from_year')</th>
                         <th>@lang('payroll.until_year')</th>
                         <th>@lang('payroll.days')</th>
-                        <th>@lang('payroll.percentage')</th>
+                        <th>@lang('payroll.proportional')</th>
                         <th>@lang('payroll.status')</th>
                         <th width="12%">@lang('rrhh.actions')</th>
                     </thead>
@@ -78,7 +78,7 @@
             {data: 'from', name: 'from', className: "text-center"},
             {data: 'until', name: 'until', className: "text-center"},
             {data: 'days', name: 'days', className: "text-center"},
-            {data: 'percentage', name: 'percentage', className: "text-center"},
+            {data: 'proportional', name: 'proportional', className: "text-center"},
             {data: 'status', name: 'status', className: "text-center"},
             {data: null, render: function(data) {
                 html = "";

@@ -15,11 +15,11 @@ class CreateBonusCalculationsTable extends Migration
     {
         Schema::create('bonus_calculations', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('from', 10, 2);
-            $table->decimal('until', 10, 2);
+            $table->integer('from');
+            $table->integer('until');
             $table->integer('days');
-            $table->decimal('percentage', 10, 2);
-            $table->boolean('status')->default(0);
+            $table->boolean('proportional')->default(0);
+            $table->boolean('status')->default(1);
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
             $table->timestamps();

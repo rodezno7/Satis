@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_month">
 		<div class="form-group">
 		  <label>@lang('payroll.month')</label> <span class="text-danger">*</span>
 		  <select name="month" id="month" class="form-control form-control-sm select2" 
@@ -51,7 +51,7 @@
 		</div>
 	</div>
 
-	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_payment_period">
 		<div class="form-group">
 			<label>@lang('payroll.payment_period')</label> <span class="text-danger">*</span>
 			<select name="payment_period_id" id="payment_period_id" class="form-control form-control-sm select2" 
@@ -64,11 +64,11 @@
 		</div>
 	</div>
 
-    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_start_date">
       <div class="form-group">
         <label>@lang('payroll.start_date')</label> <span class="text-danger">*</span>
         {!! Form::text("start_date", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.start_date'), 
-        'id' => 'start_date', 'readonly' => 'readonly'])!!}
+        'id' => 'start_date', 'readonly' => true])!!}
       </div>
     </div>
 
@@ -76,7 +76,27 @@
 		<div class="form-group">
 		  <label>@lang('payroll.end_date')</label> <span class="text-danger">*</span>
 		  {!! Form::text("end_date", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.end_date'), 
-		  'id' => 'end_date', 'readonly' => 'readonly'])!!}
+		  'id' => 'end_date', 'readonly' => true])!!}
+		</div>
+	</div>
+
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_day" style="display: none">
+		<div class="form-group">
+			<label>@lang('payroll.days')</label> <span class="text-danger">*</span> @show_tooltip('Cantidad de días a calcular en la planilla.')
+			{!! Form::number("days", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.days'), 
+		  'id' => 'days'])!!}
+		</div>
+	</div>
+
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_isr" style="display: none">
+		<div class="form-group">
+			<label>@lang('payroll.ISR_apply')</label> <span class="text-danger">*</span> @show_tooltip('Debe seleccionar el periodo del descuento de renta a aplicar a la planilla')
+			<select name="isr_id" id="isr_id" class="form-control form-control-sm select2" style="width: 100%;">
+				<option value="">@lang('payroll.period_to_apply')</option>
+				@foreach ($isrTables as $isrTable)
+					<option value="{{ $isrTable->id }}">{{ $isrTable->name }}</option>
+				@endforeach
+			</select>
 		</div>
 	</div>
 

@@ -17,9 +17,9 @@ return[
     'description' => 'Description',
     'employee_number' => 'Employer number',
     'from' => 'From ($)',
-    'from_year' => 'From (year)',
+    'from_year' => 'From (years)',
     'until' => 'Until ($)',
-    'until_year' => 'Until (year)',
+    'until_year' => 'Until (years)',
     'base' => 'Base ($)',
     'days' => 'Days',
     'percentage' => 'Percentage (%)',
@@ -93,5 +93,13 @@ return[
     'honorary' => 'Honorary',
     'extra_hours' => 'Extras hours',
     'print_payment_slips' => 'Print payment slips',
-    'send_payment_slips1' => 'Send payment slips'
+    'send_payment_slips1' => 'Send payment slips',
+    'not_modify' => 'Do not modify records unless the law changes',
+    'bonus' => 'Bonus',
+    'proportional' => 'Proportional',
+    'days_to_pay' => 'Days to pay',
+    'exempt_bonus' => 'Exempt bonus',
+    'message_bonus' => 'This value is equivalent to 2 minimum salaries',
+    'ISR_apply' => 'ISR table to apply',
+    'period_to_apply' => 'Period to apply'
 ];

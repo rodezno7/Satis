@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BonusCalculation;
 use App\Business;
 use App\CalculationType;
 use App\Employees;
@@ -26,6 +27,7 @@ use Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\PaymentSplisNotification;
+use App\RrhhSetting;
 use App\RrhhTypeIncomeDiscount;
 use App\Utils\EmployeeUtil;
 
@@ -68,38 +70,47 @@ class PayrollController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $data = DB::table('payrolls as payroll')
-            ->join('payroll_types as payroll_type', 'payroll_type.id', '=', 'payroll.payroll_type_id')
-            ->join('payment_periods as payment_period', 'payment_period.id', '=', 'payroll.payment_period_id')
-            ->join('payroll_statuses as payroll_status', 'payroll_status.id', '=', 'payroll.payroll_status_id')
-            ->select('payroll.id as id', 'payroll.*', 'payroll_status.name as status', 'payroll_type.name as type', 'payment_period.name as payment_period')
-            ->where('payroll.business_id', $business_id)
-            ->where('payroll.deleted_at', null)
-            ->get();
+        $data = Payroll::where('business_id', $business_id)->where('deleted_at', null)->get();
 
         return DataTables::of($data)
-            ->editColumn('period', '{{ @format_date($start_date) }} - {{ @format_date($end_date) }}')
+            ->editColumn('period', function ($data) { 
+                if($data->start_date != null){
+                    return $this->moduleUtil->format_date($data->start_date).' - '.$this->moduleUtil->format_date($data->end_date);
+                }else{
+                    return 'N/A - '.$this->moduleUtil->format_date($data->end_date);
+                }
+            })
             ->editColumn('month', function ($data) {
                 $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
                 return $meses[$data->month - 1];
             })->editColumn('status', function ($data) {
                 $html = '';
-                if ($data->status == 'Aprobada') {
-                    $html = '<span class="badge" style="background: #449D44">' . $data->status . '</span>';
+                if ($data->payrollStatus->name == 'Aprobada') {
+                    $html = '<span class="badge" style="background: #449D44">' . $data->payrollStatus->name . '</span>';
                 }
-                if ($data->status == 'Calculada') {
-                    $html = '<span class="badge" style="background: #00A6DC">' . $data->status . '</span>';
+                if ($data->payrollStatus->name == 'Calculada') {
+                    $html = '<span class="badge" style="background: #00A6DC">' . $data->payrollStatus->name . '</span>';
                 }
-                if ($data->status == 'Pagada') {
-                    $html = '<span class="badge" style="background: #367FA9">' . $data->status . '</span>';
+                if ($data->payrollStatus->name == 'Pagada') {
+                    $html = '<span class="badge" style="background: #367FA9">' . $data->payrollStatus->name . '</span>';
                 }
-                if ($data->status == 'Iniciada') {
-                    $html = '<span class="badge">' . $data->status . '</span>';
+                if ($data->payrollStatus->name == 'Iniciada') {
+                    $html = '<span class="badge">' . $data->payrollStatus->name . '</span>';
                 }
                 return $html;
             })
+            ->addColumn('type', function ($data) {
+                return $data->payrollType->name;               
+            })
+            ->addColumn('payment_period', function ($data) {
+                if($data->payment_period_id != null){
+                    return $data->paymentPeriod->name;
+                }else{
+                    return "---";
+                }                
+            })
             ->addColumn('statusPayroll', function ($data) {
-                return $data->status;
+                return $data->payrollStatus->name;
             })
             ->rawColumns(['type', 'name', 'payment_period', 'period', 'status', 'statusPayroll'])
             ->make(true);
@@ -117,16 +128,25 @@ class PayrollController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
-        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
-            ->where('id', '<>', 1) //Semanal
-            ->where('id', '<>', 2) //Catorcenal
-            ->where('id', '<>', 3) //Quincenal
-            ->where('id', '<>', 7) //Semestral
-            ->where('id', '<>', 8) //Anual
-            ->get();
         $payrollTypes = PayrollType::where('business_id', $business_id)->get();
+        $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
+            ->where('name', '<>', 'Semanal') //Semanal
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Quincenal') //Quincenal
+            ->where('name', '<>', 'Semestral') //Semestral
+            ->where('name', '<>', 'Anual') //Anual
+            ->get();
+        $isrTables = PaymentPeriod::where('business_id', $business_id)
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Primera quincena') //Primera quincena
+            ->where('name', '<>', 'Segunda quincena') //Segunda quincena
+            ->where('name', '<>', 'Semestral') //Semestral
+            ->where('name', '<>', 'Anual') //Anual
+            ->where('name', '<>', 'Personalizado') //Personalizado
+            ->get();
+        
 
-        return view('payroll.create', compact('paymentPeriods', 'payrollTypes'));
+        return view('payroll.create', compact('paymentPeriods', 'payrollTypes', 'isrTables'));
     }
 
     /**
@@ -140,52 +160,139 @@ class PayrollController extends Controller
         if (!auth()->user()->can('plantilla.create')) {
             abort(403, 'Unauthorized action.');
         }
-
-        $request->validate([
-            'payroll_type_id'    => 'required',
-            'year'                => 'required',
-            'month'               => 'required',
-            'payment_period_id'   => 'required',
-            'start_date'          => 'required',
-            'end_date'            => 'required',
-        ]);
+        $business_id = request()->session()->get('user.business_id');
+        if($request->input('payment_period_id') != null){
+            $paymentPeriod = PaymentPeriod::where('id', $request->input('payment_period_id'))->where('business_id', $business_id)->first();
+            if($paymentPeriod->name == 'Personalizado'){
+                $request->validate([
+                    'payroll_type_id' => 'required',
+                    'year'            => 'required',
+                    'month'           => 'required',
+                    'isr_id'          => 'required',
+                    'days'            => 'required',
+                    'start_date'      => 'required',
+                    'end_date'        => 'required',
+                ]);
+            }else{
+                $request->validate([
+                    'payroll_type_id' => 'required',
+                    'year'            => 'required',
+                    'month'           => 'required',
+                    'start_date'      => 'required',
+                    'end_date'        => 'required',
+                ]);
+            }
+        }else{
+            if($request->input('payroll_type_id') != null){
+                $payrollType = PayrollType::where('id', $request->input('payroll_type_id'))->where('business_id', $business_id)->first();
+                if($payrollType->name == 'Planilla de aguinaldos'){
+                    $request->validate([
+                        'year'     => 'required',
+                        'isr_id'   => 'required',
+                        'end_date' => 'required',
+                    ]);
+                }else{
+                    $request->validate([
+                        'payment_period_id' => 'required',
+                        'year'              => 'required',
+                        'month'             => 'required',
+                        'start_date'        => 'required',
+                        'end_date'          => 'required',
+                    ]);
+                }
+            }else{
+                $request->validate([
+                    'payroll_type_id'   => 'required',
+                    'payment_period_id' => 'required',
+                    'year'              => 'required',
+                    'month'             => 'required',
+                    'start_date'        => 'required',
+                    'end_date'          => 'required',
+                ]);
+            } 
+        }        
 
         try {
             $input_details = $request->all();
-            $business_id = request()->session()->get('user.business_id');
-            $paymentPeriod = PaymentPeriod::where('id', $request->input('payment_period_id'))->where('business_id', $business_id)->first();
-            $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
-            $input_details['name'] = __('payroll.payroll') . ' ' . $paymentPeriod->name . ' - ' . $meses[$request->month - 1] . ' ' . $request->year;
-            $input_details['business_id'] = $business_id;
-            $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
+            if($request->start_date){
+                $input_details['start_date'] = $this->moduleUtil->uf_date($request->input('start_date'));
+            }
             $input_details['end_date'] = $this->moduleUtil->uf_date($request->input('end_date'));
+
+            $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+            $payrollType = PayrollType::where('id', $request->input('payroll_type_id'))->where('business_id', $business_id)->first();
+            if($payrollType->name != 'Planilla de aguinaldos'){
+                $input_details['name'] = __('payroll.payroll') . ' ' . $paymentPeriod->name . ' - ' . $meses[$request->month - 1] . ' ' . $request->year;
+            }else{
+                $input_details['name'] = __('payroll.payroll') . ' - ' . $request->year;
+            }
+            
+            if($request->input('payment_period_id') != null){
+                if($paymentPeriod->name != 'Personalizado'){
+                    if($paymentPeriod->name == 'Primera quincena' || $paymentPeriod->name == 'Segunda quincena'){
+                        $paymentPeriodQuincenal = PaymentPeriod::where('name', 'Quincenal')->where('business_id', $business_id)->first();
+                        $input_details['isr_id'] = $paymentPeriodQuincenal->id;
+                        $input_details['days'] = $paymentPeriodQuincenal->days;
+                    }else{
+                        $input_details['isr_id'] = $paymentPeriod->id;
+                        $input_details['days'] = $paymentPeriod->days;
+                    }
+                }
+            }
+            $input_details['business_id'] = $business_id;
+
             $status = PayrollStatus::where('name', 'Iniciada')->where('business_id', $input_details['business_id'])->first();
             $input_details['payroll_status_id'] = $status->id;
-
+    
             DB::beginTransaction();
-
+    
+            \Log::info($input_details);
             $payroll = Payroll::create($input_details);
-            if ($request->calculate == true) {
+            if ($request->input('calculate') == 1) {
                 $this->calculate($payroll);
             }
-
+    
             DB::commit();
-
+    
             $output = [
                 'success' => 1,
                 'msg' => __('rrhh.added_successfully')
             ];
+            
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
             $output = [
                 'success' => 0,
-                //'msg' => $e->getMessage()
                 'msg' => __('rrhh.error')
             ];
         }
 
         return $output;
+    }
+
+    /**
+     * Get payment period 
+     */
+    public function getPaymentPeriod($id){
+        $business_id = request()->session()->get('user.business_id');
+        $paymentPeriod = PaymentPeriod::where('business_id', $business_id)
+            ->where('id', $id)
+            ->firstOrFail();
+        
+            return response()->json($paymentPeriod);
+    }
+
+    /**
+     * Get payroll type 
+     */
+    public function getPayrollType($id){
+        $business_id = request()->session()->get('user.business_id');
+        $payrollType = PayrollType::where('business_id', $business_id)
+            ->where('id', $id)
+            ->firstOrFail();
+        
+            return response()->json($payrollType);
     }
 
     /**
@@ -273,6 +380,31 @@ class PayrollController extends Controller
                 ->rawColumns(['code', 'employee', 'dni', 'montly_salary', 'rent', 'total_to_pay'])
                 ->make(true);
         }
+
+        if ($payroll->payrollType->name == 'Planilla de aguinaldos') {
+            return DataTables::of($data)
+                ->editColumn('code', function ($data) {
+                    return $data->employee->agent_code;
+                })->editColumn('employee', function ($data) {
+                    return $data->employee->first_name . ' ' . $data->employee->last_name;
+                })->editColumn('date_admission', function ($data) {
+                    return $this->moduleUtil->format_date($data->employee->date_admission);
+                })->editColumn('end_date', function ($data) {
+                    return $this->moduleUtil->format_date($data->payroll->end_date);
+                })->editColumn('montly_salary', function ($data) {
+                    return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
+                })->editColumn('days', function ($data) {
+                    return $data->days;
+                })->editColumn('bonus', function ($data) {
+                    return $this->moduleUtil->num_f($data->bonus, $add_symbol = true, $precision = 2);
+                })->editColumn('rent', function ($data) {
+                    return $this->moduleUtil->num_f($data->rent, $add_symbol = true, $precision = 2);
+                })->editColumn('total_to_pay', function ($data) {
+                    return '<b>'.$this->moduleUtil->num_f($data->total_to_pay, $add_symbol = true, $precision = 2).'</b>';
+                })
+                ->rawColumns(['code', 'employee', 'date_admmission', 'end_date', 'montly_salary', 'days', 'bonus', 'rent', 'total_to_pay'])
+                ->make(true);
+        }
     }
 
     public function recalculate($id)
@@ -298,7 +430,6 @@ class PayrollController extends Controller
                     'msg' => __('payroll.recalculation_done_successfully')
                 ];
             } else {
-                \Log::info('Holi');
                 $output = [
                     'success' => 0,
                     'msg' => __('payroll.failed_to_recalculate')
@@ -316,7 +447,60 @@ class PayrollController extends Controller
         return $output;
     }
 
-    /** Payment Slips payroll */
+
+    /** Approve payroll */
+    public function approve(Request $request, $id)
+    {
+        if (!auth()->user()->can('payroll.approve')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        if ($request->ajax()) {
+            try {
+                DB::beginTransaction();
+                $business_id = request()->session()->get('user.business_id');
+                $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
+                $user_id = auth()->user()->id;
+                $user = User::findOrFail($user_id);
+
+                if (Hash::check($request->input('password'), $user->password)) {
+                    $status = PayrollStatus::where('name', 'Aprobada')->where('business_id', $business_id)->first();
+                    $payroll->payroll_status_id = $status->id;
+                    $payroll->approval_date = Carbon::now();
+                    $payroll->update();
+
+                    if ($request->input('sendEmail') == 1) {
+                        $output = [
+                            'success' => 1,
+                            'msg' => __('payroll.send_approve_payroll')
+                        ];
+                    } else {
+                        $output = [
+                            'success' => 1,
+                            'msg' => __('payroll.approve_payroll')
+                        ];
+                    }
+                } else {
+                    $output = [
+                        'success' => 0,
+                        'msg' => __('rrhh.wrong_password_authorize')
+                    ];
+                }
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+                $output = [
+                    'success' => 0,
+                    'msg' => __('rrhh.error')
+                ];
+            }
+            return $output;
+        }
+    }
+
+
+    /** Send Payment Slips payroll */
     public function paymentSlips(Request $request, $id)
     {
         if (!auth()->user()->can('payroll.paymentSlips')) {
@@ -340,44 +524,17 @@ class PayrollController extends Controller
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 $output = [
                     'success' => 0,
-                    'msg' => $e->getMessage()
+                    'msg' => __('rrhh.error')
                 ];
             }
             return $output;
         }
     }
 
-    /** Pay payroll */
-    function sendEmail($payroll)
-    {
-        $business_id = request()->session()->get('user.business_id');
-        $business = Business::findOrFail($business_id);
-        foreach ($payroll->payrollDetails as $payrollDetail) {
-            $employee = Employees::where('id', $payrollDetail->employee_id)->where('business_id', $business_id)->with('user')->firstOrFail();
-            $employee->notify(new PaymentSplisNotification($payroll, $business_id, $payrollDetail, $employee->first_name, $employee->last_name, $this->employeeUtil));
-        }  
-    }
-
-
-    public function generatePaymentSlips($id)
-    {
-        $business_id = request()->session()->get('user.business_id');
-        $business = Business::find($business_id);
-        $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
-        $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
-        $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
-
-        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'end_date'));
-
-        $pdf->setPaper('letter', 'portrait');
-        return $pdf->stream('payrollDetail.pdf');  
-    }
-
-
+    
     /** Pay payroll */
     public function pay(Request $request, $id)
     {
-        \Log::info($request);
         if (!auth()->user()->can('payroll.pay')) {
             abort(403, 'Unauthorized action.');
         }
@@ -453,63 +610,41 @@ class PayrollController extends Controller
                 \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
                 $output = [
                     'success' => 0,
-                    'msg' => $e->getMessage()
-                ];
-            }
-            return $output;
-        }
-    }
-
-    /** Approve payroll */
-    public function approve(Request $request, $id)
-    {
-        if (!auth()->user()->can('payroll.approve')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        if ($request->ajax()) {
-            try {
-                DB::beginTransaction();
-                $business_id = request()->session()->get('user.business_id');
-                $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
-                $user_id = auth()->user()->id;
-                $user = User::findOrFail($user_id);
-
-                if (Hash::check($request->input('password'), $user->password)) {
-                    $status = PayrollStatus::where('name', 'Aprobada')->where('business_id', $business_id)->first();
-                    $payroll->payroll_status_id = $status->id;
-                    $payroll->approval_date = Carbon::now();
-                    $payroll->update();
-
-                    if ($request->input('sendEmail') == 1) {
-                        $output = [
-                            'success' => 1,
-                            'msg' => __('payroll.send_approve_payroll')
-                        ];
-                    } else {
-                        $output = [
-                            'success' => 1,
-                            'msg' => __('payroll.approve_payroll')
-                        ];
-                    }
-                } else {
-                    $output = [
-                        'success' => 0,
-                        'msg' => __('rrhh.wrong_password_authorize')
-                    ];
-                }
-                DB::commit();
-            } catch (\Exception $e) {
-                DB::rollBack();
-                \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-                $output = [
-                    'success' => 0,
                     'msg' => __('rrhh.error')
                 ];
             }
             return $output;
         }
     }
+
+
+    /** Pay payroll */
+    function sendEmail($payroll)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::findOrFail($business_id);
+        foreach ($payroll->payrollDetails as $payrollDetail) {
+            $employee = Employees::where('id', $payrollDetail->employee_id)->where('business_id', $business_id)->with('user')->firstOrFail();
+            $employee->notify(new PaymentSplisNotification($payroll, $business_id, $payrollDetail, $employee->first_name, $employee->last_name, $this->employeeUtil));
+        }  
+    }
+
+
+    //Generate payments slips for print
+    public function generatePaymentSlips($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $business = Business::find($business_id);
+        $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
+        $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
+        $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
+
+        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'end_date'));
+
+        $pdf->setPaper('letter', 'portrait');
+        return $pdf->stream('payrollDetail.pdf');  
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -538,11 +673,6 @@ class PayrollController extends Controller
     public function calculate($payroll)
     {
         $business_id = request()->session()->get('user.business_id');
-        if (mb_strtolower($payroll->paymentPeriod->name) == mb_strtolower('Primera quincena') || mb_strtolower($payroll->paymentPeriod->name) == mb_strtolower('Segunda quincena')) {
-            $paymentPeriod = 'Quincenal';
-        } else {
-            $paymentPeriod = $payroll->paymentPeriod->name;
-        }
 
         //Obtener empleados
         $employees = Employees::where('business_id', $business_id)
@@ -591,8 +721,8 @@ class PayrollController extends Controller
 
                             $lawDiscounts = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
                                 ->join('payment_periods as payment_period', 'payment_period.id', '=', 'law_discounts.payment_period_id')
-                                ->select('law_discounts.id as id', 'law_discounts.*', 'payment_period.name as payment_period', 'institution_law.name as institution_law')
-                                ->where('payment_period.name', $paymentPeriod)
+                                ->select('law_discounts.id as id', 'law_discounts.*', 'payment_period.id as payment_period_id', 'institution_law.name as institution_law')
+                                ->where('payment_period.id', $payroll->isr_id)
                                 ->where('law_discounts.business_id', $business_id)
                                 ->where('law_discounts.deleted_at', null)
                                 ->get();
@@ -601,7 +731,7 @@ class PayrollController extends Controller
                                 ->join('payment_periods as payment_period', 'payment_period.id', '=', 'law_discounts.payment_period_id')
                                 ->select('law_discounts.id as id', 'law_discounts.*', 'institution_law.name as institution_law', 'payment_period.name as payment_period')
                                 ->where('institution_law.name', 'Renta')
-                                ->where('payment_period.name', $paymentPeriod)
+                                ->where('payment_period.id', $payroll->isr_id)
                                 ->where('law_discounts.business_id', $business_id)
                                 ->where('law_discounts.deleted_at', null)
                                 ->get();
@@ -648,21 +778,21 @@ class PayrollController extends Controller
                                 $daysPayroll = $end_date_payroll->diffInDays($employee->date_admission);
                                 $details['days'] = $daysPayroll - $diasIncapacidad;
                             } else {
-                                $details['days'] = abs($payroll->paymentPeriod->days - $diasIncapacidad);
+                                $details['days'] = abs($payroll->days - $diasIncapacidad);
                             }
 
                             $details['hours'] = 8;
                             $details['commissions'] = $incomeCom - $discountCom;
-                            $details['extra hours'] = $incomeHO - $discountHO;
+                            $details['extra_hours'] = $incomeHO - $discountHO;
                             $details['other_income'] = $incomeOI - $discountOI;
                             $details['regular_salary'] = $details['montly_salary'] / 30 * $details['days'];
-                            $details['total_income'] = $details['regular_salary'] + $details['commissions'] + $details['total_hours'] + $details['other_income'];
+                            $details['total_income'] = $details['regular_salary'] + $details['commissions'] + $details['extra_hours'] + $details['other_income'];
 
                             //Calcular ISSS y AFP
                             foreach ($lawDiscounts as $lawDiscount) {
                                 //---------------------------------ISSS---------------------------------
                                 if (mb_strtolower($lawDiscount->institution_law) == mb_strtolower('ISSS')) {
-                                    if (mb_strtolower($lawDiscount->payment_period) == mb_strtolower($paymentPeriod)) {
+                                    if ($lawDiscount->payment_period_id == $payroll->isr_id) {
                                         if ($details['total_income'] >= $lawDiscount->until) {
                                             $details['isss'] = $lawDiscount->until * $lawDiscount->employee_percentage / 100;
                                         } else {
@@ -673,7 +803,7 @@ class PayrollController extends Controller
 
                                 //---------------------------------AFP---------------------------------
                                 if ($lawDiscount->institution_law == 'AFP Confia' || $lawDiscount->institution_law == 'AFP Crecer') {
-                                    if (mb_strtolower($lawDiscount->payment_period) == mb_strtolower($paymentPeriod)) {
+                                    if ($lawDiscount->payment_period_id == $payroll->isr_id) {
                                         $details['afp'] = $details['total_income'] * $lawDiscount->employee_percentage / 100;
                                     }
                                 }
@@ -685,13 +815,13 @@ class PayrollController extends Controller
                                     $details['rent'] = 0;
                                 } else {
                                     if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[1]->until) {
-                                        $details['rent'] = round(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[1]->base) * ($lawDiscountsRenta[1]->employee_percentage / 100)) + $lawDiscountsRenta[1]->fixed_fee, 2);
+                                        $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[1]->base) * ($lawDiscountsRenta[1]->employee_percentage / 100)) + $lawDiscountsRenta[1]->fixed_fee, 1, 2);
                                     } else {
                                         if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[2]->until) {
-                                            $details['rent'] = round(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[2]->base) * ($lawDiscountsRenta[2]->employee_percentage / 100)) + $lawDiscountsRenta[2]->fixed_fee, 2);
+                                            $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[2]->base) * ($lawDiscountsRenta[2]->employee_percentage / 100)) + $lawDiscountsRenta[2]->fixed_fee, 1, 2);
                                         } else {
                                             if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[3]->until) {
-                                                $details['rent'] = round(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[3]->base) * ($lawDiscountsRenta[3]->employee_percentage / 100)) + $lawDiscountsRenta[3]->fixed_fee, 2);
+                                                $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[3]->base) * ($lawDiscountsRenta[3]->employee_percentage / 100)) + $lawDiscountsRenta[3]->fixed_fee, 1, 2);
                                             }
                                         }
                                     }
@@ -716,7 +846,7 @@ class PayrollController extends Controller
                                 $daysPayroll = $end_date_payroll->diffInDays($employee->date_admission);
                                 $details['days'] = $daysPayroll;
                             } else {
-                                $details['days'] = $payroll->paymentPeriod->days;
+                                $details['days'] = $payroll->days;
                             }
                             $details['regular_salary'] = $details['montly_salary'] / 30 * $details['days'];
                             $details['rent'] = $details['regular_salary'] * 0.1;
@@ -729,7 +859,59 @@ class PayrollController extends Controller
                         }
                     }
 
+                    if ($payroll->payrollType->name == 'Planilla de aguinaldos') {
+                        if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
+                            
+                            $date_admission_employee = Carbon::parse($employee->date_admission);
+                            $end_date_payroll = Carbon::parse($payroll->end_date);
 
+                            $seconds = strtotime($end_date_payroll) - strtotime($date_admission_employee);
+                            $years = $this->employeeUtil->secondsToYear($seconds);
+                            
+                            $bonusCalculations = BonusCalculation::where('business_id', $business_id)->where('status', 1)->orderBy('until', 'DESC')->get();
+                            $lawDiscountsRenta = LawDiscount::join('institution_laws as institution_law', 'institution_law.id', '=', 'law_discounts.institution_law_id')
+                                ->join('payment_periods as payment_period', 'payment_period.id', '=', 'law_discounts.payment_period_id')
+                                ->select('law_discounts.id as id', 'law_discounts.*', 'institution_law.name as institution_law')
+                                ->where('institution_law.name', 'Renta')
+                                ->where('payment_period.id', $payroll->isr_id)
+                                ->where('law_discounts.business_id', $business_id)
+                                ->where('law_discounts.deleted_at', null)
+                                ->get();
+
+                            foreach ($bonusCalculations as $bonusCalculation) {
+                                if($years >= $bonusCalculation->from && $years < $bonusCalculation->until){
+                                    $details['days'] = $bonusCalculation->days;
+                                    if($bonusCalculation->proportional == false){
+                                        $details['bonus'] = $details['montly_salary']/30 * $bonusCalculation->days;
+                                    }else{
+                                        $daysWorked = $this->employeeUtil->getDays($seconds);
+                                        $details['bonus'] = ((($details['montly_salary']/30) * $bonusCalculation->days) / 365) * $daysWorked;
+                                    }
+
+                                    $setting = RrhhSetting::where('business_id', $business_id)->first();
+
+                                    if($details['bonus'] <= $setting->exempt_bonus){
+                                        $details['rent'] = 0;
+                                    }else{
+                                        $value = $details['bonus'] - $setting->exempt_bonus;
+                                        foreach ($lawDiscountsRenta as $lawDiscountRenta) {
+                                            if($value >= $lawDiscountRenta->from && $value < $lawDiscountRenta->until){
+                                                $details['rent'] = ( $details['bonus'] - $setting->exempt_bonus ) * ($lawDiscountRenta->employee_percentage / 100);
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            
+                            $details['total_to_pay'] = bcdiv(($details['bonus'] - $details['rent']), 1, 2);
+                            $details['employee_id']  = $employee->id;
+                            $details['payroll_id']  = $payroll->id;
+
+                            //Create register
+                            PayrollDetail::create($details);
+                        }
+                    }
 
                     $status = PayrollStatus::where('name', 'Calculada')->where('business_id', $business_id)->first();
                     $payroll->payroll_status_id = $status->id;
@@ -744,7 +926,7 @@ class PayrollController extends Controller
     }
 
 
-    public function exportPayrollSalary($id)
+    public function exportPayroll($id)
     {
         $business_id = request()->session()->get('user.business_id');
         $business = Business::where('id', $business_id)->first();
@@ -765,6 +947,8 @@ class PayrollController extends Controller
         }
     }
 
+
+    //Get income or discount from an employee
     public function incomeDiscount($incomeDiscount, $payroll_column, $payroll)
     {
         $incomeOrDiscount = 0;

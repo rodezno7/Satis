@@ -18,9 +18,9 @@ return[
     'description' => 'Descripción',
     'employeer_number' => 'Numéro patronal',
     'from' => 'Desde ($)',
-    'from_year' => 'Desde (año)',
+    'from_year' => 'Desde (años)',
     'until' => 'Hasta ($)',
-    'until_year' => 'Hasta (año)',
+    'until_year' => 'Hasta (años)',
     'base' => 'Base ($)',
     'days' => 'Días',
     'percentage' => 'Porcentaje (%)',
@@ -96,5 +96,13 @@ return[
     'honorary' => 'Honorarios',
     'extra_hours' => 'Horas extras',
     'print_payment_slips' => 'Imprimir boletas de pago',
-    'send_payment_slips1' => 'Enviar boletas de pago'
+    'send_payment_slips1' => 'Enviar boletas de pago',
+    'not_modify' => 'No modifiques los registros a menos que cambie la ley',
+    'bonus' => 'Aguinaldo',
+    'proportional' => 'Proporcional',
+    'days_to_pay' => 'Días a pagar',
+    'exempt_bonus' => 'Aguinaldo exento',
+    'message_bonus' => 'Este valor equivale a 2 salarios minimos.',
+    'ISR_apply' => 'Tabla de ISR a aplicar',
+    'period_to_apply' => 'Periodo a aplicar'
 ];

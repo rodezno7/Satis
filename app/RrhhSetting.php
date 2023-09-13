@@ -4,13 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Setting extends Model
+class RrhhSetting extends Model
 {
-    protected $table = 'settings';
+    protected $table = 'rrhh_settings';
 
     protected $fillable = [
         'automatic_closing',
         'exit_time',
+        'exempt_bonus',
         'business_id',
     ];
 

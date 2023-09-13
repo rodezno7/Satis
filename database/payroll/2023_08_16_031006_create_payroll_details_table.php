@@ -19,7 +19,7 @@ class CreatePayrollDetailsTable extends Migration
             $table->integer('hours');
             
             $table->decimal('montly_salary', 10, 2);
-            $table->decimal('regular_salary', 10, 2);
+            $table->decimal('regular_salary', 10, 2)->nullable();
             $table->decimal('commissions', 10, 2)->nullable();
             $table->decimal('extra_hours', 10, 2)->nullable();
             $table->decimal('vacation', 10, 2)->nullable();

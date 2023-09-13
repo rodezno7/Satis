@@ -69,13 +69,14 @@ class RrhhIncomeDiscountController extends Controller
         $typeIncomes = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 1)->get();
         $typeDiscounts = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 2)->get();
         $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
-        ->where('id', '<>', 1)
-        ->where('id', '<>', 2)
-        ->where('id', '<>', 4)
-        ->where('id', '<>', 5)
-        ->where('id', '<>', 7)
-        ->where('id', '<>', 8)
-        ->get();
+            ->where('name', '<>', 'Semanal') //Semanal
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Primera quincena') //Primera quincena
+            ->where('name', '<>', 'Segunda quincena') //Segunda quincena
+            ->where('name', '<>', 'Semestral') //Semestral
+            ->where('name', '<>', 'Anual') //Anual
+            ->where('name', '<>', 'Personalizado') //Personalizado
+            ->get();
         $employee_id = $id;
 
         return view('rrhh.income_discounts.create', compact('employee_id', 'typeDiscounts', 'typeIncomes', 'paymentPeriods'));
@@ -192,12 +193,13 @@ class RrhhIncomeDiscountController extends Controller
         $typeIncomes = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 1)->get();
         $typeDiscounts = RrhhTypeIncomeDiscount::where('business_id', $business_id)->where('type', 2)->get();
         $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
-            ->where('id', '<>', 1)
-            ->where('id', '<>', 2)
-            ->where('id', '<>', 4)
-            ->where('id', '<>', 5)
-            ->where('id', '<>', 7)
-            ->where('id', '<>', 8)
+            ->where('name', '<>', 'Semanal') //Semanal
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Primera quincena') //Primera quincena
+            ->where('name', '<>', 'Segunda quincena') //Segunda quincena
+            ->where('name', '<>', 'Semanal') //Semanal
+            ->where('name', '<>', 'Anual') //Anual
+            ->where('name', '<>', 'Personalizado') //Personalizado
             ->get();
         $employee_id = $incomeDiscount->employee_id;
 

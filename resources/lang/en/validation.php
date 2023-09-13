@@ -299,6 +299,9 @@ return [
         'rrhh_type_contract_id'     => 'type of contract',
         'rrhh_type_personnel_action_id' => 'type personnel action',
         'payment_period_id'             => 'payment period',
+        'payroll_type_id'               => 'payroll type',
+        'isr_id'                        => 'ISR table to apply',
+        'days'                          => 'days',
     ),
 'custom-messages' => [
     'quantity_not_available' => 'Only :qty :unit available',

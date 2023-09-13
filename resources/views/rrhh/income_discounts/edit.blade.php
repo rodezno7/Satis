@@ -22,7 +22,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_discount">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_discount1">
             <div class="form-group">
                 <label>@lang('rrhh.types_discounts')</label> <span class="text-danger">*</span>
                 <select name="rrhh_type_discount_id" id="rrhh_type_discount_id1"
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_income">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_income1">
             <div class="form-group">
                 <label>@lang('rrhh.types_incomes')</label> <span class="text-danger">*</span>
                 <select name="rrhh_type_income_id" id="rrhh_type_income_id1" class="form-control form-control-sm select2"
@@ -168,18 +168,18 @@
     function typeOption() {
         let type = $('#type1').val();
 
-        $('#div_type_discount').hide();
+        $('#div_type_discount1').hide();
         $("#type_discount_id").prop('required', false);
 
-        $('#div_type_income').hide();
+        $('#div_type_income1').hide();
         $("#type_income_id").prop('required', false);
 
         //Evaluando si es un ingreso o descuento
         if (type == 1) { //Ingreso
-            $('#div_type_income').show();
+            $('#div_type_income1').show();
             $("#type_income_id").prop('required', true);
         } else { //Descuento
-            $('#div_type_discount').show();
+            $('#div_type_discount1').show();
             $("#type_discount_id").prop('required', true);
         }
     }

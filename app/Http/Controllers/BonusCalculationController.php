@@ -26,18 +26,24 @@ class BonusCalculationController extends Controller
     }
 
     public function getBonusCalculations(){
-        if ( !auth()->user()->can('plantilla-catolgues.view') ) {
+        if ( !auth()->user()->can('payroll-catolgues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('bonus_calculations as bc')
-            ->select('bc.id as id', 'bc.from', 'bc.until', 'bc.days', 'bc.percentage', 'bc.status')
+            ->select('bc.id as id', 'bc.from', 'bc.until', 'bc.days', 'bc.proportional', 'bc.status')
             ->where('bc.business_id', $business_id)
             ->where('bc.deleted_at', null)
             ->get();
 
-        return DataTables::of($data)->editColumn('status', function ($data) {
+        return DataTables::of($data)->editColumn('proportional', function ($data) {
+            if($data->proportional == 1){
+                return __('messages.yes');
+            }else{
+                return __('messages.no');
+            }
+        })->editColumn('status', function ($data) {
             if($data->status == 1){
                 return __('rrhh.active');
             }else{
@@ -74,10 +80,10 @@ class BonusCalculationController extends Controller
         }
 
         $request->validate([
-            'from'       => 'required|numeric',
-            'until'      => 'required|numeric',
-            'days'       => 'required|integer|min:0',
-            'percentage' => 'required|numeric',
+            'from'         => 'required|numeric',
+            'until'        => 'required|numeric',
+            'days'         => 'required|integer|min:0',
+            'proportional' => 'required|boolean',
         ]);
 
         try {
@@ -148,10 +154,10 @@ class BonusCalculationController extends Controller
         }
 
         $request->validate([
-            'from'       => 'required|numeric',
-            'until'      => 'required|numeric',
-            'days'       => 'required|integer|min:0',
-            'percentage' => 'required|numeric',
+            'from'         => 'required|numeric',
+            'until'        => 'required|numeric',
+            'days'         => 'required|integer|min:0',
+            'proportional' => 'required|boolean',
         ]);
 
         try {
