@@ -96,4 +96,5 @@ return [
     "new_register" => "New register",
     "create_supplier" => "Crete supplier",
     'suggested_purchase' => 'Suggested purchase',
+    'search_provider' => 'Search provider',
 ];

@@ -316,10 +316,10 @@
       },
   });
 
-  // Get contacts
+  // Get expense categories
   $('#expense_search').select2({
       ajax: {
-          url: '/expenses/get_contacts',
+          url: '/expenses/get_categories',
           dataType: 'json',
           delay: 250,
           data: function(params) {
@@ -342,8 +342,8 @@
           if (!data.id) {
               return data.text;
           }
-          var html = data.text + ' (<b>' + LANG.code + ': </b>' + data.ide + ' - <b>' + LANG
-              .account + ': </b>' + data.business_name + ')';
+          var html = data.text + ' (<b>' + LANG.code + ': </b>' + data.cat_id + ' - <b>' + LANG
+              .account + ': </b>' + data.account_name + ')';
           return html;
       },
       templateSelection: function(data) {
@@ -351,12 +351,12 @@
               $('#account_name').val('');
               return data.text;
           }
-          // If it's a new supplier
-          if (!data.ide) {
-              return data.text;
-              // If a provider has been selected
+          
+          if (!data.cat_id) {
+            return data.text;
+
           } else {
-              let p = $('#account_name').val(data.coc + " " + data.business_name);
+              let p = $('#account_name').val(data.code + " " + data.account_name);
               return data.text;
           }
       },

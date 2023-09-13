@@ -477,10 +477,10 @@
         },
     });
 
-    //get account
+    //get categories
     $('#expense_search').select2({
         ajax: {
-            url: '/expenses/get_contacts',
+            url: '/expenses/get_categories',
             dataType: 'json',
             delay: 250,
             data: function(params) {

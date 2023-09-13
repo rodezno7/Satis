@@ -28,30 +28,30 @@
                     </div>
                     <div id="collapseFilter" class="panel-collapse active collapse in" aria-expanded="true">
                         <div class="box-body">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('location_id', __('purchase.business_location') . ':') !!}
-                                    {!! Form::select('location_id', $business_locations, null, ['class' => 'form-control select2', 'style' => 'width:100%']) !!}
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('location_id', __('purchase.business_location') . ':') !!}
+                                        {!! Form::select('location_id', $business_locations, null, ['class' => 'form-control select2', 'style' => 'width:100%']) !!}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    {!! Form::label('expense_for', __('expense.expense_for') . ':') !!}
-                                    {!! Form::select('expense_for', $users, null, ['class' => 'form-control select2']) !!}
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        {!! Form::label('expense_for', __('expense.expense_for') . ':') !!}
+                                        {!! Form::select('expense_for', $users, null, ['class' => 'form-control select2']) !!}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('expense_category_id', __('expense.expense_category') . ':') !!}
-                                    {!! Form::select('expense_category_id', $categories, null, ['placeholder' => __('report.all'), 'class' => 'form-control select2', 'style' => 'width:100%', 'id' => 'expense_category_id']) !!}
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('expense_category_id', __('expense.expense_category') . ':') !!}
+                                        {!! Form::select('expense_category_id', $categories, null, ['placeholder' => __('report.all'), 'class' => 'form-control select2', 'style' => 'width:100%', 'id' => 'expense_category_id']) !!}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('expense_date_range', __('report.date_range') . ':') !!}
-                                    {!! Form::text('date_range', @format_date('first day of this month') . ' ~ ' . @format_date('last day of this month'), ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'expense_date_range', 'readonly']) !!}
-                                </div>
-                            </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            {!! Form::label('expense_date_range', __('report.date_range') . ':') !!}
+                                            {!! Form::text('date_range', @format_date('first day of this month') . ' ~ ' . @format_date('last day of this month'), ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'expense_date_range', 'readonly']) !!}
+                                        </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -119,88 +119,5 @@
 @stop
 @section('javascript')
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-    <script>
-        $(document).ready(function() {
-
-            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-        });
-        $(document).on('submit', 'form#expense_add_form', function(e) {
-            e.preventDefault();
-            $(this).find('button[type="submit"]').attr('disabled', false);
-            var data = $(this).serialize();
-            $.ajax({
-                method: "POST",
-                url: $(this).attr("action"),
-                dataType: "json",
-                data: data,
-                success: function(result) {
-                    if (result.success == true) {
-                        $("table#expense_table").DataTable().ajax.reload();
-                        $('div.expenses_modal').modal('hide');
-                        Swal.fire({
-                            title: result.msg,
-                            icon: "success",
-                            timer: 2000,
-                            showConfirmButton: false,
-                        });
-                        $("#content").hide();
-                    } else {
-                        Swal.fire({
-                            title: result.msg,
-                            icon: "error",
-                        });
-                    }
-                },
-                error: function(msj) {
-                    var errormessages = "";
-                    $.each(msj.responseJSON.errors, function(i, field) {
-                        errormessages += "<li>" + field + "</li>";
-                    });
-                    Swal.fire({
-                        title: "{{ __('customer.errors') }}",
-                        icon: "error",
-                        html: "<ul>" + errormessages + "</ul>",
-                    });
-                }
-            });
-        });
-
-        $(document).on('click', 'a.edit_expense_button', function() {
-            $("div.expenses_modal").load($(this).data('href'), function() {
-                $(this).modal('show');
-
-                $('form#edit_expense_form').submit(function(e) {
-                    e.preventDefault();
-                    $(this).find('button[type="submit"]').attr('disabled', false);
-                    var data = $(this).serialize();
-
-                    $.ajax({
-                        method: "POST",
-                        url: $(this).attr("action"),
-                        dataType: "json",
-                        data: data,
-                        success: function(result) {
-                            if (result.success == true) {
-                                $("table#expense_table").DataTable().ajax.reload();
-                                $('div.expenses_modal').modal('hide');
-                                Swal.fire({
-                                    title: result.msg,
-                                    icon: "success",
-                                    timer: 2000,
-                                    showConfirmButton: false,
-                                });
-                                $('#content').hide();
-                            } else {
-                                Swal.fire({
-                                    title: result.msg,
-                                    icon: "error",
-                                });
-                            }
-                        }
-                    });
-                });
-            });
-        });
-
-    </script>
+    <script src="{{ asset('js/expense.js?v=' . $asset_v) }}"></script>
 @endsection

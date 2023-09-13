@@ -168,6 +168,7 @@ LANG = {
     'warning_purchase_added': 'The purchase has already been added',
     'warning_import_expense_added': 'The import expense has already been added',
     'is_supplier_error': 'Provider type is required',
+    'success': 'Success',
     'error': 'Error',
     'pending_reservations': 'Pending reservations',
     'payment_note_alredy_exists': 'This payment note already exists',

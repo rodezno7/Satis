@@ -51,5 +51,6 @@ return [
     'expense_status' => 'Expense status',
     'expense_paid' => 'Paid',
     'expense_due' => 'Due',
-    'expense_partial' => 'Partial'
+    'expense_partial' => 'Partial',
+    'search_expense_category' => 'Search expenses categories',
 ];

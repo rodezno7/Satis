@@ -172,6 +172,7 @@ LANG = {
     'warning_purchase_added': 'La compra ya ha sido agregada',
     'warning_import_expense_added': 'El gasto de importación ya ha sido agregado',
     'is_supplier_error': 'Debe seleccionar el tipo de proveedor',
+    'success': 'Éxito',
     'error': 'Error',
     'pending_reservations': 'Reservas pendientes',
     'payment_note_alredy_exists': 'Esta nota de abono ya existe',
