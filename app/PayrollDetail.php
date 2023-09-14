@@ -9,6 +9,7 @@ class PayrollDetail extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'proportional',
         'days', 
         'hours',
         'montly_salary', 

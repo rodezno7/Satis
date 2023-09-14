@@ -77,7 +77,7 @@ class PayrollController extends Controller
                 if($data->start_date != null){
                     return $this->moduleUtil->format_date($data->start_date).' - '.$this->moduleUtil->format_date($data->end_date);
                 }else{
-                    return 'N/A - '.$this->moduleUtil->format_date($data->end_date);
+                    return 'Fecha de ingreso - '.$this->moduleUtil->format_date($data->end_date);
                 }
             })
             ->editColumn('month', function ($data) {
@@ -102,17 +102,24 @@ class PayrollController extends Controller
             ->addColumn('type', function ($data) {
                 return $data->payrollType->name;               
             })
+            ->addColumn('isr', function ($data) {
+                if($data->isr_id != null){
+                    $business_id = request()->session()->get('user.business_id');
+                    $paymentPeriod = PaymentPeriod::where('business_id', $business_id)->where('id', $data->isr_id)->first();
+                    return $paymentPeriod->name;
+                }              
+            })
             ->addColumn('payment_period', function ($data) {
                 if($data->payment_period_id != null){
                     return $data->paymentPeriod->name;
                 }else{
-                    return "---";
+                    return "N/A";
                 }                
             })
             ->addColumn('statusPayroll', function ($data) {
                 return $data->payrollStatus->name;
             })
-            ->rawColumns(['type', 'name', 'payment_period', 'period', 'status', 'statusPayroll'])
+            ->rawColumns(['type', 'name', 'payment_period', 'period', 'isr', 'status', 'statusPayroll'])
             ->make(true);
     }
 
@@ -394,7 +401,11 @@ class PayrollController extends Controller
                 })->editColumn('montly_salary', function ($data) {
                     return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
                 })->editColumn('days', function ($data) {
-                    return $data->days;
+                    if($data->proportional == 1){
+                        return $data->days.'</br>Proporcional';
+                    }else{
+                        return $data->days;
+                    }
                 })->editColumn('bonus', function ($data) {
                     return $this->moduleUtil->num_f($data->bonus, $add_symbol = true, $precision = 2);
                 })->editColumn('rent', function ($data) {
@@ -420,7 +431,7 @@ class PayrollController extends Controller
             if ($payroll->payrollStatus->name == 'Calculada') {
                 DB::beginTransaction();
 
-                PayrollDetail::where('payroll_id', $payroll->id)->delete();
+                PayrollDetail::where('payroll_id', $payroll->id)->forceDelete();
                 $this->calculate($payroll);
 
                 DB::commit();
@@ -881,11 +892,13 @@ class PayrollController extends Controller
                             foreach ($bonusCalculations as $bonusCalculation) {
                                 if($years >= $bonusCalculation->from && $years < $bonusCalculation->until){
                                     $details['days'] = $bonusCalculation->days;
-                                    if($bonusCalculation->proportional == false){
+                                    if($bonusCalculation->proportional == 0){
                                         $details['bonus'] = $details['montly_salary']/30 * $bonusCalculation->days;
+                                        $details['proportional'] = null;
                                     }else{
                                         $daysWorked = $this->employeeUtil->getDays($seconds);
                                         $details['bonus'] = ((($details['montly_salary']/30) * $bonusCalculation->days) / 365) * $daysWorked;
+                                        $details['proportional'] = 1;
                                     }
 
                                     $setting = RrhhSetting::where('business_id', $business_id)->first();

@@ -32,12 +32,8 @@ class Payroll extends Model
         return $this->belongsTo('App\PayrollStatus');
     }
 
-    public function isr(){
-        return $this->belongsTo('App\PaymentPeriod', 'isr_id');
-    }
-
     public function paymentPeriod(){
-        return $this->belongsTo('App\PaymentPeriod', 'payment_period_id');
+        return $this->belongsTo('App\PaymentPeriod');
     }
 
     public function calculationType(){

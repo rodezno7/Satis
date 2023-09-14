@@ -28,12 +28,13 @@
                     <table class="table table-striped table-bordered table-condensed table-hover" id="payroll-table"
                         width="100%">
                         <thead>
-                            <th>@lang('payroll.type')</th>
-                            <th>@lang('payroll.name')</th>
-                            <th>@lang('payroll.period')</th>
-                            <th width="15%">@lang('payroll.payment_period')</th>
+                            <th width="15%">@lang('payroll.type')</th>
+                            <th width="20%">@lang('payroll.name')</th>
+                            <th width="20%">@lang('payroll.period')</th>
+                            <th>@lang('payroll.payment_period')</th>
+                            <th>@lang('payroll.ISR_apply')</th>
                             <th>@lang('payroll.status')</th>
-                            <th width="12%">@lang('payroll.actions')</th>
+                            <th width="11%">@lang('payroll.actions')</th>
                         </thead>
                     </table>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
@@ -99,6 +100,11 @@
                     {
                         data: 'payment_period',
                         name: 'payment_period',
+                        className: "text-center"
+                    },
+                    {
+                        data: 'isr',
+                        name: 'isr',
                         className: "text-center"
                     },
                     {
