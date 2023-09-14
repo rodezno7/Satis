@@ -324,31 +324,6 @@
             }
         });
 
-        $('input#expense_transaction_date').datetimepicker({
-            format: moment_date_format,
-            ignoreReadonly: true
-
-        }).on("dp.change", function (e) {
-            if (e.oldDate !== e.date) {
-                var date = moment(e.date).format('DD/MM/YYYY');
-                $.ajax({
-                    type: 'post',
-                    url: '/purchases/is-closed',
-                    data: {date: date},
-                    success: function(data){
-                        if(parseInt(data) > 0){
-                            swal(LANG.notice, LANG.month_closed, "error");
-                        }
-                    }
-                });
-            };
-        });
-
-        $('input#expense_document_date').datetimepicker({
-            format: moment_date_format,
-            ignoreReadonly: true
-        });
-
         $("#upload_document").fileinput(fileinput_setting);
 
         //enable and disabled Credit Terms

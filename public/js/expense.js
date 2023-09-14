@@ -38,16 +38,12 @@ $(function () {
         }
     });
 
-    $('select#location_id, select#expense_for, select#expense_category_id').on('change', function() {
+    /** On change location or expense category */
+    $('select#location_id, select#expense_category_id').on('change', function() {
         expense_table.ajax.reload();
     });
 
-    //Date picker
-    $('#expense_transaction_date').datepicker({
-        autoclose: true,
-        format: datepicker_date_format
-    });
-
+    /** On submit expense store form */
     $(document).on('submit', 'form#expense_add_form', function(e) {
         e.preventDefault();
         $(this).find('button[type="submit"]').attr('disabled', false);
@@ -92,6 +88,7 @@ $(function () {
         });
     });
 
+    /** On submit expense update form */
     $(document).on('click', 'a.edit_expense_button', function() {
         $("div.expenses_modal").load($(this).data('href'), function() {
             $(this).modal('show');
@@ -131,7 +128,7 @@ $(function () {
         });
     });
 
-
+    /** On delete expense */
     $(document).on('click', 'a.delete_expense', function(e) {
         e.preventDefault();
         swal({
@@ -266,6 +263,33 @@ $(function () {
         /** On input amount change */
         $(document).on('change', 'table#expense_lines input.input_number', function () {
             sum_lines(modal.find('table#expense_lines tbody tr'), modal.find('input#amount'));
+        });
+
+        /** Apply datetimepicker to expense date and validate it's closed */
+        modal.find('input#expense_transaction_date').datetimepicker({
+            format: moment_date_format,
+            ignoreReadonly: true
+    
+        }).on("dp.change", function (e) {
+            if (e.oldDate !== e.date) {
+                var date = moment(e.date).format('DD/MM/YYYY');
+                $.ajax({
+                    type: 'post',
+                    url: '/purchases/is-closed',
+                    data: {date: date},
+                    success: function(data){
+                        if(parseInt(data) > 0){
+                            swal(LANG.notice, LANG.month_closed, "error");
+                        }
+                    }
+                });
+            };
+        });
+
+        /** Apply datetimepicker to expense document date */
+        modal.find('input#expense_document_date').datetimepicker({
+            format: moment_date_format,
+            ignoreReadonly: true
         });
     });
 

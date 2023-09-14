@@ -8,10 +8,6 @@
         <h1>@lang('expense.expenses')
             <small></small>
         </h1>
-        <!-- <ol class="breadcrumb">
-                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                            <li class="active">Here</li>
-                        </ol> -->
     </section>
 
     <!-- Main content -->
@@ -34,24 +30,18 @@
                                         {!! Form::select('location_id', $business_locations, null, ['class' => 'form-control select2', 'style' => 'width:100%']) !!}
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        {!! Form::label('expense_for', __('expense.expense_for') . ':') !!}
-                                        {!! Form::select('expense_for', $users, null, ['class' => 'form-control select2']) !!}
-                                    </div>
-                                </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('expense_category_id', __('expense.expense_category') . ':') !!}
                                         {!! Form::select('expense_category_id', $categories, null, ['placeholder' => __('report.all'), 'class' => 'form-control select2', 'style' => 'width:100%', 'id' => 'expense_category_id']) !!}
                                     </div>
                                 </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('expense_date_range', __('report.date_range') . ':') !!}
-                                            {!! Form::text('date_range', @format_date('first day of this month') . ' ~ ' . @format_date('last day of this month'), ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'expense_date_range', 'readonly']) !!}
-                                        </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('expense_date_range', __('report.date_range') . ':') !!}
+                                        {!! Form::text('date_range', @format_date('first day of this month') . ' ~ ' . @format_date('last day of this month'), ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'expense_date_range', 'readonly']) !!}
                                     </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -75,11 +65,9 @@
                             <table class="table table-bordered table-striped" id="expense_table">
                                 <thead>
                                     <tr>
-                                        {{--  --}}
-                                        <th>@lang('messages.date')</th>{{-- fecha  --}}
-                                        <th @if ($hide_location_column) class="hide-column" @endif>@lang('business.location')</th>
+                                        <th>@lang('messages.date')</th>
+                                        <th>@lang('business.location')</th>
                                         <th>@lang('expense.expense_provider')</th>
-                                        <th>@lang('expense.expense_category')</th>
                                         <th>@lang('document_type.title')</th>
                                         <th>@lang('purchase.ref_no')</th> 
                                         <th>@lang('sale.payment_status')</th>
@@ -89,11 +77,11 @@
                                 </thead>
                                 <tfoot>
                                     <tr class="bg-gray font-17 text-center footer-total">
-                                        <td colspan="6"><strong>@lang('sale.total'):</strong></td>
+                                        <td colspan="5"><strong>@lang('sale.total'):</strong></td>
                                         <td id="footer_payment_status_count"></td>
                                         <td><span class="display_currency" id="footer_expense_total"
                                                 data-currency_symbol="true"></span></td>
-                                        <td></td>
+                                        <td>&nbsp;</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -102,20 +90,12 @@
                 </div>
             </div>
         </div>
-
     </section>
-    <!-- /.content -->
     <!-- /.content -->
     {{-- Print section --}}
     <section id="receipt_section" class="print_section"></section>
-    <div class="modal fade expenses_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="gridSystemModalLabel">
-    </div>
-
-    <div class="modal fade payment_modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-    </div>
-
-    <div class="modal fade edit_payment_modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
-    </div>
+    <div class="modal fade expenses_modal" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
+    <div class="modal fade payment_modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
 @stop
 @section('javascript')
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
