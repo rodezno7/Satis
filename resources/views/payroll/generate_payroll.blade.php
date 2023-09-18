@@ -23,7 +23,7 @@
         <div class="boxform_u box-solid_u">
             <div class="box-header">
                 <h1></h1>
-                <div class="box-tools">
+                <div class="box-tools" id="div_actions">
                     @can('payroll.export')
                         <a href="/payroll/{{ $payroll->id }}/exportPayroll" class="btn btn-success" type="button">
                             <i class="fa fa-file"></i> @lang('report.export')
@@ -551,6 +551,7 @@
                                 $('#btn_approve').hide();
                                 $("#section_content-header").find('h1').remove();
                                 $("#section_content-header").append('<h1>'+type+' <span class="badge" style="background: #449D44">Aprobada</span></h1>');
+                                $('#div_actions').append('@can('payroll.pay')<a href="#" class="btn btn-primary" type="button" onClick="payPayroll({{ $payroll->id }})" id="btn_pay"> <i class="fa fa-check-square"></i> @lang('payroll.pay')</a> @endcan');
                                 $("#payroll-detail-table").DataTable().ajax.reload(null, false);
                             } else {
                                 Swal.fire({

@@ -73,9 +73,13 @@
         @if ($payrollDetail->payroll->payrollType->name == "Planilla de honorarios")
             {{ mb_strtoupper(__('payroll.honorary')) }}
         @endif
+        @if ($payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos")
+            {{ mb_strtoupper(__('payroll.bonus')) }}
+        @endif
     </h2>
     <h3>{{ $business->name }}</h3>
     <h4>{{ __('payroll.message_period_payroll_1') }} {{ $start_date }} {{ __('payroll.message_period_payroll_2') }} {{ $end_date }}</h4>
+    
     <table>
         <tbody>
             <tr>
@@ -109,8 +113,12 @@
                 </td>
             </tr>
             <tr>
-                
+                @if ($payrollDetail->payroll->payrollType->name != "Planilla de aguinaldos")
                 <th>{{ __('payroll.worked_days') }}:</th>
+                @else
+                <th>{{ __('payroll.days_to_pay') }}:</th>
+                @endif
+                
                 <td>{{ $payrollDetail->days }}</td>
                 <th>{{ __('rrhh.way_to_pay') }}: </th>
                 <td>
@@ -252,12 +260,13 @@
                 </tr>
             </tbody>
         </table>
-    @else
+    @endif
+    @if ($payrollDetail->payroll->payrollType->name == "Planilla de honorarios")
         <br>
         <table class="payroll-detail">
             <thead>
                 <tr style="text-align: center !important">
-                    <th colspan="3" style="background: rgb(228, 228, 228)">Detalle</th>
+                    <th colspan="3" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -298,7 +307,52 @@
         </table>
         <br>
     @endif
-    
+    @if ($payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos")
+        <br>
+        <table class="payroll-detail">
+            <thead>
+                <tr style="text-align: center !important">
+                    <th colspan="3" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="5%"> </td>
+                    <td>{{ __('payroll.bonus') }}</td>
+                    <td width="15%" style="text-align: right;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->bonus) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->bonus) }}
+                        @endif   
+                    </td>
+                </tr>
+                <tr>
+                    <td>(-)</td>
+                    <td>{{ __('payroll.rent') }}</td>
+                    <td style="text-align: right;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->rent) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->rent) }}
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <th>=</th>
+                    <th>{{ __('payroll.total_to_pay') }}</th>
+                    <th style="text-align: right;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->total_to_pay) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_to_pay) }}
+                        @endif
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+    @endif
     <table>
         <tbody>
             <tr>

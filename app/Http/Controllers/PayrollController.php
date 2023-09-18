@@ -6,6 +6,7 @@ use App\BonusCalculation;
 use App\Business;
 use App\CalculationType;
 use App\Employees;
+use App\Exports\PayrollBonusReportExport;
 use App\Exports\PayrollSalaryReportExport;
 use App\Exports\PayrollHonoraryReportExport;
 use App\LawDiscount;
@@ -648,9 +649,16 @@ class PayrollController extends Controller
         $business = Business::find($business_id);
         $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
         $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
+        $dateEmployee = [];
+        if($payroll->payrollType->name == 'Planilla de aguinaldos'){
+            for ($i=0; $i < count($payroll->payrollDetails); $i++) { 
+                $dateEmployee[$i] = $this->employeeUtil->getDate($payroll->payrollDetails[$i]->employee->date_admission, true);
+            }
+        } 
+        $start_date = ($payroll->start_date == null)? '' : $this->employeeUtil->getDate($payroll->start_date, true);
         $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
 
-        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'end_date'));
+        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'dateEmployee', 'end_date'));
 
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('payrollDetail.pdf');  
@@ -874,9 +882,16 @@ class PayrollController extends Controller
                         if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
                             
                             $date_admission_employee = Carbon::parse($employee->date_admission);
+                            
                             $end_date_payroll = Carbon::parse($payroll->end_date);
 
-                            $seconds = strtotime($end_date_payroll) - strtotime($date_admission_employee);
+                            if($employee->fired_date != null && $employee->status == 0){
+                                $fired_date_employee = Carbon::parse($employee->fired_date);
+                                $seconds = strtotime($end_date_payroll) - strtotime($fired_date_employee);
+                            }else{
+                                $seconds = strtotime($end_date_payroll) - strtotime($date_admission_employee);
+                            }
+                            
                             $years = $this->employeeUtil->secondsToYear($seconds);
                             
                             $bonusCalculations = BonusCalculation::where('business_id', $business_id)->where('status', 1)->orderBy('until', 'DESC')->get();
@@ -956,6 +971,12 @@ class PayrollController extends Controller
             return Excel::download(
                 new PayrollHonoraryReportExport($payroll, $payrollDetails, $business, $this->moduleUtil),
                 'Planilla de honorarios - ' . $payroll->name . '.xlsx'
+            );
+        }
+        if ($payroll->payrollType->name == 'Planilla de aguinaldos') {
+            return Excel::download(
+                new PayrollBonusReportExport($payroll, $payrollDetails, $business, $this->moduleUtil),
+                'Planilla de aguinaldos - ' . $payroll->name . '.xlsx'
             );
         }
     }

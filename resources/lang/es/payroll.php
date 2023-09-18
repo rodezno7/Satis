@@ -84,6 +84,7 @@ return[
     'payment_slips' => 'Boleta de pago',
     'message_period_payroll_1' => 'Correspondiente al periodo del',
     'message_period_payroll_2' => 'al',
+    'message_period_payroll_3' => 'Correspondiente desde la fecha de ingreso',
     'montly_salary' => 'Salario mensual',
     'regular_salary' => 'Salario por los días trabajados',
     'regular_salary1' => 'Salario regular',
@@ -94,6 +95,7 @@ return[
     'totals' => 'Totales',
     'salary' => 'Sueldo',
     'honorary' => 'Honorarios',
+    'bonus' => 'Aguinaldo',
     'extra_hours' => 'Horas extras',
     'print_payment_slips' => 'Imprimir boletas de pago',
     'send_payment_slips1' => 'Enviar boletas de pago',
@@ -104,5 +106,6 @@ return[
     'exempt_bonus' => 'Aguinaldo exento',
     'message_bonus' => 'Este valor equivale a 2 salarios minimos.',
     'ISR_apply' => 'Tabla de ISR a aplicar',
-    'period_to_apply' => 'Periodo a aplicar'
+    'period_to_apply' => 'Periodo a aplicar',
+    'detail' => 'Detalle'
 ];
