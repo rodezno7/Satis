@@ -78,7 +78,9 @@ class PaymentSplisNotification extends Notification
         if ($this->payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos"){
             $type = __('payroll.bonus');
         }
-        
+        if ($this->payrollDetail->payroll->payrollType->name == "Planilla de vacaciones"){
+            $type = __('payroll.vacation');
+        }
 
         $pdf = \PDF::loadView('payroll.generate_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
         $pdf->setPaper(array(0, 0, 612, 396), 'portrait');

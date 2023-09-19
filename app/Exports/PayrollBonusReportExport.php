@@ -39,7 +39,7 @@ class PayrollBonusReportExport implements WithEvents, WithTitle, ShouldAutoSize
      */
     public function title(): string
     {
-    	return 'Planilla de honorarios';
+    	return 'Planilla de aguinaldos';
     }
 
     /**

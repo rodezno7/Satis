@@ -82,7 +82,8 @@
                 processing: true,
                 serverSide: true,
                 ajax: "/payroll-getPayrolls",
-                columns: [{
+                columns: [
+                    {
                         data: 'type',
                         name: 'type',
                         className: "text-center"

@@ -10,6 +10,8 @@ class PayrollDetail extends Model
 
     protected $fillable = [
         'proportional',
+        'start_date',
+        'end_date',
         'days', 
         'hours',
         'montly_salary', 

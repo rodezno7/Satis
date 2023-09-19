@@ -310,51 +310,75 @@
             <br>
         @endif
         @if ($payroll->payrollType->name == "Planilla de aguinaldos")
-        <br>
-        <table class="payroll-detail">
-            <thead>
-                <tr style="text-align: center !important">
-                    <th colspan="3" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td width="5%"> </td>
-                    <td>{{ __('payroll.bonus') }}</td>
-                    <td width="15%" style="text-align: right;">
-                        @if ($business->currency_symbol_placement == 'after')
-                            {{ @num_format($payrollDetail->bonus) }} {{ $business->currency->symbol }}
-                        @else
-                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->bonus) }}
-                        @endif   
-                    </td>
-                </tr>
-                <tr>
-                    <td>(-)</td>
-                    <td>{{ __('payroll.rent') }}</td>
-                    <td style="text-align: right;">
-                        @if ($business->currency_symbol_placement == 'after')
-                            {{ @num_format($payrollDetail->rent) }} {{ $business->currency->symbol }}
-                        @else
-                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->rent) }}
-                        @endif
-                    </td>
-                </tr>
-                <tr>
-                    <th>=</th>
-                    <th>{{ __('payroll.total_to_pay') }}</th>
-                    <th style="text-align: right;">
-                        @if ($business->currency_symbol_placement == 'after')
-                            {{ @num_format($payrollDetail->total_to_pay) }} {{ $business->currency->symbol }}
-                        @else
-                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_to_pay) }}
-                        @endif
-                    </th>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-    @endif
+            <br>
+            <table class="payroll-detail">
+                <thead>
+                    <tr style="text-align: center !important">
+                        <th colspan="3" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="5%"> </td>
+                        <td>{{ __('payroll.bonus') }}</td>
+                        <td width="15%" style="text-align: right;">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($payrollDetail->bonus) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($payrollDetail->bonus) }}
+                            @endif   
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>(-)</td>
+                        <td>{{ __('payroll.rent') }}</td>
+                        <td style="text-align: right;">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($payrollDetail->rent) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($payrollDetail->rent) }}
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>=</th>
+                        <th>{{ __('payroll.total_to_pay') }}</th>
+                        <th style="text-align: right;">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($payrollDetail->total_to_pay) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_to_pay) }}
+                            @endif
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+        @endif
+        @if ($payroll->payrollType->name == "Planilla de aguinaldos")
+            <br>
+            <table class="payroll-detail">
+                <thead>
+                    <tr style="text-align: center !important">
+                        <th colspan="3" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="5%"> </td>
+                        <td>{{ __('payroll.vacation') }}</td>
+                        <td width="15%" style="text-align: right;">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($payrollDetail->vacation) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($payrollDetail->vacation) }}
+                            @endif   
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+        @endif
         <table>
             <tbody>
                 <tr>

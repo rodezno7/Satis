@@ -15,9 +15,11 @@ class CreatePayrollDetailsTable extends Migration
     {
         Schema::create('payroll_details', function (Blueprint $table) {
             $table->increments('id');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->integer('days');
             $table->boolean('proportional')->nullable();
-            $table->integer('hours');
+            $table->integer('hours')->nullable();
             
             $table->decimal('montly_salary', 10, 2);
             $table->decimal('regular_salary', 10, 2)->nullable();

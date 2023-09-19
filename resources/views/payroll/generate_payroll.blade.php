@@ -21,7 +21,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="boxform_u box-solid_u">
-            <div class="box-header">
+            <div class="box-header" id="">
                 <h1></h1>
                 <div class="box-tools" id="div_actions">
                     @can('payroll.export')
@@ -62,6 +62,9 @@
             @endif
             @if ($payroll->payrollType->name == 'Planilla de aguinaldos')
                 @include('payroll.generate_bonus')
+            @endif
+            @if ($payroll->payrollType->name == 'Planilla de vacaciones')
+                @include('payroll.generate_vacation')
             @endif
         </div>
 
@@ -308,6 +311,52 @@
                         $('span#total_bonus').text(sum_table_col_name($('table#payroll-detail-table'), 'bonus'));
                         $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
                         $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'), 'total_to_pay'));
+                        __currency_convert_recursively($('table#payroll-detail-table'));
+                    },
+                    dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+                });
+            }
+
+            if(type == 'Planilla de vacaciones'){
+                var table = $("#payroll-detail-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "/payroll-getPayrollDetail/" + id,
+                    columns: [
+                        {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        },    
+                        {
+                            data: 'employee',
+                            name: 'employee',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'start_date',
+                            name: 'start_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'end_date',
+                            name: 'end_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'montly_salary',
+                            name: 'montly_salary',
+                            className: "text-center montly_salary"
+                        },
+                        {
+                            data: 'vacation',
+                            name: 'vacation',
+                            className: "text-center vacation"
+                        },
+                    ],
+                    "fnDrawCallback": function(oSettings) {
+                        $('span#total_montly_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'montly_salary'));
+                        $('span#total_vacation').text(sum_table_col_name($('table#payroll-detail-table'), 'vacation'));
                         __currency_convert_recursively($('table#payroll-detail-table'));
                     },
                     dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',

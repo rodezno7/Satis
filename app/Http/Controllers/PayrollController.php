@@ -9,6 +9,7 @@ use App\Employees;
 use App\Exports\PayrollBonusReportExport;
 use App\Exports\PayrollSalaryReportExport;
 use App\Exports\PayrollHonoraryReportExport;
+use App\Exports\PayrollVacationReportExport;
 use App\LawDiscount;
 use App\PaymentPeriod;
 use App\Payroll;
@@ -254,7 +255,6 @@ class PayrollController extends Controller
     
             DB::beginTransaction();
     
-            \Log::info($input_details);
             $payroll = Payroll::create($input_details);
             if ($request->input('calculate') == 1) {
                 $this->calculate($payroll);
@@ -415,6 +415,25 @@ class PayrollController extends Controller
                     return '<b>'.$this->moduleUtil->num_f($data->total_to_pay, $add_symbol = true, $precision = 2).'</b>';
                 })
                 ->rawColumns(['code', 'employee', 'date_admmission', 'end_date', 'montly_salary', 'days', 'bonus', 'rent', 'total_to_pay'])
+                ->make(true);
+        }
+
+        if ($payroll->payrollType->name == 'Planilla de vacaciones') {
+            return DataTables::of($data)
+                ->editColumn('code', function ($data) {
+                    return $data->employee->agent_code;
+                })->editColumn('employee', function ($data) {
+                    return $data->employee->first_name . ' ' . $data->employee->last_name;
+                })->editColumn('start_date', function ($data) {
+                    return $this->moduleUtil->format_date($data->start_date);
+                })->editColumn('end_date', function ($data) {
+                    return $this->moduleUtil->format_date($data->end_date);
+                })->editColumn('montly_salary', function ($data) {
+                    return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
+                })->editColumn('vacation', function ($data) {
+                    return $this->moduleUtil->num_f($data->vacation, $add_symbol = true, $precision = 2);
+                })
+                ->rawColumns(['code', 'employee', 'date_admmission', 'end_date', 'montly_salary', 'vacation'])
                 ->make(true);
         }
     }
@@ -696,7 +715,7 @@ class PayrollController extends Controller
         //Obtener empleados
         $employees = Employees::where('business_id', $business_id)
             ->where('date_admission', '<=', $payroll->end_date)
-            ->where('status', 1)
+            //->where('status', 1)
             ->get();
 
         if (count($employees) > 0) {
@@ -724,7 +743,7 @@ class PayrollController extends Controller
 
                             $diasIncapacidad = 0;
                             $start_date_payroll = Carbon::parse($payroll->start_date);
-                            $end_date_payroll = Carbon::parse($payroll->end_date);
+                            $endDatePayroll = Carbon::parse($payroll->end_date);
 
                             $incapacidades = RrhhAbsenceInability::where('type', 'Incapacidad')
                                 ->where('start_date', '<=', $payroll->end_date)
@@ -766,7 +785,7 @@ class PayrollController extends Controller
                                 }
 
                                 if ($incapacidad->start_date >= $payroll->start_date && $incapacidad->end_date > $payroll->end_date) {
-                                    $diasIncapacidad += $end_date_payroll->diffInDays($start_date_incapacidad);
+                                    $diasIncapacidad += $endDatePayroll->diffInDays($start_date_incapacidad);
                                 }
 
                                 if ($incapacidad->start_date < $payroll->start_date && $incapacidad->end_date <= $payroll->end_date) {
@@ -774,7 +793,7 @@ class PayrollController extends Controller
                                 }
 
                                 if ($incapacidad->start_date < $payroll->start_date && $incapacidad->end_date > $payroll->end_date) {
-                                    $diasIncapacidad += $end_date_payroll->diffInDays($start_date_payroll);
+                                    $diasIncapacidad += $endDatePayroll->diffInDays($start_date_payroll);
                                 }
                             }
 
@@ -794,7 +813,7 @@ class PayrollController extends Controller
 
                             //Calcular los días trabajados
                             if ($employee->date_admission >= $payroll->start_date) {
-                                $daysPayroll = $end_date_payroll->diffInDays($employee->date_admission);
+                                $daysPayroll = $endDatePayroll->diffInDays($employee->date_admission);
                                 $details['days'] = $daysPayroll - $diasIncapacidad;
                             } else {
                                 $details['days'] = abs($payroll->days - $diasIncapacidad);
@@ -861,8 +880,8 @@ class PayrollController extends Controller
                     if ($payroll->payrollType->name == 'Planilla de honorarios') {
                         if ($typeWage->type == 'Honorario') { //----------------------HONORARIO----------------------
                             if ($employee->date_admission >= $payroll->start_date) {
-                                $end_date_payroll = Carbon::parse($payroll->end_date);
-                                $daysPayroll = $end_date_payroll->diffInDays($employee->date_admission);
+                                $endDatePayroll = Carbon::parse($payroll->end_date);
+                                $daysPayroll = $endDatePayroll->diffInDays($employee->date_admission);
                                 $details['days'] = $daysPayroll;
                             } else {
                                 $details['days'] = $payroll->days;
@@ -881,15 +900,15 @@ class PayrollController extends Controller
                     if ($payroll->payrollType->name == 'Planilla de aguinaldos') {
                         if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
                             
-                            $date_admission_employee = Carbon::parse($employee->date_admission);
+                            $dateAdmissionEmployee = Carbon::parse($employee->date_admission);
                             
-                            $end_date_payroll = Carbon::parse($payroll->end_date);
+                            $endDatePayroll = Carbon::parse($payroll->end_date);
 
                             if($employee->fired_date != null && $employee->status == 0){
                                 $fired_date_employee = Carbon::parse($employee->fired_date);
-                                $seconds = strtotime($end_date_payroll) - strtotime($fired_date_employee);
+                                $seconds = strtotime($endDatePayroll) - strtotime($fired_date_employee);
                             }else{
-                                $seconds = strtotime($end_date_payroll) - strtotime($date_admission_employee);
+                                $seconds = strtotime($endDatePayroll) - strtotime($dateAdmissionEmployee);
                             }
                             
                             $years = $this->employeeUtil->secondsToYear($seconds);
@@ -924,11 +943,10 @@ class PayrollController extends Controller
                                         $value = $details['bonus'] - $setting->exempt_bonus;
                                         foreach ($lawDiscountsRenta as $lawDiscountRenta) {
                                             if($value >= $lawDiscountRenta->from && $value < $lawDiscountRenta->until){
-                                                $details['rent'] = ( $details['bonus'] - $setting->exempt_bonus ) * ($lawDiscountRenta->employee_percentage / 100);
+                                                $details['rent'] = ((( $details['bonus'] - $setting->exempt_bonus ) - $lawDiscountRenta->base) * ($lawDiscountRenta->employee_percentage / 100)) + $lawDiscountRenta->fixed_fee;
                                             }
                                         }
                                     }
-                                    
                                 }
                             }
                             
@@ -938,6 +956,59 @@ class PayrollController extends Controller
 
                             //Create register
                             PayrollDetail::create($details);
+                        }
+                    }
+
+                    if ($payroll->payrollType->name == 'Planilla de vacaciones') {
+                        if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
+                            $details['start_date'] = Carbon::parse($employee->date_admission);
+                            $startDatePayroll = Carbon::parse($payroll->start_date);
+                            $endDatePayroll = Carbon::parse($payroll->end_date);
+
+                            $seconds = strtotime($endDatePayroll) - strtotime($details['start_date']);
+                            $year = $this->employeeUtil->secondsToYear($seconds);
+                            
+                            if($employee->status == 1){
+                                if($year >= 1){
+                                    $endDate = $details['start_date']->addYears($year);
+                                    if($endDate >= $startDatePayroll && $endDate <= $endDatePayroll){
+                                        $secondsDays = strtotime($endDate) - strtotime($endDate->subYear());
+                                        $details['days'] = $this->employeeUtil->getDays($secondsDays);
+                                        $details['vacation'] = (($details['montly_salary']/30) * 15) + ((($details['montly_salary']/30) * 15) * 0.3);  
+                                        $details['employee_id']  = $employee->id;
+                                        $details['payroll_id']  = $payroll->id;
+                                        $details['end_date'] = $endDate->addYear();
+
+                                        //Create register
+                                        PayrollDetail::create($details); 
+                                    }
+                                }
+                            }else{
+                                $details['end_date'] = Carbon::parse($employee->fired_date);
+                                if($year >= 1){
+                                    $startDate = $details['start_date']->addYears($year);
+                                }else{
+                                    $startDate = $details['start_date']->subYear();
+                                }
+                                
+                                if($details['end_date'] >= $startDatePayroll && $details['end_date'] <= $endDatePayroll){
+                                    $secondsDays = strtotime($details['end_date']) - strtotime($startDate);
+                                    $details['days'] = $this->employeeUtil->getDays($secondsDays);
+                                    if($details['days'] > 365){
+                                        $details['days'] = $details['days'] - 365;
+                                    }
+                                    if($details['days'] >= 200){
+                                        $details['vacation'] = (($details['montly_salary']/30) * 15) + ((($details['montly_salary']/30) * 15) * 0.3);  
+                                        $details['employee_id']  = $employee->id;
+                                        $details['payroll_id']  = $payroll->id;
+        
+                                        //Create register
+                                        PayrollDetail::create($details);
+                                    }
+                                }
+
+                                
+                            } 
                         }
                     }
 
@@ -977,6 +1048,12 @@ class PayrollController extends Controller
             return Excel::download(
                 new PayrollBonusReportExport($payroll, $payrollDetails, $business, $this->moduleUtil),
                 'Planilla de aguinaldos - ' . $payroll->name . '.xlsx'
+            );
+        }
+        if ($payroll->payrollType->name == 'Planilla de vacaciones') {
+            return Excel::download(
+                new PayrollVacationReportExport($payroll, $payrollDetails, $business, $this->moduleUtil),
+                'Planilla de vacaciones - ' . $payroll->name . '.xlsx'
             );
         }
     }

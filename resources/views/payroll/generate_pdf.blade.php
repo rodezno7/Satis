@@ -76,6 +76,9 @@
         @if ($payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos")
             {{ mb_strtoupper(__('payroll.bonus')) }}
         @endif
+        @if ($payrollDetail->payroll->payrollType->name == "Planilla de vacaciones")
+            {{ mb_strtoupper(__('payroll.vacation')) }}
+        @endif
     </h2>
     <h3>{{ $business->name }}</h3>
     <h4>{{ __('payroll.message_period_payroll_1') }} {{ $start_date }} {{ __('payroll.message_period_payroll_2') }} {{ $end_date }}</h4>
@@ -114,12 +117,12 @@
             </tr>
             <tr>
                 @if ($payrollDetail->payroll->payrollType->name != "Planilla de aguinaldos")
-                <th>{{ __('payroll.worked_days') }}:</th>
+                    <th>{{ __('payroll.worked_days') }}:</th>
                 @else
-                <th>{{ __('payroll.days_to_pay') }}:</th>
+                    <th>{{ __('payroll.days_to_pay') }}:</th>
                 @endif
-                
                 <td>{{ $payrollDetail->days }}</td>
+
                 <th>{{ __('rrhh.way_to_pay') }}: </th>
                 <td>
                     {{ $payrollDetail->employee->payment->value }}
@@ -348,6 +351,29 @@
                             {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_to_pay) }}
                         @endif
                     </th>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+    @endif
+    @if ($payrollDetail->payroll->payrollType->name == "Planilla de vacaciones")
+        <br>
+        <table class="payroll-detail">
+            <thead>
+                <tr style="text-align: center !important">
+                    <th colspan="2" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: justify;">El bono por vacaciones corresponde al 30% de tu salario quincenal antes de descuentos. El bono que recibirás equivale a la cantidad de:</td>
+                    <td width="13%" style="text-align: right; font-weight: bold;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->vacation) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->vacation) }}
+                        @endif   
+                    </td>
                 </tr>
             </tbody>
         </table>
