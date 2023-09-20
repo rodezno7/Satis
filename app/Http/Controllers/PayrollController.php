@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Bank;
 use App\BonusCalculation;
 use App\Business;
+use App\BusinessLocation;
 use App\CalculationType;
 use App\Employees;
+use App\Exports\PaymentFileReportExport;
 use App\Exports\PayrollBonusReportExport;
 use App\Exports\PayrollSalaryReportExport;
 use App\Exports\PayrollHonoraryReportExport;
 use App\Exports\PayrollVacationReportExport;
 use App\LawDiscount;
+use App\Notifications\PaymentFilesNotification;
 use App\PaymentPeriod;
 use App\Payroll;
 use App\PayrollDetail;
@@ -553,7 +557,7 @@ class PayrollController extends Controller
                 DB::beginTransaction();
                 $business_id = request()->session()->get('user.business_id');
                 $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
-                $this->sendEmail($payroll);
+                $this->sendEmailPaymentSlips($payroll);
 
                 $output = [
                     'success' => 1,
@@ -627,7 +631,7 @@ class PayrollController extends Controller
                     }
 
                     if ($request->input('sendEmail') == 1) {
-                        $this->sendEmail($payroll);
+                        $this->sendEmailPaymentSlips($payroll);
 
                         $output = [
                             'success' => 1,
@@ -660,7 +664,7 @@ class PayrollController extends Controller
 
 
     /** Pay payroll */
-    function sendEmail($payroll)
+    function sendEmailPaymentSlips($payroll)
     {
         $business_id = request()->session()->get('user.business_id');
         $business = Business::findOrFail($business_id);
@@ -696,6 +700,30 @@ class PayrollController extends Controller
 
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('payrollDetail.pdf');  
+    }
+
+    //Generate payments files
+    public function generatePaymentFiles($id)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->with('payrollType')->firstOrFail();
+        $payrollDetails = PayrollDetail::where('payroll_id', $id)->with('payroll')->get();
+        $banks = Bank::where('business_id', $business_id)->get();
+        
+        foreach($banks as $bank){
+            //\Log::info($bank->name);
+            $this->export($payroll, $payrollDetails, $bank);
+        }
+
+        dd('Exitoso');
+    }
+
+    public function export($payroll, $payrollDetails, $bank){
+        return Excel::download(
+            new PaymentFileReportExport($payroll, $payrollDetails, $bank),
+            $bank->name.'.csv', 
+            \Maatwebsite\Excel\Excel::CSV
+        );
     }
 
 

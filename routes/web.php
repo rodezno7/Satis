@@ -755,6 +755,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::post('payroll/{id}/pay', 'PayrollController@pay');
     Route::post('payroll/{id}/paymentSlips', 'PayrollController@paymentSlips');
     Route::get('/payroll/{id}/generatePaymentSlips', 'PayrollController@generatePaymentSlips');
+    Route::post('payroll/{id}/paymentFiles', 'PayrollController@paymentFiles');
+    Route::get('/payroll/{id}/generatePaymentFiles', 'PayrollController@generatePaymentFiles');
     Route::post('payroll/{id}/recalculate', 'PayrollController@recalculate');
     Route::get('payroll-getPayrollDetail/{id}', 'PayrollController@getPayrollDetail');
     Route::get('payroll/{id}/exportPayroll', 'PayrollController@exportPayroll');

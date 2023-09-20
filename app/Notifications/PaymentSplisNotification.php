@@ -60,7 +60,6 @@ class PaymentSplisNotification extends Notification
      */
     public function toMail($notifiable)
     {
-
         $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
         $mes = $meses[$this->payroll->month - 1];
 
@@ -88,7 +87,7 @@ class PaymentSplisNotification extends Notification
             $end_date = $this->employeeUtil->getDate($payrollDetail->end_date, true);
         }
 
-        $pdf = \PDF::loadView('payroll.generate_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));
+        $pdf = \PDF::loadView('payroll.generate_pdf', compact('payrollDetail', 'business', 'start_date', 'end_date'));
         $pdf->setPaper(array(0, 0, 612, 396), 'portrait');
 
         if($this->payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos"){

@@ -146,8 +146,10 @@
 
                             if (data.statusPayroll == 'Aprobada' || data.statusPayroll == 'Pagada') {
                                 html += '<li><a href="#" onClick="sendPaymentSlips('+ data.id +')"><i class="fa fa-credit-card-alt"></i>@lang('payroll.send_payment_slips1')</a></li>';
+                                
                                 html += '<li><a href="/payroll/' + data.id +'/generatePaymentSlips" target="_blank"><i class="fa fa-print"></i>@lang('payroll.print_payment_slips')</a></li>';
                             }
+                            html += '<li><a href="/payroll/' + data.id +'/generatePaymentFiles" target="_blank"><i class="fa fa-credit-card-alt"></i>Generar archivos de pago</a></li>';
                             html += '</ul></div>';
 
                             return html;
@@ -216,6 +218,65 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     var route = "{!! URL::to('/payroll/:id/paymentSlips') !!}";
+                    route = route.replace(':id', id);
+                    token = $("#token").val();
+
+                    $.ajax({
+                        url: route,
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(result) {
+                            if (result.success == true) {
+                                Swal.fire({
+                                    title: result.msg,
+                                    icon: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false,
+                                });
+                                $("#payroll-table").DataTable().ajax.reload(null, false);
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: result.msg,
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function(msj) {
+                            errormessages = "";
+                            $.each(msj.responseJSON.errors, function(i,
+                                field) {
+                                errormessages += "<li>" + field +
+                                    "</li>";
+                            });
+                            Swal.fire({
+                                title: "@lang('rrhh.error_list')",
+                                icon: "error",
+                                html: "<ul>" + errormessages +
+                                    "</ul>",
+                            });
+                        }
+                    });
+                }
+            })
+        }
+
+        function generatePaymentFiles(id) {
+            Swal.fire({
+                title: "{{ __('messages.payment_file_question') }}",
+                //text: "{{ __('messages.approve_content') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{ __('messages.yes') }}",
+                cancelButtonText: "{{ __('messages.no') }}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var route = "{!! URL::to('/payroll/:id/generatePaymentFiles') !!}";
                     route = route.replace(':id', id);
                     token = $("#token").val();
 
