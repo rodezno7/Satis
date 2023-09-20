@@ -66,20 +66,26 @@ class PaymentSplisNotification extends Notification
 
         $business = Business::find($this->business_id);
         $payrollDetail = PayrollDetail::where('id', $this->payrollDetail->id)->firstOrFail();
-        $start_date = ($payrollDetail->payroll->start_date == null)? $this->employeeUtil->getDate($payrollDetail->employee->date_admission, true) : $this->employeeUtil->getDate($payrollDetail->payroll->start_date, true);
-        $end_date = $this->employeeUtil->getDate($payrollDetail->payroll->end_date, true);
 
         if ($this->payrollDetail->payroll->payrollType->name == "Planilla de sueldos"){
             $type =  __('payroll.salary');
+            $start_date =$this->employeeUtil->getDate($payrollDetail->payroll->start_date, true);
+            $end_date = $this->employeeUtil->getDate($payrollDetail->payroll->end_date, true);
         }
         if ($this->payrollDetail->payroll->payrollType->name == "Planilla de honorarios"){
             $type = __('payroll.honorary');
+            $start_date =$this->employeeUtil->getDate($payrollDetail->payroll->start_date, true);
+            $end_date = $this->employeeUtil->getDate($payrollDetail->payroll->end_date, true);
         }
         if ($this->payrollDetail->payroll->payrollType->name == "Planilla de aguinaldos"){
             $type = __('payroll.bonus');
+            $start_date = $this->employeeUtil->getDate($payrollDetail->start_date, true);
+            $end_date = $this->employeeUtil->getDate($payrollDetail->end_date, true);
         }
         if ($this->payrollDetail->payroll->payrollType->name == "Planilla de vacaciones"){
             $type = __('payroll.vacation');
+            $start_date = $this->employeeUtil->getDate($payrollDetail->start_date, true);
+            $end_date = $this->employeeUtil->getDate($payrollDetail->end_date, true);
         }
 
         $pdf = \PDF::loadView('payroll.generate_pdf',compact('payrollDetail', 'business', 'start_date', 'end_date'));

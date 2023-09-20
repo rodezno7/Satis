@@ -25,7 +25,7 @@ class CreatePayrollDetailsTable extends Migration
             $table->decimal('regular_salary', 10, 2)->nullable();
             $table->decimal('commissions', 10, 2)->nullable();
             $table->decimal('extra_hours', 10, 2)->nullable();
-            $table->decimal('vacation', 10, 2)->nullable();
+            $table->decimal('vacation_bonus', 10, 2)->nullable();
             $table->decimal('bonus', 10, 2)->nullable();
             $table->decimal('other_income', 10, 2)->nullable();
             $table->decimal('total_income', 10, 2)->nullable();

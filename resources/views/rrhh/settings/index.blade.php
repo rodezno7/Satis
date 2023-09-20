@@ -39,7 +39,7 @@
                         </div>
                     </div>
                 </div>
-                <label for="">CÁLCULO DE AGUINALDO</label>
+                <label for="">{{ __('payroll.items_settings') }}</label>
                 <div class="row">
                     {{-- <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
                         <div class="form-group">
@@ -58,11 +58,19 @@
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
                         <div class="form-group">
                             <label>@lang('payroll.exempt_bonus')</label> <span class="text-danger">*</span> @show_tooltip(__('payroll.message_bonus'))
-                            {!! Form::number('exempt_bonus', ($setting)? $setting->exempt_bonus : null, ['class' => 'form-control form-control-sm', 
+                            {!! Form::number('exempt_bonus', ($setting)? $setting->exempt_bonus : 1100, ['class' => 'form-control form-control-sm', 
                                 'placeholder' => __('payroll.exempt_bonus'),'id' => 'exempt_bonus']) !!}
                         </div>
                     </div>
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-6">
+                        <div class="form-group">
+                            <label>@lang('payroll.vacation_percentage')</label> <span class="text-danger">*</span> @show_tooltip(__('payroll.message_vacation_percentage'))
+                            {!! Form::number('vacation_percentage', ($setting)? $setting->vacation_percentage : 30, ['class' => 'form-control form-control-sm', 
+                                'placeholder' => __('payroll.vacation_percentage'),'id' => 'vacation_percentage']) !!}
+                        </div>
+                    </div>
                 </div>
+
             {{-- <hr>
                 <label for="">HORAS EXTRAS</label>
                 <div class="row">

@@ -101,8 +101,15 @@ return[
     'proportional' => 'Proportional',
     'days_to_pay' => 'Days to pay',
     'exempt_bonus' => 'Exempt bonus',
-    'message_bonus' => 'This value is equivalent to 2 minimum salaries',
+    'message_bonus' => 'This value will be used to calculate the bonus income.',
     'ISR_apply' => 'ISR table to apply',
     'period_to_apply' => 'Period to apply',
-    'detail' => 'Detail'
+    'detail' => 'Detail',
+    'vacation_percentage' => 'Vacation percentage (%)',
+    'message_vacation_percentage' => 'This value corresponds to the percentage that will be added to the biweekly salary before discounts for vacation pay to the employee.',
+    'items_settings' => 'CALCULATION OF PAYROLL',
+    'biweekly_salary' => 'Biweekly salary',
+    'vacation_bonus' => 'Vacation bonus',
+    'proportional_vacation' => 'Proportional vacation',
+    'complete_vacation' => 'Complete vacation',
 ];

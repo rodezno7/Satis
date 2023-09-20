@@ -18,6 +18,7 @@ class CreateRrhhSettingsTable extends Migration
             $table->boolean('automatic_closing');
             $table->time('exit_time')->nullable();
             $table->decimal('exempt_bonus', 10, 2)->nullable();
+            $table->decimal('vacation_percentage', 10, 2)->nullable();
             $table->integer('business_id')->unsigned();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

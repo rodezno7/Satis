@@ -18,7 +18,7 @@ class PayrollDetail extends Model
         'regular_salary', 
         'commissions', 
         'extra_hours',
-        'vacation',
+        'vacation_bonus',
         'bonus',
         'other_income',
         'total_income', 

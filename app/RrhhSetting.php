@@ -12,6 +12,7 @@ class RrhhSetting extends Model
         'automatic_closing',
         'exit_time',
         'exempt_bonus',
+        'vacation_percentage',
         'business_id',
     ];
 

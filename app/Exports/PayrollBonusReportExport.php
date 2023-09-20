@@ -124,8 +124,8 @@ class PayrollBonusReportExport implements WithEvents, WithTitle, ShouldAutoSize
                     $event->sheet->horizontalAlign('A'. $count.':I'. $count, \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $event->sheet->setCellValue('A'. $count, $payrollDetail->employee->agent_code);
                     $event->sheet->setCellValue('B'. $count, $payrollDetail->employee->first_name.' '.$payrollDetail->employee->last_name);
-                    $event->sheet->setCellValue('C'. $count, $this->moduleUtil->format_date($payrollDetail->employee->date_admission));
-                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->format_date($payrollDetail->payroll->end_date));
+                    $event->sheet->setCellValue('C'. $count, $this->moduleUtil->format_date($payrollDetail->start_date));
+                    $event->sheet->setCellValue('D'. $count, $this->moduleUtil->format_date($payrollDetail->end_date));
                     $event->sheet->setCellValue('E'. $count, $this->moduleUtil->num_f($payrollDetail->montly_salary, $add_symbol = true, $precision = 2));
                     if($payrollDetail->proportional == 1){
                         $event->sheet->setCellValue('F'. $count, $payrollDetail->days.' (Proporcional)');

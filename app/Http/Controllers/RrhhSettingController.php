@@ -25,8 +25,9 @@ class RrhhSettingController extends Controller
         }
 
         $request->validate([
-            'exit_time'    => 'required_if:automatic_closing,1',
-            'exempt_bonus' => 'required'
+            'exit_time'           => 'required_if:automatic_closing,1',
+            'exempt_bonus'        => 'required',
+            'vacation_percentage' => 'required'
             //'automatic_closing' => 'required',
         ]);
         try{
@@ -47,7 +48,8 @@ class RrhhSettingController extends Controller
                 $setting->update([
                     'exit_time' => $exit_time, 
                     'automatic_closing' => $request->automatic_closing, 
-                    'exempt_bonus' => $request->exempt_bonus
+                    'exempt_bonus' => $request->exempt_bonus,
+                    'vacation_percentage' => $request->vacation_percentage
                 ]);
                 
                 $output = [

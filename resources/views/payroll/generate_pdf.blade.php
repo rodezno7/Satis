@@ -361,19 +361,49 @@
         <table class="payroll-detail">
             <thead>
                 <tr style="text-align: center !important">
-                    <th colspan="2" style="background: rgb(228, 228, 228)">{{ __('payroll.detail') }}</th>
+                    <th colspan="3" style="background: rgb(228, 228, 228)">
+                        {{ __('payroll.detail') }} - 
+                        @if ($payrollDetail->proportional == 1)
+                            {{ __('payroll.proportional_vacation') }}
+                        @else
+                            {{ __('payroll.complete_vacation') }}
+                        @endif
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td style="text-align: justify;">El bono por vacaciones corresponde al 30% de tu salario quincenal antes de descuentos. El bono que recibirás equivale a la cantidad de:</td>
-                    <td width="13%" style="text-align: right; font-weight: bold;">
+                    <td width="5%"> </td>
+                    <td>{{ __('payroll.biweekly_salary') }}</td>
+                    <td width="15%" style="text-align: right;">
                         @if ($business->currency_symbol_placement == 'after')
-                            {{ @num_format($payrollDetail->vacation) }} {{ $business->currency->symbol }}
+                            {{ @num_format($payrollDetail->regular_salary) }} {{ $business->currency->symbol }}
                         @else
-                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->vacation) }}
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->regular_salary) }}
                         @endif   
                     </td>
+                </tr>
+                <tr>
+                    <td>(+)</td>
+                    <td>{{ __('payroll.vacation_bonus') }}</td>
+                    <td style="text-align: right;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->vacation_bonus) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->vacation_bonus) }}
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <th>=</th>
+                    <th>{{ __('payroll.total_to_pay') }}</th>
+                    <th style="text-align: right;">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($payrollDetail->total_to_pay) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($payrollDetail->total_to_pay) }}
+                        @endif
+                    </th>
                 </tr>
             </tbody>
         </table>

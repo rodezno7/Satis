@@ -24,26 +24,32 @@
             <div class="box-header" id="">
                 <h1></h1>
                 <div class="box-tools" id="div_actions">
-                    @can('payroll.export')
-                        <a href="/payroll/{{ $payroll->id }}/exportPayroll" class="btn btn-success" type="button">
-                            <i class="fa fa-file"></i> @lang('report.export')
-                        </a>
-                    @endcan
-                    @if ($payroll->payrollStatus->name == 'Calculada')
-                        @can('payroll.recalculate')
-                            <a href="#" class="btn btn-info" type="button"
-                                onClick="recalculatePayroll({{ $payroll->id }})" id="btn_recalculate">
-                                <i class="fa fa-plus"></i> @lang('payroll.recalculate')
+                    @if(count($payroll->payrollDetails) > 0)
+                        @can('payroll.export')
+                            <a href="/payroll/{{ $payroll->id }}/exportPayroll" class="btn btn-success" type="button">
+                                <i class="fa fa-file"></i> @lang('report.export')
                             </a>
-                        @endcan
-                        @can('payroll.approve')
-                            <a href="#" class="btn btn-primary" type="button"
-                                onClick="approvePayroll({{ $payroll->id }})" id="btn_approve">
-                                <i class="fa fa-check-square"></i> @lang('payroll.approve')
-                            </a>
-                        @endcan
+                        @endcan  
                     @endif
-                    @if ($payroll->payrollStatus->name == 'Aprobada')
+                    @if ($payroll->payrollStatus->name == 'Calculada')
+                        @if(count($payroll->payrollDetails) >= 0)
+                            @can('payroll.recalculate')
+                                <a href="#" class="btn btn-info" type="button"
+                                    onClick="recalculatePayroll({{ $payroll->id }})" id="btn_recalculate">
+                                    <i class="fa fa-plus"></i> @lang('payroll.recalculate')
+                                </a>
+                            @endcan
+                        @endif
+                        @if(count($payroll->payrollDetails) > 0)
+                            @can('payroll.approve')
+                                <a href="#" class="btn btn-primary" type="button"
+                                    onClick="approvePayroll({{ $payroll->id }})" id="btn_approve">
+                                    <i class="fa fa-check-square"></i> @lang('payroll.approve')
+                                </a>
+                            @endcan
+                        @endif
+                    @endif
+                    @if ($payroll->payrollStatus->name == 'Aprobada' && count($payroll->payrollDetails) > 0)
                         @can('payroll.pay')
                             <a href="#" class="btn btn-primary" type="button"
                                 onClick="payPayroll({{ $payroll->id }})" id="btn_pay">
@@ -52,6 +58,7 @@
                         @endcan
                     @endif
                 </div>
+                
             </div>
             
             @if ($payroll->payrollType->name == 'Planilla de sueldos')
@@ -334,6 +341,11 @@
                             className: "text-center"
                         },
                         {
+                            data: 'montly_salary',
+                            name: 'montly_salary',
+                            className: "text-center montly_salary"
+                        },
+                        {
                             data: 'start_date',
                             name: 'start_date',
                             className: "text-center"
@@ -344,19 +356,30 @@
                             className: "text-center"
                         },
                         {
-                            data: 'montly_salary',
-                            name: 'montly_salary',
-                            className: "text-center montly_salary"
+                            data: 'proportional',
+                            name: 'proportional',
+                            className: "text-center"
                         },
                         {
-                            data: 'vacation',
-                            name: 'vacation',
-                            className: "text-center vacation"
+                            data: 'regular_salary',
+                            name: 'regular_salary',
+                            className: "text-center regular_salary"
+                        },
+                        {
+                            data: 'vacation_bonus',
+                            name: 'vacation_bonus',
+                            className: "text-center vacation_bonus"
+                        },
+                        {
+                            data: 'total_to_pay',
+                            name: 'total_to_pay',
+                            className: "text-center total_to_pay"
                         },
                     ],
                     "fnDrawCallback": function(oSettings) {
-                        $('span#total_montly_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'montly_salary'));
-                        $('span#total_vacation').text(sum_table_col_name($('table#payroll-detail-table'), 'vacation'));
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'regular_salary'));
+                        $('span#total_vacation_bonus').text(sum_table_col_name($('table#payroll-detail-table'), 'vacation_bonus'));
+                        $('span#total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'), 'total_to_pay'));
                         __currency_convert_recursively($('table#payroll-detail-table'));
                     },
                     dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',

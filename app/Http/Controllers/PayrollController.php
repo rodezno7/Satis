@@ -396,9 +396,9 @@ class PayrollController extends Controller
                 })->editColumn('employee', function ($data) {
                     return $data->employee->first_name . ' ' . $data->employee->last_name;
                 })->editColumn('date_admission', function ($data) {
-                    return $this->moduleUtil->format_date($data->employee->date_admission);
+                    return $this->moduleUtil->format_date($data->start_date);
                 })->editColumn('end_date', function ($data) {
-                    return $this->moduleUtil->format_date($data->payroll->end_date);
+                    return $this->moduleUtil->format_date($data->end_date);
                 })->editColumn('montly_salary', function ($data) {
                     return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
                 })->editColumn('days', function ($data) {
@@ -428,12 +428,22 @@ class PayrollController extends Controller
                     return $this->moduleUtil->format_date($data->start_date);
                 })->editColumn('end_date', function ($data) {
                     return $this->moduleUtil->format_date($data->end_date);
+                })->editColumn('proportional', function ($data) {
+                    if($data->proportional == 1){
+                        return 'Proporcional</br>('.$data->days.' días)';
+                    }else{
+                        return 'Completa';
+                    }
                 })->editColumn('montly_salary', function ($data) {
                     return $this->moduleUtil->num_f($data->montly_salary, $add_symbol = true, $precision = 2);
-                })->editColumn('vacation', function ($data) {
-                    return $this->moduleUtil->num_f($data->vacation, $add_symbol = true, $precision = 2);
+                })->editColumn('vacation_bonus', function ($data) {
+                    return $this->moduleUtil->num_f($data->vacation_bonus, $add_symbol = true, $precision = 2);
+                })->editColumn('regular_salary', function ($data) {
+                    return $this->moduleUtil->num_f($data->regular_salary, $add_symbol = true, $precision = 2);
+                })->editColumn('total_to_pay', function ($data) {
+                    return $this->moduleUtil->num_f($data->total_to_pay, $add_symbol = true, $precision = 2);
                 })
-                ->rawColumns(['code', 'employee', 'date_admmission', 'end_date', 'montly_salary', 'vacation'])
+                ->rawColumns(['code', 'employee', 'date_admmission', 'end_date', 'montly_salary', 'proportional', 'regular_salary', 'vacation_bonus', 'total_to_pay'])
                 ->make(true);
         }
     }
@@ -668,16 +678,21 @@ class PayrollController extends Controller
         $business = Business::find($business_id);
         $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->firstOrFail();
         $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
-        $dateEmployee = [];
-        if($payroll->payrollType->name == 'Planilla de aguinaldos'){
+        $startDate = [];
+        $endDate = [];
+        $start_date = '';
+        $end_date = '';
+        if($payroll->payrollType->name == 'Planilla de aguinaldos' || $payroll->payrollType->name == 'Planilla de vacaciones'){
             for ($i=0; $i < count($payroll->payrollDetails); $i++) { 
-                $dateEmployee[$i] = $this->employeeUtil->getDate($payroll->payrollDetails[$i]->employee->date_admission, true);
+                $startDate[$i] = $this->employeeUtil->getDate($payroll->payrollDetails[$i]->start_date, true);
+                $endDate[$i] = $this->employeeUtil->getDate($payroll->payrollDetails[$i]->end_date, true);
             }
-        } 
-        $start_date = ($payroll->start_date == null)? '' : $this->employeeUtil->getDate($payroll->start_date, true);
-        $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
+        }else{
+            $start_date = $this->employeeUtil->getDate($payroll->start_date, true);
+            $end_date = $this->employeeUtil->getDate($payroll->end_date, true);
+        }
 
-        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'dateEmployee', 'end_date'));
+        $pdf = \PDF::loadView('payroll.print_payroll',compact('payroll', 'business', 'start_date', 'startDate', 'endDate', 'end_date'));
 
         $pdf->setPaper('letter', 'portrait');
         return $pdf->stream('payrollDetail.pdf');  
@@ -888,7 +903,7 @@ class PayrollController extends Controller
                             }
                             $details['regular_salary'] = $details['montly_salary'] / 30 * $details['days'];
                             $details['rent'] = $details['regular_salary'] * 0.1;
-                            $details['total_to_pay'] = bcdiv($details['regular_salary'] - $details['rent'], 1, 2);
+                            $details['total_to_pay'] = $details['regular_salary'] - $details['rent'];
                             $details['employee_id']  = $employee->id;
                             $details['payroll_id']  = $payroll->id;
 
@@ -899,16 +914,20 @@ class PayrollController extends Controller
 
                     if ($payroll->payrollType->name == 'Planilla de aguinaldos') {
                         if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
-                            
-                            $dateAdmissionEmployee = Carbon::parse($employee->date_admission);
-                            
+                            $details['start_date'] = Carbon::parse($employee->date_admission);
                             $endDatePayroll = Carbon::parse($payroll->end_date);
 
                             if($employee->fired_date != null && $employee->status == 0){
-                                $fired_date_employee = Carbon::parse($employee->fired_date);
-                                $seconds = strtotime($endDatePayroll) - strtotime($fired_date_employee);
+                                if($employee->fired_date > $endDatePayroll){
+                                    $details['end_date'] = $endDatePayroll;
+                                    $seconds = strtotime($endDatePayroll) - strtotime($details['start_date']);
+                                }else{
+                                    $details['end_date'] = Carbon::parse($employee->fired_date);
+                                    $seconds = strtotime($details['end_date']) - strtotime($details['start_date']);
+                                }
                             }else{
-                                $seconds = strtotime($endDatePayroll) - strtotime($dateAdmissionEmployee);
+                                $details['end_date'] = $endDatePayroll;
+                                $seconds = strtotime($endDatePayroll) - strtotime($details['start_date']);
                             }
                             
                             $years = $this->employeeUtil->secondsToYear($seconds);
@@ -950,7 +969,7 @@ class PayrollController extends Controller
                                 }
                             }
                             
-                            $details['total_to_pay'] = bcdiv(($details['bonus'] - $details['rent']), 1, 2);
+                            $details['total_to_pay'] = $details['bonus'] - $details['rent'];
                             $details['employee_id']  = $employee->id;
                             $details['payroll_id']  = $payroll->id;
 
@@ -961,6 +980,10 @@ class PayrollController extends Controller
 
                     if ($payroll->payrollType->name == 'Planilla de vacaciones') {
                         if ($typeWage->type == 'Ley de salario') { //----------------------LEY DE SALARIO----------------------
+                            $setting = RrhhSetting::where('business_id', $business_id)->first();
+                            $details['regular_salary'] = ($details['montly_salary']/30) * 15;
+                            $details['vacation_bonus'] = $details['regular_salary'] * $setting->vacation_percentage/100;
+
                             $details['start_date'] = Carbon::parse($employee->date_admission);
                             $startDatePayroll = Carbon::parse($payroll->start_date);
                             $endDatePayroll = Carbon::parse($payroll->end_date);
@@ -973,8 +996,9 @@ class PayrollController extends Controller
                                     $endDate = $details['start_date']->addYears($year);
                                     if($endDate >= $startDatePayroll && $endDate <= $endDatePayroll){
                                         $secondsDays = strtotime($endDate) - strtotime($endDate->subYear());
+                                        $details['proportional'] = 0; //Vacación completa
                                         $details['days'] = $this->employeeUtil->getDays($secondsDays);
-                                        $details['vacation'] = (($details['montly_salary']/30) * 15) + ((($details['montly_salary']/30) * 15) * 0.3);  
+                                        $details['total_to_pay'] = $details['regular_salary'] + $details['vacation_bonus'];  
                                         $details['employee_id']  = $employee->id;
                                         $details['payroll_id']  = $payroll->id;
                                         $details['end_date'] = $endDate->addYear();
@@ -994,11 +1018,23 @@ class PayrollController extends Controller
                                 if($details['end_date'] >= $startDatePayroll && $details['end_date'] <= $endDatePayroll){
                                     $secondsDays = strtotime($details['end_date']) - strtotime($startDate);
                                     $details['days'] = $this->employeeUtil->getDays($secondsDays);
+
                                     if($details['days'] > 365){
                                         $details['days'] = $details['days'] - 365;
                                     }
-                                    if($details['days'] >= 200){
-                                        $details['vacation'] = (($details['montly_salary']/30) * 15) + ((($details['montly_salary']/30) * 15) * 0.3);  
+                                    if($details['days'] >= 200 && $details['days'] < 365){
+                                        $details['proportional'] = 1; //Vacación proporcional
+                                        $details['vacation_bonus'] = ($details['days']/365) * $details['vacation_bonus'];
+                                        $details['total_to_pay'] = $details['regular_salary'] + $details['vacation_bonus'];  
+                                        $details['employee_id']  = $employee->id;
+                                        $details['payroll_id']  = $payroll->id;
+        
+                                        //Create register
+                                        PayrollDetail::create($details);
+                                    }
+                                    if($details['days'] == 365){
+                                        $details['proportional'] = 0; //Vacación completa
+                                        $details['total_to_pay'] = $details['regular_salary'] + $details['vacation_bonus'];  
                                         $details['employee_id']  = $employee->id;
                                         $details['payroll_id']  = $payroll->id;
         
