@@ -166,12 +166,12 @@
                 {{-- total_before_tax --}}
                 <div class="col-sm-4 col-md-3 col-lg-3 col-xs-12">
                     <div class="form-group">
-                        <label for="">@lang('tax_rate.amount') <small>(@lang('expense.less_taxes'))</small></label><span style="color: red">*</span>
+                        <label for="">@lang('sale.subtotal')</label>
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="fa fa-usd"></i>
                             </span>
-                            {!! Form::text('total_before_tax', null, ['class' => 'form-control input_number', 'id' => 'amount', 'placeholder' => __('sale.total_amount'), 'required']) !!}
+                            {!! Form::text('total_before_tax', null, ['class' => 'form-control input_number', 'id' => 'amount', 'placeholder' => __('sale.total_amount'), 'readonly']) !!}
                         </div>
                     </div>
                 </div>
@@ -269,20 +269,8 @@
         {!! Form::close() !!}
     </div>
 </div>
-
-<script src="{{ asset('plugins/bootstrap-fileinput/fileinput.min.js?v=' . $asset_v) }}"></script>
-
 <script>
-    $(document).ready(function() {
-        fileinput_setting = {
-            'showUpload': false,
-            'showPreview': true,
-            'browseLabel': LANG.file_browse_label,
-            'removeLabel': LANG.remove
-        };
-        $("#location_id").hide();
-        $('select.select2').select2();
-
+    $(function() {
         $('select#tax_percent_group, input#amount, input#exempt_amount, select#supplier_id').on('change', function() {
             let amount = __read_number($("input#amount"));
             let exempt_amount = $("input#enable_exempt_amount").prop("checked") ? (__read_number($("input#exempt_amount")) > 0 ? __read_number($("input#exempt_amount")) : 0) : 0;
@@ -323,94 +311,6 @@
                 $("input#iva").val('0.0');
             }
         });
-
-        $("#upload_document").fileinput(fileinput_setting);
-
-        //enable and disabled Credit Terms
-        $("#payment_condition").on('change', function() {
-            if ($("#payment_condition").val() == "credit") {
-                $('#payment_term_id').attr('disabled', false);
-            } else {
-                $('#payment_term_id').attr('disabled', true);
-                $('#payment_term_id').val("").change();
-            }
-        });
-
-        $(document).on('change', 'input#enable_exempt_amount', function () {
-            let exempt_amount = $('input#exempt_amount');
-
-            if ($(this).prop('checked')) {
-                exempt_amount.prop('readonly', false);
-
-            } else {
-                exempt_amount.prop('readonly', true);
-                exempt_amount.val(null).change();
-            }
-        });
-
-        $(document).on('change', $(this).find('select#supplier_id'), function () {
-            var perception = $('div#perception_div');
-            var tax_percent = $(this).find('input#tax_percent').val();
-
-            if (tax_percent == 0) {
-                perception.hide();
-            } else {
-                perception.show();
-            }
-        });
-    });
-
-    // get suppliers
-    $('#supplier_id').select2({
-        ajax: {
-            url: '/expenses/get_suppliers',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return {
-                    q: params.term, // search term
-                    page: params.page
-                };
-            },
-            processResults: function(data) {
-                return {
-                    results: data
-                };
-            }
-        },
-        minimumInputLength: 1,
-        escapeMarkup: function(m) {
-            return m;
-        },
-        templateResult: function(data) {
-            if (!data.id) {
-                return data.text;
-            }
-            var html = data.text + ' (<b>' + LANG.code + ': </b>' + data.contact_id + ' - <b>' + LANG
-                .business + ': </b>' + data.business_name + ')';
-            return html;
-        },
-        templateSelection: function(data) {
-            if (!data.id) {
-                $('#supplier_name').val('');
-                return data.text;
-            }
-            // If it's a new supplier
-            if (!data.contact_id) {
-                return data.text;
-                // If a provider has been selected
-            } else {
-                $('#supplier_name').val(data.text);
-                $("input#is_exempt").val(data.is_exempt);
-                $("input#tax_percent").val(data.tax_percent);
-                $("input#tax_min_amount").val(data.tax_min_amount);
-                $("input#tax_max_amount").val(data.tax_max_amount);
-                setTimeout(() => {
-                    recalculate(); 
-                }, 500);
-                return data.contact_id || data.text;
-            }
-        },
     });
 
     function recalculate(){
@@ -432,34 +332,5 @@
             $('select#tax_percent_group').val('nulled').change();
             $("#iva").val('0.0');
         }
-    }
-
-    function calc_contact_tax(amount, min_amount, max_amount, tax_percent){
-        var tax_amount = 0;
-
-        // If has min o max amount
-        if (min_amount || max_amount) {
-            // if has min and max amount
-            if (min_amount && max_amount) {
-                if (amount >= min_amount && amount <= max_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            // If has only min amount
-            } else if (min_amount && ! max_amount) {
-                if (amount >= min_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            // If has only max amount
-            } else if (! min_amount && max_amount) {
-                if (amount <= max_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            }
-        // If has none tax
-        } else {
-            tax_amount = amount * tax_percent;
-        }
-
-        return tax_amount;
     }
 </script>

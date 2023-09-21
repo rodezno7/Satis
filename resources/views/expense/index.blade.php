@@ -24,6 +24,7 @@
                     </div>
                     <div id="collapseFilter" class="panel-collapse active collapse in" aria-expanded="true">
                         <div class="box-body">
+                            <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('location_id', __('purchase.business_location') . ':') !!}
@@ -42,6 +43,14 @@
                                         {!! Form::text('date_range', @format_date('first day of this month') . ' ~ ' . @format_date('last day of this month'), ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'id' => 'expense_date_range', 'readonly']) !!}
                                     </div>
                                 </div>
+                                @if (auth()->user()->can('entries.create'))
+                                    <div class="col-md-3" style="margin-top: 24px;">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-success" id="btn_accounting">@lang('accounting.accounting')</button>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

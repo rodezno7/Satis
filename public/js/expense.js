@@ -1,6 +1,37 @@
 $(function () {
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
+    $('button#btn_accounting').on('click', function () {
+        let start_date = $('input#expense_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        let end_date = $('input#expense_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        let start_date_formatted = moment(start_date).format(moment_date_format);
+        let end_date_formatted = moment(end_date).format(moment_date_format);
+
+        swal({
+            title: LANG.sure,
+            text: LANG.expenses_from +' '+ start_date_formatted +' '+ LANG.to +' '+ end_date_formatted +' '+ LANG.will_be_accounted,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((confirm) => {
+            if (confirm) {
+                toastr.success(LANG.success);
+                $.ajax({
+                    method: "get",
+                    url: '/expenses/accounting-by-range/'+ start_date +'/'+ end_date,
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.msg);
+                            
+                        } else{
+                            toastr.error(response.msg);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
     //Expense table
     expense_table = $('#expense_table').DataTable({
         processing: true,
@@ -190,7 +221,67 @@ $(function () {
     $("div.expenses_modal").on("shown.bs.modal", function () {
         let modal = $(this);
 
-        //get expense categories
+        modal.find("input#upload_document").fileinput({
+            'showUpload': false,
+            'showPreview': true,
+            'browseLabel': LANG.file_browse_label,
+            'removeLabel': LANG.remove
+        });
+
+        // Get suppliers
+        modal.find('select#supplier_id').select2({
+            ajax: {
+                url: '/expenses/get_suppliers',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                }
+            },
+            minimumInputLength: 1,
+            escapeMarkup: function(m) {
+                return m;
+            },
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                var html = data.text + ' (<b>' + LANG.code + ': </b>' + data.contact_id + ' - <b>' + LANG
+                    .business + ': </b>' + data.business_name + ')';
+                return html;
+            },
+            templateSelection: function(data) {
+                if (!data.id) {
+                    modal.find('input#supplier_name').val('');
+                    return data.text;
+                }
+                // If it's a new supplier
+                if (!data.contact_id) {
+                    return data.text;
+                    // If a provider has been selected
+                } else {
+                    modal.find('input#supplier_name').val(data.text);
+                    modal.find('input#is_exempt').val(data.is_exempt);
+                    modal.find('input#tax_percent').val(data.tax_percent);
+                    modal.find('input#tax_min_amount').val(data.tax_min_amount);
+                    modal.find('input#tax_max_amount').val(data.tax_max_amount);
+                    setTimeout(() => {
+                        recalculate(); 
+                    }, 500);
+                    return data.contact_id || data.text;
+                }
+            },
+        });
+
+        // Get expense categories
         modal.find('select#expense_search').select2({
             ajax: {
                 url: '/expenses/get_categories',
@@ -269,7 +360,6 @@ $(function () {
         modal.find('input#expense_transaction_date').datetimepicker({
             format: moment_date_format,
             ignoreReadonly: true
-    
         }).on("dp.change", function (e) {
             if (e.oldDate !== e.date) {
                 var date = moment(e.date).format('DD/MM/YYYY');
@@ -290,6 +380,43 @@ $(function () {
         modal.find('input#expense_document_date').datetimepicker({
             format: moment_date_format,
             ignoreReadonly: true
+        });
+
+        /** On change payment condition  */
+        modal.find("#payment_condition").on('change', function() {
+            let val = $(this).val();
+            let payment_term = modal.find('select#payment_term_id');
+
+            if (val == "credit") {
+                payment_term.attr('disabled', false);
+            } else {
+                payment_term.attr('disabled', true);
+                payment_term.val('').trigger('change');
+            }
+        });
+
+        /** On change enable exempt amount */
+        modal.find('input#enable_exempt_amount').on('change', function () {
+            let exempt_amount = modal.find('input#exempt_amount');
+
+            if ($(this).prop('checked')) {
+                exempt_amount.prop('readonly', false);
+            } else {
+                exempt_amount.prop('readonly', true);
+                exempt_amount.val(null).change();
+            }
+        });
+
+        /** On change supplier */
+        modal.find('select#supplier_id').on('change', function () {
+            var perception = modal.find('div#perception_div');
+            var tax_percent = modal.find('input#tax_percent').val();
+
+            if (tax_percent == 0) {
+                perception.hide();
+            } else {
+                perception.show();
+            }
         });
     });
 

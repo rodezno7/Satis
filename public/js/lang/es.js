@@ -216,4 +216,7 @@ LANG = {
     'pay_amount_higher_than_due_balance' : 'El pago no puede ser mayor al monto debido',
     'payment_exceed' : 'El monto total de las facturas a pagar sobrepasa el monto del pago',
     'all_warehouses' : 'Todas las bodegas',
+    'to': 'hasta',
+    'expenses_from': 'Los gastos desde',
+    'will_be_accounted': 'serán contabilizados',
 };

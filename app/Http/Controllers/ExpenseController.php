@@ -287,8 +287,7 @@ class ExpenseController extends Controller
         if (!auth()->user()->can('expense.create')) {
             abort(403, 'Unauthorized action.');
         }
-        // return $request;
-
+        
         if(!auth()->user()->can('is_close_book') &&
             $this->transactionUtil->isClosed($request->input('transaction_date')) > 0){
 
@@ -422,7 +421,7 @@ class ExpenseController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $expense = Transaction::where('business_id', $business_id)->where('id', $id)->with('contact')->first();
         $document = DocumentType::select('document_name')->select('id', 'document_name')->pluck('document_name', 'id');
-        $payment_term = PaymentTerm::where('business_id', $business_id)->pluck('name', 'id');
+        $payment_terms = PaymentTerm::where('business_id', $business_id)->pluck('name', 'id');
         $tax_groups = $this->taxUtil->getTaxGroups($business_id, 'products', true);
         $tax_percent = $this->taxUtil->getTaxPercent($expense->contact->tax_group_id);
         $tax_min_amount = $this->taxUtil->getTaxMinAmount($expense->contact->tax_group_id);
@@ -432,7 +431,7 @@ class ExpenseController extends Controller
             'expense',
             'document',
             'business_locations',
-            'payment_term',
+            'payment_terms',
             'tax_groups',
             'tax_percent',
             'tax_min_amount',
@@ -583,6 +582,37 @@ class ExpenseController extends Controller
 
             return $output;
         }
+    }
+
+    /**
+     * Create expense accounting entry by range
+     * 
+     * @param date $start_date
+     * @param date $end_date
+     * 
+     * @return json
+     */
+    public function accountingByRange($start_date, $end_date) {
+        if (! auth()->user()->can('entries.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = auth()->user()->business_id;
+
+        $transactions = Transaction::where('business_id', $business_id)
+            ->where('type', 'expense')
+            ->whereRaw('DATE(transaction_date) BETWEEN ? AND ?', [$start_date, $end_date])
+            ->select('id', 'transaction_date', 'ref_no', 'final_total')
+            ->get();
+        
+        foreach ($transactions as $k => $t) {
+            \Log::info($k+1 ." ". $t);
+        }
+
+        return [
+            'success' => true,
+            'msg' => 'Gastos contabilizados con éxito'
+        ];
     }
 
     /**
