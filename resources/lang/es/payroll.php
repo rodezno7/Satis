@@ -76,7 +76,7 @@ return[
     'view_detail' => 'Ver detalle',
     'recalculation_done_successfully' => 'Recalculo realizado exitosamente',
     'failed_to_recalculate' => 'Error, el estado de la planilla debe ser Calculada',
-    'send_approve_payroll' => 'Se enviaron los archivos y se aprobó exitosamente la planilla',
+    'send_approve_payroll' => 'Se generó los archivos de pagos y se aprobó exitosamente la planilla',
     'approve_payroll' => 'Se aprobó exitosamente la planilla',
     'send_pay_payroll' => 'Se enviaron las boletas de pago y se pagó exitosamente la planilla',
     'pay_payroll' => 'Se pagó exitosamente la planilla',

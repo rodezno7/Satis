@@ -235,9 +235,14 @@ class PayrollController extends Controller
             $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
             $payrollType = PayrollType::where('id', $request->input('payroll_type_id'))->where('business_id', $business_id)->first();
             if($payrollType->name != 'Planilla de aguinaldos'){
-                $input_details['name'] = __('payroll.payroll') . ' ' . $paymentPeriod->name . ' - ' . $meses[$request->month - 1] . ' ' . $request->year;
+                if($paymentPeriod->name != 'Personalizado'){
+                    $input_details['name'] = $payrollType->name . ' ' . $paymentPeriod->name . ' - ' . $meses[$request->month - 1] . ' ' . $request->year;
+                }else{
+                    $input_details['name'] = $payrollType->name . ' - ' . $meses[$request->month - 1] . ' ' . $request->year;
+                }
+                
             }else{
-                $input_details['name'] = __('payroll.payroll') . ' - ' . $request->year;
+                $input_details['name'] = $payrollType->name . ' - ' . $request->year;
             }
             
             if($request->input('payment_period_id') != null){
@@ -514,10 +519,14 @@ class PayrollController extends Controller
                     $payroll->approval_date = Carbon::now();
                     $payroll->update();
 
-                    if ($request->input('sendEmail') == 1) {
+                    if ($request->input('downloadFile') == 1) {
+                        $file = $this->generatePaymentFiles($payroll->id);
+
                         $output = [
                             'success' => 1,
-                            'msg' => __('payroll.send_approve_payroll')
+                            'msg' => __('payroll.send_approve_payroll'),
+                            'download' => true,
+                            'file' => $file
                         ];
                     } else {
                         $output = [
@@ -708,24 +717,47 @@ class PayrollController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $payroll = Payroll::where('id', $id)->where('business_id', $business_id)->with('payrollType')->firstOrFail();
         $payrollDetails = PayrollDetail::where('payroll_id', $id)->with('payroll')->get();
-        $banks = Bank::where('business_id', $business_id)->get();
-        
-        foreach($banks as $bank){
-            //\Log::info($bank->name);
-            $this->export($payroll, $payrollDetails, $bank);
+        $banks = Bank::select('banks.id as id', 'banks.name as name')
+            ->join('employees', 'employees.bank_id', '=', 'banks.id')
+            ->where('banks.business_id', $business_id)
+            ->get();            
+
+        // Definir el nombre del archivo zip y crear una nueva instancia de ZipArchive
+        $zip_file = 'Archivos_de_pago.zip';
+        $zip = new \ZipArchive();
+
+        //Crear archivo zip y abrirlo
+        \Storage::disk('local')->put($zip_file,  $zip);
+        $zip->open(public_path('uploads/'.$zip_file),\ZipArchive::CREATE);
+            
+        // Recorrer el array con un foreach
+        foreach ($banks as $bank) {
+            $file = $bank->name.'.csv';
+                
+            // Guardar el archivo excel en el disco local
+            Excel::store(new PaymentFileReportExport($payroll, $payrollDetails, $bank), $file, 'local', \Maatwebsite\Excel\Excel::CSV);
+
+            // Añadir el archivo excel al archivo zip
+            $zip->addFile(public_path('uploads/'.$file), $file);                
         }
 
-        dd('Exitoso');
-    }
+        // Cerrar el archivo zip
+        $zip->close();
 
-    public function export($payroll, $payrollDetails, $bank){
-        return Excel::download(
-            new PaymentFileReportExport($payroll, $payrollDetails, $bank),
-            $bank->name.'.csv', 
-            \Maatwebsite\Excel\Excel::CSV
-        );
-    }
+        // Devolver el archivo zip para descargarlo
+        $response = response()->download(public_path('uploads/'.$zip_file));
 
+        // Eliminar los archivos del disco local con un foreach
+        //\Storage::disk('local')->delete($zip_file);
+        // foreach ($banks as $bank) {
+        //     // Puedes usar cualquiera de estas opciones:
+        //     Storage::disk('local')->delete($file);
+        //     unlink(storage_path($file));
+        // }
+
+        // Retornar la respuesta con el archivo zip
+        return $response;
+    }
 
     /**
      * Update the specified resource in storage.

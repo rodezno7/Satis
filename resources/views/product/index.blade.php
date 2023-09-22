@@ -70,7 +70,7 @@
                         <thead>
                             <tr id="div_datatable">
                                 <th>@lang('product.sku')</th>
-                                <th>@lang('product.description')</th>
+                                <th class="text-center">@lang('product.description')</th>
                                 <th>@lang('product.stock')</th>
                                 @if($permissionCost == 1)
                                     <th>@lang('product.cost')</th>
@@ -198,7 +198,7 @@
         if(permissionCost == 1){
             table_columns = [
                 { data: 'sku', name: 'sku', className: 'text-center' },
-                { data: 'product_name', name: 'product_name', className: 'text-center' },
+                { data: 'product_name', name: 'product_name' },
                 { data: 'stock', name: 'stock', className: 'text-center' },
                 { data: 'cost', name: 'cost', className: 'text-center' },
                 { data: 'clasification', name: 'clasification', className: 'text-center' },
@@ -207,7 +207,7 @@
         }else{
             table_columns = [
                 { data: 'sku', name: 'sku', className: 'text-center' },
-                { data: 'product_name', name: 'product_name', className: 'text-center' },
+                { data: 'product_name', name: 'product_name' },
                 { data: 'stock', name: 'stock', className: 'text-center' },
                 { data: 'clasification', name: 'clasification', className: 'text-center' },
                 { data: 'actions',  orderable: false, searchable: false, className: 'text-center'}

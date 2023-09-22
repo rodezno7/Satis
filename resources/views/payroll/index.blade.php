@@ -148,8 +148,9 @@
                                 html += '<li><a href="#" onClick="sendPaymentSlips('+ data.id +')"><i class="fa fa-credit-card-alt"></i>@lang('payroll.send_payment_slips1')</a></li>';
                                 
                                 html += '<li><a href="/payroll/' + data.id +'/generatePaymentSlips" target="_blank"><i class="fa fa-print"></i>@lang('payroll.print_payment_slips')</a></li>';
+                                html += '<li><a href="/payroll/' + data.id +'/generatePaymentFiles" target="_blank" id="generatePaymentFile"><i class="fa fa-credit-card-alt"></i>Generar archivos de pago</a></li>';
+                            
                             }
-                            html += '<li><a href="/payroll/' + data.id +'/generatePaymentFiles" target="_blank"><i class="fa fa-credit-card-alt"></i>Generar archivos de pago</a></li>';
                             html += '</ul></div>';
 
                             return html;
@@ -442,7 +443,6 @@
                 cancelButtonText: "{{ __('messages.no') }}",
             }).then((willDelete) => {
                 if (willDelete.value) {
-
                     Swal.fire({
                         title: "{{ __('messages.payment_file_question') }}",
                         icon: 'warning',
@@ -454,17 +454,17 @@
                     }).then((result) => {
                         var sendEmail = 0;
                         if (result.isConfirmed) {
-                            sendEmail = 1;
-                            sendApprove(id, sendEmail);
+                            downloadFile = 1;
+                            downloadFlie(id, downloadFile);
                         } else if (result.dismiss === Swal.DismissReason.cancel) {
-                            sendApprove(id, sendEmail);
+                            downloadFlie(id, downloadFile);
                         }
                     })
                 }
             });
         }
 
-        function sendApprove(id, sendEmail) {
+        function downloadFlie(id, downloadFile) {
             Swal.fire({
                 title: "{{ __('messages.confirm_approval') }}",
                 text: "{{ __('messages.message_to_confirm') }}",
@@ -498,17 +498,28 @@
                         dataType: 'json',
                         data: {
                             'password': result.value,
-                            'sendEmail': sendEmail
+                            'downloadFile': downloadFile
                         },
                         success: function(result) {
                             if (result.success == true) {
+                                $("#payroll-table").DataTable().ajax.reload(null, false);
+
+                                if(result.download == true){
+                                    var a = document.createElement('a');
+                                    a.href = "/payroll/" + id +"/generatePaymentFiles";
+                                    a.download = 'your_pdf_name.pdf';
+                                    a.click();
+                                    window.URL.revokeObjectURL(url);
+                                }
+                                
                                 Swal.fire({
                                     title: result.msg,
                                     icon: "success",
                                     timer: 2000,
                                     showConfirmButton: false,
                                 });
-                                $("#payroll-table").DataTable().ajax.reload(null, false);
+                                
+                                
                             } else {
                                 Swal.fire({
                                     title: 'Error',

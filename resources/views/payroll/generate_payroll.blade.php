@@ -626,11 +626,26 @@
                                 $('#div_actions').append('@can('payroll.pay')<a href="#" class="btn btn-primary" type="button" onClick="payPayroll({{ $payroll->id }})" id="btn_pay"> <i class="fa fa-check-square"></i> @lang('payroll.pay')</a> @endcan');
                                 $("#payroll-detail-table").DataTable().ajax.reload(null, false);
                             } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: result.msg,
-                                    icon: "error",
-                                });
+                                console.log(sendEmail);
+                                if(result.sendEmail == 1){
+                                    var url = "{!! URL::to('/payroll/:id/generatePaymentFiles') !!}";
+                                    url = url.replace(':id', id);
+                                    $.get(url, function(data) {
+                                        Swal.fire({
+                                            title: 'Se generó los archivos de pagos y se aprobó exitosamente la planilla',
+                                            icon: "success",
+                                            timer: 2000,
+                                            showConfirmButton: false,
+                                        });
+                                    });
+                                    
+                                }else{
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: result.msg,
+                                        icon: "error",
+                                    });
+                                }
                             }
                         },
                         error: function(msj) {

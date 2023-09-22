@@ -17,4 +17,9 @@ class Bank extends Model
     {
     	return $this->hasMany('App\bankAccount');
     }
+
+	public function employees()
+    {
+    	return $this->hasMany('App\Employees');
+    }
 }
