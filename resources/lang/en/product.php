@@ -206,4 +206,8 @@ return [
     'anti_reflective' => 'Anti-reflective',
     'image_length' => 'The image name exceeds the maximum number of characters',
     'product_balance' => 'Product balance',
+    'description' => 'Descripción',
+    'stock' => 'Existencias',
+	'cost' => 'Costo',
+    'accounting_accounts' => 'Accounting accounts'
 ];

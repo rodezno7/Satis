@@ -1235,7 +1235,6 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
             Route::get('/products/viewKit/{id}', 'ProductController@viewKit');
             Route::get('/products/productHasSuppliers/{id}', 'ProductController@productHasSuppliers');
             Route::get('/products/kitHasProduct/{id}', 'ProductController@kitHasProduct');
-            Route::get('/products/getProductsData', 'ProductController@getProductsData');
             Route::get('/products/createProduct', 'ProductController@createProduct');
             Route::get('/products/getUnitPlan/{id}', 'ProductController@getUnitplan');
             Route::get('/products/getUnitsFromGroup/{id}', 'ProductController@getUnitsFromGroup');

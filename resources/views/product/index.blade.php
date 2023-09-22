@@ -28,15 +28,40 @@
                     <i class="fa fa-plus"></i> @lang('messages.add')
                 </a>
             </div>
-            {{-- <div class="box-tools" id="btn_add">
-                <button type="button" id="btnAdd" class="btn btn-primary">@lang('messages.add')</button>
-            </div>
-            <div class="box-tools" id="btn_cancel" style="display: none;">
-                <button type="button" id="btnUndo" class="btn btn-danger">@lang('messages.cancel')</button>
-            </div> --}}
             @endcan
         </div>
         <div class="box-body">
+            <div class="row">
+                {{-- business_location --}}
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group">
+                        {!! Form::label("location", __("kardex.location") . ":") !!}
+                        @if (is_null($default_location))
+                        {!! Form::select("select_location", $locations, null,
+                            ["class" => "form-control select2", "id" => "select_location"]) !!}
+                        {!! Form::hidden('location', 'all', ['id' => 'location']) !!}
+                        @else
+                        {!! Form::select("select_location", $locations, null,
+                            ["class" => "form-control select2", "id" => "location", 'disabled']) !!}
+                        {!! Form::hidden('location', $default_location, ['id' => 'location']) !!}
+                        @endif
+                    </div>
+                </div>
+
+                {{-- clasification --}}
+                <div class="col-lg-3 col-md-3 col-sm-4">
+                    <div class="form-group">
+                        {!! Form::label('clasification', __('product.clasification')) !!}
+
+                        {!! Form::select(
+                            'clasification',
+                            ['product' => __('product.clasification_product'), 'kits' => __('product.clasification_kits'), 'service' => __('product.clasification_service')],
+                            null,
+                            ['id' => 'clasification', 'class' => 'form-control select2', 'placeholder' => __('kardex.all_2')]
+                        ) !!}
+                    </div>
+                </div>
+            </div>
             <div id="div_index">
                 @can('product.view')
                 <div class="table-responsive">
@@ -44,12 +69,13 @@
                         width="100%">
                         <thead>
                             <tr id="div_datatable">
-                                <th>@lang('sale.product')</th>
                                 <th>@lang('product.sku')</th>
+                                <th>@lang('product.description')</th>
+                                <th>@lang('product.stock')</th>
+                                @if($permissionCost == 1)
+                                    <th>@lang('product.cost')</th>
+                                @endif
                                 <th>@lang('product.clasification')</th>
-                                <th>@lang('product.category')</th>
-                                <th>@lang('product.status')</th>
-                                <th>@lang('product.brand')</th>
                                 <th>@lang('messages.actions')</th>
                             </tr>
                         </thead>
@@ -62,6 +88,7 @@
     </div>
 
 
+    <input type="hidden" id="permissionCost" value="{{ $permissionCost }}">
     <input type="hidden" id="is_rack_enabled" value="{{$rack_enabled}}">
 
     <div class="modal fade product_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
@@ -166,97 +193,46 @@
             });
         });
 
+        var permissionCost = $('#permissionCost').val();
+
+        if(permissionCost == 1){
+            table_columns = [
+                { data: 'sku', name: 'sku', className: 'text-center' },
+                { data: 'product_name', name: 'product_name', className: 'text-center' },
+                { data: 'stock', name: 'stock', className: 'text-center' },
+                { data: 'cost', name: 'cost', className: 'text-center' },
+                { data: 'clasification', name: 'clasification', className: 'text-center' },
+                { data: 'actions',  orderable: false, searchable: false, className: 'text-center'}
+            ];
+        }else{
+            table_columns = [
+                { data: 'sku', name: 'sku', className: 'text-center' },
+                { data: 'product_name', name: 'product_name', className: 'text-center' },
+                { data: 'stock', name: 'stock', className: 'text-center' },
+                { data: 'clasification', name: 'clasification', className: 'text-center' },
+                { data: 'actions',  orderable: false, searchable: false, className: 'text-center'}
+            ];
+        }
+        console.log(table_columns);
+        
         var product_table = $('#product_table').DataTable({
             processing: true,
             serverSide: true,
             deferRender: true,
-            ajax: '/products/getProductsData',
+            ajax: {
+                url: '/products',
+                data: function(d) {
+                    d.location_id = $('#select_location').val();
+                    d.clasification = $('#clasification').val();
+                }
+            },
+            //ajax: '/products/getProductsData',
             columnDefs: [
-                { "searchable": false, "targets": [2, 3, 4, 5, 6] }
+                { "searchable": false, "targets": [1, 4] }
             ],
-            columns: [
-            { data: 'product', name: 'product.name'  },
-            { data: 'sku', name: 'product.sku'},
-            { data: null, render: function(data){
-                clasification = '';
-                if (data.clasification == 'product') {
-                    clasification = '@lang("product.clasification_product")';
-                }
-                if (data.clasification == 'service') {
-                    clasification = '@lang("product.clasification_service")';
-                }
-                if (data.clasification == 'kits') {
-                    clasification = '@lang("product.clasification_kits")';
-                }
-                return clasification;
-            }, orderable: false, searchable: false},
-            { data: 'category', name: 'c1.name'},
-            { data: 'status', name: 'status'},
-            { data: 'brand', name: 'brands.name'},
-            { data: null, render: function(data) {
-
-                html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang("messages.actions") <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-
-                if(data.clasification == 'product')
-                {
-                    html += '<li><a href="labels/show?product_id='+data.id+'" data-toggle="tooltip" title="Print Barcode/Label"><i class="fa fa-barcode"></i>@lang('barcode.labels')</a></li>';
-                }
-
-                @can('product.view')
-
-                html += '<li><a href="/products/view/'+data.id+'" class="view-product"><i class="fa fa-eye"></i>@lang("messages.view")</a></li>';
-
-                if (data.clasification == "product") {
-                    html += '<li><a href="/products/viewSupplier/'+data.id+'" class="view-supplier"><i class="fa fa-building-o"></i>@lang("product.supplier_label")</a></li>';
-                }
-
-                if (data.clasification == "kits") {
-                    html += '<li><a href="/products/viewKit/'+data.id+'" class="view-kit" ><i class="fa fa-eye"></i>@lang("product.view_kit")</a></li>';
-                }
-
-                html += '<li><a href="/products/purchase_history/'+data.id+'" class="view_history_purchase"><i class="fa fa-history"></i>@lang("Historial de compra")</a></li>';
-                @endcan
-
-
-                @can('product.update')
-
-                html += '<li><a href="/products/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang("messages.edit")</a></li>';
-                html += '<li><a href="/products/get-product-accounts/'+ data.id +'" class="accounting_account"><i class="fa fa-book"></i>'+ LANG.accounting_accounts +'</a></li>';
-
-                @endcan
-
-                @can('product.delete')
-
-                html += '<li><a href="/products/'+data.id+'" class="delete-product"><i class="fa fa-trash"></i>@lang("messages.delete")</a></li>';
-
-                @endcan
-
-                html += '<li class="divider"></li>';
-
-                @can('product.create')
-
-                if(data.clasification != 'service')
-                {
-                    html += '<li><a href="#" data-href="/opening-stock/add/'+data.id+'" class="add-opening-stock"><i class="fa fa-database"></i>@lang("lang_v1.add_edit_opening_stock")</a></li>';
-                }
-
-                @if($selling_price_group_count > 0)
-
-                html += '<li><a href="/products/add-selling-prices/'+data.id+'"><i class="fa fa-money"></i>@lang("lang_v1.add_selling_price_group_prices")</a></li>';
-
-                @endif
-
-                @endcan
-
-                html += '</ul></div>';
-
-                return html;
-
-            }, orderable: false, searchable: false }
-            ],
+            columns: table_columns,
             createdRow: function( row, data, dataIndex ) {
                 if($('input#is_rack_enabled').val() == 1) {
-
                     $(row).find('td:eq(0)').prepend('<i style="margin:auto;" class="fa fa-plus-circle text-success cursor-pointer no-print rack-details" title="' + LANG.details + '"></i>&nbsp;&nbsp;');
                 }
             }
@@ -325,9 +301,21 @@
                     detailRows.push( tr.attr('id') );
                 }
             }
-        });        
+        });    
+        
+        
+        // Seller filter
+        $('select#select_location').on('change', function() {
+            product_table.ajax.reload();
+        });
+
+        // Payment status filter
+        $('select#clasification').on('change', function() {
+            product_table.ajax.reload();
+        });
     });
 
+    
     function saveSupplier(){
 		var id =  $("input#product_id").val();
         var count_supplier = $('input#count_supplier').val();

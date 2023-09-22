@@ -100,85 +100,197 @@ class ProductController extends Controller
         } elseif (!$this->moduleUtil->isQuotaAvailable('products', $business_id)) {
             return $this->moduleUtil->quotaExpiredResponse('products', $business_id, action('ProductController@index'));
         }
-        
-        $products = DB::table('products as product')
-            ->leftJoin('brands', 'product.brand_id', '=', 'brands.id')
-            ->leftJoin('categories as c1', 'product.category_id', '=', 'c1.id')
-            ->leftJoin('categories as c2', 'product.sub_category_id', '=', 'c2.id')
-            ->where('product.business_id', $business_id)
-            ->where('product.type', '!=', 'modifier')
-            ->select(
-                'product.id as id',
-                'product.name as name',
-                'product.clasification as clasification',
-                'product.type as type',
-                'c1.name as category',
-                'c2.name as sub_category',
-                'product.status as status',
-                'brands.name as brand',
-                'product.sku as sku'
-            )->get();
 
-        return view('product.index')
-            ->with(compact(
-                'rack_enabled',
-                'selling_price_group_count',
-                'products',
-            ));
-    }
-
-    public function getProductsData()
-    {
-        if (!auth()->user()->can('product.view')) {
-            abort(403, 'Unauthorized action.');
+        // Locations
+        $locations = BusinessLocation::forDropdown($business_id, false, false);
+        $default_location = null;
+        if (count($locations) == 1) {// Access only to one location
+            foreach ($locations as $id => $name) {
+                $default_location = $id;
+            }
+        } else if (auth()->user()->permitted_locations() == 'all') { // Access to all locations
+            $locations = $locations->prepend(__("kardex.all_2"), 'all');
         }
-        $business_id = request()->session()->get('user.business_id');
 
-        $products = DB::table('products as product')
-            ->leftJoin('brands', 'product.brand_id', '=', 'brands.id')
-            ->leftJoin('unit_groups as unit_group', 'product.unit_group_id', '=', 'unit_group.id')
-            ->leftJoin('units as unit', 'product.unit_id', '=', 'unit.id')
-            ->leftJoin('categories as c1', 'product.category_id', '=', 'c1.id')
-            ->leftJoin('categories as c2', 'product.sub_category_id', '=', 'c2.id')
-            ->leftJoin('tax_groups', 'product.tax', '=', 'tax_groups.id')
-            ->where('product.business_id', $business_id)
-            ->where('product.type', '!=', 'modifier')
-            ->select(
-                'product.id',
-                'product.name as product',
-                'product.clasification',
-                'product.type',
-                'product.dai',
-                'c1.name as category',
-                'c2.name as sub_category',
-                'product.status',
-                'unit_group.description as unit_group',
-                'brands.name as brand',
-                'tax_groups.description as tax',
-                'product.sku',
-                'product.image',
-                'tax_groups.description as applicable_tax'
+        $permissionCost = 0;
+        if(auth()->user()->can('product.view_cost')){
+            $permissionCost = 1;
+        }
+
+        if(request()->ajax()){
+            // Parameters
+            $params = [
+                // Filters
+                'location_id' => request()->input('location_id'),
+                'clasification' => request()->input('clasification'),
+
+                // Datatable parameters
+                'start_record' => request()->get('start'),
+                'page_size' => request()->get('length'),
+                'search' => request()->get('search'),
+                'order' => request()->get('order')
+            ];
+
+            $products = collect($this->getProductsData($params));
+            $datatable = Datatables::of($products['data'])
+                ->editColumn('stock', function ($row) {
+                    return round($row->stock, 2);
+                })->editColumn('cost', function ($row) {
+                    $price_precision = config('app.price_precision');
+                    return $this->productUtil->num_f($row->cost, true, $price_precision);
+                })->editColumn('clasification', function($row){
+                    if ($row->clasification == 'product') {
+                        return __("product.clasification_product");
+                    }
+                    if ($row->clasification == 'service') {
+                        return __("product.clasification_service");
+                    }
+                    if ($row->clasification == 'kits') {
+                        return __("product.clasification_kits");
+                    }
+                })->addColumn('actions', function ($row) {
+                    $business_id = request()->session()->get('user.business_id');
+                    $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
+                    $html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.__("messages.actions").' <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
+
+                    if ($row->clasification == 'product'){
+                        $html .= '<li><a href="labels/show?product_id='.$row->id.'" data-toggle="tooltip" title="Print Barcode/Label"><i class="fa fa-barcode"></i>'.__("barcode.labels").'</a></li>';
+                    }
+
+                    if (auth()->user()->can('product.view')){
+                        $html .= '<li><a href="/products/view/'.$row->id.'" class="view-product"><i class="fa fa-eye"></i>'.__("messages.view").'</a></li>';
+                        if ($row->clasification == "product") {
+                            $html .= '<li><a href="/products/viewSupplier/'.$row->id.'" class="view-supplier"><i class="fa fa-building-o"></i>'.__("product.supplier_label").'</a></li>';
+                        }
+
+                        if ($row->clasification == "kits") {
+                            $html .= '<li><a href="/products/viewKit/'.$row->id.'" class="view-kit" ><i class="fa fa-eye"></i>'.__("product.view_kit").'</a></li>';
+                        }
+                        $html .= '<li><a href="/products/purchase_history/'.$row->id.'" class="view_history_purchase"><i class="fa fa-history"></i>Historial de compra</a></li>';
+                    }
+
+                    if (auth()->user()->can('product.update')){
+                        $html .= '<li><a href="/products/'.$row->id.'/edit"><i class="glyphicon glyphicon-edit"></i>'.__("messages.edit").'</a></li>';
+                        $html .= '<li><a href="/products/get-product-accounts/'.$row->id.'" class="accounting_account"><i class="fa fa-book"></i>'. __('product.accounting_accounts') .'</a></li>';
+                    }
+
+                    if (auth()->user()->can('product.delete')){
+                        $html .= '<li><a href="/products/'.$row->id.'" class="delete-product"><i class="fa fa-trash"></i>'.__("messages.delete").'</a></li>';
+                    }
+
+                    $html .= '<li class="divider"></li>';
+                    if (auth()->user()->can('product.create')){
+                        if($row->clasification != 'service'){
+                            $html .= '<li><a href="#" data-href="/opening-stock/add/'.$row->id.'" class="add-opening-stock"><i class="fa fa-database"></i>'.__("lang_v1.add_edit_opening_stock").'</a></li>';
+                        }
+
+                        if($selling_price_group_count > 0){
+                            $html .= '<li><a href="/products/add-selling-prices/'.$row->id.'"><i class="fa fa-money"></i>'.__("lang_v1.add_selling_price_group_prices").'</a></li>';
+                        }
+                    }
+
+                    $html .= '</ul></div>';
+                    return $html;
+                }
             );
 
-        return Datatables::of($products)
-            ->editColumn('status', function($row){
-                $status = __('product.status_inactive');
-                if($row->status == 'active'){
-                    $status = __('product.status_active');
-                }
-                return $status;
-
-            })->setRowAttr([
-                'data-href' => function ($row) {
-                    if (auth()->user()->can("product.view")) {
-                        return  action('ProductController@view', [$row->id]);
-                    } else {
-                        return '';
+            if (request()->get('length') != -1) {
+                $datatable = $datatable->setRowAttr([
+                    'data-href' => function ($row) {
+                        if (auth()->user()->can("sell.view")) {
+                            return  action('SellController@show', [$row->id]);
+                        } else {
+                            return '';
+                        }
                     }
-                }
-            ])
+                ]);
+            }
+    
+            if(auth()->user()->can('product.view_cost')){
+                $datatable = $datatable->rawColumns(['sku', 'product_name', 'stock', 'cost', 'clasification', 'actions'])
+                ->setTotalRecords($products['count'])
+                ->setFilteredRecords($products['count'])
+                ->skipPaging()
+                ->toJson();
+            }else{
+                $datatable = $datatable->rawColumns(['sku', 'product_name', 'stock', 'clasification', 'actions'])
+                ->setTotalRecords($products['count'])
+                ->setFilteredRecords($products['count'])
+                ->skipPaging()
+                ->toJson();
+            }          
+            return $datatable;
+        }    
+        
+        return view('product.index')->with(compact(
+            'rack_enabled',
+            'selling_price_group_count',
+            'locations',
+            'default_location',
+            'permissionCost'
+        ));
+    }
 
-            ->toJson();
+    public function getProductsData($params)
+    {
+        // Business filter
+        $business_id = request()->session()->get('user.business_id');
+
+        // Location filter
+        if (! empty($params['location_id']) && $params['location_id'] != 'all') {
+            $location_id = $params['location_id'];
+        } else {
+            $location_id = 0;
+        }
+
+        // Customer filter
+        if (! empty($params['clasification'])) {
+            $clasification = $params['clasification'];
+        } else {
+            $clasification = '';
+        }        
+
+        // Datatable parameters
+        $start_record = $params['start_record'];
+        $page_size = $params['page_size'];
+        $search_array = $params['search'];
+        $search = ! is_null($search_array['value']) ? $search_array['value'] : '';
+        $order = $params['order'];
+
+        // Count sales
+        $count = DB::select(
+            'CALL count_all_products(?, ?, ?, ?)',
+            array(
+                $business_id,
+                $location_id,
+                $clasification,
+                $search
+            )
+        );
+
+        // Products
+        $parameters = [
+            $business_id,
+            $location_id,
+            $clasification,
+            $search,
+            $start_record,
+            $page_size,
+            $order[0]['column'],
+            $order[0]['dir']
+        ];
+
+        $products = DB::select(
+            'CALL get_all_products(?, ?, ?, ?, ?, ?, ?, ?)',
+            $parameters
+        );
+
+        $result = [
+            'data' => $products,
+            'count' => $count[0]->count
+        ];
+
+        return $result;
     }
 
     /**
