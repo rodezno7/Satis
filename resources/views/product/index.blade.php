@@ -10,80 +10,102 @@
 </section>
 
 <!-- Main content -->
-<section class="content">
+<section class="content no-print">
     {{-- Number of decimal places to store and use in calculations --}}
     <input type="hidden" id="price_precision" value="{{ config('app.price_precision') }}">
 
-    <div class="boxform_u box-solid_u">
-        <div class="box-header">
-            <span id="header_index">
-                <h3 class="box-title">@lang('lang_v1.all_products')</h3>
-            </span>
-            <span id="header_add" style="display: none;">
-                <h3 class="box-title">@lang('product.add_new_product')</h3>
-            </span>
-            @can('product.create')
-            <div class="box-tools">
-                <a href="{{ url('products/create') }}" type="button" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> @lang('messages.add')
-                </a>
-            </div>
-            @endcan
-        </div>
-        <div class="box-body">
-            <div class="row">
-                {{-- business_location --}}
-                <div class="col-lg-4 col-md-4 col-sm-6">
-                    <div class="form-group">
-                        {!! Form::label("location", __("kardex.location") . ":") !!}
-                        @if (is_null($default_location))
-                        {!! Form::select("select_location", $locations, null,
-                            ["class" => "form-control select2", "id" => "select_location"]) !!}
-                        {!! Form::hidden('location', 'all', ['id' => 'location']) !!}
-                        @else
-                        {!! Form::select("select_location", $locations, null,
-                            ["class" => "form-control select2", "id" => "location", 'disabled']) !!}
-                        {!! Form::hidden('location', $default_location, ['id' => 'location']) !!}
-                        @endif
-                    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary" id="accordion">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFilter">
+                            <i class="fa fa-filter" aria-hidden="true"></i> @lang('report.filters')
+                        </a>
+                    </h3>
                 </div>
-
-                {{-- clasification --}}
-                <div class="col-lg-3 col-md-3 col-sm-4">
-                    <div class="form-group">
-                        {!! Form::label('clasification', __('product.clasification')) !!}
-
-                        {!! Form::select(
-                            'clasification',
-                            ['product' => __('product.clasification_product'), 'kits' => __('product.clasification_kits'), 'service' => __('product.clasification_service')],
-                            null,
-                            ['id' => 'clasification', 'class' => 'form-control select2', 'placeholder' => __('kardex.all_2')]
-                        ) !!}
-                    </div>
-                </div>
-            </div>
-            <div id="div_index">
-                @can('product.view')
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped ajax_view table-text-center" id="product_table"
-                        width="100%">
-                        <thead>
-                            <tr id="div_datatable">
-                                <th>@lang('product.sku')</th>
-                                <th class="text-center">@lang('product.description')</th>
-                                <th>@lang('product.stock')</th>
-                                @if($permissionCost == 1)
-                                    <th>@lang('product.cost')</th>
+                <div id="collapseFilter" class="panel-collapse active collapse in" aria-expanded="true">
+                    <div class="box-body">
+                        {{-- business_location --}}
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="form-group">
+                                {!! Form::label("location", __("kardex.location") . ":") !!}
+                                @if (is_null($default_location))
+                                {!! Form::select("select_location", $locations, null,
+                                    ["class" => "form-control select2", "id" => "select_location"]) !!}
+                                {!! Form::hidden('location', 'all', ['id' => 'location']) !!}
+                                @else
+                                {!! Form::select("select_location", $locations, null,
+                                    ["class" => "form-control select2", "id" => "location", 'disabled']) !!}
+                                {!! Form::hidden('location', $default_location, ['id' => 'location']) !!}
                                 @endif
-                                <th>@lang('product.clasification')</th>
-                                <th>@lang('messages.actions')</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-                @endcan
-            </div>
+                            </div>
+                        </div>
 
+                        {{-- clasification --}}
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                {!! Form::label('clasification', __('product.clasification')) !!}
+
+                                {!! Form::select(
+                                    'clasification',
+                                    ['product' => __('product.clasification_product'), 'kits' => __('product.clasification_kits'), 'service' => __('product.clasification_service')],
+                                    null,
+                                    ['id' => 'clasification', 'class' => 'form-control select2', 'placeholder' => __('kardex.all_2')]
+                                ) !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <span id="header_index">
+                        <h3 class="box-title">@lang('lang_v1.all_products')</h3>
+                    </span>
+                    <span id="header_add" style="display: none;">
+                        <h3 class="box-title">@lang('product.add_new_product')</h3>
+                    </span>
+                    @can('product.create')
+                    <div class="box-tools">
+                        <a href="{{ url('products/create') }}" type="button" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> @lang('messages.add')
+                        </a>
+                    </div>
+                    @endcan
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        
+                    </div>
+                    <div id="div_index">
+                        @can('product.view')
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped ajax_view table-text-center" id="product_table"
+                                width="100%">
+                                <thead>
+                                    <tr id="div_datatable">
+                                        <th>@lang('product.sku')</th>
+                                        <th class="text-center">@lang('product.description')</th>
+                                        <th>@lang('product.stock')</th>
+                                        @if($permissionCost == 1)
+                                            <th>@lang('product.cost')</th>
+                                        @endif
+                                        <th>@lang('product.clasification')</th>
+                                        <th>@lang('messages.actions')</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        @endcan
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 
