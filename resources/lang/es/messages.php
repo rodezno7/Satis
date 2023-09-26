@@ -77,4 +77,5 @@
     'message_to_confirm' => 'Ingrese su contraseña',
     'approve' => 'Aprobar',
     'pay' => 'Pagar',
+    "payment_slips_question" => '¿Está a punto de enviar boletas de pago?',
 ];

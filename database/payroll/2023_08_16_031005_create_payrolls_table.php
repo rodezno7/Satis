@@ -19,8 +19,9 @@ class CreatePayrollsTable extends Migration
             $table->foreign('payroll_type_id')->references('id')->on('payroll_types')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->integer('year');
-            $table->integer('month');
-            $table->date('start_date');
+            $table->integer('month')->nullable();
+            $table->integer('days')->nullable();
+            $table->date('start_date')->nullable();
             $table->date('end_date');
             $table->date('approval_date')->nullable();
             $table->date('pay_date')->nullable();
@@ -28,7 +29,10 @@ class CreatePayrollsTable extends Migration
             $table->integer('payroll_status_id')->unsigned();
             $table->foreign('payroll_status_id')->references('id')->on('payroll_statuses')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->integer('payment_period_id')->unsigned();
+            $table->integer('isr_id')->unsigned()->nullable();
+            $table->foreign('isr_id')->references('id')->on('payment_periods')->onDelete('cascade')->onUpdate('cascade');
+
+            $table->integer('payment_period_id')->unsigned()->nullable();
             $table->foreign('payment_period_id')->references('id')->on('payment_periods')->onDelete('cascade')->onUpdate('cascade');
             
             $table->integer('business_id')->unsigned()->nullable();

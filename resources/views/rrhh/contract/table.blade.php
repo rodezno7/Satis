@@ -29,7 +29,7 @@
                             <span class="badge" style="background: #4e58b6">{{ __('rrhh.finalized') }}</span>
                         @endif
                         @if ($item->contract_status == 'Vencido')
-                            <span class="badge" style="background: #C9302C">{{ $item->contract_status }}{{ __('rrhh.defeated') }}</span>
+                            <span class="badge" style="background: #C9302C">{{ __('rrhh.defeated') }}</span>
                         @endif
                         
                     </td>

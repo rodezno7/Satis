@@ -71,22 +71,22 @@ class AssistanceEmployeeController extends Controller
                 ->where('business_id', $data->business_id)
                 ->orderBy('id', 'ASC')
                 ->get();
-    
+
             $keyAssitance = count($assistances) - 1;
-            if($assistances[$keyAssitance]->type == 'Entrada'){
+            if ($assistances[$keyAssitance]->type == 'Entrada') {
                 $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
                     ->where('id', '>', $assistances[$keyAssitance]->id)
                     ->where('business_id', $data->business_id)
                     ->orderBy('id', 'ASC')
                     ->first();
-                if($lastAssistanceEmployee){
+                if ($lastAssistanceEmployee) {
                     $assistances->add($lastAssistanceEmployee);
                 }
             }
-                
+
             foreach ($assistances as $key => $assistance) {
                 $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                if ($assistances[0]->type == 'Entrada'){
+                if ($assistances[0]->type == 'Entrada') {
                     if ($key === 0) {
                         $firstTime = $currentDateAssistanceEmployee;
                         $lastTime = $currrentDate;
@@ -94,26 +94,22 @@ class AssistanceEmployeeController extends Controller
                 }
 
 
-                if($assistances[0]->type == 'Salida'){
+                if ($assistances[0]->type == 'Salida') {
                     if ($key === 1 && $assistances[1]->type == 'Entrada') {
                         $firstTime = $currentDateAssistanceEmployee;
                         $lastTime = $currrentDate;
                     }
                 }
 
-                if($assistances[count($assistances) - 1]->type == 'Entrada'){
+                if ($assistances[count($assistances) - 1]->type == 'Entrada') {
                     $lastTime = $currrentDate;
-                }else{
+                } else {
                     $lastTime = $currentDateAssistanceEmployee;
                 }
             }
             return $this->transactionUtil->format_date($firstTime, true) . ' - ' . $this->transactionUtil->format_date($lastTime, true);
         })->editColumn('number_of_hours', function ($data) {
-            $currrentDate = Carbon::now()
-                ->timezone($data->business->time_zone)
-                ->format('Y-m-d H:i:s');
-            $time = 0;
-            $minutes = 0;
+
             $assistancesEmployeeData = AssistanceEmployee::where('employee_id', $data->employee_id)
                 ->where('date', $data->date)
                 ->where('business_id', $data->business_id)
@@ -121,88 +117,102 @@ class AssistanceEmployeeController extends Controller
                 ->get();
 
             $keyAssitance = count($assistancesEmployeeData) - 1;
-            if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+            if ($assistancesEmployeeData[$keyAssitance]->type == 'Entrada') {
                 $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
                     ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
                     ->where('business_id', $data->business_id)
                     ->orderBy('id', 'ASC')
                     ->first();
-                if($lastAssistanceEmployee){
+                if ($lastAssistanceEmployee) {
                     $assistancesEmployeeData->add($lastAssistanceEmployee);
                 }
             }
 
+            $seconds = 0;
+            $secondsFuera = 0;
+            $currrentDate = Carbon::now()->timezone($data->business->time_zone)->format('Y-m-d H:i:s');
             foreach ($assistancesEmployeeData as $key => $assistance) {
-                if ($assistancesEmployeeData[0]->type == 'Entrada'){
-                    $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                    if ($key === 0) {
-                        $firstTime = $currentDateAssistanceEmployee;
-                        $lastTime = $currrentDate;
+                $assistanceCurrentDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                if ($assistancesEmployeeData[0]->type == 'Entrada') {
+                    if ($key == 0) {
+                        $firstDate = $assistanceCurrentDate;
                     }
 
                     if ($key > 0) {
+                        $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
                         if ($key < count($assistancesEmployeeData) - 1) {
+                            //Calcular el tiempo en que la persona estuvo afuera
                             if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                                $entradaDate = $assistanceCurrentDate;
+                                $salidaDate = $assistancePreviousDate;
 
-                                $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                $secondsEntrada = strtotime($entradaDate);
+                                $secondsSalida = strtotime($salidaDate);
+                                $secondsFuera += $secondsEntrada - $secondsSalida;
                             }
                         }
 
-                        if ($key === count($assistancesEmployeeData) - 1) {
-                            if($assistancesEmployeeData[$key]->type == 'Entrada'){
-                                $lastTime = $currrentDate;
-                            }else{
-                                $lastTime = $currentDateAssistanceEmployee;
+                        if ($key == count($assistancesEmployeeData) - 1) {
+                            //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                            //si no hay registro de la ultima salida
+                            if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                $lastDate = $assistanceCurrentDate;
                             }
-                        }
 
-                        if ($assistance->type == 'Entrada') {
-                            $time += $time;
-                            $minutes += $minutes;
+                            if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                $lastDate = $currrentDate;
+                            }
+
+                            $secondsFirst = strtotime($firstDate);
+                            $secondsLast = strtotime($lastDate);
+                            $seconds = $secondsLast - $secondsFirst;
+                            $seconds = $seconds - $secondsFuera;
                         }
                     }
-                }else{
-                    $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                    if ($key === 1) {
-                        $firstTime = $currentDateAssistanceEmployee;
-                        $lastTime = $currrentDate;
-                    }
+                } else { //Empieza con salida
+                    if ($key > 0) { //Entrada
+                        if ($key == 1) {
+                            $firstDate = $assistanceCurrentDate;
+                        }
 
-                    if ($key > 1) {
-                        if ($key < count($assistancesEmployeeData) - 1) {
-                            if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                        if ($key > 1) {
+                            $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
 
-                                $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                            if ($key < (count($assistancesEmployeeData) - 1)) {
+                                //Calcular el tiempo en que la persona estuvo afuera
+                                if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                    $entradaDate = $assistanceCurrentDate;
+                                    $salidaDate = $assistancePreviousDate;
+
+                                    $secondsEntrada = strtotime($entradaDate);
+                                    $secondsSalida = strtotime($salidaDate);
+                                    $secondsFuera += $secondsEntrada - $secondsSalida;
+                                }
                             }
-                        }
-                        if ($key === count($assistancesEmployeeData) - 1) {
-                            $lastTime = $currentDateAssistanceEmployee;
-                        }
 
-                        if ($assistance->type == 'Entrada') {
-                            $time += $time;
-                            $minutes += $minutes;
+                            if ($key == (count($assistancesEmployeeData) - 1)) {
+                                //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                                //si no hay registro de la ultima salida
+                                if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                    $lastDate = $assistanceCurrentDate;
+                                }
+
+                                if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                    $lastDate = $currrentDate;
+                                }
+
+                                $secondsFirst = strtotime($firstDate);
+                                $secondsLast = strtotime($lastDate);
+                                $seconds = $secondsLast - $secondsFirst;
+                                $seconds = $seconds - $secondsFuera;
+                            }
                         }
                     }
                 }
-                
             }
+            $time_worked = $this->convertSecondsToHours($seconds);
 
-            $timeTotal = $firstTime->diffInHours($lastTime);
-            $minutesTotal = $firstTime->diffInMinutes($lastTime);
-
-            $minutesTotal = $minutesTotal - ($timeTotal * 60);
-            $timeTotal = $timeTotal - $time;
-            $minutes = $minutes - ($time * 60);
-
-            $minutesTotal = abs($minutesTotal - $minutes);
-            $minutesTotal = round($minutesTotal);
-
-            return $timeTotal . ' horas con ' . $minutesTotal . ' minutos';
+            return $time_worked;
         })->editColumn('status', function ($data) {
             $assistance = AssistanceEmployee::where('employee_id', $data->employee_id)
                 ->where('date', $data->date)
@@ -210,20 +220,20 @@ class AssistanceEmployeeController extends Controller
                 ->orderBy('id', 'DESC')
                 ->first();
 
-                if($assistance->type == 'Salida'){
+            if ($assistance->type == 'Salida') {
+                return $assistance->status;
+            } else {
+                $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
+                    ->where('id', '>', $assistance->id)
+                    ->where('business_id', $data->business_id)
+                    ->orderBy('id', 'ASC')
+                    ->first();
+                if ($lastAssistanceEmployee) {
+                    return $lastAssistanceEmployee->status;
+                } else {
                     return $assistance->status;
-                }else{
-                    $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
-                        ->where('id', '>', $assistance->id)
-                        ->where('business_id', $data->business_id)
-                        ->orderBy('id', 'ASC')
-                        ->first();
-                    if($lastAssistanceEmployee){
-                        return $lastAssistanceEmployee->status;
-                    }else{
-                        return $assistance->status;
-                    }
                 }
+            }
         })->toJson();
     }
 
@@ -267,109 +277,113 @@ class AssistanceEmployeeController extends Controller
                         ->where('business_id', $business_id)
                         ->orderBy('id', 'ASC')
                         ->get();
-                    
+
                     $keyAssitance = count($assistancesEmployeeData) - 1;
-                    if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+                    if ($assistancesEmployeeData[$keyAssitance]->type == 'Entrada') {
                         $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
                             ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
                             ->where('date', '>', $data->date)
                             ->where('business_id', $business_id)
                             ->orderBy('id', 'ASC')
                             ->first();
-                        if($lastAssistanceEmployee){
+                        if ($lastAssistanceEmployee) {
                             $assistancesEmployeeData->add($lastAssistanceEmployee);
                         }
                     }
-                    
-                    $currrentDate = Carbon::now()
-                        ->timezone($data->business->time_zone)
-                        ->format('Y-m-d H:i:s');
-                    $time = 0;
-                    $minutes = 0;
-                    $minutesTotal = 0;
-                    $timeTotal = 0;
+
+                    $seconds = 0;
+                    $secondsFuera = 0;
+                    $currrentDate = Carbon::now()->timezone($data->business->time_zone)->format('Y-m-d H:i:s');
                     $firstTime = $currrentDate;
                     $lastTime = $currrentDate;
 
                     foreach ($assistancesEmployeeData as $key => $assistance) {
-                        $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                        if ($data->date == $assistance->date) {
-                            if ($assistancesEmployeeData[0]->type == 'Entrada'){
-                                if ($key === 0) {
-                                    $firstTime = $currentDateAssistanceEmployee;
-                                    $lastTime = $currrentDate;
-                                }
-    
-                                if ($key > 0) {
-                                    if ($key < count($assistancesEmployeeData) - 1) {
-                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
-    
-                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
-                                        }
-                                    }
-                                    if ($key === count($assistancesEmployeeData) - 1) {
-                                        if($assistancesEmployeeData[$key]->type == 'Entrada'){
-                                            $lastTime = $currrentDate;
-                                        }else{
-                                            $lastTime = $currentDateAssistanceEmployee;
-                                        }
-                                    }
-    
-                                    if ($assistance->type == 'Entrada') {
-                                        $time += $time;
-                                        $minutes += $minutes;
+                        $assistanceCurrentDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                        if ($assistancesEmployeeData[0]->type == 'Entrada') {
+                            if ($key == 0) {
+                                $firstDate = $assistanceCurrentDate;
+                            }
+
+                            if ($key > 0) {
+                                $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                                if ($key < count($assistancesEmployeeData) - 1) {
+                                    //Calcular el tiempo en que la persona estuvo afuera
+                                    if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                        $entradaDate = $assistanceCurrentDate;
+                                        $salidaDate = $assistancePreviousDate;
+
+                                        $secondsEntrada = strtotime($entradaDate);
+                                        $secondsSalida = strtotime($salidaDate);
+                                        $secondsFuera += $secondsEntrada - $secondsSalida;
                                     }
                                 }
-                            }else{
-                                if ($key === 1) {
-                                    $firstTime = $currentDateAssistanceEmployee;
-                                    $lastTime = $currrentDate;
+
+                                if ($key == count($assistancesEmployeeData) - 1) {
+                                    //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                                    //si no hay registro de la ultima salida
+                                    if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                        $lastDate = $assistanceCurrentDate;
+                                    }
+
+                                    if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                        $lastDate = $currrentDate;
+                                    }
+
+                                    $secondsFirst = strtotime($firstDate);
+                                    $secondsLast = strtotime($lastDate);
+                                    $seconds = $secondsLast - $secondsFirst;
+                                    $seconds = $seconds - $secondsFuera;
                                 }
-    
+                            }
+                        } else { //Empieza con salida
+                            if ($key > 0) { //Entrada
+                                if ($key == 1) {
+                                    $firstDate = $assistanceCurrentDate;
+                                }
+
                                 if ($key > 1) {
-                                    if ($key < count($assistancesEmployeeData) - 1) {
+                                    $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+
+                                    if ($key < (count($assistancesEmployeeData) - 1)) {
+                                        //Calcular el tiempo en que la persona estuvo afuera
                                         if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
-    
-                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                            $entradaDate = $assistanceCurrentDate;
+                                            $salidaDate = $assistancePreviousDate;
+
+                                            $secondsEntrada = strtotime($entradaDate);
+                                            $secondsSalida = strtotime($salidaDate);
+                                            $secondsFuera += $secondsEntrada - $secondsSalida;
                                         }
                                     }
-                                    if ($key === count($assistancesEmployeeData) - 1) {
-                                        $lastTime = $currentDateAssistanceEmployee;
-                                    }
-    
-                                    if ($assistance->type == 'Entrada') {
-                                        $time += $time;
-                                        $minutes += $minutes;
+
+                                    if ($key == (count($assistancesEmployeeData) - 1)) {
+                                        //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                                        //si no hay registro de la ultima salida
+                                        if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                            $lastDate = $assistanceCurrentDate;
+                                        }
+
+                                        if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                            $lastDate = $currrentDate;
+                                        }
+
+                                        $secondsFirst = strtotime($firstDate);
+                                        $secondsLast = strtotime($lastDate);
+                                        $seconds = $secondsLast - $secondsFirst;
+                                        $seconds = $seconds - $secondsFuera;
                                     }
                                 }
                             }
-                            
-                        }
-
-                        if($data->date != $assistance->date){ ///Para evaluar el final si hace falta unoooo
-                            $lastTime = $currentDateAssistanceEmployee;
                         }
                     }
+                    $time_worked = $this->convertSecondsToHours($seconds);
 
-                    $timeTotal = $firstTime->diffInHours($lastTime);
-                    $minutesTotal = $firstTime->diffInMinutes($lastTime);
-
-                    $minutesTotal = $minutesTotal - ($timeTotal * 60);
-                    $timeTotal = $timeTotal - $time;
-                    $minutes = $minutes - ($time * 60);
-
-                    $minutesTotal = abs($minutesTotal - $minutes);
-                    $minutesTotal = round($minutesTotal);
 
                     $assistanceSummary[$data->id] = (object) [
                         'employee' => $data->employee->first_name . ' ' . $data->employee->last_name,
                         'start_date' => $this->transactionUtil->format_date($firstTime, true),
                         'end_date' => $this->transactionUtil->format_date($lastTime, true),
-                        'time_worked' => $timeTotal . ' horas con ' . $minutesTotal . ' minutos'
+                        'time_worked' => $time_worked
                     ];
                 }
             } else {
@@ -391,14 +405,6 @@ class AssistanceEmployeeController extends Controller
                     ->get();
 
                 foreach ($assistancesEmployee as $data) {
-                    $currrentDate = Carbon::now()->timezone($data->business->time_zone)->format('Y-m-d H:i:s');
-                    $time = 0;
-                    $seconds = 0;
-                    $minutes = 0;
-                    $firstTime = $currrentDate;
-                    $lastTime = $currrentDate;
-
-
                     $assistancesEmployeeData = AssistanceEmployee::where('employee_id', $data->employee_id)
                         ->where('date', $data->date)
                         ->where('business_id', $business_id)
@@ -406,101 +412,110 @@ class AssistanceEmployeeController extends Controller
                         ->get();
 
                     $keyAssitance = count($assistancesEmployeeData) - 1;
-                    if($assistancesEmployeeData[$keyAssitance]->type == 'Entrada'){
+                    if ($assistancesEmployeeData[$keyAssitance]->type == 'Entrada') {
                         $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $data->employee_id)
                             ->where('id', '>', $assistancesEmployeeData[$keyAssitance]->id)
                             ->where('date', '>', $data->date)
                             ->where('business_id', $business_id)
                             ->orderBy('id', 'ASC')
                             ->first();
-                        if($lastAssistanceEmployee){
+                        if ($lastAssistanceEmployee) {
                             $assistancesEmployeeData->add($lastAssistanceEmployee);
                         }
                     }
 
+                    $seconds = 0;
+                    $secondsFuera = 0;
+                    $currrentDate = Carbon::now()->timezone($data->business->time_zone)->format('Y-m-d H:i:s');
+                    $firstTime = $currrentDate;
+                    $lastTime = $currrentDate;
+
                     foreach ($assistancesEmployeeData as $key => $assistance) {
-                        $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                        if ($data->date == $assistance->date) {
-                            if ($assistancesEmployeeData[0]->type == 'Entrada'){
-                                if ($key === 0) {
-                                    $firstTime = $currentDateAssistanceEmployee;
-                                    $lastTime = $currrentDate;
-                                }
+                        $assistanceCurrentDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
+                        if ($assistancesEmployeeData[0]->type == 'Entrada') {
+                            if ($key == 0) {
+                                $firstDate = $assistanceCurrentDate;
+                            }
 
-                                if ($key > 0) {
-                                    if ($key < count($assistancesEmployeeData) - 1) {
-                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                            if ($key > 0) {
+                                $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                                if ($key < count($assistancesEmployeeData) - 1) {
+                                    //Calcular el tiempo en que la persona estuvo afuera
+                                    if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                        $entradaDate = $assistanceCurrentDate;
+                                        $salidaDate = $assistancePreviousDate;
 
-                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
-                                        }
-                                    }
-
-                                    if ($key === count($assistancesEmployeeData) - 1) {
-                                        if($assistancesEmployeeData[$key]->type == 'Entrada'){
-                                            $lastTime = $currrentDate;
-                                        }else{
-                                            $lastTime = $currentDateAssistanceEmployee;
-                                        }
-                                    }
-
-                                    if ($assistance->type == 'Entrada') {
-                                        $time += $time;
-                                        $minutes += $minutes;
+                                        $secondsEntrada = strtotime($entradaDate);
+                                        $secondsSalida = strtotime($salidaDate);
+                                        $secondsFuera += $secondsEntrada - $secondsSalida;
                                     }
                                 }
-                            }else{
-                                $currentDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistance->date . ' ' . $assistance->time);
-                                if ($key === 1) {
-                                    $firstTime = $currentDateAssistanceEmployee;
-                                    $lastTime = $currrentDate;
+
+                                if ($key == count($assistancesEmployeeData) - 1) {
+                                    //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                                    //si no hay registro de la ultima salida
+                                    if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                        $lastDate = $assistanceCurrentDate;
+                                    }
+
+                                    if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                        $lastDate = $currrentDate;
+                                    }
+
+                                    $secondsFirst = strtotime($firstDate);
+                                    $secondsLast = strtotime($lastDate);
+                                    $seconds = $secondsLast - $secondsFirst;
+                                    $seconds = $seconds - $secondsFuera;
+                                }
+                            }
+                        } else { //Empieza con salida
+                            if ($key > 0) { //Entrada
+                                if ($key == 1) {
+                                    $firstDate = $assistanceCurrentDate;
                                 }
 
                                 if ($key > 1) {
-                                    if ($key < count($assistancesEmployeeData) - 1) {
-                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
-                                            $previousDateAssistanceEmployee = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
+                                    $assistancePreviousDate = Carbon::createFromFormat('Y-m-d H:i:s', $assistancesEmployeeData[$key - 1]->date . ' ' . $assistancesEmployeeData[$key - 1]->time);
 
-                                            $time = $previousDateAssistanceEmployee->diffInHours($currentDateAssistanceEmployee);
-                                            $minutes = $previousDateAssistanceEmployee->diffInMinutes($currentDateAssistanceEmployee);
+                                    if ($key < (count($assistancesEmployeeData) - 1)) {
+                                        //Calcular el tiempo en que la persona estuvo afuera
+                                        if ($assistancesEmployeeData[$key - 1]->type == 'Salida' && $assistance->type == 'Entrada') {
+                                            $entradaDate = $assistanceCurrentDate;
+                                            $salidaDate = $assistancePreviousDate;
+
+                                            $secondsEntrada = strtotime($entradaDate);
+                                            $secondsSalida = strtotime($salidaDate);
+                                            $secondsFuera += $secondsEntrada - $secondsSalida;
                                         }
                                     }
-                                    if ($key === count($assistancesEmployeeData) - 1) {
-                                        $lastTime = $currentDateAssistanceEmployee;
-                                    }
 
-                                    if ($assistance->type == 'Entrada') {
-                                        $time += $time;
-                                        $minutes += $minutes;
+                                    if ($key == (count($assistancesEmployeeData) - 1)) {
+                                        //Calculando el tiempo de la primer entrada y la salida o con la fecha actual 
+                                        //si no hay registro de la ultima salida
+                                        if ($assistance->type == 'Salida') { //Obtener la fecha de la ultima salida
+                                            $lastDate = $assistanceCurrentDate;
+                                        }
+
+                                        if ($assistance->type == 'Entrada') { //Obtener la fecha actual
+                                            $lastDate = $currrentDate;
+                                        }
+
+                                        $secondsFirst = strtotime($firstDate);
+                                        $secondsLast = strtotime($lastDate);
+                                        $seconds = $secondsLast - $secondsFirst;
+                                        $seconds = $seconds - $secondsFuera;
                                     }
-                                    
                                 }
-                                
                             }
                         }
-                        if($data->date != $assistance->date){ ///Para evaluar el final si hace falta unoooo
-                            $lastTime = $currentDateAssistanceEmployee;
-                        }
                     }
-                
-
-                    $timeTotal = $firstTime->diffInHours($lastTime);
-                    $minutesTotal = $firstTime->diffInMinutes($lastTime);
-
-                    $minutesTotal = $minutesTotal - ($timeTotal * 60);
-                    $timeTotal = $timeTotal - $time;
-                    $minutes = $minutes - ($time * 60);
-
-                    $minutesTotal = abs($minutesTotal - $minutes);
-                    $minutesTotal = round($minutesTotal);
-
+                    $time_worked = $this->convertSecondsToHours($seconds);
 
                     $assistanceSummary[$data->id] = (object) [
                         'employee' => $data->employee->first_name . ' ' . $data->employee->last_name,
                         'start_date' => $this->transactionUtil->format_date($firstTime, true),
                         'end_date' => $this->transactionUtil->format_date($lastTime, true),
-                        'time_worked' => $timeTotal . ' horas con ' . $minutesTotal . ' minutos'
+                        'time_worked' => $time_worked
                     ];
                 }
             }
@@ -554,13 +569,13 @@ class AssistanceEmployeeController extends Controller
             ->get();
 
         $keyAssitance = count($assistances) - 1;
-        if($assistances[$keyAssitance]->type == 'Entrada'){
+        if ($assistances[$keyAssitance]->type == 'Entrada') {
             $lastAssistanceEmployee = AssistanceEmployee::where('employee_id', $assistance->employee_id)
                 ->where('id', '>', $assistances[$keyAssitance]->id)
                 ->where('business_id', $business_id)
                 ->orderBy('id', 'ASC')
                 ->first();
-            if($lastAssistanceEmployee){
+            if ($lastAssistanceEmployee) {
                 $assistances->add($lastAssistanceEmployee);
             }
         }
@@ -579,7 +594,8 @@ class AssistanceEmployeeController extends Controller
 
 
     //Show the employee's photo in a larger way in the assitance detail
-    public function viewImage($id){
+    public function viewImage($id)
+    {
         $business_id = request()->session()->get('user.business_id');
         $assistance = AssistanceEmployee::where('id', $id)
             ->where('business_id', $business_id)
@@ -589,5 +605,51 @@ class AssistanceEmployeeController extends Controller
 
         $routeApi = config('app.assistance_employee_url');
         return view('rrhh.assistance.photo', compact('idAssistance', 'routeApi', 'employee'));
+    }
+
+    private function convertSecondsToHours($time_in_seconds)
+    {
+        $days = floor($time_in_seconds / 86400);
+        $hours = floor($time_in_seconds / 3600);
+        $minutes = floor(($time_in_seconds - ($hours * 3600)) / 60);
+        $seconds = $time_in_seconds - ($hours * 3600) - ($minutes * 60);
+
+        if ($hours > 24) {
+            $hours = floor($time_in_seconds / 3600) - ($days * 24);
+        }
+
+        $numberHour = '';
+        if ($hours == 1) {
+            $numberHour = $hours . ' hora con';
+        }
+        if ($hours != 1) {
+            $numberHour = $hours . ' horas con';
+        }
+
+        $numberMinute = '';
+        if ($minutes == 1) {
+            $numberMinute = $minutes . ' minuto con';
+        }
+        if ($minutes != 1) {
+            $numberMinute = $minutes . ' minutos con';
+        }
+
+        $numberSecond = '';
+        if ($hours == 1) {
+            $numberSecond = $seconds . ' segundo';
+        }
+        if ($hours != 1) {
+            $numberSecond = $seconds . ' segundos';
+        }
+
+        if ($days >= 1) {
+            if (variant_int($days) == 1) {
+                return variant_int($days) . ' día con ' . $numberHour . ' ' . $numberMinute . ' ' . $numberSecond;
+            } else {
+                return variant_int($days) . ' días con ' . $numberHour . ' ' . $numberMinute . ' ' . $numberSecond;
+            }
+        } else {
+            return $numberHour . ' ' . $numberMinute . ' ' . $numberSecond;
+        }
     }
 }

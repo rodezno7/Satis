@@ -27,7 +27,7 @@ class LawDiscountController extends Controller
     }
 
     public function getLawDiscounts(){
-        if ( !auth()->user()->can('plantilla-catolgues.view') ) {
+        if ( !auth()->user()->can('payroll-catolgues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -63,9 +63,10 @@ class LawDiscountController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
         $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
-            ->where('id', '<>', 2) //Catorcenal
-            ->where('id', '<>', 4) //Primera quincena
-            ->where('id', '<>', 5) //Segunda quincena
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Primera quincena') //Primera quincena
+            ->where('name', '<>', 'Segunda quincena') //Segunda quincena
+            ->where('name', '<>', 'Personalizado') //Personalizado
             ->get();
         return view('payroll.catalogues.law_discounts.create', compact('institutions', 'paymentPeriods'));
     }
@@ -144,9 +145,10 @@ class LawDiscountController extends Controller
         $lawDiscount = LawDiscount::where('id', $id)->where('business_id', $business_id)->first();
         $institutions = InstitutionLaw::where('business_id', $business_id)->get();
         $paymentPeriods = PaymentPeriod::where('business_id', $business_id)
-            ->where('id', '<>', 2) //Catorcenal
-            ->where('id', '<>', 4) //Primera quincena
-            ->where('id', '<>', 5) //Segunda quincena
+            ->where('name', '<>', 'Catorcenal') //Catorcenal
+            ->where('name', '<>', 'Primera quincena') //Primera quincena
+            ->where('name', '<>', 'Segunda quincena') //Segunda quincena
+            ->where('name', '<>', 'Personalizado') //Personalizado
             ->get();
         return view('payroll.catalogues.law_discounts.edit', compact('lawDiscount', 'institutions', 'paymentPeriods'));
     }

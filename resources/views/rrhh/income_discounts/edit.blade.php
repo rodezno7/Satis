@@ -22,7 +22,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_discount">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_discount1">
             <div class="form-group">
                 <label>@lang('rrhh.types_discounts')</label> <span class="text-danger">*</span>
                 <select name="rrhh_type_discount_id" id="rrhh_type_discount_id1"
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_income">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="div_type_income1">
             <div class="form-group">
                 <label>@lang('rrhh.types_incomes')</label> <span class="text-danger">*</span>
                 <select name="rrhh_type_income_id" id="rrhh_type_income_id1" class="form-control form-control-sm select2"
@@ -168,18 +168,18 @@
     function typeOption() {
         let type = $('#type1').val();
 
-        $('#div_type_discount').hide();
+        $('#div_type_discount1').hide();
         $("#type_discount_id").prop('required', false);
 
-        $('#div_type_income').hide();
+        $('#div_type_income1').hide();
         $("#type_income_id").prop('required', false);
 
         //Evaluando si es un ingreso o descuento
         if (type == 1) { //Ingreso
-            $('#div_type_income').show();
+            $('#div_type_income1').show();
             $("#type_income_id").prop('required', true);
         } else { //Descuento
-            $('#div_type_discount').show();
+            $('#div_type_discount1').show();
             $("#type_discount_id").prop('required', true);
         }
     }
@@ -223,21 +223,22 @@
     //Calculate Date
     function calculateDate(){
         let payment_period = $('select[name="payment_period_id"] option:selected').text();
-        let start_date = $('#start_date').val();
+        let start_date = $('#start_date1').val();
         start_date = start_date.replace(/\//g, '-');
-        let quota = $('#quota').val();
+        let quota = $('#quota1').val();
 
         if (payment_period != "" && quota != "" && start_date != null) {
             start_date = start_date.split("-").reverse().join("-");
             var fecha = Date.parse(start_date);
             fecha = new Date(start_date);
+            fecha.setDate(fecha.getDate() + 1);
 
             if(payment_period == 'Quincenal'){
-                $("#end_date").datepicker("setDate", applyQuincena(fecha, quota));
+                $("#end_date1").datepicker("setDate", applyQuincena(fecha, quota));
             }
 
             if(payment_period == 'Mensual'){
-                $("#end_date").datepicker("setDate", applyMensual(fecha, quota));
+                $("#end_date1").datepicker("setDate", applyMensual(fecha, quota));
             }
         }
     }
@@ -248,42 +249,40 @@
         let currentDay = date.getDate();
         let currentMonth = date.getMonth() + 1; 
         let currentYear = date.getFullYear();
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        var lastDay = new Date(currentYear, currentMonth, 0);
         let quotaNumber = 0;
         let quincena = 0;
         let fecha = '';
 
         while (quotaNumber <= quota) {
             if(quincena == 0){
-                if(currentDay >= 0 && currentDay < 15 || currentDay == lastDay.getDate()){
+                if(currentDay >= 0 && currentDay < 15){
                     quotaNumber++;
                     quincena = 1;
                 }
-                if(currentDay >= 15 && currentDay < lastDay.getDate()){
+                if(currentDay >= 15 && currentDay <= lastDay.getDate()){
                     quotaNumber++;
                     quincena = 2;
                 }
             }
-
+            
             if(quincena > 0){
                 if(currentMonth >= 1 && currentMonth <= 12){
                     if(quincena%2==0){ // par
                         lastDay = new Date(currentYear, currentMonth, 0);
                         lastDay = lastDay.getDate();
                         fecha = new Date(currentYear, currentMonth-1, lastDay);
-                        quotaNumber++;
-                        quincena++;
-                    }else{//impar
-                        quotaNumber++;
-                        quincena++;
                         currentMonth++;
+                    }else{//impar
                         lastDay = 15;
                         fecha = new Date(currentYear, currentMonth-1, lastDay);
                         if(currentMonth > 12){
                             currentMonth = 1;
                             currentYear++;
                         }
-                    }      
+                    }  
+                    quotaNumber++;
+                    quincena++;    
                 }
             }            
         }        
@@ -299,10 +298,10 @@
         let fecha = "";
 
         while (quotaNumber < quota) {
-            if(currentMonth >= 1 && currentMonth <= 12){
+            if(currentMonth >= 0 && currentMonth <= 13){
                 currentMonth++;
                 quotaNumber++;
-                if(currentMonth > 12){
+                if(currentMonth > 13){
                     currentMonth = 1;
                     currentYear++;
                 }
@@ -344,7 +343,7 @@
                         timer: 1000,
                         showConfirmButton: false,
                     });
-                    $('#modal_doc').modal('hide').data('bs.modal', null);
+                    $('#modal_edit_action').modal('hide').data('bs.modal', null);
                 } else {
                     Swal.fire({
                         title: result.msg,
@@ -370,6 +369,6 @@
         $('#modal_action').modal({
             backdrop: 'static'
         });
-        $('#modal_doc').modal('hide').data('bs.modal', null);
+        $('#modal_edit_action').modal('hide').data('bs.modal', null);
     }
 </script>

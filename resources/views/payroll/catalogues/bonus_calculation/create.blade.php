@@ -28,19 +28,18 @@
 
     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
       <div class="form-group">
-        <label>@lang('payroll.days')</label> <span class="text-danger">*</span>
-        {!! Form::number("days", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.days'), 
+        <label>@lang('payroll.days_to_pay')</label> <span class="text-danger">*</span>
+        {!! Form::number("days", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.days_to_pay'), 
         'id' => 'days', 'required'])!!}
       </div>
     </div>
 
 	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 		<div class="form-group">
-		  <label>@lang('payroll.percentage')</label> <span class="text-danger">*</span>
-		  {!! Form::number("percentage", null, ['class' => 'form-control form-control-sm', 'placeholder' => __('payroll.percentage'), 
-		  'id' => 'percentage', 'required'])!!}
+			<label>@lang('payroll.proportional')</label>
+			{!! Form::select('proportional', [1 => __('messages.yes'), 0 => __('messages.no')], null, ['class' => 'form-control select2', 'id' => 'proportional', 'required', 'style' => 'width: 100%;' ]) !!}
 		</div>
-	  </div>
+	</div>
 
   </div>
 </div>

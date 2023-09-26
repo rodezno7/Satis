@@ -23,7 +23,7 @@ class InstitutionLawController extends Controller
     }
 
     public function getInstitutionLaws(){
-        if ( !auth()->user()->can('plantilla-catolgues.view') ) {
+        if ( !auth()->user()->can('payroll-catolgues.view') ) {
             abort(403, 'Unauthorized action.');
         }
 

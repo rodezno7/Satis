@@ -15,34 +15,41 @@
                 <span class="badge" style="background: #367FA9">{{ $payroll->payrollStatus->name }}</span>
             @endif
         </h1>
+        <small>{{ $payroll->name }}</small>
     </section>
 
     <!-- Main content -->
     <section class="content">
         <div class="boxform_u box-solid_u">
-            <div class="box-header">
-                <h3></h3>
-                <div class="box-tools">
-                    @can('payroll.export')
-                        <a href="/payroll/{{ $payroll->id }}/exportPayrollSalary" class="btn btn-success" type="button">
-                            <i class="fa fa-file"></i> @lang('report.export')
-                        </a>
-                    @endcan
-                    @if ($payroll->payrollStatus->name == 'Calculada')
-                        @can('payroll.recalculate')
-                            <a href="#" class="btn btn-info" type="button"
-                                onClick="recalculatePayroll({{ $payroll->id }})" id="btn_recalculate">
-                                <i class="fa fa-plus"></i> @lang('payroll.recalculate')
+            <div class="box-header" id="">
+                <h1></h1>
+                <div class="box-tools" id="div_actions">
+                    @if(count($payroll->payrollDetails) > 0)
+                        @can('payroll.export')
+                            <a href="/payroll/{{ $payroll->id }}/exportPayroll" class="btn btn-success" type="button">
+                                <i class="fa fa-file"></i> @lang('report.export')
                             </a>
-                        @endcan
-                        @can('payroll.approve')
-                            <a href="#" class="btn btn-primary" type="button"
-                                onClick="approvePayroll({{ $payroll->id }})" id="btn_approve">
-                                <i class="fa fa-check-square"></i> @lang('payroll.approve')
-                            </a>
-                        @endcan
+                        @endcan  
                     @endif
-                    @if ($payroll->payrollStatus->name == 'Aprobada')
+                    @if ($payroll->payrollStatus->name == 'Calculada')
+                        @if(count($payroll->payrollDetails) >= 0)
+                            @can('payroll.recalculate')
+                                <a href="#" class="btn btn-info" type="button"
+                                    onClick="recalculatePayroll({{ $payroll->id }})" id="btn_recalculate">
+                                    <i class="fa fa-plus"></i> @lang('payroll.recalculate')
+                                </a>
+                            @endcan
+                        @endif
+                        @if(count($payroll->payrollDetails) > 0)
+                            @can('payroll.approve')
+                                <a href="#" class="btn btn-primary" type="button"
+                                    onClick="approvePayroll({{ $payroll->id }})" id="btn_approve">
+                                    <i class="fa fa-check-square"></i> @lang('payroll.approve')
+                                </a>
+                            @endcan
+                        @endif
+                    @endif
+                    @if ($payroll->payrollStatus->name == 'Aprobada' && count($payroll->payrollDetails) > 0)
                         @can('payroll.pay')
                             <a href="#" class="btn btn-primary" type="button"
                                 onClick="payPayroll({{ $payroll->id }})" id="btn_pay">
@@ -51,6 +58,7 @@
                         @endcan
                     @endif
                 </div>
+                
             </div>
             
             @if ($payroll->payrollType->name == 'Planilla de sueldos')
@@ -58,6 +66,12 @@
             @endif
             @if ($payroll->payrollType->name == 'Planilla de honorarios')
                 @include('payroll.generate_honorary')
+            @endif
+            @if ($payroll->payrollType->name == 'Planilla de aguinaldos')
+                @include('payroll.generate_bonus')
+            @endif
+            @if ($payroll->payrollType->name == 'Planilla de vacaciones')
+                @include('payroll.generate_vacation')
             @endif
         </div>
 
@@ -112,7 +126,7 @@
                         },
                         {
                             data: 'montly_salary',
-                            name: 'days',
+                            name: 'montly_salary',
                             className: "text-center"
                         },
                         {
@@ -131,19 +145,9 @@
                             className: "text-center salary"
                         },
                         {
-                            data: 'daytime_overtime',
-                            name: 'daytime_overtime',
-                            className: "text-center daytime_overtime"
-                        },
-                        {
-                            data: 'night_overtime_hours',
-                            name: 'night_overtime_hours',
-                            className: "text-center night_overtime_hours"
-                        },
-                        {
-                            data: 'total_hours',
-                            name: 'total_hours',
-                            className: "text-center total_hours"
+                            data: 'extra_hours',
+                            name: 'extra_hours',
+                            className: "text-center extra_hours"
                         },
                         {
                             data: 'other_income',
@@ -151,9 +155,9 @@
                             className: "text-center other_income"
                         },
                         {
-                            data: 'subtotal',
-                            name: 'subtotal',
-                            className: "text-center subtotal"
+                            data: 'total_income',
+                            name: 'total_income',
+                            className: "text-center total_income"
                         },
                         {
                             data: 'isss',
@@ -176,28 +180,31 @@
                             className: "text-center other_deductions"
                         },
                         {
+                            data: 'total_deductions',
+                            name: 'total_deductions',
+                            className: "text-center total_deductions"
+                        },
+                        {
                             data: 'total_to_pay',
                             name: 'total_to_pay',
                             className: "text-center total_to_pay"
                         },
                     ],
                     "fnDrawCallback": function(oSettings) {
-                        $('span#regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
-                        $('span#total_daytime_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'daytime_overtime'));
-                        $('span#total_night_overtime_hours').text(sum_table_col_name($(
-                            'table#payroll-detail-table'), 'night_overtime_hours'));
-                        $('span#total_overtime').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'total_hours'));
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
+                        $('span#total_extra_hours').text(sum_table_col_name($(
+                            'table#payroll-detail-table'), 'extra_hours'));
                         $('span#other_income').text(sum_table_col_name($('table#payroll-detail-table'),
                             'other_income'));
-                        $('span#total_subtotal').text(sum_table_col_name($('table#payroll-detail-table'),
-                            'subtotal'));
+                        $('span#total_income').text(sum_table_col_name($('table#payroll-detail-table'),
+                            'total_income'));
                         $('span#total_isss').text(sum_table_col_name($('table#payroll-detail-table'), 'isss'));
                         $('span#total_afp').text(sum_table_col_name($('table#payroll-detail-table'), 'afp'));
                         $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
                         $('span#total_other_deductions').text(sum_table_col_name($('table#payroll-detail-table'),
                             'other_deductions'));
+                        $('span#total_deductions').text(sum_table_col_name($('table#payroll-detail-table'),
+                            'total_deductions'));
                         $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'),
                             'total_to_pay'));
                         __currency_convert_recursively($('table#payroll-detail-table'));
@@ -213,14 +220,24 @@
                     ajax: "/payroll-getPayrollDetail/" + id,
                     columns: [
                         {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        }, 
+                        {
                             data: 'employee',
                             name: 'employee',
                             className: "text-center"
                         },
                         {
-                            data: 'salary',
-                            name: 'salary',
-                            className: "text-center salary"
+                            data: 'dni',
+                            name: 'dni',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'regular_salary',
+                            name: 'regular_salary',
+                            className: "text-center regular_salary"
                         },
                         {
                             data: 'rent',
@@ -234,7 +251,7 @@
                         },
                     ],
                     "fnDrawCallback": function(oSettings) {
-                        $('span#total_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'salary'));
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'regular_salary'));
                         $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
                         $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'),
                             'total_to_pay'));
@@ -244,6 +261,130 @@
                 });
             }
             
+            if(type == 'Planilla de aguinaldos'){
+                var table = $("#payroll-detail-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "/payroll-getPayrollDetail/" + id,
+                    columns: [
+                        {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        },    
+                        {
+                            data: 'employee',
+                            name: 'employee',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'date_admission',
+                            name: 'date_admission',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'end_date',
+                            name: 'end_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'montly_salary',
+                            name: 'montly_salary',
+                            className: "text-center montly_salary"
+                        },
+                        {
+                            data: 'days',
+                            name: 'days',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'bonus',
+                            name: 'bonus',
+                            className: "text-center bonus"
+                        },
+                        {
+                            data: 'rent',
+                            name: 'rent',
+                            className: "text-center rent"
+                        },
+                        {
+                            data: 'total_to_pay',
+                            name: 'total_to_pay',
+                            className: "text-center total_to_pay"
+                        },
+                    ],
+                    "fnDrawCallback": function(oSettings) {
+                        $('span#total_montly_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'montly_salary'));
+                        $('span#total_bonus').text(sum_table_col_name($('table#payroll-detail-table'), 'bonus'));
+                        $('span#tota_rent').text(sum_table_col_name($('table#payroll-detail-table'), 'rent'));
+                        $('span#total_total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'), 'total_to_pay'));
+                        __currency_convert_recursively($('table#payroll-detail-table'));
+                    },
+                    dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+                });
+            }
+
+            if(type == 'Planilla de vacaciones'){
+                var table = $("#payroll-detail-table").DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "/payroll-getPayrollDetail/" + id,
+                    columns: [
+                        {
+                            data: 'code',
+                            name: 'code',
+                            className: "text-center"
+                        },    
+                        {
+                            data: 'employee',
+                            name: 'employee',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'montly_salary',
+                            name: 'montly_salary',
+                            className: "text-center montly_salary"
+                        },
+                        {
+                            data: 'start_date',
+                            name: 'start_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'end_date',
+                            name: 'end_date',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'proportional',
+                            name: 'proportional',
+                            className: "text-center"
+                        },
+                        {
+                            data: 'regular_salary',
+                            name: 'regular_salary',
+                            className: "text-center regular_salary"
+                        },
+                        {
+                            data: 'vacation_bonus',
+                            name: 'vacation_bonus',
+                            className: "text-center vacation_bonus"
+                        },
+                        {
+                            data: 'total_to_pay',
+                            name: 'total_to_pay',
+                            className: "text-center total_to_pay"
+                        },
+                    ],
+                    "fnDrawCallback": function(oSettings) {
+                        $('span#total_regular_salary').text(sum_table_col_name($('table#payroll-detail-table'), 'regular_salary'));
+                        $('span#total_vacation_bonus').text(sum_table_col_name($('table#payroll-detail-table'), 'vacation_bonus'));
+                        $('span#total_to_pay').text(sum_table_col_name($('table#payroll-detail-table'), 'total_to_pay'));
+                        __currency_convert_recursively($('table#payroll-detail-table'));
+                    },
+                    dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+                });
+            }
         }
 
 
@@ -253,7 +394,7 @@
 
             $.ajax({
                 url: route,
-                type: 'GET',
+                type: 'POST',
                 processData: false,
                 contentType: false,
                 success: function(result) {
@@ -398,6 +539,7 @@
         }
 
 
+        /** Approve payroll*/
         function approvePayroll(id) {
             Swal.fire({
                 title: "{{ __('messages.approve_question') }}",
@@ -412,7 +554,7 @@
                 if (willDelete.value) {
 
                     Swal.fire({
-                        title: "{{ __('messages.pay_question') }}",
+                        title: "{{ __('messages.payment_file_question') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -481,13 +623,29 @@
                                 $('#btn_approve').hide();
                                 $("#section_content-header").find('h1').remove();
                                 $("#section_content-header").append('<h1>'+type+' <span class="badge" style="background: #449D44">Aprobada</span></h1>');
+                                $('#div_actions').append('@can('payroll.pay')<a href="#" class="btn btn-primary" type="button" onClick="payPayroll({{ $payroll->id }})" id="btn_pay"> <i class="fa fa-check-square"></i> @lang('payroll.pay')</a> @endcan');
                                 $("#payroll-detail-table").DataTable().ajax.reload(null, false);
                             } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: result.msg,
-                                    icon: "error",
-                                });
+                                console.log(sendEmail);
+                                if(result.sendEmail == 1){
+                                    var url = "{!! URL::to('/payroll/:id/generatePaymentFiles') !!}";
+                                    url = url.replace(':id', id);
+                                    $.get(url, function(data) {
+                                        Swal.fire({
+                                            title: 'Se generó los archivos de pagos y se aprobó exitosamente la planilla',
+                                            icon: "success",
+                                            timer: 2000,
+                                            showConfirmButton: false,
+                                        });
+                                    });
+                                    
+                                }else{
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: result.msg,
+                                        icon: "error",
+                                    });
+                                }
                             }
                         },
                         error: function(msj) {
