@@ -762,6 +762,11 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('payroll/{id}/exportPayroll', 'PayrollController@exportPayroll');
 
 
+    //Report
+    Route::get('payroll-annual-summary', 'PayrollReportController@annualSummary');
+    Route::post('/payroll-annual-summary/export', 'PayrollReportController@generateAnnualSummary');
+
+
 
     //Route catalogues
     Route::resource('institution-law', 'InstitutionLawController');

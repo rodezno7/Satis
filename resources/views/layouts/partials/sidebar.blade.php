@@ -219,7 +219,7 @@
         {{-- Inicio Payroll --}}
         @if(auth()->user()->can('payroll.view') || auth()->user()->can('payroll-catalogues.view'))
           <li
-            class="treeview {{ in_array($request->segment(1), ['payroll', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
+            class="treeview {{ in_array($request->segment(1), ['payroll', 'payroll-annual-summary', 'institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}"
             id="tour_step4">
             <a href="#" id="tour_step4_menu"><i class="fa fa-list" aria-hidden="true"></i><span>{{ __('payroll.payroll') }}</span>
               <span class="pull-right-container">
@@ -228,50 +228,75 @@
             </a>
             <ul class="treeview-menu" id="rrhh_over">
               @can('payroll.view')
-              <li class="{{ $request->segment(1) == 'payroll' ? 'active' : '' }}">
-                <a href="{{action('PayrollController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
-                  @lang('payroll.payroll')
-                </a>
-              </li>
+                <li class="{{ $request->segment(1) == 'payroll' ? 'active' : '' }}">
+                  <a href="{{action('PayrollController@index')}}" id="tour_step2"><i class="fa fa-list"></i>
+                    @lang('payroll.payroll')
+                  </a>
+                </li>
               @endcan
+
               @can('payroll-catalogues.view')
-              <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
-                <a href="#">
-                  <i class="fa fa-table"></i>
-                  <span class="title">
-                    @lang('payroll.catalogues')
-                  </span>
-                  <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                  </span>
-                </a>
-                <ul class="treeview-menu">
-                  <li class="{{ $request->segment(1) == 'institution-law' ? 'active' : '' }}">
-                    <a href="{{ action('InstitutionLawController@index') }}">
-                      <i class="fa fa-newspaper-o"></i>
-                      <span class="title">
-                        @lang('payroll.institution_laws')
-                      </span>
-                    </a>
-                  </li>
-                  <li class="{{ $request->segment(1) == 'law-discount' ? 'active' : '' }}">
-                    <a href="{{ action('LawDiscountController@index') }}">
-                      <i class="fa fa-newspaper-o"></i>
-                      <span class="title">
-                        @lang('payroll.discounts_table')
-                      </span>
-                    </a>
-                  </li>
-                  <li class="{{ $request->segment(1) == 'bonus-calculation' ? 'active' : '' }}">
-                    <a href="{{ action('BonusCalculationController@index') }}">
-                      <i class="fa fa-newspaper-o"></i>
-                      <span class="title">
-                        @lang('payroll.bonus_table')
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                <li class="treeview {{ in_array($request->segment(1), ['payroll-annual-summary']) ? 'active active-sub' : '' }}">
+                  <a href="#">
+                    <i class="fa fa-bar-chart-o"></i>
+                    <span class="title">
+                      @lang('report.reports')
+                    </span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li class="{{ $request->segment(1) == 'payroll-annual-summary' ? 'active' : '' }}">
+                      <a href="{{ action('PayrollReportController@annualSummary') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">
+                          @lang('payroll.annual_summary')
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              @endcan
+
+              @can('payroll-catalogues.view')
+                <li class="treeview {{ in_array($request->segment(1), ['institution-law', 'law-discount', 'bonus-calculation']) ? 'active active-sub' : '' }}">
+                  <a href="#">
+                    <i class="fa fa-table"></i>
+                    <span class="title">
+                      @lang('payroll.catalogues')
+                    </span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li class="{{ $request->segment(1) == 'institution-law' ? 'active' : '' }}">
+                      <a href="{{ action('InstitutionLawController@index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">
+                          @lang('payroll.institution_laws')
+                        </span>
+                      </a>
+                    </li>
+                    <li class="{{ $request->segment(1) == 'law-discount' ? 'active' : '' }}">
+                      <a href="{{ action('LawDiscountController@index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">
+                          @lang('payroll.discounts_table')
+                        </span>
+                      </a>
+                    </li>
+                    <li class="{{ $request->segment(1) == 'bonus-calculation' ? 'active' : '' }}">
+                      <a href="{{ action('BonusCalculationController@index') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">
+                          @lang('payroll.bonus_table')
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
               @endcan
             </ul>
           </li>

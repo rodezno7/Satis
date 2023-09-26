@@ -113,11 +113,11 @@ class ProductController extends Controller
         }
 
         $permissionCost = 0;
-        if(auth()->user()->can('product.view_cost')){
+        if (auth()->user()->can('product.view_cost')) {
             $permissionCost = 1;
         }
 
-        if(request()->ajax()){
+        if (request()->ajax()) {
             // Parameters
             $params = [
                 // Filters
@@ -138,7 +138,7 @@ class ProductController extends Controller
                 })->editColumn('cost', function ($row) {
                     $price_precision = config('app.price_precision');
                     return $this->productUtil->num_f($row->cost, true, $price_precision);
-                })->editColumn('clasification', function($row){
+                })->editColumn('clasification', function ($row) {
                     if ($row->clasification == 'product') {
                         return __("product.clasification_product");
                     }
@@ -151,77 +151,76 @@ class ProductController extends Controller
                 })->addColumn('actions', function ($row) {
                     $business_id = request()->session()->get('user.business_id');
                     $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
-                    $html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.__("messages.actions").' <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
+                    $html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' . __("messages.actions") . ' <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
 
-                    if ($row->clasification == 'product'){
-                        $html .= '<li><a href="labels/show?product_id='.$row->id.'" data-toggle="tooltip" title="Print Barcode/Label"><i class="fa fa-barcode"></i>'.__("barcode.labels").'</a></li>';
+                    if ($row->clasification == 'product') {
+                        $html .= '<li><a href="labels/show?product_id=' . $row->id . '" data-toggle="tooltip" title="Print Barcode/Label"><i class="fa fa-barcode"></i>' . __("barcode.labels") . '</a></li>';
                     }
 
-                    if (auth()->user()->can('product.view')){
-                        $html .= '<li><a href="/products/view/'.$row->id.'" class="view-product"><i class="fa fa-eye"></i>'.__("messages.view").'</a></li>';
+                    if (auth()->user()->can('product.view')) {
+                        $html .= '<li><a href="/products/view/' . $row->id . '" class="view-product"><i class="fa fa-eye"></i>' . __("messages.view") . '</a></li>';
                         if ($row->clasification == "product") {
-                            $html .= '<li><a href="/products/viewSupplier/'.$row->id.'" class="view-supplier"><i class="fa fa-building-o"></i>'.__("product.supplier_label").'</a></li>';
+                            $html .= '<li><a href="/products/viewSupplier/' . $row->id . '" class="view-supplier"><i class="fa fa-building-o"></i>' . __("product.supplier_label") . '</a></li>';
                         }
 
                         if ($row->clasification == "kits") {
-                            $html .= '<li><a href="/products/viewKit/'.$row->id.'" class="view-kit" ><i class="fa fa-eye"></i>'.__("product.view_kit").'</a></li>';
+                            $html .= '<li><a href="/products/viewKit/' . $row->id . '" class="view-kit" ><i class="fa fa-eye"></i>' . __("product.view_kit") . '</a></li>';
                         }
-                        $html .= '<li><a href="/products/purchase_history/'.$row->id.'" class="view_history_purchase"><i class="fa fa-history"></i>Historial de compra</a></li>';
+                        $html .= '<li><a href="/products/purchase_history/' . $row->id . '" class="view_history_purchase"><i class="fa fa-history"></i>Historial de compra</a></li>';
                     }
 
-                    if (auth()->user()->can('product.update')){
-                        $html .= '<li><a href="/products/'.$row->id.'/edit"><i class="glyphicon glyphicon-edit"></i>'.__("messages.edit").'</a></li>';
-                        $html .= '<li><a href="/products/get-product-accounts/'.$row->id.'" class="accounting_account"><i class="fa fa-book"></i>'. __('product.accounting_accounts') .'</a></li>';
+                    if (auth()->user()->can('product.update')) {
+                        $html .= '<li><a href="/products/' . $row->id . '/edit"><i class="glyphicon glyphicon-edit"></i>' . __("messages.edit") . '</a></li>';
+                        $html .= '<li><a href="/products/get-product-accounts/' . $row->id . '" class="accounting_account"><i class="fa fa-book"></i>' . __('product.accounting_accounts') . '</a></li>';
                     }
 
-                    if (auth()->user()->can('product.delete')){
-                        $html .= '<li><a href="/products/'.$row->id.'" class="delete-product"><i class="fa fa-trash"></i>'.__("messages.delete").'</a></li>';
+                    if (auth()->user()->can('product.delete')) {
+                        $html .= '<li><a href="/products/' . $row->id . '" class="delete-product"><i class="fa fa-trash"></i>' . __("messages.delete") . '</a></li>';
                     }
 
                     $html .= '<li class="divider"></li>';
-                    if (auth()->user()->can('product.create')){
-                        if($row->clasification != 'service'){
-                            $html .= '<li><a href="#" data-href="/opening-stock/add/'.$row->id.'" class="add-opening-stock"><i class="fa fa-database"></i>'.__("lang_v1.add_edit_opening_stock").'</a></li>';
+                    if (auth()->user()->can('product.create')) {
+                        if ($row->clasification != 'service') {
+                            $html .= '<li><a href="#" data-href="/opening-stock/add/' . $row->id . '" class="add-opening-stock"><i class="fa fa-database"></i>' . __("lang_v1.add_edit_opening_stock") . '</a></li>';
                         }
 
-                        if($selling_price_group_count > 0){
-                            $html .= '<li><a href="/products/add-selling-prices/'.$row->id.'"><i class="fa fa-money"></i>'.__("lang_v1.add_selling_price_group_prices").'</a></li>';
+                        if ($selling_price_group_count > 0) {
+                            $html .= '<li><a href="/products/add-selling-prices/' . $row->id . '"><i class="fa fa-money"></i>' . __("lang_v1.add_selling_price_group_prices") . '</a></li>';
                         }
                     }
 
                     $html .= '</ul></div>';
                     return $html;
-                }
-            );
+                });
 
             if (request()->get('length') != -1) {
                 $datatable = $datatable->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view")) {
-                            return  action('SellController@show', [$row->id]);
+                            return action('SellController@show', [$row->id]);
                         } else {
                             return '';
                         }
                     }
                 ]);
             }
-    
-            if(auth()->user()->can('product.view_cost')){
+
+            if (auth()->user()->can('product.view_cost')) {
                 $datatable = $datatable->rawColumns(['sku', 'product_name', 'stock', 'cost', 'clasification', 'actions'])
-                ->setTotalRecords($products['count'])
-                ->setFilteredRecords($products['count'])
-                ->skipPaging()
-                ->toJson();
-            }else{
+                    ->setTotalRecords($products['count'])
+                    ->setFilteredRecords($products['count'])
+                    ->skipPaging()
+                    ->toJson();
+            } else {
                 $datatable = $datatable->rawColumns(['sku', 'product_name', 'stock', 'clasification', 'actions'])
-                ->setTotalRecords($products['count'])
-                ->setFilteredRecords($products['count'])
-                ->skipPaging()
-                ->toJson();
-            }          
+                    ->setTotalRecords($products['count'])
+                    ->setFilteredRecords($products['count'])
+                    ->skipPaging()
+                    ->toJson();
+            }
             return $datatable;
-        }    
-        
+        }
+
         return view('product.index')->with(compact(
             'rack_enabled',
             'selling_price_group_count',
@@ -237,24 +236,24 @@ class ProductController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         // Location filter
-        if (! empty($params['location_id']) && $params['location_id'] != 'all') {
+        if (!empty($params['location_id']) && $params['location_id'] != 'all') {
             $location_id = $params['location_id'];
         } else {
             $location_id = 0;
         }
 
         // Customer filter
-        if (! empty($params['clasification'])) {
+        if (!empty($params['clasification'])) {
             $clasification = $params['clasification'];
         } else {
             $clasification = '';
-        }        
+        }
 
         // Datatable parameters
         $start_record = $params['start_record'];
         $page_size = $params['page_size'];
         $search_array = $params['search'];
-        $search = ! is_null($search_array['value']) ? $search_array['value'] : '';
+        $search = !is_null($search_array['value']) ? $search_array['value'] : '';
         $order = $params['order'];
 
         // Count sales
@@ -341,7 +340,7 @@ class ProductController extends Controller
             ->pluck('name', 'id');
 
         $barcode_types = $this->barcode_types;
-        $barcode_default =  $this->productUtil->barcode_default();
+        $barcode_default = $this->productUtil->barcode_default();
 
         $default_profit_percent = Business::where('id', $business_id)->value('default_profit_percent');
 
@@ -395,7 +394,7 @@ class ProductController extends Controller
         /** Get supplier main account */
         $business = Business::find($business_id);
         $supplier_account = "";
-        if($business->accounting_supplier_id){
+        if ($business->accounting_supplier_id) {
             $supplier_account =
                 Catalogue::where("status", 1)
                     ->where("id", $business->accounting_supplier_id)
@@ -405,9 +404,9 @@ class ProductController extends Controller
             ->pluck('name', 'id');
 
         $countries = Country::select('id', 'name')
-        ->where('business_id', $business_id)
-        ->pluck('name', 'id');
-        
+            ->where('business_id', $business_id)
+            ->pluck('name', 'id');
+
         $products = DB::table('variations')
             ->join('products', 'products.id', '=', 'variations.product_id')
             ->select('products.name as name_product', 'variations.name as name_variation', 'variations.id', 'variations.sub_sku', 'products.sku')
@@ -457,7 +456,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -476,8 +475,8 @@ class ProductController extends Controller
 
             $product_details = $request->only(
                 ['name', 'brand_id', 'category_id', 'tax', 'type', 'barcode_type', 'sku',
-                'alert_quantity', 'tax_type', 'weight', 'product_description', 'discount_card',
-                'clasification', 'provider_code', 'drive_unit', 'volume', 'download_time']);
+                    'alert_quantity', 'tax_type', 'weight', 'product_description', 'discount_card',
+                    'clasification', 'provider_code', 'drive_unit', 'volume', 'download_time']);
 
             $product_details['provider_code'] = $request->provider_code;
             $product_details['drive_unit'] = $request->drive_unit;
@@ -495,7 +494,7 @@ class ProductController extends Controller
             $product_details['dai'] = !empty($request->input('dai')) ? $request->input('dai') : 0.00;
 
 
-            if (!empty($request->input('enable_stock')) &&  $request->input('enable_stock') == 1) {
+            if (!empty($request->input('enable_stock')) && $request->input('enable_stock') == 1) {
                 $product_details['enable_stock'] = 1;
             }
             if (!empty($request->input('sub_category_id'))) {
@@ -505,7 +504,7 @@ class ProductController extends Controller
                 $product_details['sku'] = ' ';
             }
 
-            if (! empty($request->input('check_dai')) && $request->input('check_dai') == 1) {
+            if (!empty($request->input('check_dai')) && $request->input('check_dai') == 1) {
                 $product_details['check_dai'] = 1;
             }
 
@@ -515,7 +514,7 @@ class ProductController extends Controller
                 $product_details['expiry_period'] = $this->productUtil->num_uf($request->input('expiry_period'));
             }
 
-            if (!empty($request->input('enable_sr_no')) &&  $request->input('enable_sr_no') == 1) {
+            if (!empty($request->input('enable_sr_no')) && $request->input('enable_sr_no') == 1) {
                 $product_details['enable_sr_no'] = 1;
             }
             //upload document
@@ -555,7 +554,7 @@ class ProductController extends Controller
 
             DB::beginTransaction();
             $product = Product::create($product_details);
-            
+
             if ($clasification == "kits") {
                 if (!empty($product_ids)) {
                     $cont = 0;
@@ -632,7 +631,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -646,10 +645,11 @@ class ProductController extends Controller
 
         return view('product.show')->with(compact('details'));
     }
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -734,7 +734,7 @@ class ProductController extends Controller
         /** Get supplier main account */
         $business = Business::find($business_id);
         $supplier_account = "";
-        if($business->accounting_supplier_id){
+        if ($business->accounting_supplier_id) {
             $supplier_account =
                 Catalogue::where("status", 1)
                     ->where("id", $business->accounting_supplier_id)
@@ -742,13 +742,13 @@ class ProductController extends Controller
         }
 
         $payment_terms = PaymentTerm::select('id', 'name')
-        ->pluck('name', 'id');
+            ->pluck('name', 'id');
 
         $business_debt_to_pay_type = $business->debt_to_pay_type;
 
         $countries = Country::select('id', 'name')
-        ->where('business_id', $business_id)
-        ->pluck('name', 'id');
+            ->where('business_id', $business_id)
+            ->pluck('name', 'id');
 
         $products = DB::table('variations')
             ->join('products', 'products.id', '=', 'variations.product_id')
@@ -768,11 +768,12 @@ class ProductController extends Controller
                 'tax_groups', 'business_type', 'payment_conditions', 'supplier_account',
                 'payment_terms', 'business_debt_to_pay_type', 'countries'));
     }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -820,7 +821,7 @@ class ProductController extends Controller
 
             $product_details['status'] = !empty($request->input('is_active')) ? 'active' : 'inactive';
 
-            if (!empty($request->input('enable_stock')) &&  $request->input('enable_stock') == 1) {
+            if (!empty($request->input('enable_stock')) && $request->input('enable_stock') == 1) {
                 $product_details['enable_stock'] = 1;
             } else {
                 $product_details['enable_stock'] = 0;
@@ -828,7 +829,7 @@ class ProductController extends Controller
 
             $product_details['dai'] = !empty($request->input('dai')) ? $request->input('dai') : 0.00;
 
-            if (! empty($request->input('check_dai')) &&  $request->input('check_dai') == 1) {
+            if (!empty($request->input('check_dai')) && $request->input('check_dai') == 1) {
                 $product_details['check_dai'] = 1;
             } else {
                 $product_details['check_dai'] = 0;
@@ -884,7 +885,7 @@ class ProductController extends Controller
                 }
             }
 
-            if (!empty($request->input('enable_sr_no')) &&  $request->input('enable_sr_no') == 1) {
+            if (!empty($request->input('enable_sr_no')) && $request->input('enable_sr_no') == 1) {
                 $product->enable_sr_no = 1;
             } else {
                 $product->enable_sr_no = 0;
@@ -976,8 +977,8 @@ class ProductController extends Controller
             //         ProductHasSuppliers::where('product_id', $id)->forceDelete();
             //     }
             // }
-            
-            
+
+
             if ($product->clasification == "kits") {
                 if (!empty($product_ids)) {
                     //dd($quantity);
@@ -1044,7 +1045,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
+     * @param \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -1160,7 +1161,7 @@ class ProductController extends Controller
     /**
      * Get subcategories list for a category.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function getSubCategories(Request $request)
@@ -1186,7 +1187,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function getProductVariationFormPart(Request $request)
@@ -1229,7 +1230,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function getVariationValueRow(Request $request)
@@ -1250,7 +1251,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function getProductVariationRow(Request $request)
@@ -1273,7 +1274,7 @@ class ProductController extends Controller
     /**
      * Get product form parts.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function getVariationTemplate(Request $request)
@@ -1294,8 +1295,8 @@ class ProductController extends Controller
     /**
      * Retrieves products list.
      *
-     * @param  string  $q
-     * @param  boolean  $check_qty
+     * @param string $q
+     * @param boolean $check_qty
      *
      * @return JSON
      */
@@ -1420,19 +1421,19 @@ class ProductController extends Controller
                             ->first();
 
                         if ($prod->clasification == 'product' && $prod->enable_stock == 1) {
-                            
+
                             $vld = VariationLocationDetails::where('variation_id', $item->children_id)
                                 ->where('location_id', $location_id)
                                 ->where('warehouse_id', $warehouse_id)
                                 ->first();
-                            
+
                             // Validate quantity requested by the kit
                             if (!empty($vld)) {
                                 if (($vld->qty_available - $vld->qty_reserved) < $item->quantity) {
                                     $product->state_disabled = 1;
                                     break;
                                 }
-                            // If record in variation_location_details doesn't exist
+                                // If record in variation_location_details doesn't exist
                             } else {
                                 $product->state_disabled = 1;
                                 break;
@@ -1544,12 +1545,12 @@ class ProductController extends Controller
 
                         $join->on('variations.id', '=', 'VLD.variation_id');
 
-                            //Include Location
+                        //Include Location
                         if (!empty($warehouse_id)) {
                             $join->where(function ($query) use ($warehouse_id) {
                                 $query->where('VLD.warehouse_id', '=', $warehouse_id);
-                                    //Check null to show products even if no quantity is available in a location.
-                                    //TODO: Maybe add a settings to show product not available at a location or not.
+                                //Check null to show products even if no quantity is available in a location.
+                                //TODO: Maybe add a settings to show product not available at a location or not.
                                 $query->orWhereNull('VLD.warehouse_id');
                             });
                         }
@@ -1607,8 +1608,8 @@ class ProductController extends Controller
 
             $result = $products->orderBy('VLD.qty_available', 'desc')
                 ->get();
-            
-            foreach($result as $r){
+
+            foreach ($result as $r) {
                 $sgp = VariationGroupPrice::join('selling_price_groups as spg', 'variation_group_prices.price_group_id', 'spg.id')
                     ->where('variation_group_prices.variation_id', $r->variation_id)
                     ->select(
@@ -1616,9 +1617,9 @@ class ProductController extends Controller
                         'spg.name as price_group',
                         'variation_group_prices.price_inc_tax'
                     )->get();
-                
-                if(!empty($sgp)){
-                    foreach($sgp as $g){
+
+                if (!empty($sgp)) {
+                    foreach ($sgp as $g) {
                         $item = collect([
                             'price_group_id' => $g->price_group_id,
                             'price_group' => $g->price_group,
@@ -1636,8 +1637,8 @@ class ProductController extends Controller
     /**
      * Retrieves products list without variation list
      *
-     * @param  string  $q
-     * @param  boolean  $check_qty
+     * @param string $q
+     * @param boolean $check_qty
      *
      * @return JSON
      */
@@ -1687,7 +1688,7 @@ class ProductController extends Controller
     /**
      * Checks if product sku already exists.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function checkProductSku(Request $request)
@@ -1766,7 +1767,7 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function saveQuickProduct(Request $request)
@@ -1786,7 +1787,7 @@ class ProductController extends Controller
             $product_details['clasification'] = 'product';
             $product_details['business_id'] = $business_id;
             $product_details['created_by'] = $request->session()->get('user.id');
-            if (!empty($request->input('enable_stock')) &&  $request->input('enable_stock') == 1) {
+            if (!empty($request->input('enable_stock')) && $request->input('enable_stock') == 1) {
                 $product_details['enable_stock'] = 1;
                 //TODO: Save total qty
                 //$product_details['total_qty_available'] = 0;
@@ -1801,7 +1802,7 @@ class ProductController extends Controller
                 $product_details['expiry_period'] = $this->productUtil->num_uf($request->input('expiry_period'));
             }
 
-            if (!empty($request->input('enable_sr_no')) &&  $request->input('enable_sr_no') == 1) {
+            if (!empty($request->input('enable_sr_no')) && $request->input('enable_sr_no') == 1) {
                 $product_details['enable_sr_no'] = 1;
             }
 
@@ -1856,7 +1857,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function view($id)
@@ -1919,7 +1920,7 @@ class ProductController extends Controller
     /**
      * Mass deletes products.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function massDestroy(Request $request)
@@ -1973,7 +1974,7 @@ class ProductController extends Controller
     /**
      * Shows form to add selling price group prices for a product.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function addSellingPrices($id)
@@ -2001,7 +2002,7 @@ class ProductController extends Controller
     /**
      * Saves selling price group prices for a product.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function saveSellingPrices(Request $request)
@@ -2022,8 +2023,8 @@ class ProductController extends Controller
                     if (isset($value[$variation->id])) {
                         $variation_group_price =
                             VariationGroupPrice::where('variation_id', $variation->id)
-                            ->where('price_group_id', $key)
-                            ->first();
+                                ->where('price_group_id', $key)
+                                ->first();
                         if (empty($variation_group_price)) {
                             $variation_group_price = new VariationGroupPrice([
                                 'variation_id' => $variation->id,
@@ -2157,7 +2158,7 @@ class ProductController extends Controller
 
     public function addSupplier(Request $request, $id)
     {
-        try{
+        try {
             $product = Product::findOrFail($id);
             $supplier_ids = $request->input('supplier_ids');
 
@@ -2168,13 +2169,13 @@ class ProductController extends Controller
                     $detail = new ProductHasSuppliers;
                     $detail->product_id = $product->id;
                     $detail->contact_id = $supplier_ids[$cont];
-    
+
                     $detail->catalogue = '-';
                     $detail->uxc = 0;
                     $detail->weight = 0;
                     $detail->dimensions = 0;
                     $detail->custom_field = '-';
-    
+
                     $detail->save();
                     $cont = $cont + 1;
                 }
@@ -2186,20 +2187,20 @@ class ProductController extends Controller
                 'msg' => __('product.supplier_added_success'),
                 'product_id' => $product->id
             ];
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $output = [
                 'success' => 0,
                 'msg' => __("messages.something_went_wrong")
             ];
         }
-        
+
         return redirect('products')->with('status', $output);
     }
 
     public function deleteSupplier($id, $supplierId)
     {
         $detail = ProductHasSuppliers::where('product_id', $id)->where('contact_id', $supplierId)->first();
-        if($detail != null){
+        if ($detail != null) {
             $detail->delete();
         }
     }
@@ -2342,6 +2343,7 @@ class ProductController extends Controller
         $conf_units = $conf_units->enable_unit_groups;
         return $conf_units;
     }
+
     public function getUnitPlan($id)
     {
         $plan = Product::select('unit_group_id', 'unit_id')->where('id', $id)->first();
@@ -2375,6 +2377,7 @@ class ProductController extends Controller
             ->get();
         return $units;
     }
+
     public function getMeasureFromKitLines($id)
     {
         $measures = KitHasProduct::select('unit_id', 'unit_group_id_line')->where('id', $id)->first();
@@ -2397,6 +2400,7 @@ class ProductController extends Controller
         }
         return $datos;
     }
+
     public function viewKit($id)
     {
         $kit = Product::select('name')->where('id', $id)->first();
@@ -2577,6 +2581,7 @@ class ProductController extends Controller
             return $output;
         }
     }
+
     public function getHistoryPurchase($id)
     {
         if (!auth()->user()->can('product.view')) {
@@ -2619,7 +2624,7 @@ class ProductController extends Controller
             $business_id = request()->session()->get('user.business_id');
 
             $query = Product::where('business_id', $business_id)
-                    ->where('clasification', 'product');
+                ->where('clasification', 'product');
 
             $products = $query->where(function ($query) use ($term) {
                 $query->where('products.name', 'like', '%' . $term . '%')
@@ -2630,7 +2635,6 @@ class ProductController extends Controller
             return json_encode($products);
         }
     }
-
 
 
     public function getPriceList()
@@ -2689,7 +2693,7 @@ class ProductController extends Controller
                         $row_no = $key + 1;
                         // //Get price default
                         if (!empty(trim($value[1]))) {
-                            $price_inc_tax = str_replace(array('$'), " ",  $value[1]);
+                            $price_inc_tax = str_replace(array('$'), " ", $value[1]);
                             $variation_group_price['price_inc_tax'] = $this->productUtil->num_uf(trim($price_inc_tax));
                         } else {
                             $output = [
@@ -2772,7 +2776,7 @@ class ProductController extends Controller
 
     /**
      * Get services list.
-     * 
+     *
      * @return json
      */
     public function getServices()
@@ -2793,7 +2797,7 @@ class ProductController extends Controller
                 ->where('products.type', '!=', 'modifier');
 
             // Include search
-            if (! empty($term)) {
+            if (!empty($term)) {
                 $services->where(function ($query) use ($term) {
                     $query->where('products.name', 'like', '%' . $term . '%');
                     $query->orWhere('products.sku', 'like', '%' . $term . '%');
@@ -2805,7 +2809,7 @@ class ProductController extends Controller
                 DB::raw("CONCAT(COALESCE(products.name, ''), ' - ', COALESCE(variations.sub_sku, '')) as text"),
                 'variations.id as id'
             )
-            ->take(25);
+                ->take(25);
 
             $result = $services->orderBy('products.name', 'desc')
                 ->get();
@@ -2816,15 +2820,15 @@ class ProductController extends Controller
 
     /**
      * Recalculate average product cost based on transactions and update data.
-     * 
-     * @param  int  $variation_id
+     *
+     * @param int $variation_id
      * @return array
      */
     public function recalculateProductCost($variation_id)
     {
-        if (! auth()->user()->can('product.recalculate_cost')) {
-			abort(403, 'Unauthorized action.');
-		}
+        if (!auth()->user()->can('product.recalculate_cost')) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $variation = Variation::find($variation_id);
         $product = Product::find($variation->product_id);
@@ -2850,7 +2854,7 @@ class ProductController extends Controller
 
                 $tax_rate = 13;
 
-                if (! empty($variation->product->tax)) {
+                if (!empty($variation->product->tax)) {
                     $tax_rate = $this->taxUtil->getTaxPercent($variation->product->tax) * 100;
                 }
 
@@ -2876,7 +2880,7 @@ class ProductController extends Controller
                     if ($purchase->type == 'purchase' && $purchase->purchase_type == 'international') {
                         $has_apportionment = ApportionmentHasTransaction::where('transaction_id', $purchase->id)->first();
 
-                        if (! empty($has_apportionment)) {
+                        if (!empty($has_apportionment)) {
                             $apportionment = Apportionment::find($has_apportionment->apportionment_id);
                             $flag = $apportionment->is_finished == 0 ? false : true;
                         }
@@ -2893,7 +2897,7 @@ class ProductController extends Controller
                             ->select('purchase_lines.*')
                             ->orderBy('purchase_lines.id')
                             ->get();
-                            
+
                         // Check if there are several lines of the same product in the purchase
                         $flag_line = $purchase_lines->count() > 1 ? 1 : 0;
 
@@ -2916,7 +2920,7 @@ class ProductController extends Controller
                             if ($purchase_price != $purchase_line->purchase_price) {
                                 // Set default purchase price exc. tax
                                 $variation->default_purchase_price = (($purchase_price * $stock) + ($purchase_line_purchase_price * $purchase_line->quantity)) / ($stock + $purchase_line->quantity);
-                        
+
                                 // Set default purchase price inc. tax
                                 $variation->dpp_inc_tax = $this->productUtil->calc_percentage($variation->default_purchase_price, $tax_rate, $variation->default_purchase_price);
 
@@ -2963,7 +2967,8 @@ class ProductController extends Controller
      * @param int $product_id
      * @author Arquímides Martínez
      */
-    public function getProductAccountsLocation(Request $request, $product_id) {
+    public function getProductAccountsLocation(Request $request, $product_id)
+    {
         $business_id = $request->user()->business_id;
 
         //$product_accounts = ProductAccountsLocation::
@@ -2987,12 +2992,12 @@ class ProductController extends Controller
                     DB::raw('CONCAT(c.code, " ", c.name) as account_name')
                 )->get()
                 ->toArray();
-        
+
         /** inventory */
         $product_accounts_inventory = collect();
         $product_accounts_cost = collect();
 
-        if($product->clasification == 'product') {
+        if ($product->clasification == 'product') {
             $product_accounts_inventory =
                 BusinessLocation::leftJoin('product_accounts_locations as pal', 'business_locations.id', 'pal.location_id')
                     ->leftJoin('catalogues as c', 'pal.catalogue_id', 'c.id')
@@ -3025,7 +3030,7 @@ class ProductController extends Controller
         }
 
         $creditor_account_code = null;
-        if(!is_null($business->accounting_creditor_result_id)){
+        if (!is_null($business->accounting_creditor_result_id)) {
             $catalogue = Catalogue::find($business->accounting_creditor_result_id);
             $creditor_account_code = !empty($catalogue) ? $catalogue->code : null;
         }
@@ -3045,7 +3050,8 @@ class ProductController extends Controller
      * @param int $product_id
      * @author Arquímides Martínez
      */
-    public function postProductAccountsLocation(Request $request, $product_id) {
+    public function postProductAccountsLocation(Request $request, $product_id)
+    {
         try {
             DB::beginTransaction();
 
@@ -3055,7 +3061,7 @@ class ProductController extends Controller
 
             /** store input accounts */
             foreach ($input_accounts as $ia) {
-                if(isset($ia['account_id'])) {
+                if (isset($ia['account_id'])) {
                     ProductAccountsLocation::updateOrCreate(
                         ['id' => $ia['pal_id']],
                         [
@@ -3070,7 +3076,7 @@ class ProductController extends Controller
 
             /** store inventory accounts */
             foreach ($inventory_accounts as $ia) {
-                if(isset($ia['account_id'])) {
+                if (isset($ia['account_id'])) {
                     ProductAccountsLocation::updateOrCreate(
                         ['id' => $ia['pal_id']],
                         [
@@ -3085,7 +3091,7 @@ class ProductController extends Controller
 
             /** store cost accounts */
             foreach ($cost_accounts as $ca) {
-                if(isset($ca['account_id'])) {
+                if (isset($ca['account_id'])) {
                     ProductAccountsLocation::updateOrCreate(
                         ['id' => $ca['pal_id']],
                         [
@@ -3100,7 +3106,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            $output = [ 'success' => true, 'msg' => __('product.accounts_saved_successfully') ];
+            $output = ['success' => true, 'msg' => __('product.accounts_saved_successfully')];
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -3118,7 +3124,7 @@ class ProductController extends Controller
 
     /**
      * Show the form for recalculate cost.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function getRecalculateCost()
@@ -3128,7 +3134,7 @@ class ProductController extends Controller
 
     /**
      * Recalculate average product cost based on transactions and update data.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function postRecalculateCost()
@@ -3138,7 +3144,7 @@ class ProductController extends Controller
                 $business_id = request()->session()->get('user.business_id');
                 $start = request()->input('start', '');
                 $end = request()->input('end', '');
-                
+
                 $variations = Variation::join('products', 'products.id', 'variations.product_id')
                     ->where('products.business_id', $business_id);
 
@@ -3156,7 +3162,7 @@ class ProductController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollBack();
-                
+
                 \Log::emergency('File: ' . $e->getFile() . ' Line: ' . $e->getLine() . ' Message: ' . $e->getMessage());
 
                 $output = [

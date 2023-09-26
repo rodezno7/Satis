@@ -112,5 +112,6 @@ return[
     'vacation_bonus' => 'Vacation bonus',
     'proportional_vacation' => 'Proportional vacation',
     'complete_vacation' => 'Complete vacation',
-    'description' => 'Description'
+    'description' => 'Description',
+    'annual_summary' => 'Annual summaty'
 ];

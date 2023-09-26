@@ -116,4 +116,5 @@ return[
     'vacation_bonus' => 'Bono por vacaciones',
     'proportional_vacation' => 'Vacación proporcional',
     'complete_vacation' => 'Vacación completa',
+    'annual_summary' => 'Resumen anual'
 ];

@@ -243,6 +243,8 @@ class PayrollController extends Controller
                 
             }else{
                 $input_details['name'] = $payrollType->name . ' - ' . $request->year;
+                $input_details['start_date'] = $request->year.'-01-01';
+                $input_details['month'] = 12;
             }
             
             if($request->input('payment_period_id') != null){
@@ -746,14 +748,6 @@ class PayrollController extends Controller
 
         // Devolver el archivo zip para descargarlo
         $response = response()->download(public_path('uploads/'.$zip_file));
-
-        // Eliminar los archivos del disco local con un foreach
-        //\Storage::disk('local')->delete($zip_file);
-        // foreach ($banks as $bank) {
-        //     // Puedes usar cualquiera de estas opciones:
-        //     Storage::disk('local')->delete($file);
-        //     unlink(storage_path($file));
-        // }
 
         // Retornar la respuesta con el archivo zip
         return $response;
