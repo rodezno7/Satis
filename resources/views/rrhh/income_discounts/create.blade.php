@@ -99,7 +99,7 @@
                 {!! Form::text('start_date', @format_date('now'), [
                     'class' => 'form-control form-control-sm',
                     'placeholder' => __('payroll.start_date'),
-                    'id' => 'start_date',
+                    'id' => 'start_date_id',
                 ]) !!}
             </div>
         </div>
@@ -110,7 +110,7 @@
                 {!! Form::text('end_date', null, [
                     'class' => 'form-control form-control-sm',
                     'placeholder' => __('payroll.end_date'),
-                    'id' => 'end_date',
+                    'id' => 'end_date_id',
                     'readonly' => 'readonly',
                 ]) !!}
             </div>
@@ -131,12 +131,12 @@
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
         select2 = $('.select2').select2();
 
-        $('#start_date').datepicker({
+        $('#start_date_id').datepicker({
             autoclose: true,
             format: datepicker_date_format,
         });
 
-        $('#end_date').datepicker({
+        $('#end_date_id').datepicker({
             autoclose: true,
             format: datepicker_date_format,
         });
@@ -200,7 +200,7 @@
 
 
     //Get start date
-    $('#start_date').on('change', function() {
+    $('#start_date_id').on('change', function() {
         calculateDate();
     });
     
@@ -208,7 +208,7 @@
     //Calculate Date
     function calculateDate(){
         let payment_period = $('select[name="payment_period_id"] option:selected').text();
-        let start_date = $('#start_date').val();
+        let start_date = $('#start_date_id').val();
         start_date = start_date.replace(/\//g, '-');
         let quota = $('#quota').val();
 
@@ -219,11 +219,11 @@
             fecha.setDate(fecha.getDate() + 1);
 
             if(payment_period == 'Quincenal'){
-                $("#end_date").datepicker("setDate", applyQuincena(fecha, quota));
+                $("#end_date_id").datepicker("setDate", applyQuincena(fecha, quota));
             }
 
             if(payment_period == 'Mensual'){
-                $("#end_date").datepicker("setDate", applyMensual(fecha, quota));
+                $("#end_date_id").datepicker("setDate", applyMensual(fecha, quota));
             }
         }
     }

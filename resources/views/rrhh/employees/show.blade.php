@@ -493,5 +493,13 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modal_show" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content" id="modal_content_show">
+    
+          </div>
+        </div>
+    </div>
 </section>
 @endsection
