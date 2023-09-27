@@ -432,7 +432,6 @@ $(function () {
         let amount = 0;
         $.each(lines, function (index, tr) {
             amount += __read_number($(tr).find('input.input_number'));
-            console.log(tr);
 
             update_index(index, tr);
         });
@@ -454,5 +453,43 @@ $(function () {
         $.each(inputs, function (i, input) {
             $(input).attr('name', 'expense_lines['+ index +']['+ $(input).data('name') +']');
         });
+    }
+
+    /**
+     * Calc contact taxes
+     * 
+     * @param {*} amount 
+     * @param {*} min_amount 
+     * @param {*} max_amount 
+     * @param {*} tax_percent 
+     * @returns number
+     */
+    function calc_contact_tax(amount, min_amount, max_amount, tax_percent){
+        var tax_amount = 0;
+
+        // If has min o max amount
+        if (min_amount || max_amount) {
+            // if has min and max amount
+            if (min_amount && max_amount) {
+                if (amount >= min_amount && amount <= max_amount) {
+                    tax_amount = amount * tax_percent;
+                }
+            // If has only min amount
+            } else if (min_amount && ! max_amount) {
+                if (amount >= min_amount) {
+                    tax_amount = amount * tax_percent;
+                }
+            // If has only max amount
+            } else if (! min_amount && max_amount) {
+                if (amount <= max_amount) {
+                    tax_amount = amount * tax_percent;
+                }
+            }
+        // If has none tax
+        } else {
+            tax_amount = amount * tax_percent;
+        }
+
+        return tax_amount;
     }
 });
