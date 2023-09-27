@@ -86,4 +86,5 @@ return [
     "new_register" => "Nuevo registro",
     "create_supplier" => "Crear proveedor",
     'suggested_purchase' => 'Sugerido de compra',
+    'search_provider' => 'Buscar proveedor',
 ];

@@ -28,7 +28,7 @@ return [
     'expense_ref_no_required' => 'El numero de documento es requerido',
     'expense_provider'=>'Proveedor',
     'expense_account'=>'Cuenta contable',
-    'expense_type' => 'Tipo de gastos',
+    'expense_type' => 'Tipo de gasto',
     'expense_provider_name' => 'Nombre del proveedor',
     'payment_term' => 'Términos de pago',
     'document_type'=>'Tipo de documento',
@@ -56,5 +56,6 @@ return [
     'expense_status' => 'Estado del gasto',
     'expense_paid' => 'Pagado',
     'expense_due' => 'Debido',
-    'expense_partial' => 'Cuota'
+    'expense_partial' => 'Cuota',
+    'search_expense_category' => 'Buscar categorías de gastos',
 ];

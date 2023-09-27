@@ -168,6 +168,7 @@ LANG = {
     'warning_purchase_added': 'The purchase has already been added',
     'warning_import_expense_added': 'The import expense has already been added',
     'is_supplier_error': 'Provider type is required',
+    'success': 'Success',
     'error': 'Error',
     'pending_reservations': 'Pending reservations',
     'payment_note_alredy_exists': 'This payment note already exists',
@@ -209,4 +210,7 @@ LANG = {
     'pay_amount_higher_than_due_balance' : 'Payment amount cant be higher than due balance',
     'payment_exceed' : 'Invoices total amounts exceed payment amount',
     'all_warehouses' : 'All warehouses',
+    'to': 'to',
+    'expenses_from': 'Expenses from',
+    'will_be_accounted': 'will be accounted',
 };

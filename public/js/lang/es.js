@@ -172,6 +172,7 @@ LANG = {
     'warning_purchase_added': 'La compra ya ha sido agregada',
     'warning_import_expense_added': 'El gasto de importación ya ha sido agregado',
     'is_supplier_error': 'Debe seleccionar el tipo de proveedor',
+    'success': 'Éxito',
     'error': 'Error',
     'pending_reservations': 'Reservas pendientes',
     'payment_note_alredy_exists': 'Esta nota de abono ya existe',
@@ -215,4 +216,7 @@ LANG = {
     'pay_amount_higher_than_due_balance' : 'El pago no puede ser mayor al monto debido',
     'payment_exceed' : 'El monto total de las facturas a pagar sobrepasa el monto del pago',
     'all_warehouses' : 'Todas las bodegas',
+    'to': 'hasta',
+    'expenses_from': 'Los gastos desde',
+    'will_be_accounted': 'serán contabilizados',
 };

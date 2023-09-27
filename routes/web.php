@@ -212,7 +212,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchase');
     Route::post('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchaseReport');
     Route::get('/expenses/get_suppliers', 'ExpenseController@getSuppliers');
-    Route::get('/expenses/get_contacts', 'ExpenseController@getAccount');
+    Route::get('/expenses/get_categories', 'ExpenseController@getCategories');
+    Route::get('/expenses/accounting-by-range/{start_date}/{end_date}', 'ExpenseController@accountingByRange');
     Route::get('/expenses/{id}/print','ExpenseController@printExpense');
     Route::post('/purchases/get_purchase_entry_row', 'PurchaseController@getPurchaseEntryRow');
     Route::post('/purchases/check_ref_number', 'PurchaseController@checkRefNumber');

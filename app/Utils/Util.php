@@ -557,6 +557,7 @@ class Util
                     'hipotecario' => 'Banco Hipotecario',
                     'promerica' => 'Banco Promérica',
                     'constelacion' => 'S.A.C. Constelación',
+                    'industrial' => 'Banco Industrial'
                 ];
                 break;
         }

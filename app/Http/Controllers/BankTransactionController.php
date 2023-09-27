@@ -1651,6 +1651,7 @@ class BankTransactionController extends Controller {
         $place = mb_strtoupper($business->state->name) . ', ';
 
         $date = Carbon::parse($transaction->date);
+        $check_date = $this->transactionUtil->format_date($transaction->date);
 
         $months = array(
             __('accounting.january'),
@@ -1712,9 +1713,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.6;
             $entrie_top = 10.8;
             $show_table = 1;
-        }
 
-        if ($format == 'agricola') {
+        } else if ($format == 'agricola') {
             $place_date = $place . $day . $of . $month . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $year;
             $place_date_x = 2.5;
             $place_date_y = 1.7;
@@ -1742,9 +1742,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.4;
             $entrie_top = 11.5;
             $show_table = 0;
-        }
 
-        if ($format == 'promerica') {
+        } else if ($format == 'promerica') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 1.7;
             $place_date_y = 2.45;
@@ -1772,9 +1771,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.4;
             $entrie_top = 10.2;
             $show_table = 1;
-        }
 
-        if ($format == 'azul') {
+        } else if ($format == 'azul') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 3.0;
             $place_date_y = 2.5;
@@ -1802,9 +1800,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.6;
             $entrie_top = 10.5;
             $show_table = 1;
-        }
 
-        if ($format == 'cuscatlan') {
+        } else if ($format == 'cuscatlan') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 2.7;
             $place_date_y = 2.5;
@@ -1832,9 +1829,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.4;
             $entrie_top = 10.5;
             $show_table = 0;
-        }
 
-        if ($format == 'davivienda') {
+        } else if ($format == 'davivienda') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 3.3;
             $place_date_y = 2.5;
@@ -1862,9 +1858,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.4;
             $entrie_top = 10;
             $show_table = 1;
-        }
 
-        if ($format == 'hipotecario') {
+        } else if ($format == 'hipotecario') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 3.0;
             $place_date_y = 2.6;
@@ -1892,9 +1887,8 @@ class BankTransactionController extends Controller {
             $entrie_left = 0.4;
             $entrie_top = 10.6;
             $show_table = 0;
-        }
-
-        if ($format == 'constelacion') {
+            
+        } else if ($format == 'constelacion') {
             $place_date = $place . $day . $of . $month . $of . $year;
             $place_date_x = 2.1;
             $place_date_y = 2.5;
@@ -1921,6 +1915,35 @@ class BankTransactionController extends Controller {
             $entrie_width = 14.5;
             $entrie_left = 0.4;
             $entrie_top = 9.9;
+            $show_table = 1;
+
+        } else if ($format == 'industrial') {
+            $place_date = $place . $check_date;
+            $place_date_x = 6;
+            $place_date_y = 2.8;
+
+            $amount_x = 12.3;
+            $amount_y = 2.8;
+
+            $person_x = 2.1;
+            $person_y = 3.7;
+
+            $value_letters_x = 1.7;
+            $value_letters_y = 4.4;
+
+            $asterisks_x = 0.5;
+            $asterisks_y = 5.1;
+
+            $person_check = str_pad('**' . $person, 58, '*', STR_PAD_RIGHT);
+            $letters_check = str_pad('**' . $value_letters, 60, '*', STR_PAD_RIGHT);
+            $asterisks = str_pad('', 22, '*', STR_PAD_RIGHT);
+
+            $flag_labels = 1;
+            $show_check = 1;
+
+            $entrie_width = 15;
+            $entrie_left = 0.6;
+            $entrie_top = 10.8;
             $show_table = 1;
         }
 
