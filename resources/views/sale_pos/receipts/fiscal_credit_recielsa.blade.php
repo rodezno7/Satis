@@ -1,7 +1,7 @@
 <style>
     div#main { width: 100%;  font-size: 7.5pt; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; margin: 0; }
 	
-	div#head { height: 4.9cm; width: 100%; }
+	div#head { height: 4.3cm; width: 100%; }
 	
 	div#container { width: 19.2cm; margin: 0cm 0.9cm 0cm 1.25cm; }
 	div#container table { width: 100%; }
