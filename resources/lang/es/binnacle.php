@@ -1,6 +1,15 @@
 <?php 
 return [
 	'binnacle' => 'Bitácora',
+	'action' => 'Acción',
+	'machine_name' => 'Nombre de la máquina',
+	'latitude' => 'Latotud',
+	'longitude' => 'Longitud',
+	'city' => 'Departamento',
+	'country' => 'País',
+	'user1' => 'Usuario',
+	'geolocation' => 'Geolocación',
+	'domain' => 'Dominio',
 	'view_binnacle' => 'Ver bitácora',
     'actions_register' => 'Registro de acciones',
 	'data_before_action' => 'Datos antes de la acción',
@@ -194,4 +203,5 @@ return [
 	'zone_create' => 'Zona :reference creada por :user',
 	'zone_update' => 'Zona :reference actualizada por :user',
 	'zone_delete' => 'Zona :reference eliminada por :user',
+	'login' => 'Inicio de sesion'
 ];

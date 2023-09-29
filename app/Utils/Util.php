@@ -17,6 +17,7 @@ use App\Warehouse;
 use DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class Util
 {
@@ -695,29 +696,65 @@ class Util
     {
         $business = Business::find(request()->session()->get('user.business_id'));
 
-        if ($business->enable_binnacle) {
-            $user = User::find(request()->session()->get('user.id'));
-
-            $params = ['user' => $user->first_name . ' ' . $user->last_name];
+        if($business){
+            //Bitacoras
+            if ($business->enable_binnacle) {
+                $user = User::find(request()->session()->get('user.id'));
     
-            if (! is_null($reference)) {
-                $params['reference'] = $reference;
+                $params = ['user' => $user->first_name . ' ' . $user->last_name];
+        
+                if (! is_null($reference)) {
+                    $params['reference'] = $reference;
+                }
+                $ip = file_get_contents('https://api.ipify.org');
+                $infoClient = $this->getDataClient($ip);
+                
+                $binnacle['user_id'] = $user->id;
+                $binnacle['module'] = $module;
+                $binnacle['reference'] = $reference;
+                $binnacle['action'] = __('binnacle.' . $module . '_' . $action, $params);
+                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
+                $binnacle['machine_name'] = php_uname();
+                $binnacle['ip'] = $ip;
+                $binnacle['city'] = $infoClient['geoplugin_city'];
+                $binnacle['country'] = $infoClient['geoplugin_countryName'];
+                $binnacle['latitude'] = $infoClient['geoplugin_longitude'];
+                $binnacle['longitude'] = $infoClient['geoplugin_latitude'];
+                $binnacle['domain'] = $request->getHttpHost();
+        
+                if (! is_null($old_record)) {
+                    $binnacle['old_record'] = json_encode($old_record);
+                }
+        
+                if (! is_null($new_record)) {
+                    $binnacle['new_record'] = json_encode($new_record);
+                }
+        
+                Binnacle::create($binnacle);
             }
-    
-            $binnacle['user_id'] = $user->id;
-            $binnacle['module'] = $module;
-            $binnacle['reference'] = $reference;
-            $binnacle['action'] = __('binnacle.' . $module . '_' . $action, $params);
-    
-            if (! is_null($old_record)) {
-                $binnacle['old_record'] = json_encode($old_record);
+        }else{
+            //Bitacora para inicio de sesion
+            if($action == 'login'){
+                $ip = file_get_contents('https://api.ipify.org');
+                $infoClient = $this->getDataClient($ip);
+                
+                $binnacle['user_id'] = $module;
+                $binnacle['module'] = null;
+                $binnacle['reference'] = null;
+                $binnacle['action'] = $action;
+                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
+                $binnacle['machine_name'] = php_uname();
+                $binnacle['ip'] = $ip;
+                $binnacle['city'] = $infoClient['geoplugin_city'];
+                $binnacle['country'] = $infoClient['geoplugin_countryName'];
+                $binnacle['latitude'] = $infoClient['geoplugin_longitude'];
+                $binnacle['longitude'] = $infoClient['geoplugin_latitude'];
+                $binnacle['domain'] = request()->getHttpHost();
+                $binnacle['old_record'] = null;
+                $binnacle['new_record'] = null;
+        
+                Binnacle::create($binnacle);
             }
-    
-            if (! is_null($new_record)) {
-                $binnacle['new_record'] = json_encode($new_record);
-            }
-    
-            Binnacle::create($binnacle);
         }
     }
 
@@ -746,5 +783,10 @@ class Util
         $cont = str_pad($correlative, 5, '0', STR_PAD_LEFT);
         
         return $business->quote_prefix . $cont;
+    }
+
+    public function getDataClient($inClient){
+        $information = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$inClient));
+            return $information;
     }
 }

@@ -25,7 +25,7 @@
                 {{-- user_id --}}
                 <div class="col-md-3">
                     <div class="form-group">
-                        {!! Form::label('user_id',  __('accounting.user') . ':') !!}
+                        {!! Form::label('user_id',  __('binnacle.user1') . ':') !!}
                         {!! Form::select('user_id', $users, null, ['class' => 'form-control select2', 'style' => 'width:100%']) !!}
                     </div>
                 </div>
@@ -52,10 +52,14 @@
                 <table class="table table-hover table-text-center ajax_view" id="binnacle_table" width="100%">
                     <thead>
                         <tr>
+                            <th>ID</th>
+                            <th>@lang('binnacle.action')</th>
+                            <th>@lang('binnacle.user1')</th>
                             <th>@lang('accounting.date')</th>
-                            <th>@lang('accounting.user')</th>
-                            <th>@lang('role.module')</th>
-                            <th>@lang('accounting.action')</th>
+                            <th>@lang('binnacle.machine_name')</th>
+                            <th>IP</th>
+                            <th>@lang('binnacle.geolocation')</th>
+                            <th>@lang('binnacle.domain')</th>
                         </tr>
                     </thead>
                 </table>
@@ -98,15 +102,15 @@
                 }
             },
             columns: [
-                { data: 'created_at', name: 'created_at' },
+                { data: 'id', name: 'id' },
+                { data: 'action', name: 'action' },
                 { data: 'user', name: 'user' },
-                { data: 'module', name: 'module' },
-                { data: 'action', name: 'action' }
+                { data: 'realized_in', name: 'realized_in' },
+                { data: 'machine_name', name: 'machine_name' },
+                { data: 'ip', name: 'ip' },
+                { data: 'geolocation', name: 'geolocation' },
+                { data: 'domain', name: 'domain' }
             ],
-            columnDefs: [{
-                targets: [0],
-                render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss', 'DD/MM/YYYY - h:mm a')
-            }]
         });
 
         // Date filter

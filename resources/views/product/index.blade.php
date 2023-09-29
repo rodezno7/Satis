@@ -235,7 +235,6 @@
                 { data: 'actions',  orderable: false, searchable: false, className: 'text-center'}
             ];
         }
-        console.log(table_columns);
         
         var product_table = $('#product_table').DataTable({
             processing: true,
