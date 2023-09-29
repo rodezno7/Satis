@@ -329,7 +329,11 @@ class RrhhContractController extends Controller
         if ($contract->contract_end_date != '') {
             $contract_end_date         = $this->employeeUtil->getDate($contract->contract_end_date, true);
             $contract_end_date_letters = $this->employeeUtil->getDateLetters($contract->contract_end_date, true);
+            $months_of_the_contract        = $this->employeeUtil->getMonthContract($contract->contract_start_date, $contract->contract_end_date);
+        }else{
+            $months_of_the_contract        = $this->employeeUtil->getMonthContract($contract->contract_start_date, null);
         }
+
 
         $employee_dni_expedition_date     = null;
         if ($contract->employee_dni_expedition_date != '') {
@@ -407,6 +411,7 @@ class RrhhContractController extends Controller
         $template = str_replace("contract_end_date", $contract_end_date, $template);
         $template = str_replace("current_date_letters", $current_date_letters, $template);
         $template = str_replace("current_date", $current_date, $template);
+        $template = str_replace("months_of_the_contract", $months_of_the_contract, $template);
 
         $pdf = \PDF::loadView('rrhh.contract.report_pdf', compact('contract', 'template'));
 
