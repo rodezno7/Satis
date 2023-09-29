@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Binnacle;
 use App\Business;
+use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 use App\Utils\BusinessUtil;
+use App\Utils\Util;
 
 class LoginController extends Controller
 {
@@ -29,6 +35,7 @@ class LoginController extends Controller
      *
      */
     protected $businessUtil;
+    protected $util;
 
     /**
      * Where to redirect users after login.
@@ -42,10 +49,11 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct(BusinessUtil $businessUtil)
+    public function __construct(BusinessUtil $businessUtil, Util $util)
     {
         $this->middleware('guest')->except('logout');
         $this->businessUtil = $businessUtil;
+        $this->util = $util;
     }
 
     /**
@@ -68,6 +76,28 @@ class LoginController extends Controller
         $business = Business::where('is_active', 1)->pluck('name', 'id');
         return view('auth.login')->with(compact('business'));
     }
+
+    public function postLogin(Request $request){
+        $credenciales = $this->validate(request(), [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        if(Auth::attempt($credenciales)){
+            $user = User::where('username', $request->input('username'))->first();
+            $user->deleteSessionsFromOtherDevices();
+            $action = 'login';
+
+            $this->util->registerBinnacle($user->id, 'login', null, null, null);
+
+            return redirect()->route('home');
+        }
+
+        return redirect()->back()->withInput($request->only('username'))->withErrors([
+            'username' => 'Las credenciales proporcionadas no son válidas.',
+        ]);
+    }
+
 
     public function logout()
     {

@@ -1,6 +1,15 @@
 <?php 
 return [
 	'binnacle' => 'Binnacle',
+	'action' => 'Action',
+	'machine_name' => 'Machine name',
+	'latitude' => 'Latotud',
+	'longitude' => 'Longitude',
+	'city' => 'Department',
+	'country' => 'Country',
+	'user' => 'User',
+	'domain' => 'Domain',
+	'geolocation' => 'Geolocation',
 	'view_binnacle' => 'View binnacle',
     'actions_register' => 'Actions register',
 	'data_before_action' => 'Data before action',
@@ -186,4 +195,5 @@ return [
 	'zone_create' => 'Zone :reference created by :user',
 	'zone_update' => 'Zone :reference updated by :user',
 	'zone_delete' => 'Zone :reference deleted by :user',
+	'login' => 'Login',
 ];

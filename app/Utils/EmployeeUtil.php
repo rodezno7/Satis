@@ -30,6 +30,15 @@ class EmployeeUtil extends Util
         return $days;
     }
 
+    public function getMonthContract($start_date, $end_date){
+        if($end_date != null){
+            $meses = Carbon::parse($end_date)->diff(Carbon::parse($start_date))->format('%m');
+            return $meses.' meses';
+        }else{
+            return '0 meses';
+        }
+    }
+
     //Convertir números a letras
     /**
      * Return numbers letters

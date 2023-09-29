@@ -19,6 +19,7 @@ Route::middleware(['IsInstalled'])->group(function (){
         return view('welcome');
     });
     Auth::routes();
+    Route::post('/new-login', 'Auth\LoginController@postLogin')->name('new_login');
     Route::get('/business/register', 'BusinessController@getRegister')->name('business.getRegister');
     Route::post('/business/register', 'BusinessController@postRegister')->name('business.postRegister');
     Route::post('/business/register/check-username', 'BusinessController@postCheckUsername')->name('business.postCheckUsername');
@@ -28,6 +29,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/start', 'UserController@getFirstSession');
     Route::post('/user/first-session', 'UserController@updatePasswordFirst');
 });
+
+
 
 Route::post('credits/show-report', 'CreditRequestController@showReport');
 Route::resource('credits', 'CreditRequestController');

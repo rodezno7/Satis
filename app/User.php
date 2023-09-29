@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Contracts\Auth\CanResetPassword;
-
+use Illuminate\Support\Facades\Session;
 use App\BusinessLocation;
 use DB;
 
@@ -17,6 +17,7 @@ class User extends Authenticatable
     use SoftDeletes;
     use HasRoles;
 
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -314,5 +315,18 @@ class User extends Authenticatable
         $user = User::findOrFail($user_id);
 
         return $user;
+    }
+
+    public function sessions()
+    {
+        return $this->hasMany(Session::class);
+    }
+
+    public function deleteSessionsFromOtherDevices()
+    {
+        $user = User::findOrFail($this->id);
+        \DB::table('sessions')->where('user_id', $user->id)->delete();
+
+        return true;
     }
 }

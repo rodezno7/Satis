@@ -12,10 +12,15 @@ class Binnacle extends Model
         'module',
         'action',
         'old_record',
-        'new_record'
-        // 'entrie_number',
-        // 'entrie_correlative',
-        // 'account_code',
+        'new_record',
+        'realized_in',
+        'machine_name',
+        'ip',
+        'city',
+        'country',
+        'latitude',
+        'longitude',
+        'domain',
     ];
 
     public function user()

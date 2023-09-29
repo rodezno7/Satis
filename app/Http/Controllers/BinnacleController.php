@@ -45,16 +45,17 @@ class BinnacleController extends Controller
             $binnacle = Binnacle::leftJoin('users', 'users.id', 'binnacles.user_id')
                 ->where('business_id', $business_id)
                 ->select(
-                    'binnacles.created_at',
+                    'binnacles.action as action',
                     DB::raw("CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) as user"),
-                    'binnacles.module',
-                    'binnacles.action',
-                    'binnacles.old_record',
-                    'binnacles.new_record',
-                    // 'binnacles.entrie_number',
-                    // 'binnacles.entrie_correlative',
-                    // 'binnacles.account_code',
-                    'binnacles.id'
+                    'binnacles.realized_in as realized_in',
+                    'binnacles.machine_name as machine_name',
+                    'binnacles.ip as ip',
+                    'binnacles.city as city',
+                    'binnacles.country as country',
+                    'binnacles.latitude as latitude',
+                    'binnacles.longitude as longitude',
+                    'binnacles.domain as domain',
+                    'binnacles.id as id'
                 );
     
             # User filter
@@ -72,42 +73,29 @@ class BinnacleController extends Controller
             if (! empty(request()->start_date) && ! empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end =  request()->end_date;
-                $binnacle->whereDate('binnacles.created_at', '>=', $start)
-                    ->whereDate('binnacles.created_at', '<=', $end);
+                $binnacle->whereDate('binnacles.realized_in', '>=', $start)
+                    ->whereDate('binnacles.realized_in', '<=', $end);
             }
-
+            
             return Datatables::of($binnacle)
-                ->filterColumn('user', function ($query, $keyword) {
+                ->editColumn('id', function ($row) {
+                    return $row->index + 1;
+                })->editColumn('action', function ($row) {
+                    return __('binnacle.' . $row->action);
+                })->editColumn('realized_in', function ($row) {
+                    return $this->util->format_date($row->realized_in, true);
+                })->filterColumn('user', function ($query, $keyword) {
                     $query->whereRaw("CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) like ?", ["%{$keyword}%"]);
-                })
-                ->editColumn(
-                    'module',
-                    function ($row) {
-                        if (is_null($row->module)) {
-                            return '';
-                        } else {
-                            return __('binnacle.' . $row->module);
-                        }
-                    }
-                )
-                ->editColumn(
-                    'action',
-                    function ($row) {
-                        if (is_null($row->action)) {
-                            return '';
-                        } else {
-                            return __('binnacle.' . $row->action);
-                        }
-                    }
-                )
-                ->rawColumns(['module', 'action'])
+                })->editColumn('geolocation',function ($row) {
+                    $html = '<b>País:</b> '.$row->country.'<br><b>Departamento:</b> '.$row->city.'<br><b>Latitud:</b> '.$row->latitude.'<br><b>Longitud:</b> '.$row->longitude;
+                    return $html;
+                })->rawColumns(['id', 'ip', 'action', 'machine_name', 'realized_in', 'user', 'geolocation', 'domain', 'actions'])
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         return action('BinnacleController@show', [$row->id]) ;
                     }
-                ])
-                ->toJson();
-        }
+                ])->make(true);
+        }    
 
         # Users
         $users = User::allUsersDropdown($business_id, false);

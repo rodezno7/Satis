@@ -315,6 +315,7 @@ return[
     'Gets_the_contract_end_date_letters' => 'Gets the contract end date. The format is in letters, for example: July twelve, two thousand twenty-three.',
     'Gets_the_current_date' => 'Gets the current date. The format is: On the 12th day of July 2023.',
     'Gets_the_current_date_letters' => 'Gets the start date of the contract. The format is in letters, for example: July twelve, two thousand twenty-three.',
+    'Gets_the_number_of_months_of_the_contract' => 'Gets the number of months of the contract. For example: 4 months.',
     'import_employees' => 'Import employees',
     'validation_file' => 'The only allowed files are .jpg, .jpeg, .png and .pdf',
     'validation_file_pdf' => 'The only allowed files are .pdf',
