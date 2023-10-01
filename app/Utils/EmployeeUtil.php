@@ -19,6 +19,26 @@ class EmployeeUtil extends Util
         return Carbon::parse($birth_date)->diff(Carbon::now())->format('%y');
     }
 
+    //Convertir segundos a años
+    public function secondsToYear($seconds){
+        $years = Carbon::parse($seconds . ' seconds')->diffInYears();
+        return $years;
+    }
+
+    public function getDays($seconds){
+        $days = floor($seconds / 86400);
+        return $days;
+    }
+
+    public function getMonthContract($start_date, $end_date){
+        if($end_date != null){
+            $meses = Carbon::parse($end_date)->diff(Carbon::parse($start_date))->format('%m');
+            return $meses.' meses';
+        }else{
+            return '0 meses';
+        }
+    }
+
     //Convertir números a letras
     /**
      * Return numbers letters

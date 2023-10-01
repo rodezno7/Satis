@@ -300,9 +300,9 @@ return [
         'previus_position1_id'      => 'puesto anterior',
         'new_department_id'         => 'nuevo departamento',
         'new_position1_id'          => 'nuevo puesto',
-        'start_date'                => 'Fecha de inicio',
-        'end_date'                  => 'Fecha fin',
-        'effective_date'            => 'Fecha en vigor',
+        'start_date'                => 'fecha de inicio',
+        'end_date'                  => 'fecha fin',
+        'effective_date'            => 'fecha en vigor',
         'amount'                    => 'cantidad (Horas)',
         'type_absence_id'           => 'tipo de ausencia',
         'type_inability_id'         => 'tipo de incapacidad',
@@ -310,6 +310,9 @@ return [
 
         'rrhh_type_personnel_action_id' => 'tipo de acción de personal',
         'payment_period_id'             => 'periodo de pago',
+        'payroll_type_id'               => 'tipo de planilla',
+        'isr_id'                        => 'tabla de ISR a aplicar',
+        'days'                          => 'días',
     ),
 
 ];

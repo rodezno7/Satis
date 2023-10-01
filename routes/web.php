@@ -19,6 +19,7 @@ Route::middleware(['IsInstalled'])->group(function (){
         return view('welcome');
     });
     Auth::routes();
+    Route::post('/new-login', 'Auth\LoginController@postLogin')->name('new_login');
     Route::get('/business/register', 'BusinessController@getRegister')->name('business.getRegister');
     Route::post('/business/register', 'BusinessController@postRegister')->name('business.postRegister');
     Route::post('/business/register/check-username', 'BusinessController@postCheckUsername')->name('business.postCheckUsername');
@@ -28,6 +29,8 @@ Route::middleware(['IsInstalled', 'auth', 'SetSessionData', 'language', 'timezon
     Route::get('/start', 'UserController@getFirstSession');
     Route::post('/user/first-session', 'UserController@updatePasswordFirst');
 });
+
+
 
 Route::post('credits/show-report', 'CreditRequestController@showReport');
 Route::resource('credits', 'CreditRequestController');
@@ -212,7 +215,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchase');
     Route::post('/purchases/suggested-purchase-report', 'PurchaseController@suggestedPurchaseReport');
     Route::get('/expenses/get_suppliers', 'ExpenseController@getSuppliers');
-    Route::get('/expenses/get_contacts', 'ExpenseController@getAccount');
+    Route::get('/expenses/get_categories', 'ExpenseController@getCategories');
+    Route::get('/expenses/accounting-by-range/{start_date}/{end_date}', 'ExpenseController@accountingByRange');
     Route::get('/expenses/{id}/print','ExpenseController@printExpense');
     Route::post('/purchases/get_purchase_entry_row', 'PurchaseController@getPurchaseEntryRow');
     Route::post('/purchases/check_ref_number', 'PurchaseController@checkRefNumber');
@@ -638,8 +642,8 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     //RRHH Routes
     //Routes settings 
-    Route::get('rrhh-setting', 'SettingController@index');
-    Route::post('rrhh-setting', 'SettingController@store');
+    Route::get('rrhh-setting', 'RrhhSettingController@index');
+    Route::post('rrhh-setting', 'RrhhSettingController@store');
 
     //Routes Employees
     Route::resource('rrhh-employees', 'EmployeesController');
@@ -746,25 +750,29 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
 
     Route::resource('/rrhh-catalogues/type-contract', 'RrhhTypeContractController');
     Route::get('/rrhh/getTypes', 'RrhhTypeContractController@getTypes');
-    
 
 
     // Route Module Payroll
     //Routes Payroll
     Route::resource('payroll', 'PayrollController');
+    Route::get('payroll-getPaymentPeriod/{id}', 'PayrollController@getPaymentPeriod');
+    Route::get('payroll-getPayrollType/{id}', 'PayrollController@getPayrollType');
     Route::get('payroll-getPayrolls', 'PayrollController@getPayrolls');
     Route::post('payroll/{id}/approve', 'PayrollController@approve');
     Route::post('payroll/{id}/pay', 'PayrollController@pay');
     Route::post('payroll/{id}/paymentSlips', 'PayrollController@paymentSlips');
     Route::get('/payroll/{id}/generatePaymentSlips', 'PayrollController@generatePaymentSlips');
+    Route::post('payroll/{id}/paymentFiles', 'PayrollController@paymentFiles');
+    Route::get('/payroll/{id}/generatePaymentFiles', 'PayrollController@generatePaymentFiles');
     Route::post('payroll/{id}/recalculate', 'PayrollController@recalculate');
     Route::get('payroll-getPayrollDetail/{id}', 'PayrollController@getPayrollDetail');
-    Route::get('payroll/{id}/exportPayrollSalary', 'PayrollController@exportPayrollSalary');
+    Route::get('payroll/{id}/exportPayroll', 'PayrollController@exportPayroll');
 
-    Route::get('payroll-getPhoto/{id}', 'PayrollController@getPhoto');
-    Route::get('payroll-downloadCv/{id}', 'PayrollController@downloadCv');
-    Route::post('payroll/uploadPhoto', 'PayrollController@uploadPhoto');
-    Route::get('/payroll/verified_document/{type}/{value}/{id?}', 'PayrollController@verifiedIfExistsDocument');
+
+    //Report
+    Route::get('payroll-annual-summary', 'PayrollReportController@annualSummary');
+    Route::post('/payroll-annual-summary/export', 'PayrollReportController@generateAnnualSummary');
+
 
 
     //Route catalogues
@@ -1243,7 +1251,6 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
             Route::get('/products/viewKit/{id}', 'ProductController@viewKit');
             Route::get('/products/productHasSuppliers/{id}', 'ProductController@productHasSuppliers');
             Route::get('/products/kitHasProduct/{id}', 'ProductController@kitHasProduct');
-            Route::get('/products/getProductsData', 'ProductController@getProductsData');
             Route::get('/products/createProduct', 'ProductController@createProduct');
             Route::get('/products/getUnitPlan/{id}', 'ProductController@getUnitplan');
             Route::get('/products/getUnitsFromGroup/{id}', 'ProductController@getUnitsFromGroup');

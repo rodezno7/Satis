@@ -14,9 +14,11 @@ class Payroll extends Model
         'name',
         'year', 
         'month', 
+        'days',
         'start_date', 
         'end_date', 
         'payroll_status_id',
+        'isr_id',
         'payment_period_id',  
         'business_id', 
         'deleted_at'

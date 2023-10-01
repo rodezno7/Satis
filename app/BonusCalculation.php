@@ -13,7 +13,7 @@ class BonusCalculation extends Model
         'from', 
         'until', 
         'days', 
-        'percentage', 
+        'proportional', 
         'status',
         'business_id', 
         'deleted_at'

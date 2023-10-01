@@ -10,7 +10,7 @@
                     <div class="text-center mb-3">
                         <img src="../img/default/satis.png" alt="" class="img-fluid logo" />
                     </div>
-                    <form method="POST" action="{{ route('login') }}" autocomplete="off">
+                    <form method="POST" action="{{ route('new_login') }}" autocomplete="off">
                         {{ csrf_field() }}
                         <br>
                         <div class="form-group mb-3">

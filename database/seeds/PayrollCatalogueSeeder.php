@@ -1,5 +1,6 @@
 <?php
 
+use App\BonusCalculation;
 use App\CalculationType;
 use App\PaymentPeriod;
 use App\InstitutionLaw;
@@ -71,6 +72,12 @@ class PayrollCatalogueSeeder extends Seeder
                 'business_id' => $item->id,
             ]);
 
+            PaymentPeriod::firstOrCreate([
+                'name' => 'Personalizado',
+                'days' => 0,
+                'business_id' => $item->id,
+            ]);
+
             
 
             PayrollType::firstOrCreate([
@@ -90,6 +97,16 @@ class PayrollCatalogueSeeder extends Seeder
 
             PayrollType::firstOrCreate([
                 'name' => 'Planilla de aguinaldos',
+                'business_id' => $item->id,
+            ]);
+
+            PayrollType::firstOrCreate([
+                'name' => 'Planilla de vacaciones',
+                'business_id' => $item->id,
+            ]);
+
+            PayrollType::firstOrCreate([
+                'name' => 'Planilla de bonificaciones',
                 'business_id' => $item->id,
             ]);
 
@@ -420,6 +437,41 @@ class PayrollCatalogueSeeder extends Seeder
                 'institution_law_id' => 1, 
                 'business_id' => $item->id, 
                 'deleted_at' => null
+            ]);
+
+
+
+            //Tabla de cálculo de aguinaldo
+            BonusCalculation::firstOrCreate([
+                'from' => 0, 
+                'until' => 1, 
+                'days' => 15, 
+                'proportional' => 1, 
+                'business_id' => $item->id, 
+            ]);
+
+            BonusCalculation::firstOrCreate([
+                'from' => 1, 
+                'until' => 3, 
+                'days' => 15, 
+                'proportional' => 0, 
+                'business_id' => $item->id, 
+            ]);
+
+            BonusCalculation::firstOrCreate([
+                'from' => 3, 
+                'until' => 10, 
+                'days' => 19, 
+                'proportional' => 0, 
+                'business_id' => $item->id, 
+            ]);
+
+            BonusCalculation::firstOrCreate([
+                'from' => 10, 
+                'until' => 9999, 
+                'days' => 21, 
+                'proportional' => 0, 
+                'business_id' => $item->id, 
             ]);
         }
 

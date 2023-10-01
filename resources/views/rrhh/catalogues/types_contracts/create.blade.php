@@ -251,6 +251,10 @@
                                             <td>{{ __('rrhh.Gets_the_contract_end_date_letters') }}</td>
                                         </tr>
                                         <tr>
+                                            <td>months_of_the_contract</td>
+                                            <td>{{ __('rrhh.Gets_the_number_of_months_of_the_contract') }}</td>
+                                        </tr>
+                                        <tr>
                                             <td>current_date</td>
                                             <td>{{ __('rrhh.Gets_the_current_date') }}</td>
                                         </tr>

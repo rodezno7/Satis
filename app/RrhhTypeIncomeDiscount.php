@@ -23,13 +23,13 @@ class RrhhTypeIncomeDiscount extends Model
     }
 
     public static $payrollColumns = [
-        'Número de horas extras diurnas',
-        'Número de horas extras nocturnas',
+        'Horas extras',
         'Comisiones',
         'Otros ingresos',
         'Otras deducciones',
-        'Aguinaldo',
-        'Vacaciones'
+        //'Aguinaldo',
+        //'Vacaciones',
+        'Bonificaciones',
         // 'ISSS',
         // 'AFP',
         // 'Renta',
