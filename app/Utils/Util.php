@@ -718,10 +718,10 @@ class Util
                 $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
                 $binnacle['machine_name'] = php_uname();
                 $binnacle['ip'] = $ip;
-                $binnacle['city'] = $infoClient['city'];
-                $binnacle['country'] = $infoClient['country'];
-                $binnacle['latitude'] = $infoClient['longitude'];
-                $binnacle['longitude'] = $infoClient['latitude'];
+                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
+                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
+                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
+                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
                 $binnacle['domain'] = $request->getHttpHost();
         
                 if (! is_null($old_record)) {
@@ -738,7 +738,7 @@ class Util
             //Bitacora para inicio de sesion
             if($action == 'login'){
                 $globalUtil = new GlobalUtil;
-                $ip = $globalUtil->getUserIP();
+                $ip = $globalUtil->getUserIP();  
                 $infoClient = $this->getDataClient($ip);
                 
                 $binnacle['user_id'] = $module;
@@ -748,10 +748,10 @@ class Util
                 $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
                 $binnacle['machine_name'] = php_uname();
                 $binnacle['ip'] = $ip;
-                $binnacle['city'] = $infoClient['city'];
-                $binnacle['country'] = $infoClient['country'];
-                $binnacle['latitude'] = $infoClient['longitude'];
-                $binnacle['longitude'] = $infoClient['latitude'];
+                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
+                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
+                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
+                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
                 $binnacle['domain'] = request()->getHttpHost();
                 $binnacle['old_record'] = null;
                 $binnacle['new_record'] = null;
@@ -789,7 +789,12 @@ class Util
     }
 
     public function getDataClient($inClient){
-        $information = unserialize(file_get_contents('http://ipwho.is/'.$inClient));
-            return $information;
+        $apiURL = 'http://ipwho.is/'.$inClient;
+        $curl = curl_init($apiURL);  
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);  
+        $response = curl_exec($curl); 
+        curl_close($curl);  
+        $information = json_decode($response, true);
+        return $information;
     }
 }

@@ -92,7 +92,7 @@ class BinnacleController extends Controller
                     if($row->country != null){
                         $html = '<b>País:</b> '.$row->country.'<br><b>Departamento:</b> '.$row->city.'<br><b>Latitud:</b> '.$row->latitude.'<br><b>Longitud:</b> '.$row->longitude;
                     }else{
-                        $html = '-';
+                        $html = 'No encontrada';
                     }
                     return $html;
                 })->rawColumns(['id', 'ip', 'action', 'machine_name', 'realized_in', 'user', 'geolocation', 'domain', 'actions'])
