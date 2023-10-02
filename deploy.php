@@ -55,6 +55,10 @@ task('artisan:migrate', function () {
     $log = run('php artisan migrate --force --path=database/rrhh');
     info($log);
 
+    desc('Migrating payroll tables');
+    $log = run('php artisan migrate --force --path=database/payroll');
+    info($log);
+
     desc('Migrating');
     $log = run('php artisan migrate --force');
     info($log);
