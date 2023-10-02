@@ -718,10 +718,10 @@ class Util
                 $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
                 $binnacle['machine_name'] = php_uname();
                 $binnacle['ip'] = $ip;
-                $binnacle['city'] = $infoClient['geoplugin_city'];
-                $binnacle['country'] = $infoClient['geoplugin_countryName'];
-                $binnacle['latitude'] = $infoClient['geoplugin_longitude'];
-                $binnacle['longitude'] = $infoClient['geoplugin_latitude'];
+                $binnacle['city'] = $infoClient['city'];
+                $binnacle['country'] = $infoClient['country'];
+                $binnacle['latitude'] = $infoClient['longitude'];
+                $binnacle['longitude'] = $infoClient['latitude'];
                 $binnacle['domain'] = $request->getHttpHost();
         
                 if (! is_null($old_record)) {
@@ -748,10 +748,10 @@ class Util
                 $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
                 $binnacle['machine_name'] = php_uname();
                 $binnacle['ip'] = $ip;
-                $binnacle['city'] = $infoClient['geoplugin_city'];
-                $binnacle['country'] = $infoClient['geoplugin_countryName'];
-                $binnacle['latitude'] = $infoClient['geoplugin_longitude'];
-                $binnacle['longitude'] = $infoClient['geoplugin_latitude'];
+                $binnacle['city'] = $infoClient['city'];
+                $binnacle['country'] = $infoClient['country'];
+                $binnacle['latitude'] = $infoClient['longitude'];
+                $binnacle['longitude'] = $infoClient['latitude'];
                 $binnacle['domain'] = request()->getHttpHost();
                 $binnacle['old_record'] = null;
                 $binnacle['new_record'] = null;
@@ -789,7 +789,7 @@ class Util
     }
 
     public function getDataClient($inClient){
-        $information = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$inClient));
+        $information = unserialize(file_get_contents('http://ipwho.is/'.$inClient));
             return $information;
     }
 }
