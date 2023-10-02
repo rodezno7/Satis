@@ -743,11 +743,7 @@ class Util
         $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
         $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
         $binnacle['domain'] = request()->getHttpHost();
-        if($machineName){
-            $binnacle['machine_name'] = (array_key_exists('name', $machineName[0])) ? $machineName[0]['name'] : null;
-        }else{
-            $binnacle['machine_name'] = null;
-        }
+        $binnacle['machine_name'] = gethostname();
 
         Binnacle::create($binnacle);
     }
