@@ -14,11 +14,26 @@
                     $util = new \App\Utils\Util;
                     @endphp
                     <p style="margin-bottom: 1px;">
-                        <strong>@lang('accounting.date'):</strong> {{ $util->format_date($binnacle->created_at, true) }}
+                        <strong>@lang('accounting.date'):</strong> 
+                        @if ($binnacle->realized_in != null)
+                            {{ $util->format_date($binnacle->realized_in, true) }}
+                        @else
+                            {{ $util->format_date($binnacle->created_at, true) }}
+                        @endif
                     </p>
                     <p>
-                        <strong>@lang('accounting.user'):</strong> {{ $binnacle->user->first_name . ' ' . $binnacle->user->last_name }}
+                        <strong>@lang('binnacle.user1'):</strong> {{ $binnacle->user->first_name . ' ' . $binnacle->user->last_name }}
                     </p>
+                    @if ($binnacle->machine_name != null)
+                        <p>
+                            <strong>@lang('binnacle.machine_name'):</strong> {{ $binnacle->machine_name }}
+                        </p>
+                    @endif
+                    @if ($binnacle->domain != null)
+                        <p>
+                            <strong>@lang('binnacle.domain'):</strong> {{ $binnacle->domain }}
+                        </p>
+                    @endif
                 </div>
 
                 <div class="col-sm-6">
@@ -26,8 +41,21 @@
                         <strong>@lang('role.module'):</strong> {{ __('binnacle.' . $binnacle->module) }}
                     </p>
                     <p>
-                        <strong>@lang('accounting.action'):</strong> {{ __('binnacle.' . $binnacle->action) }}
+                        <strong>@lang('binnacle.action'):</strong> {{ __('binnacle.' . $binnacle->action) }}
                     </p>
+                    @if ($binnacle->ip != null)
+                        <p>
+                            <strong>@lang('binnacle.machine_name'):</strong> {{ $binnacle->ip }}
+                        </p>
+                    @endif
+                    @if ($binnacle->city != null)
+                        <p>
+                            <strong>@lang('binnacle.country'):</strong> {{ $binnacle->country }} <br>
+                            <strong>@lang('binnacle.department'):</strong> {{ $binnacle->city }}<br>
+                            <strong>@lang('binnacle.latitude'):</strong> {{ $binnacle->latitude }}<br>
+                            <strong>@lang('binnacle.longitude'):</strong> {{ $binnacle->longitude }}
+                        </p>
+                    @endif
                 </div>
             </div>
 

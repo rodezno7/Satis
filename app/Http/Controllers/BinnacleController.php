@@ -78,16 +78,22 @@ class BinnacleController extends Controller
             }
             
             return Datatables::of($binnacle)
-                ->editColumn('id', function ($row) {
-                    return $row->index + 1;
-                })->editColumn('action', function ($row) {
+                ->editColumn('action', function ($row) {
                     return __('binnacle.' . $row->action);
                 })->editColumn('realized_in', function ($row) {
-                    return $this->util->format_date($row->realized_in, true);
+                    if ($row->realized_in != null) {
+                        return $this->util->format_date($row->realized_in, true);
+                    }else{
+                        return $this->util->format_date($row->created_at, true);
+                    }
                 })->filterColumn('user', function ($query, $keyword) {
                     $query->whereRaw("CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) like ?", ["%{$keyword}%"]);
                 })->editColumn('geolocation',function ($row) {
-                    $html = '<b>País:</b> '.$row->country.'<br><b>Departamento:</b> '.$row->city.'<br><b>Latitud:</b> '.$row->latitude.'<br><b>Longitud:</b> '.$row->longitude;
+                    if($row->country != null){
+                        $html = '<b>País:</b> '.$row->country.'<br><b>Departamento:</b> '.$row->city.'<br><b>Latitud:</b> '.$row->latitude.'<br><b>Longitud:</b> '.$row->longitude;
+                    }else{
+                        $html = '-';
+                    }
                     return $html;
                 })->rawColumns(['id', 'ip', 'action', 'machine_name', 'realized_in', 'user', 'geolocation', 'domain', 'actions'])
                 ->setRowAttr([

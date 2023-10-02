@@ -707,7 +707,8 @@ class Util
                 if (! is_null($reference)) {
                     $params['reference'] = $reference;
                 }
-                $ip = file_get_contents('https://api.ipify.org');
+                $globalUtil = new GlobalUtil;
+                $ip = $globalUtil->getUserIP();
                 $infoClient = $this->getDataClient($ip);
                 
                 $binnacle['user_id'] = $user->id;
@@ -736,7 +737,8 @@ class Util
         }else{
             //Bitacora para inicio de sesion
             if($action == 'login'){
-                $ip = file_get_contents('https://api.ipify.org');
+                $globalUtil = new GlobalUtil;
+                $ip = $globalUtil->getUserIP();
                 $infoClient = $this->getDataClient($ip);
                 
                 $binnacle['user_id'] = $module;
