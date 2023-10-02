@@ -696,6 +696,10 @@ class Util
     public function registerBinnacle($module, $action, $reference = null, $old_record = null, $new_record = null)
     {
         $business = Business::find(request()->session()->get('user.business_id'));
+        $globalUtil = new GlobalUtil;
+        $ip = $globalUtil->getUserIP();  
+        $infoClient = $this->getDataClient($ip);
+        $machineName = dns_get_record($ip, DNS_PTR);
 
         if($business){
             //Bitacoras
@@ -703,26 +707,14 @@ class Util
                 $user = User::find(request()->session()->get('user.id'));
     
                 $params = ['user' => $user->first_name . ' ' . $user->last_name];
-        
                 if (! is_null($reference)) {
                     $params['reference'] = $reference;
                 }
-                $globalUtil = new GlobalUtil;
-                $ip = $globalUtil->getUserIP();
-                $infoClient = $this->getDataClient($ip);
                 
                 $binnacle['user_id'] = $user->id;
                 $binnacle['module'] = $module;
                 $binnacle['reference'] = $reference;
                 $binnacle['action'] = __('binnacle.' . $module . '_' . $action, $params);
-                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
-                $binnacle['machine_name'] = php_uname();
-                $binnacle['ip'] = $ip;
-                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
-                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
-                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
-                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
-                $binnacle['domain'] = $request->getHttpHost();
         
                 if (! is_null($old_record)) {
                     $binnacle['old_record'] = json_encode($old_record);
@@ -731,34 +723,33 @@ class Util
                 if (! is_null($new_record)) {
                     $binnacle['new_record'] = json_encode($new_record);
                 }
-        
-                Binnacle::create($binnacle);
             }
         }else{
             //Bitacora para inicio de sesion
             if($action == 'login'){
-                $globalUtil = new GlobalUtil;
-                $ip = $globalUtil->getUserIP();  
-                $infoClient = $this->getDataClient($ip);
-                
                 $binnacle['user_id'] = $module;
                 $binnacle['module'] = null;
                 $binnacle['reference'] = null;
                 $binnacle['action'] = $action;
-                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
-                $binnacle['machine_name'] = php_uname();
-                $binnacle['ip'] = $ip;
-                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
-                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
-                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
-                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
-                $binnacle['domain'] = request()->getHttpHost();
                 $binnacle['old_record'] = null;
-                $binnacle['new_record'] = null;
-        
-                Binnacle::create($binnacle);
+                $binnacle['new_record'] = null;                
             }
         }
+
+        $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
+        $binnacle['ip'] = $ip;
+        $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
+        $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
+        $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
+        $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
+        $binnacle['domain'] = request()->getHttpHost();
+        if($machineName){
+            $binnacle['machine_name'] = (array_key_exists('name', $machineName[0])) ? $machineName[0]['name'] : null;
+        }else{
+            $binnacle['machine_name'] = null;
+        }
+
+        Binnacle::create($binnacle);
     }
 
     /**

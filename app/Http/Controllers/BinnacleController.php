@@ -78,7 +78,13 @@ class BinnacleController extends Controller
             }
             
             return Datatables::of($binnacle)
-                ->editColumn('action', function ($row) {
+                ->editColumn('machine_name', function ($row) {
+                    if($row->machine_name != null){
+                        return $row->machine_name;
+                    }else{
+                        return 'No encontrada';
+                    }                    
+                })->editColumn('action', function ($row) {
                     return __('binnacle.' . $row->action);
                 })->editColumn('realized_in', function ($row) {
                     if ($row->realized_in != null) {
