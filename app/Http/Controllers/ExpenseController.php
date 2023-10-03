@@ -426,6 +426,19 @@ class ExpenseController extends Controller
         $tax_percent = $this->taxUtil->getTaxPercent($expense->contact->tax_group_id);
         $tax_min_amount = $this->taxUtil->getTaxMinAmount($expense->contact->tax_group_id);
         $tax_max_amount = $this->taxUtil->getTaxMaxAmount($expense->contact->tax_group_id);
+
+        $expense_lines = ExpenseLine::join('expense_categories as ec', 'expense_lines.expense_category_id', 'ec.id')
+            ->join('catalogues as c', 'ec.account_id', 'c.id')
+            ->where('transaction_id', $id)
+            ->select(
+                'expense_lines.id',
+                'ec.id as category_id',
+                'ec.name',
+                'c.code',
+                'c.name as account_name',
+                'expense_lines.line_total_exc_tax as amount',
+
+            )->get();
         
         return view('expense.edit', compact(
             'expense',
@@ -435,7 +448,8 @@ class ExpenseController extends Controller
             'tax_groups',
             'tax_percent',
             'tax_min_amount',
-            'tax_max_amount'
+            'tax_max_amount',
+            'expense_lines'
         ));
     }
 
@@ -528,6 +542,38 @@ class ExpenseController extends Controller
             Transaction::where('business_id', $business_id)
             ->where('id', $id)
             ->update($transaction_data);
+
+            $expense_lines = $request->input('expense_lines');
+            /** Update expense lines */
+            $ids = [];
+            foreach ($expense_lines as $line) {
+                if ($line['id'] == 0) {
+                    $el = ExpenseLine::create([
+                        'transaction_id' => $id,
+                        'expense_category_id' => $line['category_id'],
+                        'line_total_exc_tax' => $line['line_total']
+                    ]);
+
+                    array_push($ids, $el->id);
+                } else {
+                    ExpenseLine::updateOrCreate([
+                            'id' => $line['id'] 
+                        ],
+                        [
+                        'transaction_id' => $id,
+                        'expense_category_id' => $line['category_id'],
+                        'line_total_exc_tax' => $line['line_total']
+                    ]);
+                    
+                    array_push($ids, $line['id']);
+                }
+            }
+
+            /** Delete expense lines */
+            $expense_lines = ExpenseLine::whereNotIn('id', $ids)->get();
+            foreach ($expense_lines as $el) {
+                $el->delete();
+            }
 
             $output = [
                 'success' => 1,

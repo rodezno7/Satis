@@ -274,7 +274,7 @@ $(function () {
                     modal.find('input#tax_min_amount').val(data.tax_min_amount);
                     modal.find('input#tax_max_amount').val(data.tax_max_amount);
                     setTimeout(() => {
-                        recalculate(); 
+                        recalculate(modal); 
                     }, 500);
                     return data.contact_id || data.text;
                 }
@@ -334,6 +334,7 @@ $(function () {
             let tr = `
                 <tr>
                     <td>
+                        <input type="hidden" data-name="id" value="0">
                         <input type="hidden" data-name="category_id" value="${cat.cat_id}"/>
                         ${cat.text}
                     </td>
@@ -496,7 +497,7 @@ $(function () {
         });
     }
 
-    function recalculate(){
+    function recalculate(modal){
         let is_exempt = modal.find('input#is_exempt').val();
         let amount = __read_number(modal.find("input#amount"));
         let exempt_amount = modal.find('input#enable_exempt_amount').prop('checked') ? (__read_number(modal.find('input#exempt_amount')) > 0 ? __read_number(modal.find('input#exempt_amount')) : 0) : 0;
