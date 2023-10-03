@@ -167,7 +167,25 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($expense_lines as $el)
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="expense_lines[{{ $loop->index }}][id]"
+                                        data-name="id" value="{{ $el->id }}">
+                                    <input type="hidden" data-name="category_id"
+                                        name="expense_lines[{{ $loop->index }}][category_id]" value="{{ $el->category_id }}"/>
+                                        {{ $el->name }}
+                                </td>
+                                <td>{{ $el->code .' '. $el->account_name }}</td>
+                                <td>
+                                    <input type="text" data-name="line_total" name=expense_lines[{{ $loop->index }}][line_total]
+                                        class="form-control input-sm input_number" value="{{ $el->amount }}" />
+                                </td>
+                                <td class="text-center">
+                                    <i class="fa fa-times del-exp text-danger cursor-pointer"></i>
+                                </td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -231,7 +249,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-usd"></i>
                             </span>
-                            {!! Form::text('perception_amount', null, ['class' => 'form-control input_number', 'id' => 'perception_amount', 'placeholder' => __('tax_rate.perception'), 'readonly']) !!}
+                            {!! Form::text('perception_amount', $expense->tax_amount, ['class' => 'form-control input_number', 'id' => 'perception_amount', 'placeholder' => __('tax_rate.perception'), 'readonly']) !!}
                         </div>
 					</div>
 				</div>
@@ -243,7 +261,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-usd"></i>
                             </span>
-                            {!! Form::text('tax_amount', '0.0', ['class' => 'form-control', 'id' => 'iva', 'readonly', 'required']) !!}
+                            {!! Form::text('tax_amount', $expense->tax_group_amount, ['class' => 'form-control', 'id' => 'iva', 'readonly', 'required']) !!}
                         </div>
                     </div>
                 </div>
@@ -255,7 +273,7 @@
                             <span class="input-group-addon">
                                 <i class="fa fa-usd"></i>
                             </span>
-                            {!! Form::text('final_total', '0.0', ['class' => 'form-control', 'id' => 'final_total', 'readonly', 'required']) !!}
+                            {!! Form::text('final_total', $expense->final_total, ['class' => 'form-control', 'id' => 'final_total', 'readonly', 'required']) !!}
                         </div>
                     </div>
                 </div>
@@ -274,7 +292,7 @@
                     {{-- additional_notes --}}
                     <div class="form-group">
                         {!! Form::label('additional_notes', __('expense.expense_note') . ':') !!}
-                        <textarea name="additional_notes" id="additional_notes" class="form-control" style="resize: none;" cols="20" rows="3"></textarea>
+                        <textarea name="additional_notes" id="additional_notes" class="form-control" style="resize: none;" cols="20" rows="3">{{ $expense->additional_notes }}</textarea>
                     </div>
                 </div>
             </div>
@@ -288,97 +306,3 @@
         {!! Form::close() !!}
     </div>
 </div>
-<script>
-    $(function() {
-        $('select#tax_percent_group, input#amount, input#exempt_amount, select#supplier_id').on('change', function() {
-            let amount = __read_number($("input#amount"));
-            let exempt_amount = $("input#enable_exempt_amount").prop("checked") ? (__read_number($("input#exempt_amount")) > 0 ? __read_number($("input#exempt_amount")) : 0) : 0;
-            let tax_supplier_percent = ("select#supplier_id :selected") && $("input#tax_percent").val() != "" ? parseFloat($("input#tax_percent").val()) : 0;
-            let perception = $("input#perception_amount");
-
-            let tax_supplier = 0;
-
-            if (tax_supplier_percent != "0") {
-                if (amount > 0) {
-                    let min_amount = $("select#supplier_id :selected").val() ? parseFloat($("input#tax_min_amount").val()) : 0;
-                    let max_amount = $("select#supplier_id :selected").val() ? parseFloat($("input#tax_max_amount").val()) : 0;
-
-                    tax_supplier_percent = parseFloat(tax_supplier_percent);
-
-                    tax_supplier = calc_contact_tax(amount, min_amount, max_amount, tax_supplier_percent);
-                    __write_number(perception, tax_supplier, false, 4);
-                }
-
-            } else{
-                __write_number(perception, tax_supplier, false, 4);
-            }
-
-            if ($('select#tax_percent_group').val() != "nulled") {
-                let percent = $('select#tax_percent_group :selected').data('tax_percent');
-                let total = (amount * ((percent / 100) + 1)) + exempt_amount + tax_supplier;
-                let impuesto = total - amount - exempt_amount - tax_supplier;
-
-                __write_number($("input#final_total"), total, false, 4);
-                __write_number($("input#iva"), impuesto, false, 4);
-
-            } else if ($('input#amount') != "" || $('input#exempt_amount') != "") {
-                __write_number($("input#final_total"), (amount + exempt_amount + tax_supplier), false, 4);
-                $("input#iva").val('0.0');
-
-            } else {
-                $("input#final_total").val('0.0');
-                $("input#iva").val('0.0');
-            }
-        });
-    });
-
-    function recalculate(){
-        let is_exempt = $('input#is_exempt').val();
-        let amount = __read_number($("input#amount"));
-        let exempt_amount = $('input#enable_exempt_amount').prop('checked') ? (__read_number($('input#exempt_amount')) > 0 ? __read_number($('input#exempt_amount')) : 0) : 0;
-
-        if(is_exempt == 0){
-            $('select#tax_percent_group').attr('disabled', false);
-            if($('input#amount') != "" || $('input#exempt_amount') != ""){
-                __write_number($("#final_total"), amount + exempt_amount);
-                $("#iva").val('0.0');
-            } else {
-                $("#final_total").val('0.0');
-                $("#iva").val('0.0');
-            }
-        }else{
-            $('select#tax_percent_group').attr('disabled', true);
-            $('select#tax_percent_group').val('nulled').change();
-            $("#iva").val('0.0');
-        }
-    }
-
-    function calc_contact_tax(amount, min_amount, max_amount, tax_percent){
-        var tax_amount = 0;
-
-        // If has min o max amount
-        if (min_amount || max_amount) {
-            // if has min and max amount
-            if (min_amount && max_amount) {
-                if (amount >= min_amount && amount <= max_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            // If has only min amount
-            } else if (min_amount && ! max_amount) {
-                if (amount >= min_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            // If has only max amount
-            } else if (! min_amount && max_amount) {
-                if (amount <= max_amount) {
-                    tax_amount = amount * tax_percent;
-                }
-            }
-        // If has none tax
-        } else {
-            tax_amount = amount * tax_percent;
-        }
-
-        return tax_amount;
-    }
-</script>
