@@ -5,7 +5,7 @@ use App\Transaction;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Database\Seeder;
 
-class ModifyExpesesSeeder extends Seeder
+class ModifyExpensesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
