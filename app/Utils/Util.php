@@ -704,7 +704,7 @@ class Util
         if($business){
             //Bitacoras
             if ($business->enable_binnacle) {
-                $user = User::find(request()->session()->get('user.id'));
+                $user = User::find(\Auth::user()->id);
     
                 $params = ['user' => $user->first_name . ' ' . $user->last_name];
                 if (! is_null($reference)) {
