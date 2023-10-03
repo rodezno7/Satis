@@ -418,6 +418,47 @@ $(function () {
                 perception.show();
             }
         });
+
+        modal.find('select#tax_percent_group, input#amount, input#exempt_amount, select#supplier_id').on('change', function() {
+            let amount = __read_number(modal.find("input#amount"));
+            let exempt_amount = modal.find("input#enable_exempt_amount").prop("checked") ? (__read_number(modal.find("input#exempt_amount")) > 0 ? __read_number(modal.find("input#exempt_amount")) : 0) : 0;
+            let tax_supplier_percent = modal.find("select#supplier_id :selected") && modal.find("input#tax_percent").val() != "" ? parseFloat(modal.find("input#tax_percent").val()) : 0;
+            let perception = modal.find("input#perception_amount");
+
+            let tax_supplier = 0;
+
+            if (tax_supplier_percent != "0") {
+                if (amount > 0) {
+                    let min_amount = modal.find("select#supplier_id :selected").val() ? parseFloat(modal.find("input#tax_min_amount").val()) : 0;
+                    let max_amount = modal.find("select#supplier_id :selected").val() ? parseFloat(modal.find("input#tax_max_amount").val()) : 0;
+
+                    tax_supplier_percent = parseFloat(tax_supplier_percent);
+
+                    tax_supplier = calc_contact_tax(amount, min_amount, max_amount, tax_supplier_percent);
+                    __write_number(perception, tax_supplier, false, 4);
+                }
+
+            } else{
+                __write_number(perception, tax_supplier, false, 4);
+            }
+
+            if (modal.find('select#tax_percent_group').val() != "nulled") {
+                let percent = modal.find('select#tax_percent_group :selected').data('tax_percent');
+                let total = (amount * ((percent / 100) + 1)) + exempt_amount + tax_supplier;
+                let impuesto = total - amount - exempt_amount - tax_supplier;
+
+                __write_number(modal.find("input#final_total"), total, false, 4);
+                __write_number(modal.find("input#iva"), impuesto, false, 4);
+
+            } else if (modal.find('input#amount') != "" || modal.find('input#exempt_amount') != "") {
+                __write_number(modal.find("input#final_total"), (amount + exempt_amount + tax_supplier), false, 4);
+                modal.find("input#iva").val('0.0');
+
+            } else {
+                modal.find("input#final_total").val('0.0');
+                modal.find("input#iva").val('0.0');
+            }
+        });
     });
 
     /**
@@ -453,6 +494,27 @@ $(function () {
         $.each(inputs, function (i, input) {
             $(input).attr('name', 'expense_lines['+ index +']['+ $(input).data('name') +']');
         });
+    }
+
+    function recalculate(){
+        let is_exempt = modal.find('input#is_exempt').val();
+        let amount = __read_number(modal.find("input#amount"));
+        let exempt_amount = modal.find('input#enable_exempt_amount').prop('checked') ? (__read_number(modal.find('input#exempt_amount')) > 0 ? __read_number(modal.find('input#exempt_amount')) : 0) : 0;
+
+        if(is_exempt == 0){
+            modal.find('select#tax_percent_group').attr('disabled', false);
+            if(modal.find('input#amount') != "" || modal.find('input#exempt_amount') != ""){
+                __write_number($("#final_total"), amount + exempt_amount);
+                modal.find("input#iva").val('0.0');
+            } else {
+                modal.find("input#final_total").val('0.0');
+                modal.find("input#iva").val('0.0');
+            }
+        }else{
+            modal.find('select#tax_percent_group').attr('disabled', true);
+            modal.find('select#tax_percent_group').val('nulled').change();
+            modal.find("input#iva").val('0.0');
+        }
     }
 
     /**
