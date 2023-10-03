@@ -723,6 +723,16 @@ class Util
                 if (! is_null($new_record)) {
                     $binnacle['new_record'] = json_encode($new_record);
                 }
+                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
+                $binnacle['ip'] = $ip;
+                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
+                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
+                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
+                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
+                $binnacle['domain'] = request()->getHttpHost();
+                $binnacle['machine_name'] = gethostname();
+
+                Binnacle::create($binnacle);
             }
         }else{
             //Bitacora para inicio de sesion
@@ -732,20 +742,19 @@ class Util
                 $binnacle['reference'] = null;
                 $binnacle['action'] = $action;
                 $binnacle['old_record'] = null;
-                $binnacle['new_record'] = null;                
+                $binnacle['new_record'] = null;    
+                $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
+                $binnacle['ip'] = $ip;
+                $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
+                $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
+                $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
+                $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
+                $binnacle['domain'] = request()->getHttpHost();
+                $binnacle['machine_name'] = gethostname();
+
+                Binnacle::create($binnacle);            
             }
         }
-
-        $binnacle['realized_in'] = Carbon::now()->timezone('America/El_Salvador')->format('Y-m-d H:i:s');
-        $binnacle['ip'] = $ip;
-        $binnacle['city'] = (array_key_exists('city', $infoClient)) ? $infoClient['city'] : null;
-        $binnacle['country'] = (array_key_exists('country', $infoClient)) ? $infoClient['country'] : null;
-        $binnacle['latitude'] = (array_key_exists('longitude', $infoClient)) ? $infoClient['longitude'] : null;
-        $binnacle['longitude'] = (array_key_exists('latitude', $infoClient)) ? $infoClient['latitude'] : null;
-        $binnacle['domain'] = request()->getHttpHost();
-        $binnacle['machine_name'] = gethostname();
-
-        Binnacle::create($binnacle);
     }
 
     /**
