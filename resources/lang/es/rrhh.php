@@ -284,11 +284,13 @@ return[
     'graduate' => 'Graduado',
     'institution' => 'Institución',
     'Configuring_contract_margins' => 'Configurando márgenes del contrato',
+    'configuring_constance_margins' => 'Configurando márgenes de la constancia salarial',
     'Parameters_employee' => 'Párametros con respecto al empleado',
     'Parameters_business' => 'Párametros generales y de la empresa',
     'Parameters' => 'Párametros',
     'description' => 'Descripción',
     'Gets_the_employee_name' => 'Obtiene el nombre del empleado.',
+    'Gets_the_employee_hired_date' => 'Obtiene la fecha de ingreso del empleado.',
     'Gets_the_employee_age' => 'Obtiene el edad del empleado.',
     'Gets_the_employee_gender' => 'Obtiene el género del empleado.',
     'Gets_the_employee_civil_status' => 'Obtiene el estado civil del empleado.',
@@ -304,7 +306,7 @@ return[
     'Gets_the_employee_state' => 'Obtiene el departamento de residencia del empleado.',
     'Gets_the_employee_address' => 'Obtiene la dirección del empleado.',
     'Gets_the_employee_salary' => 'Obtiene el salario actual del empleado. El formato será en números, por ejemplo: $500.00.',
-    'Gets_the_employee_salary_letters' => 'Obtiene el salario actual del empleado. El formato será en letras, por ejemplo: QUINIENTOS 00/100 DOLARES.',
+    'Gets_the_employee_salary_letters' => 'Obtiene el salario actual del empleado. El formato será en letras, por ejemplo: QUINIENTOS 00/100.',
     'Gets_the_employee_department' => 'Obtiene el departamento donde trabaja el empleado.',
     'Gets_the_employee_position' => 'Obtiene el cargo del empleado.',
     'Gets_the_business_name' => 'Obtiene el nombre de la empresa.',
@@ -441,5 +443,7 @@ return[
     'types_incomes' => 'Tipos de ingresos',
     'types_discounts' => 'Tipos de descuentos',
     'balance_to_date' => 'Saldo pendiente hasta la fecha',
-    'quotas_applied' => 'Cuotas aplicadas'
+    'quotas_applied' => 'Cuotas aplicadas',
+    'salarial_constances' => 'Constancia salarial',
+    'all_salarial_constances' => 'Todas las constancias salariales'
 ];
