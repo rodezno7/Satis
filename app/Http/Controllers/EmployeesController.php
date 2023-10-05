@@ -13,6 +13,8 @@ use App\Business;
 use App\RrhhAbsenceInability;
 use App\RrhhContract;
 use App\Notifications\NewNotification;
+use App\RrhhSalarialConstance;
+use App\RrhhTypeWage;
 use App\Utils\EmployeeUtil;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -65,7 +67,7 @@ class EmployeesController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $data = DB::table('employees as e')
-        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.curriculum_vitae as curriculum_vitae', 'e.status as status', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
+        ->select('e.id as id', 'e.agent_code', 'e.first_name', 'e.dni', 'e.email', 'e.curriculum_vitae as curriculum_vitae', 'e.status as status', 'e.type_id as type_id', DB::raw("CONCAT(e.first_name, ' ', e.last_name) as full_name"))
         ->where('e.business_id', $business_id)
         ->where('e.deleted_at', null)
         ->get();
@@ -81,6 +83,17 @@ class EmployeesController extends Controller
                 return __('rrhh.active');
             }else{
                 return __('rrhh.inactive');
+            }
+        })->addColumn('salarial_constances', function ($data) {
+            if($data->type_id != null){
+                $business_id = request()->session()->get('user.business_id');
+                $type = RrhhTypeWage::where('id', $data->type_id)->where('business_id', $business_id)->first();
+                if($type->name == "Asalariado"){
+                    $constance = RrhhSalarialConstance::where('status', 1)->where('business_id', $business_id)->get();
+                    if(count($constance) > 0){
+                        return 'Descargar';
+                    }
+                }
             }
         })->toJson();
     }

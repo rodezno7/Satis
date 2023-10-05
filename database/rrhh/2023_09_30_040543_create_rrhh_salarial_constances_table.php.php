@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaymentPeriodsTable extends Migration
+class CreateRrhhSalarialConstancesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,14 @@ class CreatePaymentPeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_periods', function (Blueprint $table) {
+        Schema::create('rrhh_salarial_constances', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->integer('days');
+            $table->text('template');
+            $table->decimal('margin_bottom', 4, 2);
+            $table->decimal('margin_left', 4, 2);
+            $table->decimal('margin_right', 4, 2);
+            $table->decimal('margin_top', 4, 2);
             $table->boolean('status')->default(1);
             $table->integer('business_id')->unsigned()->nullable();
             $table->foreign('business_id')->references('id')->on('business')->onDelete('cascade');
@@ -32,6 +36,6 @@ class CreatePaymentPeriodsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_periods');
+        Schema::dropIfExists('rrhh_salarial_constances');
     }
 }

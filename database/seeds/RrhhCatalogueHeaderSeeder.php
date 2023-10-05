@@ -466,6 +466,16 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             ['description' => 'Eliminar nómina', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_employees.cv'],
+            ['description' => 'Descargar CV del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
+        Permission::firstOrCreate(
+            ['name' => 'rrhh_employees.download_salarial_constances'],
+            ['description' => 'Descargar constancia salarial', 'guard_name' => 'web', 'module_id' => $module->id]
+        );
+
 
         Permission::firstOrCreate(
             ['name' => 'rrhh_import_employees.create'],

@@ -126,23 +126,51 @@
                 html += '<li><a href="/rrhh-employees/'+data.id+'/edit"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a></li>';
                 @endcan
 
-                if (data.curriculum_vitae != null){
-                    @can('rrhh_employees.update')
-                    html += '<li><a href="/rrhh-employees-downloadCv/'+data.id+'"><i class="fa fa-download"></i>@lang('messages.download_cv')</a></li>';
-                    @endcan
-                }
-
+                @can('rrhh_economic_dependence.view')
                 html += '<li> <a href="#" onClick="addEconomicDependencies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.economic_dependencies')</a></li>';
+                @endcan
+
+                @can('rrhh_study.view')
                 html += '<li> <a href="#" onClick="addStudies('+data.id+')"><i class="fa fa-user"></i>@lang('rrhh.studies')</a></li>';
+                @endcan
+
+                @can('rrhh_document_employee.view')
                 html += '<li> <a href="#" onClick="addDocument('+data.id+')"><i class="fa fa-file"></i>@lang('rrhh.documents')</a></li>';
+                @endcan
+
+                @can('rrhh_contract.view')
                 html += '<li> <a href="#" onClick="addContract('+data.id+')"><i class="fa fa-file-text"></i>@lang('rrhh.contracts')</a></li>';
+                @endcan
+
+                @can('rrhh_absence_inability.view')
                 html += '<li> <a href="#" onClick="addAbsenceInhability('+data.id+')"><i class="fa fa-id-badge"></i>@lang('rrhh.absence_inability')</a></li>';
+                @endcan
+
+                @can('rrhh_personnel_action.view')
                 html += '<li> <a href="#" onClick="addPesonnelAction('+data.id+')"><i class="fa fa-drivers-license"></i>@lang('rrhh.personnel_actions')</a></li>';
+                @endcan
+
+                @can('rrhh_income_discount.view')
                 html += '<li> <a href="#" onClick="addIncomeDiscount('+data.id+')"><i class="fa fa-money"></i>@lang('rrhh.income_discount')</a></li>';
+                @endcan
                 
                 @can('rrhh_employees.delete')
                 html += '<li> <a href="#" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a></li>';
                 @endcan
+
+                if(data.salarial_constances == 'Descargar' || data.curriculum_vitae != null){
+                    html += '<li class="divider"></li>';
+                    if (data.curriculum_vitae != null){
+                        @can('rrhh_employees.cv')
+                        html += '<li><a href="/rrhh-employees-downloadCv/'+data.id+'"><i class="fa fa-download"></i>@lang('messages.download_cv')</a></li>';
+                        @endcan
+                    }
+                    if(data.salarial_constances == 'Descargar'){
+                        @can('rrhh_employees.download_salarial_constances')
+                        html += '<li><a href="/salarial-constance/'+data.id+'/download"><i class="fa fa-download"></i> @lang('messages.download_salarial_constance')</a></li></li>';
+                        @endcan
+                    }
+                }
                 
                 html += '</ul></div>';
 

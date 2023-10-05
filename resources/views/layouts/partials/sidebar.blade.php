@@ -236,7 +236,7 @@
               @endcan
 
               @can('payroll-catalogues.view')
-                <li class="treeview {{ in_array($request->segment(1), ['payroll-annual-summary']) ? 'active active-sub' : '' }}">
+                <li class="treeview {{ in_array($request->segment(1), ['payroll-annual-summary', 'salarial-constance']) ? 'active active-sub' : '' }}">
                   <a href="#">
                     <i class="fa fa-bar-chart-o"></i>
                     <span class="title">
@@ -255,6 +255,14 @@
                         </span>
                       </a>
                     </li>
+                    {{-- <li class="{{ $request->segment(1) == 'salarial-constance' ? 'active' : '' }}">
+                      <a href="{{ action('RrhhSalarialConstanceController@salarialConstances') }}">
+                        <i class="fa fa-newspaper-o"></i>
+                        <span class="title">
+                          @lang('rrhh.salarial_constances')
+                        </span>
+                      </a>
+                    </li> --}}
                   </ul>
                 </li>
               @endcan

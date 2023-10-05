@@ -178,6 +178,10 @@ class RrhhDataController extends Controller
             case 16:
             $type_item = __('rrhh.types_income_discounts');
             break;
+
+            case 17:
+            $type_item = __('rrhh.salarial_constances');
+            break;
         }
 
         return view('rrhh.catalogues.create', compact('type_item', 'header_id'));
@@ -374,6 +378,10 @@ class RrhhDataController extends Controller
 
             case 16:
             $type_item = __('rrhh.types_income_discounts');
+            break;
+
+            case 17:
+            $type_item = __('rrhh.salarial_constances');
             break;
         }
 

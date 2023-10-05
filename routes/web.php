@@ -751,6 +751,11 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::resource('/rrhh-catalogues/type-contract', 'RrhhTypeContractController');
     Route::get('/rrhh/getTypes', 'RrhhTypeContractController@getTypes');
 
+    Route::resource('/rrhh-catalogues/salarial-constance', 'RrhhSalarialConstanceController');
+    Route::get('/rrhh/getSalarialConstances', 'RrhhSalarialConstanceController@getSalarialConstances');
+    //Route::get('/salarial-constance', 'RrhhSalarialConstanceController@salarialConstances');
+    Route::get('/salarial-constance/{id}/download', 'RrhhSalarialConstanceController@download');
+
 
     // Route Module Payroll
     //Routes Payroll

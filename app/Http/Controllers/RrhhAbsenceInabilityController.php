@@ -38,7 +38,7 @@ class RrhhAbsenceInabilityController extends Controller
     
     public function getByEmployee($id) 
     {
-        if ( !auth()->user()->can('rrhh_employees.view') ) {
+        if ( !auth()->user()->can('rrhh_absence_inability.view') ) {
             abort(403, 'Unauthorized action.');
         }
         $business_id = request()->session()->get('user.business_id');

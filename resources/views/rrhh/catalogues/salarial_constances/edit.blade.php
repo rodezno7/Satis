@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __('rrhh.type_contract'))
+@section('title', __('rrhh.salarial_constances'))
 
 @section('css')
 <script src="{{ asset('js/ckeditor4/ckeditor.js') }}"></script>
@@ -8,14 +8,14 @@
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>@lang('rrhh.edit') {{ mb_strtolower(__('rrhh.type_contract')) }}</h1>
+        <h1>@lang('rrhh.edit') {{ mb_strtolower(__('rrhh.salarial_constances')) }}</h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
         <div class="boxform_u box-solid_u">
             <div class="box-body">
-                {!! Form::model($type, ['url' => action('RrhhTypeContractController@update', $type->id), 'method' => 'patch',
+                {!! Form::model($type, ['url' => action('RrhhSalarialConstanceController@update', $type->id), 'method' => 'patch',
                 'id' => 'form_edit', 'files' => true]) !!}
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h4 for="">{{ __('rrhh.Configuring_contract_margins') }}</h4>
+                        <h4 for="">{{ __('rrhh.configuring_constance_margins') }}</h4>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
@@ -113,7 +113,7 @@
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <table class="table table-sm table-bordered">
-                                    <caption class="text-center">{{ __('rrhh.Parameters_employee') }}</caption>
+                                    <caption class="text-center">{{ __('rrhh.Parameters_business_employee') }}</caption>
                                     <thead>
                                         <tr>
                                             <th>{{ __('rrhh.Parameters') }}</th>
@@ -126,83 +126,39 @@
                                             <td>{{ __('rrhh.Gets_the_employee_name') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>employee_age</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_age') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_gender</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_gender') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_civil_status</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_civil_status') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_nationality</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_nationality') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_profession</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_profession') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_dni</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_dni') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_dni_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_dni_letters') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_dni_expedition_date</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_dni_expedition_date') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_dni_expedition_place</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_dni_expedition_place') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_tax_number</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_tax_number') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_tax_number_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_tax_number_letters') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_state</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_state') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_city</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_city') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_address</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_address') }}</td>
+                                            <td>employee_hired_date</td>
+                                            <td>{{ __('rrhh.Gets_the_employee_hired_date') }}</td>
                                         </tr>
                                         <tr>
                                             <td>employee_salary</td>
                                             <td>{{ __('rrhh.Gets_the_employee_salary') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>employee_salary_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_salary_letters') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>employee_department</td>
-                                            <td>{{ __('rrhh.Gets_the_employee_department') }}</td>
-                                        </tr>
-                                        <tr>
                                             <td>employee_position</td>
                                             <td>{{ __('rrhh.Gets_the_employee_position') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_name</td>
+                                            <td>{{ __('rrhh.Gets_the_business_name') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_email</td>
+                                            <td>{{ __('rrhh.Gets_the_business_email') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>business_mobile</td>
+                                            <td>{{ __('rrhh.Gets_the_business_mobile') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>current_date</td>
+                                            <td>{{ __('rrhh.Gets_the_current_date') }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="col-lg-6 col-md-12 col-sm-12">
                                 <table class="table table-sm table-bordered">
-                                    <caption class="text-center">{{ __('rrhh.Parameters_business') }}</caption>
+                                    <caption class="text-center">{{ __('rrhh.Parameters_income_discount') }}</caption>
                                     <thead>
                                         <tr>
                                             <th>{{ __('rrhh.Parameters') }}</th>
@@ -211,60 +167,44 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>business_name</td>
-                                            <td>{{ __('rrhh.Gets_the_business_name') }}</td>
+                                            <td>bonus_income</td>
+                                            <td>{{ __('rrhh.Get_employee_bonus') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>line_of_business</td>
-                                            <td>{{ __('rrhh.Gets_the_line_of_business') }}</td>
+                                            <td>comission_income</td>
+                                            <td>{{ __('rrhh.Get_employee_commissions') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>business_tax_number</td>
-                                            <td>{{ __('rrhh.Gets_the_business_tax_number') }}</td>
+                                            <td>total_income</td>
+                                            <td>{{ __('rrhh.Get_the_total_income') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>business_tax_number_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_business_tax_number_letters') }}</td>
+                                            <td>isss_discount</td>
+                                            <td>{{ __('rrhh.Get_the_ISSS_discount') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>business_state</td>
-                                            <td>{{ __('rrhh.Gets_the_business_department') }}</td>
+                                            <td>afp_discount</td>
+                                            <td>{{ __('rrhh.Get_the_AFP_discount') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>business_address</td>
-                                            <td>{{ __('rrhh.Gets_the_business_address') }}</td>
+                                            <td>rent_discount</td>
+                                            <td>{{ __('rrhh.Get_the_rent_discount') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>business_legal_representative</td>
-                                            <td>{{ __('rrhh.Gets_the_bsuiness_legal_representative') }}</td>
+                                            <td>bank_loans</td>
+                                            <td>{{ __('rrhh.Get_bank_loans') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>contract_start_date</td>
-                                            <td>{{ __('rrhh.Gets_the_contract_start_date') }}</td>
+                                            <td>mortgage_loans</td>
+                                            <td>{{ __('rrhh.Get_mortgage_loans') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>contract_start_date_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_contract_start_date_letters') }}</td>
+                                            <td>judicial_discount</td>
+                                            <td>{{ __('rrhh.Get_the_judicial_discount') }}</td>
                                         </tr>
                                         <tr>
-                                            <td>contract_end_date</td>
-                                            <td>{{ __('rrhh.Gets_the_contract_end_date') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>contract_end_date_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_contract_end_date_letters') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>months_of_the_contract</td>
-                                            <td>{{ __('rrhh.Gets_the_number_of_months_of_the_contract') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>current_date</td>
-                                            <td>{{ __('rrhh.Gets_the_current_date') }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>current_date_letters</td>
-                                            <td>{{ __('rrhh.Gets_the_current_date_letters') }}</td>
+                                            <td>total_deductions</td>
+                                            <td>{{ __('rrhh.Get_the_total_deductions') }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

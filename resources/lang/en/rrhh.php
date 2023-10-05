@@ -281,6 +281,8 @@ return[
     'Configuring_contract_margins' => 'Configuring contract margins',
     'Parameters_employee' => 'Parameters regarding the employee',
     'Parameters_business' => 'General and business parameters',
+    'Parameters_business_employee' => 'Gets the general parameters of the company and the employee',
+    'Parameters_income_discount' => 'Gets the employees income and discount parameters',
     'Parameters' => 'Parameters',
     'description' => 'Description',
     'Gets_the_employee_name' => 'Gets the employee name.',
@@ -316,6 +318,19 @@ return[
     'Gets_the_current_date' => 'Gets the current date. The format is: On the 12th day of July 2023.',
     'Gets_the_current_date_letters' => 'Gets the start date of the contract. The format is in letters, for example: July twelve, two thousand twenty-three.',
     'Gets_the_number_of_months_of_the_contract' => 'Gets the number of months of the contract. For example: 4 months.',
+    
+    'Gets_the_business_email' => 'Gets the business email',
+    'Gets_the_business_mobile' => 'Gets the business phone',
+    'Get_employee_bonus' => 'Get employee bonuses',
+    'Get_employee_commissions' => 'Get employee commissions',
+    'Get_the_total_income' => 'Get the total income',
+    'Get_the_ISSS_discount' => 'Get the ISSS discount',
+    'Get_the_AFP_discount' => 'Get the AFP discount',
+    'Get_the_rent_discount' => 'Get the rent discount',
+    'Get_bank_loans' => 'Get bank loans',
+    'Get_mortgage_loans' => 'Get the mortgage loans',
+    'Get_the_judicial_discount' => 'Get the judicial discount',
+    'Get_the_total_deductions' => 'Get the total deductions',
     'import_employees' => 'Import employees',
     'validation_file' => 'The only allowed files are .jpg, .jpeg, .png and .pdf',
     'validation_file_pdf' => 'The only allowed files are .pdf',
@@ -431,5 +446,8 @@ return[
     'quota_value' => 'Quota value',
     'apply_in' => 'Apply in',
     'balance_to_date' => 'Balance to date',
-    'quotas_applied' => 'Quotas applied'
+    'quotas_applied' => 'Quotas applied',
+    'salarial_constances' => 'Salarial constances',
+    'all_salarial_constances' => 'All salarial constances',
+    'message_salarial_constances' => 'There must be an active salary certificate to be able to download it from the employee section, otherwise the respective option will not be displayed.'
 ];

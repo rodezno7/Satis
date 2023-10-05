@@ -74,6 +74,7 @@ return [
     'password_required' => 'The password field is required.',
     'validate_file' => 'Validate file',
     'download_cv' => 'Download cv',
+    'download_salarial_constance' => 'Download salarial constance',
     "approve_question" => 'Are you about to approve this form?',
     'approve_content' => 'Remember that this process cannot be reversed',
     "payment_file_question" => 'Do you want to generate payment files?',

@@ -286,6 +286,8 @@ return[
     'Configuring_contract_margins' => 'Configurando márgenes del contrato',
     'Parameters_employee' => 'Párametros con respecto al empleado',
     'Parameters_business' => 'Párametros generales y de la empresa',
+    'Parameters_business_employee' => 'Obtiene los párametros generales de la empresa y del empleado',
+    'Parameters_income_discount' => 'Obtiene los párametros de ingresos y descuentos del empleado',
     'Parameters' => 'Párametros',
     'description' => 'Descripción',
     'Gets_the_employee_name' => 'Obtiene el nombre del empleado.',
@@ -321,6 +323,19 @@ return[
     'Gets_the_current_date' => 'Obtiene la fecha actual. El formato es: A los 12 días del mes de julio de 2023.',
     'Gets_the_current_date_letters' => 'Obtiene la fecha de inicio del contrato. El formato es en letras, por ejemplo: A los doce días del mes de julio de dos mil veintitres.',
     'Gets_the_number_of_months_of_the_contract' => 'Obtiene la cantidad de meses del contrato. Por ejemplo: 4 meses.',
+    
+    'Gets_the_business_email' => 'Obtiene el correo electrénico de la empresa',
+    'Gets_the_business_mobile' => 'Obtiene el teléfono de la empresa',
+    'Get_employee_bonus' => 'Obtiene los bonos del empleado',
+    'Get_employee_commissions' => 'Obtiene las comisiones del empleado',
+    'Get_the_total_income' => 'Obtiene el total de ingresos',
+    'Get_the_ISSS_discount' => 'Obtiene el descuento del ISSS',
+    'Get_the_AFP_discount' => 'Obtiene el descuento del AFP',
+    'Get_the_rent_discount' => 'Obtiene el descuento del renta',
+    'Get_bank_loans' => 'Obtiene los préstamos bancarios',
+    'Get_mortgage_loans' => 'Obtiene los préstamos hipotecarios',
+    'Get_the_judicial_discount' => 'Obtiene el descuento judicial',
+    'Get_the_total_deductions' => 'Obtiene el total de deducciones',
     'import_employees' => 'Importar empleados',
     'validation_file' => 'Los archivos permidos únicamente son .jpg, .jpeg, .png y .pdf',
     'validation_file_pdf' => 'Los archivos permidos únicamente son .pdf',
@@ -441,5 +456,8 @@ return[
     'types_incomes' => 'Tipos de ingresos',
     'types_discounts' => 'Tipos de descuentos',
     'balance_to_date' => 'Saldo pendiente hasta la fecha',
-    'quotas_applied' => 'Cuotas aplicadas'
+    'quotas_applied' => 'Cuotas aplicadas',
+    'salarial_constances' => 'Constancia salarial',
+    'all_salarial_constances' => 'Todas las constancias salariales',
+    'message_salarial_constances' => 'Debe haber una constancia salarial activa para poder descargarla desde el apartado del empleado, sino la opcion respectiva no se mostrará.'
 ];

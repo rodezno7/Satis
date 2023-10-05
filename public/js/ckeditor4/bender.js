@@ -38,6 +38,8 @@ var config = {
 		}
 	},
 
+	imageMaxFileSize: 10485760,
+
 	framework: 'yui',
 
 	// secure: true,

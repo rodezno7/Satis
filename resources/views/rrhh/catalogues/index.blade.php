@@ -39,6 +39,7 @@
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_personnel_actions')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_wages')</a>
                         <a href="#" class="list-group-item text-center">@lang('rrhh.types_contracts')</a>
+                        <a href="#" class="list-group-item text-center">@lang('rrhh.salarial_constances')</a>
                         {{-- <a href="#" class="list-group-item text-center">@lang('rrhh.cost_center')</a> --}}
                     </div>
                 </div>
@@ -127,6 +128,10 @@
                     <!-- tab start -->
                     @include('rrhh.catalogues.types_contracts.index')
                     <!-- tab end -->
+
+                    <!-- tab start -->
+                    @include('rrhh.catalogues.salarial_constances.index')
+                    <!-- tab end -->
                 </div>
             </div>
         </div>
@@ -161,13 +166,11 @@
         loadAfps();
         loadTypes();
         loadNationalities();
-        // loadBanks();
         loadProfessions();
         loadWayToPays();
         loadDocumentTypes();
         loadSpecialCapabilities();
         loadEmployeeClassification();
-        //loadTypesProfessionsOccupations();
         loadTypesStudies();
         loadTypesPersonnelActions();
         loadTypesIncomeDiscounts();
@@ -176,9 +179,8 @@
         loadKinshipTypes();
 
         loadTypesWages();
-        //loadCostCenter();
         loadTypesContracts();
-        //loadTypesClauseContracts();
+        loadSalarialConstances();
         $.fn.dataTable.ext.errMode = 'none';
     });
 
@@ -802,37 +804,38 @@
         });
     }
 
-    // function loadCostCenter() {
-    //     var table5 = $("#cost_center-table").DataTable();
-    //     table5.destroy();
-    //     var table5 = $("#cost_center-table").DataTable({
+    function loadSalarialConstances() {
+        var table6 = $("#salarial_constances-table").DataTable();
+        table6.destroy();
+        var table6 = $("#salarial_constances-table").DataTable({
+            deferRender: true,
+            processing: true,
+            serverSide: true,
+            ajax: "/rrhh/getSalarialConstances",
+            columns: [
+            {data: 'name'},
+            {data: 'status'},
+            {data: null, render: function(data){
 
-    //         deferRender: true,
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: "/rrhh/getCataloguesData/13",
-    //         columns: [
-    //         {data: 'value'},
-    //         {data: 'status'},
-    //         {data: null, render: function(data){
+                html = "";
+                @can('rrhh_catalogues.view')
+                html += '<a href="/rrhh-catalogues/salarial-constance/'+data.id+'"  target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-file"></i> @lang('messages.view')</a>';
+                @endcan
 
-    //             html = "";
+                @can('rrhh_catalogues.update')
+                html += ' <a href="/rrhh-catalogues/salarial-constance/'+data.id+'/edit" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
+                @endcan
+
+                @can('rrhh_catalogues.delete')
+                html += ' <a class="btn btn-xs btn-danger" onClick="deleteSalarialConstance('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
+                @endcan
                 
-    //             @can('rrhh_catalogues.update')
-    //             html += '<a class="btn btn-xs btn-primary" onClick="editItem('+data.id+')"><i class="glyphicon glyphicon-edit"></i> @lang('messages.edit')</a>';
-    //             @endcan
-
-    //             @can('rrhh_catalogues.delete')
-    //             html += ' <a class="btn btn-xs btn-danger" onClick="deleteItem('+data.id+')"><i class="glyphicon glyphicon-trash"></i> @lang('messages.delete')</a>';
-    //             @endcan
-                
-    //             return html;
-    //         } , orderable: false, searchable: false}
-    //         ],
-    //         dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
-    //     });
-    // }
-
+                return html;
+            } , orderable: false, searchable: false}
+            ],
+            dom:'<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
+        });
+    }
 
     $("#add_marital_status, #add_department, #add_position, #add_afp, #add_type, #add_nationality, #add_profession, #add_way_to_pay, #add_document_type, #add_special_capabilities, #add_employee_classification, #add_types_studies, #add_types_absences, #add_types_inabilities, #add_types_relationships").click(function(){
         $("#modal_content").html('');
@@ -928,18 +931,6 @@
             
         });
     }
-
-    // function editBank(id) {
-    //     $("#modal_content").html('');
-    //     var url = '{!!URL::to('/rrhh-banks/:id/edit')!!}';
-    //     url = url.replace(':id', id);
-    //     $.get(url, function(data) {
-
-    //         $("#modal_content").html(data);
-    //         $('#modal').modal({backdrop: 'static'});
-            
-    //     });
-    // }
 
     function deleteItem(id) {
         Swal.fire({
@@ -1155,6 +1146,50 @@
                                 showConfirmButton: false,
                             });
                             $("#types_contracts-table").DataTable().ajax.reload(null, false);
+                            $('#modal').modal('hide');
+                        } else {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "error",
+                            });
+                        }
+                    }
+                });
+            }
+        
+        });
+    }
+
+    function deleteSalarialConstance(id) {
+        Swal.fire({
+            title: LANG.sure,
+            text: "{{ __('messages.delete_content') }}",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: "{{ __('messages.accept') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}"
+        }).then((willDelete) => {
+            if (willDelete.value) {
+                route = '/rrhh-catalogues/salarial-constance/'+id;
+                token = $("#token").val();
+                $.ajax({
+                    url: route,
+                    headers: {'X-CSRF-TOKEN': token},
+                    type: 'DELETE',
+                    dataType: 'json',                       
+                    success:function(result){
+                        if(result.success == true) {
+                            Swal.fire
+                            ({
+                                title: result.msg,
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: false,
+                            });
+                            $("#salarial_constances-table").DataTable().ajax.reload(null, false);
                             $('#modal').modal('hide');
                         } else {
                             Swal.fire

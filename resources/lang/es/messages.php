@@ -67,6 +67,7 @@
     'password_required' => 'El campo de la contraseña es requerido.',
     'validate_file' => 'Validar archivo',
     'download_cv' => 'Descargar cv',
+    'download_salarial_constance' => 'Descargar constancia salarial',
     "approve_question" => '¿Está a punto de aprobar esta planilla?',
     'approve_content' => 'Recuerde que este proceso no se puede revertir',
     "payment_file_question" => '¿Desea generar los archivos de pagos?',

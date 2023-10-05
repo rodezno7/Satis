@@ -279,7 +279,37 @@ class HomeController extends Controller
             '11' => __('accounting.november'),
             '12' => __('accounting.december')
         );
-        
+
+
+        $sells_chart_line_1 = null;
+        $labels = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+        if (!empty($sells_previous_week) || !empty($sells_current_week)) {
+            for ($i=0; $i < 7; $i++) { 
+                if (!empty($sells_previous_week[$i])) {
+                    $sell_values_previous_week[] = $sells_previous_week[$i];
+                } else {
+                    $sell_values_previous_week[] = 0;
+                }
+
+                if (!empty($sells_current_week[$i])) {
+                    $sell_values_current_week[] = $sells_current_week[$i];
+                } else {
+                    $sell_values_current_week[] = 0;
+                }
+            }
+
+            $sells_chart_line_1 = Charts::multi('line', 'highcharts')
+            ->title(__(' '))
+            ->template("blue-material")
+            ->labels($labels)
+            ->dataset('Semana actual', $sell_values_current_week)
+            ->dataset('Semana pasada', $sell_values_previous_week)
+            ->elementLabel(__(
+                'home.total_sells',
+                ['currency' => $currency->code]
+            ))->dimensions(500,300);
+        } 
+             
         $business_locations = BusinessLocation::where('business_id', $business_id)->get();
 
         // Locations
