@@ -84,6 +84,9 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     // Ganancias
     Route::get('/home/get-profits', 'HomeController@getProfitsDetails');
 
+    //List trending products
+    Route::get('/home/get-trending-products', 'HomeController@getListTrendingProducts');
+
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/home/get-purchase-details', 'HomeController@getPurchaseDetails');
     Route::post('/home/get-sell-details', 'HomeController@getSellDetails');

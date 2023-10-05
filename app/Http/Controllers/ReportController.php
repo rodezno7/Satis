@@ -842,7 +842,7 @@ class ReportController extends Controller
             $string =  $product->product . ' (' . $product->unit . ')';
             $labels[] = str_replace('"', '', $string);
         }
-        
+
         $chart = Charts::create('bar', 'highcharts')
             ->title(" ")
             ->dimensions(0, 400)
@@ -897,7 +897,7 @@ class ReportController extends Controller
             $values[] = $expense->total_expense;
             $labels[] = !empty($expense->category) ? $expense->category : __('report.others');
         }
-
+    
         $chart = Charts::create('bar', 'highcharts')
             ->title(__('report.expense_report'))
             ->dimensions(0, 400)

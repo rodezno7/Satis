@@ -918,17 +918,19 @@ class PayrollController extends Controller
 
                             //Calcular Renta        
                             for ($i = 0; $i < count($lawDiscountsRenta); $i++) {
-                                if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[0]->until) {
+                                $value = $details['total_income'] - $details['isss'] - $details['afp'];
+                                
+                                if ($value <= $lawDiscountsRenta[0]->until) {
                                     $details['rent'] = 0;
                                 } else {
-                                    if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[1]->until) {
-                                        $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[1]->base) * ($lawDiscountsRenta[1]->employee_percentage / 100)) + $lawDiscountsRenta[1]->fixed_fee, 1, 2);
+                                    if ($value <= $lawDiscountsRenta[1]->until) {
+                                        $details['rent'] = bcdiv((($value - $lawDiscountsRenta[1]->base) * ($lawDiscountsRenta[1]->employee_percentage / 100)) + $lawDiscountsRenta[1]->fixed_fee, 1, 2);
                                     } else {
-                                        if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[2]->until) {
-                                            $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[2]->base) * ($lawDiscountsRenta[2]->employee_percentage / 100)) + $lawDiscountsRenta[2]->fixed_fee, 1, 2);
+                                        if ($value <= $lawDiscountsRenta[2]->until) {
+                                            $details['rent'] = bcdiv((($value - $lawDiscountsRenta[2]->base) * ($lawDiscountsRenta[2]->employee_percentage / 100)) + $lawDiscountsRenta[2]->fixed_fee, 1, 2);
                                         } else {
-                                            if (($details['total_income'] - $details['isss'] - $details['afp']) <= $lawDiscountsRenta[3]->until) {
-                                                $details['rent'] = bcdiv(((($details['total_income'] - $details['isss'] - $details['afp']) - $lawDiscountsRenta[3]->base) * ($lawDiscountsRenta[3]->employee_percentage / 100)) + $lawDiscountsRenta[3]->fixed_fee, 1, 2);
+                                            if ($value <= $lawDiscountsRenta[3]->until) {
+                                                $details['rent'] = bcdiv((($value - $lawDiscountsRenta[3]->base) * ($lawDiscountsRenta[3]->employee_percentage / 100)) + $lawDiscountsRenta[3]->fixed_fee, 1, 2);
                                             }
                                         }
                                     }

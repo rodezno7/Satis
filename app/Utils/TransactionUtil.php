@@ -2883,6 +2883,53 @@ class TransactionUtil extends Util
     }
 
     /**
+     * Gives total sells of last an week day-wise
+     *
+     * @param int $business_id
+     * @param array $filters
+     *
+     * @return Obj
+     */
+    public function getSellsByWeek($business_id, $start_date, $end_date)
+    {
+        $query = Transaction::where('business_id', $business_id)
+            ->where('type', 'sell')
+            ->where('status', 'final')
+            ->whereBetween(DB::raw('date(transaction_date)'), [$start_date, $end_date]);
+
+        // Check for permitted locations of a user
+        $permitted_locations = auth()->user()->permitted_locations();
+
+        if ($permitted_locations != 'all') {
+            $query->whereIn('transactions.location_id', $permitted_locations);
+        }
+
+        $sells = $query->select(
+                DB::raw("DATE_FORMAT(transaction_date, '%Y-%m-%d') as date"),
+                DB::raw("DAYOFWEEK(transaction_date) as number_day"),
+                DB::raw("SUM(final_total) as total_sells"),
+                DB::raw("SUM(total_before_tax) as total_sells_exc_tax"),
+            )
+            ->groupBy(DB::raw('Date(transaction_date)'))
+            ->get();
+
+        // Show values ​​including or excluding taxes
+        $business = Business::find($business_id);
+        $dashboard_settings = empty($business->dashboard_settings) ? null : json_decode($business->dashboard_settings, true);
+
+        if ($dashboard_settings['box_exc_tax']) {
+            $sells = $sells->pluck('total_sells_exc_tax', 'number_day');
+        } else {
+            $sells = $sells->pluck('total_sells', 'number_day');
+        }
+
+        \Log::info($sells);
+
+        return $sells;
+    }
+
+
+    /**
      * Gives total sells of last 30 days day-wise
      *
      * @param int $business_id

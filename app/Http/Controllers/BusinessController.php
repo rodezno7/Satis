@@ -405,8 +405,6 @@ class BusinessController extends Controller
 
         //agregando datos de lacation
         $business_location = BusinessLocation::where('business_id', $business_id)->first();
-
-        //
         
         $currencies = $this->businessUtil->allCurrencies();
         $tax_details = TaxRate::forBusinessDropdown($business_id);

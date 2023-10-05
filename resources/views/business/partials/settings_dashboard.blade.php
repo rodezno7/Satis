@@ -67,6 +67,19 @@
                             </div>
                         </div>
 
+                        {{-- dashboard_settings[sell_and_product] --}}
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <div class="checkbox" style="margin-top: 24px;">
+                                    <label>
+                                        {!! Form::checkbox('dashboard_settings[sell_and_product]', 1,
+                                            $dashboard_settings['sell_and_product'], ['class' => 'input-icheck']) !!}
+                                        Ventas de las 2 ultimas semanas y productos en tendencia
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- dashboard_settings[sales_year] --}}
                         <div class="col-sm-6 col-md-4">
                             <div class="form-group">
@@ -79,7 +92,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row">
                         {{-- dashboard_settings[peak_sales_hours_month] --}}
                         <div class="col-sm-6 col-md-4">
                             <div class="form-group">
@@ -118,7 +133,9 @@
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                    
+                    <div class="row">
                         {{-- dashboard_settings[purchases_year] --}}
                         <div class="col-sm-6 col-md-4">
                             <div class="form-group">

@@ -449,6 +449,7 @@ class BusinessUtil extends Util
     public function defaultDashboardSettings()
     {
         return [
+            'sell_and_product' => 0,
             'subtract_sell_return' => 0,
             'box_exc_tax' => 0,
             'sales_month' => 1,
