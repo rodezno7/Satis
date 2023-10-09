@@ -14,7 +14,7 @@ class ImplementationController extends Controller
         // if(!auth()->user()->can('business_settings.access_module')){
         //     abort(403, "Unauthorized action.");
         // }
-        if(!auth()->user()->hasRole('Super Admin#' . request()->session()->get('user.business_id'))){
+        if(!(auth()->user()->hasRole('Super Admin#' . request()->session()->get('user.business_id')) || auth()->user()->hasRole('Implementaciones#' . request()->session()->get('user.business_id')))){
             abort(403, "Unauthorized action.");
         }
 
