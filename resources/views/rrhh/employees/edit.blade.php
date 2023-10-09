@@ -1031,7 +1031,7 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 5242880) {
+                if (size > 12582912) {
 
                     $('#curriculum_vitae').val('');
                     Swal.fire({

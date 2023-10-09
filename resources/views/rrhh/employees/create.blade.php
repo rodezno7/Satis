@@ -500,7 +500,7 @@
                                 <div class="form-group">
                                     {!! Form::label('curriculum_vitae', __('rrhh.curriculum_vitae') . ':') !!}
                                     {!! Form::file('curriculum_vitae', ['id' => 'curriculum_vitae', 'accept' => 'application/pdf']) !!}
-                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit_6') / 1000000]).</small>
+                                    <small class="help-block">@lang('purchase.max_file_size', ['size' => config('constants.document_size_limit') / 1000000]).</small>
                                 </div>
                             </div>
                         </div>
@@ -790,7 +790,7 @@
                 });
             } else {
                 size = this.files[0].size;
-                if (size > 5242880) {
+                if (size > 12582912) {
 
                     $('#curriculum_vitae').val('');
                     Swal.fire({
