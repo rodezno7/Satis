@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Business;
+use App\Module;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -34,10 +35,14 @@ class AppServiceProvider extends ServiceProvider
                 if(empty(session('business.enabled_modules'))){
                     $enabled_modules = [];
                 }else{
-                    $business = Business::where('id', request()->session()->get('user.business_id'))->first();
-                    $enabled_modules = $business->enabled_modules;
+                    $systemModules = Module::orderBy('name', 'ASC')->get();
+                    foreach($systemModules as $systemModule){
+                        if($systemModule->status == 1){
+                            $enabled[] = $systemModule->name;
+                        }
+                    }
+                    $enabled_modules = $enabled;
                 }
-
                 $view->with('enabled_modules', $enabled_modules);
             }
         );
