@@ -70,4 +70,5 @@
     'charts_dashboard' => 'Indicar los gráficos que se visualizan en el Dashboard',
     'parent_correlative_text' => '<b>Documento padre</b>. Solo para devoluciones con facturas consumidor final',
     'export_expenses' => 'Gastos de exportación incluídos en las Factaras de Exportación',
+    'module_sidebar' => 'Indicar los módulos a los que la empresa tendrá acceso.'
 ];

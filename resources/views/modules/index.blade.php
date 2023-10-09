@@ -27,7 +27,7 @@
                             <tr>
                                 <th>@lang( 'role.module_name' )</th>
                                 <th>@lang( 'role.module_description' )</th>
-                                <th>@lang( 'role.status' )</th>
+                                {{-- <th>@lang( 'role.status' )</th> --}}
                                 <th>@lang( 'messages.action' )</th>
                             </tr>
                         </thead>
@@ -113,19 +113,19 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="module_ename">@lang('role.module_name')</label>
-                        <input type="text" id="module_ename" name="module_ename" class="form-control" placeholder="@lang('role.module_name')" required>
+                        <input type="text" id="module_ename" name="module_ename" class="form-control" placeholder="@lang('role.module_name')" readonly>
                         <input type="hidden" name="module_id" id="module_id">
                     </div>
                     <div class="form-group">
                         <label for="module_edescription">@lang('role.module_description')</label>
                         <input type="text" id="module_edescription" name="module_edescription" class="form-control" placeholder="@lang('role.module_description')" required>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <select name="status" id="status" class="form-control select2">
                             <option value="1">@lang('user.option_active')</option>
                             <option value="0">@lang('user.option_inactive')</option>
                         </select>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="edit_module_button">@lang( 'messages.save' )</button>
@@ -233,14 +233,14 @@
             columns: [
             {data: 'name', name: 'module.name'},
             {data: 'description', name: 'module.description'},
-            {data: null, render: function(data){
-                if(data.status == 1){
-                    return 'Activo';
-                }
-                else{
-                    return 'Inactivo';
-                }
-            } , orderable: false, searchable: false},
+            // {data: null, render: function(data){
+            //     if(data.status == 1){
+            //         return 'Activo';
+            //     }
+            //     else{
+            //         return 'Inactivo';
+            //     }
+            // } , orderable: false, searchable: false},
             {data: null, render: function(data){
                 edit_button = '@can('module.update')<a class="btn btn-xs btn-primary" onClick="editModule('+data.id+')"><i class="glyphicon glyphicon-edit"></i>@lang('messages.edit')</a>@endcan';
                 delete_button = ' @can('module.delete')<a class="btn btn-xs btn-danger" onClick="deleteModule('+data.id+')"><i class="glyphicon glyphicon-trash"></i>@lang('messages.delete')</a>@endcan';
@@ -321,10 +321,10 @@
     {
         rules:
         {
-            module_ename:
-            {
-                required: true,
-            },
+            // module_ename:
+            // {
+            //     required: true,
+            // },
             module_edescription:
             {
                 required: true,

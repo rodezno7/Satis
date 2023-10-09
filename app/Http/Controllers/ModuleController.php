@@ -106,9 +106,9 @@ class ModuleController extends Controller
             abort(403, 'Unauthorized action.');
         }
         try{
-            $module->name = $request->input('name');
+            //$module->name = $request->input('name');
             $module->description = $request->input('description');
-            $module->status = $request->input('status');
+            //$module->status = $request->input('status');
             $module->save();
             $output = [
                 'success' => true,
@@ -166,7 +166,8 @@ class ModuleController extends Controller
     {
         $modules = DB::table('modules as module')
             ->whereNull('module.deleted_at')
-            ->select('module.*');
+            ->select('module.*')
+            ->where('module.status', 1);
 
         return DataTables::of($modules)->toJson();
     }

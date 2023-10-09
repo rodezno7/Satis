@@ -333,7 +333,7 @@ class HomeController extends Controller
             ->elementLabel(__(
                 'home.total_sells',
                 ['currency' => $currency->code]
-            ));
+            ))->dimensions(500,300);
         } 
              
         $business_locations = BusinessLocation::where('business_id', $business_id)->get();

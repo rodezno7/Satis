@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Business;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
@@ -28,7 +29,14 @@ class AppServiceProvider extends ServiceProvider
         View::composer(
             ['*'],
             function ($view) {
-                $enabled_modules = !empty(session('business.enabled_modules')) ? session('business.enabled_modules') : [];
+                //$enabled_modules = !empty(session('business.enabled_modules')) ? session('business.enabled_modules') : [];
+                
+                if(empty(session('business.enabled_modules'))){
+                    $enabled_modules = [];
+                }else{
+                    $business = Business::where('id', request()->session()->get('user.business_id'))->first();
+                    $enabled_modules = $business->enabled_modules;
+                }
 
                 $view->with('enabled_modules', $enabled_modules);
             }

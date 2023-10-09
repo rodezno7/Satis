@@ -69,28 +69,24 @@ class BusinessController extends Controller
         $this->taxUtil = $taxUtil;
 
         $this->avlble_modules = [
-            // 'tables' => [
-            //     'name' => __('restaurant.tables'),
-            //     'tooltip' => __('restaurant.tooltip_tables')
-            // ],
-            // 'modifiers' => [
-            //     'name' => __('restaurant.modifiers'),
-            //     'tooltip' => __('restaurant.tooltip_modifiers')
-            // ],
-            // 'service_staff' => [
-            //     'name' => __('restaurant.service_staff'),
-            //     'tooltip' => __('restaurant.tooltip_service_staff')
-            // ],
-            // 'kitchen' => [
-            //     'name' => __('restaurant.kitchen_for_restaurant')
-            // ],
-            // 'account' => [
-            //     'name' => __('lang_v1.account')
-            // ]
-            'module_rrhh' => [
-                'name' => __('lang_v1.module_rrhh')
+            'tables' => [
+                'name' => __('restaurant.tables'),
+                'tooltip' => __('restaurant.tooltip_tables')
+            ],
+            'modifiers' => [
+                'name' => __('restaurant.modifiers'),
+                'tooltip' => __('restaurant.tooltip_modifiers')
+            ],
+            'service_staff' => [
+                'name' => __('restaurant.service_staff'),
+                'tooltip' => __('restaurant.tooltip_service_staff')
+            ],
+            'kitchen' => [
+                'name' => __('restaurant.kitchen_for_restaurant')
+            ],
+            'account' => [
+                'name' => __('lang_v1.account')
             ]
-
         ];
 
         $this->theme_colors = [
@@ -514,6 +510,8 @@ class BusinessController extends Controller
                 }
             }
         }
+            
+        $this->avlble_modules = $systemModules;
 
         $modules = $this->avlble_modules;
 

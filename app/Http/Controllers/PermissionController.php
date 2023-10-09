@@ -169,7 +169,9 @@ class PermissionController extends Controller
         $permissions = DB::table('permissions as permission')
         ->leftJoin('modules as module', 'module.id', '=', 'permission.module_id')
         ->select('permission.*', 'module.name as module')
-        ->where('permission.deleted_at', NULL);
+        ->where('permission.deleted_at', NULL)
+        ->where('module.deleted_at', NULL)
+        ->where('module.status', 1);
         
         return DataTables::of($permissions)->toJson();
     }

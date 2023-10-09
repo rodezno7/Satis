@@ -30,7 +30,7 @@ class PayrollReportController extends Controller
     }
 
     public function annualSummary(){
-        if (! auth()->user()->can('sell.view') && ! auth()->user()->can('sell.create')) {
+        if (! auth()->user()->can('payroll.report-annual-summary')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -167,6 +167,10 @@ class PayrollReportController extends Controller
 
     public function generateAnnualSummary(Request $request)
     {
+        if (! auth()->user()->can('payroll.report-annual-summary')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         try {
             // Business filter
             $business_id = request()->session()->get('user.business_id');
@@ -177,7 +181,6 @@ class PayrollReportController extends Controller
             } else {
                 $year = 0;
             }
-
             
             if($year != 0){
                 $fileName = 'Resumen anual - ' . $year . '.xlsx';

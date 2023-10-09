@@ -45,5 +45,6 @@
     'gross_profit' => 'Ganancia bruta',
     'net_earnings' => 'Ganancia neta',
     'average_sales' => 'Promedio de ventas',
-    'conected_business' => 'Cambiar de empresa'
+    'conected_business' => 'Cambiar de empresa',
+    'implementations' => 'Implementaciones'
 ];

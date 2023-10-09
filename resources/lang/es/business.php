@@ -163,5 +163,7 @@ return [
     'hide_location_column' => 'Ocultar columna de sucursal',
     'change_business' => 'Cambiar empresa',
     'swap' => 'Cambiar',
-    'success_change_business' => 'Se cambió de empresa exitosamente'
+    'success_change_business' => 'Se cambió de empresa exitosamente',
+    'module' => 'Módulo',
+    "settings_updated_module_success" => "Los módulos se han implementado con éxito",
 ];

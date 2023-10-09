@@ -477,66 +477,75 @@ class PayrollCatalogueSeeder extends Seeder
 
 
 
-        $module = Module::firstOrCreate(
-            ['name' => 'Planillas'],
-            ['description' => 'Gestión de planillas', 'status' => 1]
+        $module = Module::updateOrCreate(
+            ['name' => 'Catálogo de planillas'],
+            ['description' => 'Gestionar catálogo de planillas', 'status' => 1]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll_catalogues.view'],
             ['description' => 'Ver catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll_catalogues.create'],
             ['description' => 'Crear catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll_catalogues.update'],
             ['description' => 'Actualizar catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll_catalogues.delete'],
             ['description' => 'Eliminar catálogos de planilla', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
 
+        $modulePayroll = Module::updateOrCreate(
+            ['name' => 'Planillas'],
+            ['description' => 'Gestionar planillas', 'status' => 1]
+        );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.view'],
-            ['description' => 'Ver planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.create'],
-            ['description' => 'Crear planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.approve'],
-            ['description' => 'Aprobar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Aprobar planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.recalculate'],
-            ['description' => 'Recalcular planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Recalcular planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.export'],
-            ['description' => 'Exportar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Exportar planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.update'],
-            ['description' => 'Actualizar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'payroll.delete'],
-            ['description' => 'Eliminar planilla', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
+        );
+
+        Permission::updateOrCreate(
+            ['name' => 'payroll.report-annual-summary'],
+            ['description' => 'Resumen anual de planilla', 'guard_name' => 'web', 'module_id' => $modulePayroll->id]
         );
     }
 }

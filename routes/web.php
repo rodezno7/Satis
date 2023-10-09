@@ -792,6 +792,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::get('bonus-calculation-getBonusCalculations', 'BonusCalculationController@getBonusCalculations');
 
 
+    /** Route implementations */
+    Route::get('implementations', 'ImplementationController@index');
+    Route::post('implementations', 'ImplementationController@store');
+
     /** Cost Centers */
     Route::get('cost_centers/get_main_accounts/{cost_center_id}', 'CostCenterController@getMainAccounts');
     Route::post('cost_centers/post_main_accounts/{cost_center_id}', 'CostCenterController@postMainAccounts');
