@@ -11,7 +11,10 @@ class ImplementationController extends Controller
 {
     public function index() 
     {
-        if(!auth()->user()->can('business_settings.access_module')){
+        // if(!auth()->user()->can('business_settings.access_module')){
+        //     abort(403, "Unauthorized action.");
+        // }
+        if(!auth()->user()->hasRole('Super Admin#' . request()->session()->get('user.business_id'))){
             abort(403, "Unauthorized action.");
         }
 

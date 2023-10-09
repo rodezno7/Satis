@@ -103,7 +103,9 @@
       {{-- fin modulo de usuarios --}}
 
       {{-- modulo de implementaciones --}}
-      @if (auth()->user()->can('business_settings.access_module'))
+      {{-- @if (auth()->user()->can('business_settings.access_module')) --}}
+      
+      @if (auth()->user()->hasRole('Super Admin#' . request()->session()->get('user.business_id')))
         <li class="{{ $request->segment(1) == 'implementations' ? 'active' : '' }}">
           <a href="{{action('ImplementationController@index')}}">
             <i class="fa fa-dashboard"></i> <span>
