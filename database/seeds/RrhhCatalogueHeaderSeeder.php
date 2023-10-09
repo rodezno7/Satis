@@ -423,7 +423,7 @@ class RrhhCatalogueHeaderSeeder extends Seeder
         );
 
         $module = Module::updateOrCreate(
-            ['name' => 'Recursos humanos'],
+            ['name' => 'Catálogo de recursos humanos'],
             ['description' => 'Gestionar catálogos de recursos humanos', 'status' => 1]
         );
 
@@ -475,12 +475,12 @@ class RrhhCatalogueHeaderSeeder extends Seeder
 
         Permission::firstOrCreate(
             ['name' => 'rrhh_employees.cv'],
-            ['description' => 'Descargar CV del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Descargar CV del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
         Permission::firstOrCreate(
             ['name' => 'rrhh_employees.download_salarial_constances'],
-            ['description' => 'Descargar constancia salarial', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Descargar constancia salarial', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 

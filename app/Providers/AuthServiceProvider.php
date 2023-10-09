@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
                     return true;
                 }
             } else {
-                if ($user->hasRole('Super Admin#' . $user->business_id)) {
+                if ($user->hasRole('Super Admin#' . $user->business_id) || $user->hasRole('Implementaciones#' . $user->business_id)) {
                     return true;
                 }
             }
