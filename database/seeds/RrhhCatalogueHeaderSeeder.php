@@ -414,10 +414,6 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             ]);
         }
 
-        $module = Module::firstOrCreate(
-            ['name' => 'Recursos humanos'],
-            ['description' => 'Gestión de recursos humanos', 'status' => 1]
-        );
 
         $moduleConfiguration = Module::where('name', 'Configuraciones')->first();
 
@@ -426,44 +422,55 @@ class RrhhCatalogueHeaderSeeder extends Seeder
             ['description' => 'Activar/desactivar módulo', 'guard_name' => 'web', 'module_id' => $moduleConfiguration->id]
         );
 
-        Permission::firstOrCreate(
+        $module = Module::updateOrCreate(
+            ['name' => 'Recursos humanos'],
+            ['description' => 'Gestionar catálogos de recursos humanos', 'status' => 1]
+        );
+
+        Permission::updateOrCreate(
             ['name' => 'rrhh_catalogues.view'],
-            ['description' => 'Ver catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver catálogos de recursos humanos', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_catalogues.create'],
-            ['description' => 'Crear catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear catálogos de recursos humanos', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_catalogues.update'],
-            ['description' => 'Actualizar catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar catálogos de recursos humanos', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_catalogues.delete'],
-            ['description' => 'Eliminar catálogos', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar catálogos de recursos humanos', 'guard_name' => 'web', 'module_id' => $module->id]
         );
 
-        Permission::firstOrCreate(
+
+        $moduleRrhh = Module::updateOrCreate(
+            ['name' => 'Recursos humanos'],
+            ['description' => 'Gestionar módulo de recursos humanos', 'status' => 1]
+        );
+
+        Permission::updateOrCreate(
             ['name' => 'rrhh_employees.view'],
-            ['description' => 'Ver nómina', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver nómina', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_employees.create'],
-            ['description' => 'Crear nómina', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear nómina', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_employees.update'],
-            ['description' => 'Actualizar nómina', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar nómina', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_employees.delete'],
-            ['description' => 'Eliminar nómina', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar nómina', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
         Permission::firstOrCreate(
@@ -477,160 +484,160 @@ class RrhhCatalogueHeaderSeeder extends Seeder
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_import_employees.create'],
-            ['description' => 'Importar empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Importar empleados', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_import_employees.update'],
-            ['description' => 'Actualizar empleados masivamente', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar empleados masivamente', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_document_employee.view'],
-            ['description' => 'Ver documento del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver documento del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_document_employee.create'],
-            ['description' => 'Crear documento del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear documento del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_document_employee.update'],
-            ['description' => 'Actualizar documento del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar documento del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_document_employee.delete'],
-            ['description' => 'Eliminar documento del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar documento del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_economic_dependence.create'],
-            ['description' => 'Crear dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_economic_dependence.update'],
-            ['description' => 'Actualizar dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_economic_dependence.delete'],
-            ['description' => 'Eliminar dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar dependencia económica del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_personnel_action.view'],
-            ['description' => 'Ver acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver acción de personal', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_personnel_action.create'],
-            ['description' => 'Crear acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear acción de personal', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_personnel_action.update'],
-            ['description' => 'Actualizar acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar acción de personal', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_personnel_action.delete'],
-            ['description' => 'Eliminar acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar acción de personal', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_personnel_action.authorize'],
-            ['description' => 'Autorizar acción de personal', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Autorizar acción de personal', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_income_discount.view'],
-            ['description' => 'Ver ingreso o descuento', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver ingreso o descuento', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_income_discount.create'],
-            ['description' => 'Crear ingreso o descuento', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear ingreso o descuento', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_income_discount.update'],
-            ['description' => 'Actualizar ingreso o descuento', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar ingreso o descuento', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_income_discount.delete'],
-            ['description' => 'Eliminar ingreso o descuento', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar ingreso o descuento', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_absence_inability.view'],
-            ['description' => 'Ver ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_absence_inability.create'],
-            ['description' => 'Crear ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_absence_inability.update'],
-            ['description' => 'Actualizar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Actualizar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_absence_inability.delete'],
-            ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Eliminar ausencia o incapacidad', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_contract.create'],
-            ['description' => 'Crear contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Crear contrato del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_contract.view'],
-            ['description' => 'Ver contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver contrato del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_contract.uploads'],
-            ['description' => 'Subir contrato firmado del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Subir contrato firmado del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_contract.generate'],
-            ['description' => 'Generar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Generar contrato del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_contract.finish'],
-            ['description' => 'Finalizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Finalizar contrato del empleado', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_assistance.view'],
-            ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Ver asistencia de empleados', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_assistance.generate'],
-            ['description' => 'Generar reporte de asistencia de empleados', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Generar reporte de asistencia de empleados', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
 
-        Permission::firstOrCreate(
+        Permission::updateOrCreate(
             ['name' => 'rrhh_setting.access'],
-            ['description' => 'Cofiguracion del módulo de RRHH', 'guard_name' => 'web', 'module_id' => $module->id]
+            ['description' => 'Cofiguracion del módulo de RRHH', 'guard_name' => 'web', 'module_id' => $moduleRrhh->id]
         );
     }
 }

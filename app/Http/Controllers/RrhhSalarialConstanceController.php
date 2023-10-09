@@ -30,6 +30,7 @@ class RrhhSalarialConstanceController extends Controller
      * @param ProductUtil $product
      * @return void
      */
+
     public function __construct(ModuleUtil $moduleUtil, EmployeeUtil $employeeUtil, PayrollUtil $payrollUtil)
     {
         $this->moduleUtil = $moduleUtil;
@@ -92,6 +93,7 @@ class RrhhSalarialConstanceController extends Controller
                 'margin_left',
                 'margin_right',
             ]);
+
             $business_id = $request->session()->get('user.business_id');
             $input_details['template'] = $request->input('editor');
             $input_details['business_id'] = $business_id;
@@ -195,6 +197,7 @@ class RrhhSalarialConstanceController extends Controller
             ]);
             $input_details['template'] = $request->input('editor');
             $business_id = request()->session()->get('user.business_id');
+
             $constance = RrhhSalarialConstance::where('id', $id)->where('business_id', $business_id)->first();
             $constance->update($input_details);
 
@@ -238,8 +241,7 @@ class RrhhSalarialConstanceController extends Controller
         }
 
         if (request()->ajax()) {
-            try {
-                
+            try {                
                 $item = RrhhSalarialConstance::findOrFail($id);
                 $item->delete();
                 $output = [
@@ -291,6 +293,7 @@ class RrhhSalarialConstanceController extends Controller
         $salarialConstance = RrhhSalarialConstance::where('status', 1)->firstOrFail();
         $business          = Business::findOrFail($business_id);
         $business_location = BusinessLocation::where('business_id', $business_id)->first();
+
         $employee          = Employees::findOrFail($id);
         $positionHistory   = RrhhPositionHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
         $salaryHistory     = RrhhSalaryHistory::where('employee_id', $employee->id)->where('current', 1)->orderBy('id', 'DESC')->first();
@@ -324,7 +327,6 @@ class RrhhSalarialConstanceController extends Controller
         $template = str_replace("business_email", $business_email, $template);
         $template = str_replace("business_mobile", $business_mobile, $template);
         $template = str_replace("current_date", mb_strtolower($current_date), $template);
-
         $template = str_replace("bonus_income", $this->moduleUtil->num_f($bonus_income, true), $template);
         $template = str_replace("comission_income", $this->moduleUtil->num_f($comission_income, true), $template);
         $template = str_replace("total_income", $this->moduleUtil->num_f($total_income, true), $template);

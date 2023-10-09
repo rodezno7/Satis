@@ -359,7 +359,7 @@ class RrhhContractController extends Controller
         $employee_city                 = $contract->employee_city;
         $employee_address              = $contract->employee_address;
         $employee_salary               = $this->moduleUtil->num_f($contract->employee_salary, true);
-        $employee_salary_letters       = $this->transactionUtil->getAmountLetters($contract->employee_salary);
+        $employee_salary_letters       = preg_replace('/ dólares/', '', $this->transactionUtil->getAmountLetters($contract->employee_salary));
         $employee_department           = $contract->employee_department;
         $employee_position             = $contract->employee_position;
         $business_name                 = $contract->business_name;

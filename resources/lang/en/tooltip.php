@@ -129,4 +129,5 @@ return [
     'charts_dashboard' => 'Indicate the charts that are displayed in the Dashboard',
     'parent_correlative_text' => '<b>Documento padre</b>. For returns with final customer invoices only',
     'export_expenses' => 'Export expenses included in Export Invoice',
+    'module_sidebar' => 'Indicate the modules to which the company will have access.'
 ];

@@ -16,6 +16,13 @@ return [
     'total_purchase' => 'Total purchase',
     'invoice_due' => 'Invoice due',
     'purchase_due' => 'Purchase due',
+    "total_expense" => "Total expense",
+    "trending_products" => "Trending products (best sellers)",
+    "sells" => "Sells",
+    "products" => "Product",
+    "amount" => "Amount",
+    "total_sells1" => "Sales",
+    "last_sale" => "Last sale",
     'today' => 'Today',
     'this_week' => 'This Week',
     'this_month' => 'This Month',
@@ -48,5 +55,6 @@ return [
     'gross_profit' => 'Gross profit',
     'net_earnings' => 'Net earning',
     'average_sales' => 'Average sales',
-    'conected_business' => 'Swap business'
-    ];
+    'conected_business' => 'Swap business',
+    'implementations' => 'Implementations'
+];

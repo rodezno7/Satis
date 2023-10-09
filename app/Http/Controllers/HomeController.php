@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use DB;
 use Charts;
-
 use App\User;
 use App\Image;
 use Datatables;
@@ -14,11 +13,12 @@ use App\Currency;
 use App\Transaction;
 use App\PurchaseLine;
 use App\BusinessLocation;
-
 use App\Utils\BusinessUtil;
+use App\Utils\ProductUtil;
 use Illuminate\Http\Request;
 use App\Utils\TransactionUtil;
 use App\VariationLocationDetails;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -28,6 +28,7 @@ class HomeController extends Controller
      */
     protected $businessUtil;
     protected $transactionUtil;
+    protected $productUtil;
 
     /**
      * Create a new controller instance.
@@ -36,11 +37,13 @@ class HomeController extends Controller
      */
     public function __construct(
         BusinessUtil $businessUtil,
-        TransactionUtil $transactionUtil
+        TransactionUtil $transactionUtil,
+        ProductUtil $productUtil
     ) {
     
         $this->businessUtil = $businessUtil;
         $this->transactionUtil = $transactionUtil;
+        $this->productUtil = $productUtil;
 
         if (config('app.disable_sql_req_pk')) {
             DB::statement('SET SESSION sql_require_primary_key=0');
@@ -84,6 +87,28 @@ class HomeController extends Controller
         }
         
         $labels = [];
+        // Sells previous week and current week
+        if (isset($dashboard_settings['sell_and_product']) && $dashboard_settings['sell_and_product'] == 1) {
+            $today = Carbon::now();
+
+            // Get start of this week
+            $startOfThisWeek = $today->startOfWeek();
+
+            // Get end of this week
+            $endOfThisWeek = $today->copy()->endOfWeek();
+
+            // Get start of last week
+            $startOfLastWeek = $startOfThisWeek->copy()->subWeek();
+
+            // Get end of last week
+            $endOfLastWeek = $startOfLastWeek->copy()->addDays(6);
+
+            $sells_previous_week = $this->transactionUtil->getSellsByWeek($business_id, $startOfLastWeek, $endOfLastWeek);
+            $sells_current_week = $this->transactionUtil->getSellsByWeek($business_id, $startOfThisWeek, $endOfThisWeek);
+            $sell_values_previous_week = [];
+            $sell_values_current_week = [];
+        }
+
         // Sells last 30 days
         if (isset($dashboard_settings['sales_month']) && $dashboard_settings['sales_month'] == 1) {
             $sells_last_30_days = $this->transactionUtil->getSellsLast30Days($business_id);
@@ -140,7 +165,8 @@ class HomeController extends Controller
                 ->template("material")
                 ->values($sell_values)
                 ->labels($labels)
-                ->elementLabel(__('home.total_sells', ['currency' => $currency->code]));
+                ->elementLabel(__('home.total_sells', ['currency' => $currency->code]))
+                ->responsive(true);
         }
 
         // Chart purchases last 30 days
@@ -343,8 +369,12 @@ class HomeController extends Controller
             ->orWhere('end_date', null)
             ->where('is_active', true)
             ->get(); 
+        
+
         return view('home.index', compact(
             'date_filters',
+            'sells_chart_line_1',
+            //'sells_chart_line_2',
             'sells_chart_1',
             'sells_chart_2',
             'purchases_chart_1',
@@ -731,9 +761,33 @@ class HomeController extends Controller
 
             $details = [
                 'gross_profit' => $sale_details['total_sell_inc_tax'] - $purchase_details['total_purchase_inc_tax'],
-                'net_earnings' => $sale_details['total_sell_inc_tax'] - ($purchase_details['total_purchase_inc_tax'] + $expense_details['total_expense_inc_tax'])
+                'net_earnings' => $sale_details['total_sell_inc_tax'] - ($purchase_details['total_purchase_inc_tax'] + $expense_details['total_expense_inc_tax']),
+                'total_expense' => $expense_details['total_expense_inc_tax']
             ];
             return $details;
+        }
+    }
+
+    public function getListTrendingProducts(){
+        if (request()->ajax()) {
+            // $start = request()->start;
+            // $end = request()->end;
+            $business_id = request()->session()->get('user.business_id');
+            // if(!empty($end) && !empty($start)){
+            //     $filters['start_date'] = $start;
+            //     $filters['end_date'] = $end;
+            // }
+            $filters['limit'] = 5;
+            
+            $products = $this->productUtil->getTrendingProducts($business_id, $filters);
+            foreach ($products as $product) {
+                $product->product = $product->product;
+                $product->total_unit_sold = round($product->total_unit_sold, 2);
+                $product->total_sells = $this->productUtil->num_f($product->total_sells, true, 2);
+                $product->last_sells = $this->productUtil->num_f($product->last_sells, true, 2);
+            }
+
+            return $products;
         }
     }
 }

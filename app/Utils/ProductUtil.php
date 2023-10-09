@@ -726,11 +726,11 @@ class ProductUtil extends Util
             '=',
             'tsl.transaction_id'
         )
-                    ->join('products as p', 'tsl.product_id', '=', 'p.id')
-                    ->leftjoin('units as u', 'u.id', '=', 'p.unit_id')
-                    ->where('transactions.business_id', $business_id)
-                    ->where('transactions.type', 'sell')
-                    ->where('transactions.status', 'final');
+        ->join('products as p', 'tsl.product_id', '=', 'p.id')
+        ->leftjoin('units as u', 'u.id', '=', 'p.unit_id')
+        ->where('transactions.business_id', $business_id)
+        ->where('transactions.type', 'sell')
+        ->where('transactions.status', 'final');
 
         $permitted_locations = auth()->user()->permitted_locations();
         if ($permitted_locations != 'all') {
@@ -774,11 +774,13 @@ class ProductUtil extends Util
         $products = $query->select(
             DB::raw("(SUM(tsl.quantity) - COALESCE($sell_return_query, 0)) as total_unit_sold"),
             'p.name as product',
-            'u.short_name as unit'
+            DB::raw("SUM(final_total) as total_sells"),
+            DB::raw("final_total as last_sells")
         )
-                        ->groupBy('tsl.product_id')
-                        ->orderBy('total_unit_sold', 'desc')
-                        ->get();
+        ->groupBy('tsl.product_id')
+        ->orderBy('total_unit_sold', 'desc')
+        ->get();
+
         return $products;
     }
 

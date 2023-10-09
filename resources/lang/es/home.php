@@ -6,6 +6,13 @@
     "total_purchase" => "Compras totales", /* modified */
     "invoice_due" => "Cuentas por Cobrar",
     "purchase_due" => "Cuentas por pagar",
+    "total_expense" => "Gastos totales",
+    "sells" => "Ventas",
+    "products" => "Producto",
+    "amount" => "Cantidad",
+    "total_sells1" => "Ventas",
+    "last_sale" => "Última venta",
+    "trending_products" => "Productos en tendencia (más vendidos)",
     "today" => "Hoy",
     "this_week" => "Esta semana",
     "this_month" => "Este mes",
@@ -38,5 +45,6 @@
     'gross_profit' => 'Ganancia bruta',
     'net_earnings' => 'Ganancia neta',
     'average_sales' => 'Promedio de ventas',
-    'conected_business' => 'Cambiar de empresa'
+    'conected_business' => 'Cambiar de empresa',
+    'implementations' => 'Implementaciones'
 ];

@@ -173,5 +173,7 @@ return [
     'swap' => 'Cambiar',
     'business_required' => 'Business is required',
     'business_required' => 'Business is required',
-    'success_change_business' => 'Success business change'
+    'success_change_business' => 'Success business change',
+    'module' => 'Module',
+    "settings_updated_module_success" => "The modules have been implemented successfully",
 ];

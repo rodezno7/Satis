@@ -84,6 +84,9 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     // Ganancias
     Route::get('/home/get-profits', 'HomeController@getProfitsDetails');
 
+    //List trending products
+    Route::get('/home/get-trending-products', 'HomeController@getListTrendingProducts');
+
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/home/get-purchase-details', 'HomeController@getPurchaseDetails');
     Route::post('/home/get-sell-details', 'HomeController@getSellDetails');
@@ -793,6 +796,10 @@ Route::middleware(['PasswordChanged', 'IsInstalled', 'auth', 'SetSessionData', '
     Route::put('bonus-calculation/{id}/edit', 'InstitutionLawController@update');
     Route::get('bonus-calculation-getBonusCalculations', 'BonusCalculationController@getBonusCalculations');
 
+
+    /** Route implementations */
+    Route::get('implementations', 'ImplementationController@index');
+    Route::post('implementations', 'ImplementationController@store');
 
     /** Cost Centers */
     Route::get('cost_centers/get_main_accounts/{cost_center_id}', 'CostCenterController@getMainAccounts');

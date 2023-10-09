@@ -155,6 +155,24 @@ function update_statistics( start, end, location_id){
 		success: function (data) {
 			$('.gross_profit').html(__currency_trans_from_en(data.gross_profit, true));
 			$('.net_earnings').html(__currency_trans_from_en(data.net_earnings, true));
+			$('.total_expense').html(__currency_trans_from_en(data.total_expense, true));
+		}
+	});
+
+	$.ajax({
+		method: 'get',
+		url: '/home/get-trending-products',
+		data: data,
+		success: function (data) {
+			$('#trendingProducts-table').find('tr').remove();
+			if(data.length === 0){
+				$('#trendingProducts-table').append('<tr><td class="text-center" colspan="4">No hay productos para ese rango de fechas</td></tr>');
+			}else{
+				data.forEach(element => {
+					$('#trendingProducts-table').append('<tr><td>'+element.product+'</td><td>'+element.total_unit_sold+'</td><td>'+element.total_sells+'</td><td>'+element.last_sells+'</td></tr>');
+				});
+			}
+			
 		}
 	});
 }

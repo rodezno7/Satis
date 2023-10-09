@@ -60,8 +60,8 @@
                                                 <i class="fa fa-caret-down"></i>
                                             </button>
                                         </div>
-                                        {!! Form::hidden('start_date', @format_date('now'), ['id' => 'start_date', 'required']) !!}
-                                        {!! Form::hidden('end_date', @format_date('now'), ['id' => 'end_date', 'required']) !!}
+                                        {!! Form::hidden('start_date', null, ['id' => 'start_date', 'required']) !!}
+                                        {!! Form::hidden('end_date', null, ['id' => 'end_date', 'required']) !!}
                                     </div>
                                 </div>
 
@@ -139,7 +139,6 @@
 @section('javascript')
     <script>
         $(document).ready(function() {
-            loadAssistances();
             $.fn.dataTable.ext.errMode = 'none';
 
             $('#modal_action').on('shown.bs.modal', function() {
@@ -148,34 +147,39 @@
                 })
             });
 
+            dateRangeSettings['startDate'] = moment().startOf('month');
+            dateRangeSettings['endDate'] = moment().endOf('month');
+
             $('#date_filter').daterangepicker(
                 dateRangeSettings,
                 function(start, end) {
-                    $('#date_filter span').html(start.format(moment_date_format) + ' ~ ' + end.format(
-                        moment_date_format));
+                    $('#date_filter span').html(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
 
                     var start_date = $('#date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
                     var end_date = $('#date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
 
                     $('#start_date').val(start_date);
                     $('#end_date').val(end_date);
+
+                    assistances.ajax.reload();
                 }
             );
 
-            $(document).on('click', '#button_report', function(e) {
-                $('form#form_assistance').submit();
-            });
-        });
 
-        function loadAssistances() {
-            var table = $("#assistances-table").DataTable();
-            table.destroy();
-            var table = $("#assistances-table").DataTable({
-                select: true,
+            var assistances = $("#assistances-table").DataTable({
                 deferRender: true,
                 processing: true,
                 serverSide: true,
-                ajax: "/rrhh-assistances-getAssistances",
+                ajax: {
+                    url: '/rrhh-assistances',
+                    data: function(d) {
+                        d.employee_id = $('#select_employee').val();
+                        // d.start_date = $('#start_date').val();
+                        // d.end_date = $('#end_date').val();
+                        d.start_date = $('#date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        d.end_date = $('#date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                    }
+                },
                 columns: [
                     {
                         data: 'employee',
@@ -197,26 +201,32 @@
                         name: 'status',
                         className: "text-center"
                     },
-                    {
-                        data: null,
-                        render: function(data) {
-                            html = '<div class="btn-group"><button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> @lang('messages.actions') <span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button><ul class="dropdown-menu dropdown-menu-right" role="menu">';
-                            html += '<li> <a href="#" onClick="viewDetail('+data.id+')"><i class="fa fa-eye"></i>@lang('messages.view')</a></li>';
-                            html += '</ul></div>';
-
-                            return html;
-                        },
-                        orderable: false,
-                        searchable: false,
-                        className: "text-center"
-                    }
+                    { data: 'actions',  orderable: false, searchable: false, className: 'text-center'}
                 ],
                 order: [
-                    [1, 'desc']
+                    [0, 'desc']
                 ],
                 dom: '<"row margin-bottom-12"<"col-sm-12"<"pull-left"l><"pull-right"fr>>>tip',
             });
-        }
+
+            // Seller filter
+            $('select#select_employee').on('change', function() {
+                assistances.ajax.reload();
+            });
+
+            // // Payment status filter
+            // $('select#start_date').on('change', function() {
+            //     assistances.ajax.reload();
+            // });
+
+            // $('select#end_date').on('change', function() {
+            //     assistances.ajax.reload();
+            // });
+
+            $(document).on('click', '#button_report', function(e) {
+                $('form#form_assistance').submit();
+            });
+        });
 
         function viewDetail(id) {
             $("#modal_content_assistance").html('');

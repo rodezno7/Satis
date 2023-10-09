@@ -189,7 +189,14 @@ class Util
      */
     public function allModulesEnabled()
     {
-        $enabled_modules = session()->has('business') ? session('business')['enabled_modules'] : null;
+        //$enabled_modules = session()->has('business') ? session('business')['enabled_modules'] : null;
+        if(empty(request()->session()->get('user.business_id'))){
+            $enabled_modules = [];
+        }else{
+            $business = Business::where('id', request()->session()->get('user.business_id'))->first();
+            $enabled_modules = $business->enabled_modules;
+        }
+
         $enabled_modules = (!empty($enabled_modules) && $enabled_modules != 'null') ? $enabled_modules : [];
 
         return $enabled_modules;
