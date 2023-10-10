@@ -424,6 +424,7 @@ class ContactController extends Controller
                 'email',
                 'nit',
                 'is_exempt',
+                'is_excluded_subject',
                 'dni'
             ]);
 
@@ -448,7 +449,16 @@ class ContactController extends Controller
 
             $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
             $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
-            $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+            // $input['is_exempt'] = null;
+            // $input['is_excluded_subject'] = null;
+            if($request->input('organization_type') == 'natural'){
+                $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : null;
+            }
+
+            if($request->input('organization_type') == 'juridica'){
+                $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+            }
+            
             $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
             $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
 
@@ -709,7 +719,16 @@ class ContactController extends Controller
 
                     $input['is_supplier'] = $request->input("is_supplier") ? $request->input("is_supplier") : null;
                     $input['is_provider'] = $request->input("is_provider") ? $request->input("is_provider") : null;
-                    $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+                    //$input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+
+                    if($request->input('organization_type') == 'natural'){
+                        $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : null;
+                    }
+        
+                    if($request->input('organization_type') == 'juridica'){
+                        $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+                    }
+
                     $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
                     $input['provider_catalogue_id'] = $input['is_provider'] ? $request->input("provider_catalogue_id") : null;
                     

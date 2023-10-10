@@ -63,6 +63,29 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    // let selectedOpcBusinessType = $('#organization_type').val();
+    // if(selectedOpcBusinessType == 'natural'){
+    //     $('#box-dni').css('display', 'block');
+    //     $('#dni').attr('required', 'required');
+    //     $('#box-is_excluded_subject').css('display', 'block');
+    //     $('#box-is_exempt').css('display', 'none');
+    // } 
+    // if(selectedOpcBusinessType == 'juridica'){
+    //     $('#box-dni').css('display', 'none');
+    //     $('#dni').removeAttr('required');
+    //     $('#box-is_excluded_subject').css('display', 'none');
+    //     $('#box-is_exempt').css('display', 'block');
+    // }
+    // if(selectedOpcBusinessType == ''){
+    //     $('#box-dni').css('display', 'none');
+    //     $('#dni').removeAttr('required');
+    //     $('#box-is_excluded_subject').css('display', 'none');
+    //     $('#box-is_exempt').css('display', 'none');
+    // }
+
+    // console.log(selectedOpcBusinessType);
 });
 
 /* To select tax_group in case that business type is a large one */
@@ -152,22 +175,32 @@ $(document).on('change', '#state_id', function (e) {
 });
 
 $(document).on('change', '#organization_type', function (e) {
-    let selectedOpc = $(this).val()
-    if(selectedOpc == 'natural'){
+    let type = $(this).val();
+    organizationType(type);
+});
+
+let type = $('#organization_type').val();
+organizationType(type);
+
+function organizationType(type){
+    if(type == 'natural'){
         $('#box-dni').css('display', 'block');
         $('#dni').attr('required', 'required');
-    } else {
-        $('#box-dni').css('display', 'none');
-        $('#dni').removeAttr('required');
+        $('#box-is_excluded_subject').css('display', 'block');
+        $('#box-is_exempt').css('display', 'none');
+    }else{
+        if(type == 'juridica'){
+            $('#box-dni').css('display', 'none');
+            $('#dni').removeAttr('required');
+            $('#box-is_excluded_subject').css('display', 'none');
+            $('#box-is_exempt').css('display', 'block');
+        }else{
+            $('#box-dni').css('display', 'none');
+            $('#dni').removeAttr('required');
+            $('#box-is_excluded_subject').css('display', 'none');
+            $('#box-is_exempt').css('display', 'none');
+        }
     }
-});
-let selectedOpcBusinessType = $('#organization_type').val()
-if(selectedOpcBusinessType == 'natural'){
-    $('#box-dni-edit').css('display', 'block');
-    $('#dni_edit').attr('required', 'required');
-} else {
-    $('#box-dni-edit').css('display', 'none');
-    $('#dni_edit').removeAttr('required');
 }
 
 if($('#is_supplier').prop('checked')) {
@@ -179,6 +212,7 @@ if($('#is_provider').prop('checked')) {
 if(!$('#is_provider').prop('checked') && !$('#is_supplier').prop('checked')) {
     $('#is_provider').attr('required', 'required');
 }
+
 $(document).on('change', '#is_supplier', function (e) {
     if($(this).prop('checked')) {
         $('#is_provider').removeAttr('required');

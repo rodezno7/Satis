@@ -234,6 +234,7 @@ class ExpenseController extends Controller
                 'supplier_business_name as business_name',
                 'contacts.contact_id',
                 'contacts.is_exempt',
+                'contacts.is_excluded_subject',
                 'contacts.tax_group_id'
             )
             ->onlySuppliers()
@@ -334,7 +335,8 @@ class ExpenseController extends Controller
                 'payment_term_id',
                 'document_date',
                 'serie',
-                'exempt_amount'
+                'exempt_amount',
+                'excluded_subject_amount'
             ]);
 
             $expense_lines = $request->input('expense_lines');
@@ -348,9 +350,21 @@ class ExpenseController extends Controller
             $transaction_data['payment_status'] = 'due';
             $transaction_data['transaction_date'] = $this->transactionUtil->uf_date($transaction_data['transaction_date']);
             $transaction_data['total_before_tax'] = $this->transactionUtil->num_uf($transaction_data['total_before_tax']);
+            
             $transaction_data['tax_group_amount'] = $this->transactionUtil->num_uf($request->input('tax_amount'));
             $transaction_data['tax_amount'] = $this->transactionUtil->num_uf($request->input('perception_amount'));
-            $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf($transaction_data['exempt_amount']);
+            
+            if($request->input('enable_exempt_amount')){
+                $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf($transaction_data['exempt_amount']);
+            }else{
+                $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf(0);
+            }
+
+            if($request->input('is_excluded_subject') == '1'){
+                $transaction_data['excluded_subject_amount'] = $this->transactionUtil->num_uf($transaction_data['excluded_subject_amount']);
+            }else{
+                $transaction_data['excluded_subject_amount'] = $this->transactionUtil->num_uf(0);
+            }
             $transaction_data['final_total'] = $this->transactionUtil->num_uf($transaction_data['final_total']);
 
             //Update reference document
@@ -510,23 +524,32 @@ class ExpenseController extends Controller
                 'expense_category_id',
                 'document_date',
                 'serie',
-                'exempt_amount'
+                'exempt_amount',
+                'excluded_subject_amount'
             ]);
             // dd($transaction_data);
 
             $transaction_data['transaction_date'] = $this->transactionUtil->uf_date($transaction_data['transaction_date']);
             $transaction_data['total_before_tax'] = $this->transactionUtil->num_uf(
                 $transaction_data['total_before_tax']
-            );
-            $transaction_data['tax_group_amount'] = $this->transactionUtil->num_uf(
-                $request->input('tax_amount')
-            );
-            $transaction_data['tax_amount'] = $this->transactionUtil->num_uf(
-                $request->input('perception_amount')
-            );
-            $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf(
-                $transaction_data['exempt_amount']
-            );
+            );          
+
+            $transaction_data['tax_group_amount'] = $this->transactionUtil->num_uf($request->input('tax_amount'));
+            $transaction_data['tax_amount'] = $this->transactionUtil->num_uf($request->input('perception_amount'));
+            
+            if($request->input('enable_exempt_amount')){
+                $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf($transaction_data['exempt_amount']);
+            }else{
+                $transaction_data['exempt_amount'] = $this->transactionUtil->num_uf(0);
+            }
+
+            if($request->input('is_excluded_subject') == '1'){
+                $transaction_data['excluded_subject_amount'] = $this->transactionUtil->num_uf($transaction_data['excluded_subject_amount']);
+            }else{
+                $transaction_data['excluded_subject_amount'] = $this->transactionUtil->num_uf(0);
+            }
+
+
             $transaction_data['final_total'] = $this->transactionUtil->num_uf(
                 $transaction_data['final_total']
             );
@@ -538,7 +561,7 @@ class ExpenseController extends Controller
             }
 
             $transaction_data['document_date'] = $this->transactionUtil->uf_date($transaction_data['document_date']);
-
+            
             Transaction::where('business_id', $business_id)
             ->where('id', $id)
             ->update($transaction_data);

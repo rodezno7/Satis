@@ -97,4 +97,6 @@ return [
     "create_supplier" => "Crete supplier",
     'suggested_purchase' => 'Suggested purchase',
     'search_provider' => 'Search provider',
+    'is_excluded_subject' => 'Excluded subject',
+    "taxes_applied" => "Indicate whether 10% would be withheld or not.",
 ];

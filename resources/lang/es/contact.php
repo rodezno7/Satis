@@ -50,7 +50,7 @@ return [
     "supplier_accounting_account" => "Cuenta Contable de Proveedor",
     "provider_accounting_account" => "Cuenta Contable de Acreedor",
     "is_exempt" => "Excluido",
-    "no_taxes_applied" => "No serán aplicados impuestos",
+    "no_taxes_applied" => "No serán aplicados impuestos. Esta opción es para ONGs.",
     "import_suppliers" => "Importar proveedores",
     "supplier" => "Proveedor",
     "debts_to_pay" => "Cuenta por pagar",
@@ -87,4 +87,6 @@ return [
     "create_supplier" => "Crear proveedor",
     'suggested_purchase' => 'Sugerido de compra',
     'search_provider' => 'Buscar proveedor',
+    'is_excluded_subject' => 'Sujeto excluido',
+    "taxes_applied" => "Indicar si se le retendría el 10% o no.",
 ];

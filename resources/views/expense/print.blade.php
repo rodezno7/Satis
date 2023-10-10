@@ -86,6 +86,7 @@
                     <td><span class="display_currency pull-right" data-currency_symbol="true"
                             data-precision="2">{{ $expense->total_before_tax }}</span></td>
                 </tr>
+                @if ($expense->contact->is_exempt)
                 <tr>
                     <th>@lang('expense.tax_expense'):</th>
                     <td><b>(+)</b></td>
@@ -97,6 +98,18 @@
                         @endforeach
                     </td>
                 </tr>
+                @endif
+                @if ($expense->contact->is_excluded_subject)
+                <tr>
+                    <th>@lang('expense.excluded_subject_amount'):</th>
+                    <td><b>(+)</b></td>
+                    <td class="text-right">
+                        <span class="display_currency pull-right" data-currency_symbol="true" data-precision="2">
+                            {{ $expense->excluded_subject_amount }}
+                        </span>
+                    </td>
+                </tr>
+                @endif
                 <tr>
                     <th>@lang('expense.total_expense'):</th>
                     <td></td>

@@ -58,4 +58,5 @@ return [
     'expense_due' => 'Debido',
     'expense_partial' => 'Cuota',
     'search_expense_category' => 'Buscar categorías de gastos',
+    'excluded_subject_amount' => 'Monto retenido'
 ];

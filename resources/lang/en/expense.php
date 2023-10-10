@@ -53,4 +53,5 @@ return [
     'expense_due' => 'Due',
     'expense_partial' => 'Partial',
     'search_expense_category' => 'Search expenses categories',
+    'excluded_subject_amount' => 'Amount withheld'
 ];

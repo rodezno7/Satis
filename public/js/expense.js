@@ -270,6 +270,7 @@ $(function () {
                 } else {
                     modal.find('input#supplier_name').val(data.text);
                     modal.find('input#is_exempt').val(data.is_exempt);
+                    modal.find('input#is_excluded_subject').val(data.is_excluded_subject);
                     modal.find('input#tax_percent').val(data.tax_percent);
                     modal.find('input#tax_min_amount').val(data.tax_min_amount);
                     modal.find('input#tax_max_amount').val(data.tax_max_amount);
@@ -422,9 +423,11 @@ $(function () {
 
         modal.find('select#tax_percent_group, input#amount, input#exempt_amount, select#supplier_id').on('change', function() {
             let amount = __read_number(modal.find("input#amount"));
+            console.log(amount);
             let exempt_amount = modal.find("input#enable_exempt_amount").prop("checked") ? (__read_number(modal.find("input#exempt_amount")) > 0 ? __read_number(modal.find("input#exempt_amount")) : 0) : 0;
             let tax_supplier_percent = modal.find("select#supplier_id :selected") && modal.find("input#tax_percent").val() != "" ? parseFloat(modal.find("input#tax_percent").val()) : 0;
             let perception = modal.find("input#perception_amount");
+            let is_excluded_subject = modal.find('input#is_excluded_subject').val();
 
             let tax_supplier = 0;
 
@@ -458,6 +461,23 @@ $(function () {
             } else {
                 modal.find("input#final_total").val('0.0');
                 modal.find("input#iva").val('0.0');
+            }
+
+            if(is_excluded_subject == 1){
+                if(modal.find('input#amount') != ""){
+                    modal.find("input#enable_exempt_amount").attr('disabled', true);
+                    __write_number($("#excluded_subject_amount"), amount * 0.10);
+                    __write_number($("#final_total"), amount + amount * 0.10);
+                } else {
+                    modal.find("input#final_total").val('0.0');
+                    modal.find("input#exempt_amount").val(null);
+                    modal.find("input#excluded_subject_amount").val(null);
+                    modal.find("input#enable_exempt_amount").attr('disabled', false);
+                }
+            }else{
+                modal.find("input#excluded_subject_amount").val(null);
+                modal.find("input#exempt_amount").val(null);
+                modal.find("input#enable_exempt_amount").attr('disabled', false);
             }
         });
     });
@@ -499,6 +519,7 @@ $(function () {
 
     function recalculate(modal){
         let is_exempt = modal.find('input#is_exempt').val();
+        let is_excluded_subject = modal.find('input#is_excluded_subject').val();
         let amount = __read_number(modal.find("input#amount"));
         let exempt_amount = modal.find('input#enable_exempt_amount').prop('checked') ? (__read_number(modal.find('input#exempt_amount')) > 0 ? __read_number(modal.find('input#exempt_amount')) : 0) : 0;
 
@@ -515,6 +536,27 @@ $(function () {
             modal.find('select#tax_percent_group').attr('disabled', true);
             modal.find('select#tax_percent_group').val('nulled').change();
             modal.find("input#iva").val('0.0');
+        }
+
+        if(is_excluded_subject == 1){
+            modal.find('select#tax_percent_group').attr('disabled', true);
+            modal.find('select#tax_percent_group').val('nulled').change();
+            modal.find("input#iva").val('0.0');
+
+            if(modal.find('input#amount') != ""){
+                __write_number($("#excluded_subject_amount"), amount * 0.10);
+                let excluded_subject_amount = __read_number(modal.find('input#excluded_subject_amount'));
+                __write_number($("#final_total"), amount + excluded_subject_amount);
+            } else {
+                modal.find("input#final_total").val('0.0');
+                modal.find("input#excluded_subject_amount").val(null);
+                modal.find("input#exempt_amount").val(null);
+                modal.find("input#enable_exempt_amount").attr('disabled', true);
+            }
+        }else{
+            modal.find("input#exempt_amount").val(null);
+            modal.find("input#enable_exempt_amount").attr('disabled', false);
+            modal.find("input#excluded_subject_amount").val(null);
         }
     }
 

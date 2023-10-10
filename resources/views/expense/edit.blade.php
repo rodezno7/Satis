@@ -29,7 +29,8 @@
                             </span>
                             <input type="text" name="supplier_name" class="form-control" readonly id="supplier_name"
                                 placeholder="@lang('expense.expense_provider_name')" value="{{ $expense->contact->name }}">
-                            <input type="hidden" id="is_exempt" value="0">
+                            <input type="hidden" id="is_exempt" name="is_exempt" value="{{ $expense->contact->is_exempt }}">
+                            <input type="hidden" id="is_excluded_subject" name="is_excluded_subject" value="{{ $expense->contact->is_excluded_subject }}">
                             <input type="hidden" id="tax_percent" value="0">
                             <input type="hidden" id="tax_min_amount" value="0">
                             <input type="hidden" id="tax_max_amount" value="0">
@@ -203,13 +204,28 @@
                         </div>
                     </div>
                 </div>
+                {{-- excluded_subject_amount --}}
+                <div class="col-sm-4 col-md-3 col-lg-3 col-xs-12">
+                    <div class="form-group">
+                        <label for="">@lang('expense.excluded_subject_amount')</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-usd"></i>
+                            </span>
+                            {!! Form::text('excluded_subject_amount', $expense->excluded_subject_amount, ['class' => 'form-control input_number', 'id' => 'excluded_subject_amount', 'placeholder' => __('expense.excluded_subject_amount'), 'readonly']) !!}
+                        </div>
+                    </div>
+                </div>
                 {{-- tax_group_id --}}
                 <div class="col-sm-4 col-md-3 col-lg-3 col-xs-12">
                     <div class="form-group">
                         {!! Form::label('tax_group', __('tax_rate.tax_type') . ':') !!}
                         <div class="input-group">
                             @php
-                                $dis = $expense->contact->is_exempt == 1 ? 'disabled' : '';
+                            $dis = '';
+                            if ($expense->contact->is_exempt == 1 || $expense->contact->is_excluded_subject == 1) {
+                                $dis = 'disabled';
+                            }
                             @endphp
                             <span class="input-group-addon">
                                 <i class="fa fa-percent"></i>
@@ -229,8 +245,11 @@
                     <div class="form-group">
                         <label for="">@lang('tax_rate.exempt_amount')</label>
                         <div class="input-group">
+                            @php
+                                $dis = $expense->contact->is_excluded_subject == 1 ? 'disabled' : '';
+                            @endphp
                             <span class="input-group-addon">
-                                <input type="checkbox" id="enable_exempt_amount" @if ($expense->exempt_amount > 0) checked="true" @endif>
+                                <input type="checkbox" id="enable_exempt_amount" @if ($expense->exempt_amount > 0) checked="true" @endif {{ $dis }}>
                             </span>
                             {!! Form::text('exempt_amount', $expense->exempt_amount > 0 ? $expense->exempt_amount : null, [
                                 'class' => 'form-control input_number',
@@ -265,6 +284,7 @@
                         </div>
                     </div>
                 </div>
+                
                 {{-- final_total --}}
                 <div class="col-sm-4 col-md-3 col-lg-3 col-xs-12">
                     <div class="form-group">

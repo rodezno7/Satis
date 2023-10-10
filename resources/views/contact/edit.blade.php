@@ -138,7 +138,7 @@
                     </div>
                 </div>
             </div>
-            <div id="box-dni-edit" class="col-md-3" style="display: none;">
+            <div id="box-dni" class="col-md-3" @if ($contact->organization_type != 'natural') style="display: none;" @endif>
                 <div class="form-group">
                     {!! Form::label('dni', __('business.dui') . ':') !!}&nbsp;<span class="text-danger">*</span>
                     <div class="input-group">
@@ -224,12 +224,26 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3" style="margin-top: 40px;">
+            {{-- <div class="col-md-3" style="margin-top: 40px;">
+                <div class="form-check">
+                    {!! Form::checkbox('is_exempt', true, $contact->is_exempt, ['class' => 'form-check-input', 'id' => 'is_exempt']) !!}
+                    {!! Form::label('is_exempt', __('contact.is_exempt') . ':') !!} @show_tooltip(__("contact.no_taxes_applied"))
+                </div>
+            </div> --}}
+
+            <div class="col-md-3" @if ($contact->organization_type != 'juridica') style="margin-top: 40px; display: none;" @else style="margin-top: 40px;" @endif id="box-is_exempt">
                 <div class="form-check">
                     {!! Form::checkbox('is_exempt', true, $contact->is_exempt, ['class' => 'form-check-input', 'id' => 'is_exempt']) !!}
                     {!! Form::label('is_exempt', __('contact.is_exempt') . ':') !!} @show_tooltip(__("contact.no_taxes_applied"))
                 </div>
             </div>
+            <div class="col-md-3"  @if ($contact->organization_type != 'natural') style="margin-top: 40px; display: none;" @else style="margin-top: 40px;" @endif  id="box-is_excluded_subject">
+                <div class="form-check">
+                    {!! Form::checkbox('is_excluded_subject', true, $contact->is_excluded_subject, ['class' => 'form-check-input', 'id' => 'is_excluded_subject']) !!}
+                    {!! Form::label('is_excluded_subject', __('contact.is_excluded_subject') . ':') !!} @show_tooltip(__("contact.taxes_applied"))
+                </div>
+            </div>
+            
             <div class="col-md-3 payment"
                 style="display: {{ $contact->payment_condition == 'cash' || is_null($contact->payment_condition) ? 'none' : 'block' }}">
                 <div class="form-group">

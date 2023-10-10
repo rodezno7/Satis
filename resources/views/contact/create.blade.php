@@ -216,10 +216,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3" style="margin-top: 40px;">
+                    <div class="col-md-3" style="margin-top: 40px; display: none;" id="box-is_exempt">
                         <div class="form-check">
                             {!! Form::checkbox('is_exempt', false, false, ['class' => 'form-check-input', 'id' => 'is_exempt']) !!}
                             {!! Form::label('is_exempt', __('contact.is_exempt') . ':') !!} @show_tooltip(__("contact.no_taxes_applied"))
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="margin-top: 40px; display: none;" id="box-is_excluded_subject">
+                        <div class="form-check">
+                            {!! Form::checkbox('is_excluded_subject', false, false, ['class' => 'form-check-input', 'id' => 'is_excluded_subject']) !!}
+                            {!! Form::label('is_excluded_subject', __('contact.is_excluded_subject') . ':') !!} @show_tooltip(__("contact.taxes_applied"))
                         </div>
                     </div>
                     <div class="col-md-3 payment" style="display: none;">
