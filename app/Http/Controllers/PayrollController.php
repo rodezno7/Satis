@@ -843,14 +843,13 @@ class PayrollController extends Controller
                                     $diasIncapacidad += $endDatePayroll->diffInDays($startDateIncapacidad);
                                 }
 
-                                if ($incapacidad->start_date < $payroll->start_date && $incapacidad->end_date <= $payroll->end_date) {
+                                if ($incapacidad->start_date < $payroll->start_date && $incapacidad->end_date <= $payroll->end_date && $incapacidad->end_date >= $payroll->start_date) {
                                     $diasIncapacidad += $endDateIncapacidad->diffInDays($startDatePayroll);
                                 }
 
                                 if ($incapacidad->start_date < $payroll->start_date && $incapacidad->end_date > $payroll->end_date) {
                                     $diasIncapacidad += $endDatePayroll->diffInDays($startDatePayroll);
                                 }
-                                \Log::info('dia iterados de incapacidades '.$diasIncapacidad);
                             }
 
                             //Obteniendo el calculo total de cada ingreso o descuento
@@ -872,9 +871,6 @@ class PayrollController extends Controller
                                 $details['days'] = $daysPayroll - $diasIncapacidad;
                             } else {
                                 $details['days'] = abs($payroll->days - $diasIncapacidad);
-                                \Log::info('Lo que se guarda '.$payroll->days);
-                                \Log::info('dias de Incapacidades '.$diasIncapacidad);
-                                \Log::info('calculados '.$details['days']);
                             }
 
                             $details['hours'] = 8;
