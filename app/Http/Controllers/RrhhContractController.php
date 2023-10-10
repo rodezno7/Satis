@@ -342,7 +342,7 @@ class RrhhContractController extends Controller
 
         $contract_start_date           = $this->employeeUtil->getDate($contract->contract_start_date, true);
         $contract_start_date_letters   = $this->employeeUtil->getDateLetters($contract->contract_start_date, true);
-        $employee_name                 = $contract->employee_name;
+        $employee_name                 = ucwords(strtolower($contract->employee_name));
         $employee_age                  = $contract->employee_age;
         $employee_gender               = $contract->employee_gender;
         $employee_dni                  = $contract->employee_dni;
