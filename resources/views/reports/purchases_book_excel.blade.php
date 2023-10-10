@@ -108,10 +108,11 @@
         $total_internal = 0;
         $total_imports = 0;
         $total_fiscal_credit = 0;
-        $sum_total_purchases = 0;
+        $total_purchases = 0;
         $total_withheld = 0;
         $total_internal_exempt = 0;
         $total_imports_exempt = 0;
+        $total_excluded_subject = 0;
         @endphp
         @foreach ($lines as $item)
         <tr>
@@ -149,21 +150,35 @@
                 {{ $item->imports }}
             </td>
             <td style="border: 0.25px solid black;">
+                @if ($item->organization_type != 'natural')
                 {{ $item->fiscal_credit }}
+                @endif
             </td>
             <td style="border: 0.25px solid black;">
+                @if ($item->organization_type != 'natural')
                 {{ $item->total_purchases }}
+                @endif
             </td>
             <td style="border: 0.25px solid black;">
+                @if ($item->organization_type != 'natural')
                 {{ $item->withheld_amount }}
+                @endif
             </td>
-            <td style="border: 0.25px solid black;"></td>
+            <td style="border: 0.25px solid black;">
+                @if ($item->organization_type == 'natural')
+                    {{ $item->total_purchases }}
+                @endif
+            </td>
         </tr>
         @php
         $total_internal += $item->internal;
         $total_imports += $item->imports;
         $total_fiscal_credit += $item->fiscal_credit;
-        $sum_total_purchases += $item->total_purchases;
+        if($item->organization_type != 'natural'){
+            $total_purchases += $item->total_purchases;
+        }else{
+            $total_excluded_subject += $item->total_purchases;
+        }
         $total_withheld += $item->withheld_amount;
         $total_internal_exempt += $item->internal_exempt;
         $total_imports_exempt += $item->imports_exempt;
@@ -199,12 +214,14 @@
                 <strong>{{ $total_fiscal_credit }}</strong>
             </td>
             <td style="border: 0.25px solid black; text-align: center;">
-                <strong>{{ $sum_total_purchases }}</strong>
+                <strong>{{ $total_purchases }}</strong>
             </td>
             <td style="border: 0.25px solid black; text-align: center;">
                 <strong>{{ $total_withheld }}</strong>
             </td>
-            <td style="border: 0.25px solid black; text-align: center;"></td>
+            <td style="border: 0.25px solid black; text-align: center;">
+                <strong>{{ $total_excluded_subject }}</strong>
+            </td>
         </tr>
     </tfoot>
 

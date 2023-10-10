@@ -65,12 +65,15 @@ class PurchasesBookExport extends DefaultValueBinder implements FromView, WithEv
                 $event->sheet->horizontalAlign('A1:O2', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
     			$event->sheet->horizontalAlign('A5:O6', \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-                $event->sheet->columnWidth('A', 3.71);
+                $event->sheet->getStyle('A5:O5', $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
+                $event->sheet->getStyle('A6:O6', $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
+                $event->sheet->getDelegate()->getRowDimension(6)->setRowHeight(35);
+                $event->sheet->columnWidth('A', 5.71);
                 $event->sheet->columnWidth('B', 10.86);
                 $event->sheet->columnWidth('C', 12.00);
                 $event->sheet->columnWidth('D', 9.43);
                 $event->sheet->columnWidth('E', 13.29);
-                $event->sheet->columnWidth('F', 13.29);
+                $event->sheet->columnWidth('F', 15.29);
                 $event->sheet->columnWidth('G', 41.29);
                 $event->sheet->columnWidth('H', 12.57);
                 $event->sheet->columnWidth('I', 14.29);

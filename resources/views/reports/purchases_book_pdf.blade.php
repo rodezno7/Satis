@@ -146,10 +146,11 @@
             $total_internal = 0;
             $total_imports = 0;
             $total_fiscal_credit = 0;
-            $sum_total_purchases = 0;
+            $total_purchases = 0;
             $total_withheld = 0;
             $total_internal_exempt = 0;
             $total_imports_exempt = 0;
+            $total_excluded_subject = 0;
             @endphp
             @foreach ($lines as $item)
             <tr>
@@ -181,21 +182,35 @@
                     @endif
                 </td>
                 <td class="alnright">
+                    @if ($item->organization_type != 'natural')
                     $ {{ number_format($item->fiscal_credit, 2) }}
+                    @endif
                 </td>
                 <td class="alnright">
+                    @if ($item->organization_type != 'natural')
                     $ {{ number_format($item->total_purchases, 2) }}
+                    @endif
                 </td>
                 <td class="alnright">
+                    @if ($item->organization_type != 'natural')
                     $ {{ $item->withheld_amount ? number_format($item->withheld_amount, 2) : "" }}
+                    @endif
                 </td>
-                <td></td>
+                <td class="alnright">
+                    @if ($item->organization_type == 'natural')
+                    $ {{ number_format($item->total_purchases, 2) }}
+                    @endif
+                </td>
             </tr>
             @php
             $total_internal += $item->internal;
             $total_imports += $item->imports;
             $total_fiscal_credit += $item->fiscal_credit;
-            $sum_total_purchases += $item->total_purchases;
+            if($item->organization_type != 'natural'){
+                $total_purchases += $item->total_purchases;
+            }else{
+                $total_excluded_subject += $item->total_purchases;
+            }
             $total_withheld += $item->withheld_amount;
             $total_internal_exempt += $item->internal_exempt;
             $total_imports_exempt += $item->imports_exempt;
@@ -231,12 +246,14 @@
                     <strong>{{ number_format($total_fiscal_credit, 2) }}</strong>
                 </td>
                 <td class="alnright">
-                    <strong>{{ number_format($sum_total_purchases, 2) }}</strong>
+                    <strong>{{ number_format($total_purchases, 2) }}</strong>
                 </td>
                 <td class="alnright">
                     <strong>{{ number_format($total_withheld, 2) }}</strong>
                 </td>
-                <td></td>
+                <td class="alnright">
+                    <strong>{{ number_format($total_excluded_subject, 2) }}</strong>
+                </td>
             </tr>
         </tfoot>
     </table>

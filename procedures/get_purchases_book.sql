@@ -19,8 +19,9 @@ BEGIN
         REPLACE(c.nit, '-', '') AS nit,
         REPLACE(c.dni, '-', '') AS dui,
         c.supplier_business_name AS supplier,
+        c.organization_type as organization_type,
         IF (
-            t.`type` = 'expense',
+            (t.`type` = 'expense' and c.organization_type != 'natural'),
             IF(
                 c.tax_number IS NOT NULL,
                 t.exempt_amount,
@@ -37,7 +38,7 @@ BEGIN
             )
         ) AS internal_exempt,
         IF(
-            t.type = 'expense',
+            (t.`type` = 'expense' and c.organization_type != 'natural'),
             IF(
                 c.tax_number IS NULL,
                 t.exempt_amount,
@@ -54,7 +55,7 @@ BEGIN
             )
         ) AS imports_exempt,
         IF(
-            t.type = 'expense',
+            (t.`type` = 'expense' and c.organization_type != 'natural'),
             IF(
                 c.tax_number IS NOT NULL,
                 t.total_before_tax,
@@ -71,7 +72,7 @@ BEGIN
             )
         ) AS internal,
         IF(
-            t.type = 'expense',
+            (t.`type` = 'expense' and c.organization_type != 'natural'),
             IF(
                 c.tax_number IS NULL,
                 t.total_before_tax,
@@ -88,7 +89,7 @@ BEGIN
             )
         ) AS imports,
         IF(
-            t.type = 'expense',
+            (t.`type` = 'expense' and c.organization_type != 'natural'),
             ((t.final_total - t.tax_amount - t.exempt_amount) / 1.13) * 0.13,
             IF(
                 t.purchase_type = 'national',
@@ -104,7 +105,7 @@ BEGIN
                 )
             )
         ) AS fiscal_credit,
-        IF(t.`type` = 'purchase_return', (t.tax_amount) * -1, t.tax_amount) AS withheld_amount,
+        IF((t.`type` = 'purchase_return' and c.organization_type != 'natural'), (t.tax_amount) * -1, t.tax_amount) AS withheld_amount,
         IF(t.`type` = 'purchase_return', (t.final_total) * -1, t.final_total) AS total_purchases
     FROM transactions AS t
     JOIN contacts AS c
@@ -126,6 +127,5 @@ BEGIN
         AND (t.location_id = location_id OR location_id = 0)
         AND t.is_closed = 0
     ORDER BY DATE(transaction_date), t.id;
-
 END; $$
 DELIMITER ;
