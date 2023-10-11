@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <title>@lang('quote.quote')</title>
     @if($quote->tax_detail == 1)
-    @php($message = $legend)
-    @else
     @php($message = $legend.' - '.__('quote.iva_included'))
+    @else
+    @php($message = $legend)
     @endif
     <style>
         body
@@ -14,10 +14,10 @@
             font-family: 'Helvetica', 'Arial', sans-serif;
             color: #000000;
             font-size: 9pt;
-            margin-top:    1.5cm;
-            margin-bottom: 2cm;
-            margin-left:   1cm;
-            margin-right:  1cm;
+            margin-top:    1.10cm;
+            margin-bottom: 1.75cm;
+            margin-left:   1.5cm;
+            margin-right:  1.5cm;
         }
         h3, h4
         {
@@ -47,6 +47,10 @@
         {
             border: 0px;            
         }
+        .td3
+        {
+            border: 1px;            
+        }
         td
         {
             border: 0.25px solid black;
@@ -63,13 +67,9 @@
         .alnleft { text-align: left; }
         .alncenter { text-align: center; }
         @page{
-
             margin: 1cm 1cm;
-
             margin-left: 0cm;
             margin-right: 0cm;
-
-            
         }
 
         #header,
@@ -100,165 +100,75 @@
             <div class="page-number"></div>
         </div>
 
-        <div id="watermark">
+        {{-- <div id="watermark">
             <img src="{{ public_path("img/quote_background.jpg") }}" height="100%" width="100%" />
-        </div>
+        </div> --}}
 
 
         <table class="table1" style="width: 100%;">
             <tr>
-
-                <td style="width: 30%" class="td2">
-
-                </td>
-
                 <td style="width: 50%" class="td2">
-                    <img src="{{ public_path("img/quote_logo.jpg") }}" height="115px" width="215px" />
+                    <img src="{{ public_path("img/logo - RECIELSA.png") }}" height="85.2px" width="140px" />
                 </td>
+                <td style="width: 25%" class="td2">
 
-                <td style="width: 20%" class="alncenter">
+                </td>
+                <td style="width: 35%" class="td2">
                     <strong>
-                        {{ mb_strtoupper(__('quote.quote')) }}<br>
-                        {{ $quote->quote_ref_no }}
-
+                        San Salvador, {{ $quote_date }}<br>
                     </strong>
+                    {{ mb_strtoupper(__('quote.quote')) }} {{ $quote->quote_ref_no }}
                 </td>
             </tr>
         </table>
-        <br>
-        
-
         <table class="table1" style="width: 100%;">
             <tr>
+                
                 <td style="width: 70%;" class="td2">
-                </td>
-
-                <td style="width: 10%" class="td2">
-
-                </td>
-
-                <td style="width: 20%" class="alncenter td2">
                     <strong>
-                        {{ mb_strtoupper(__('quote.date')) }}: 
-                        {{ $quote->quote_date }}
+                        {{ $customer_name }}<br>
+                        {{ $quote->address }}<br>
+                        {{ $quote->mobile }}<br>
                     </strong>
                 </td>
-            </tr>
-
-        </table>
-
-        
-        
-        
-        <br>
-
-
-        <table class="table1" style="width: 100%;">
-            <tr>
-                <td style="width: 70%; background-color: #DCDCDC;" class="alnleft">
-
-                    {{ mb_strtoupper(__('quote.name')) }}: 
-                    {{ $quote->customer_name }}<br>
-
-                    {{ mb_strtoupper(__('quote.address')) }}: 
-                    {{ $quote->address }}<br>
-
-                    {{ mb_strtoupper(__('quote.phone')) }}: 
-                    {{ $quote->mobile }}<br>
-
-                </td>
-
                 <td style="width: 10%" class="td2">
-
                 </td>
-
                 <td style="width: 20%" class="alncenter td2">
-
-                </td>
-            </tr>
-
-        </table>
-        <br>
-        
-        
-        <table class="table1" style="width: 100%;">
-            <tr>
-                <td style="width: 25%" class="alncenter">
-                    {{ mb_strtoupper(__('quote.seller')) }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ mb_strtoupper(__('quote.conditions')) }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ mb_strtoupper(__('quote.validity_report')) }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ mb_strtoupper(__('quote.delivery_time')) }}
-                </td>
-            </tr>
-
-            <tr>
-                <td style="width: 25%" class="alncenter">
-                    {{ $quote->short_name }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ $quote->terms_conditions }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ $quote->validity }}
-                </td>
-
-                <td style="width: 25%" class="alncenter">
-                    {{ $quote->delivery_time }}
                 </td>
             </tr>
         </table>
-
         <br>
+        <p>Estimado(a) {{ $customer_name }}</p>
+        <p style="margin-left: 60px;">Sírvase encontrar la siguiente oferta de productos:</p>
 
-        @if(count($lines) >= 16)
-        <div id="div_body">
-            @else
+        @if(count($lines) <= 3)
+            <div id="div_body">
+        @else
             <div id="div_body" style="height: 388px;">
-                @endif
-
-
-
-
-
+        @endif
                 <table class="table1" style="width: 100%;">
                     <tr>
                         <td class="alncenter" style="width: 10%">
                             <strong>{{ mb_strtoupper(__('quote.quantity')) }}</strong>
                         </td>
-
                         <td class="alncenter" style="width: 66%">
                             <strong>{{ mb_strtoupper(__('quote.description')) }}</strong>
                         </td>
-
                         <td class="alncenter" style="width: 12%">
                             <strong>{{ mb_strtoupper(__('quote.unit_price')) }}</strong>
                         </td>
-
                         <td class="alncenter" style="width: 12%">
-                            <strong>{{ mb_strtoupper(__('quote.affected')) }}</strong>
+                            <strong>{{ mb_strtoupper('Total') }}</strong>
                         </td>
                     </tr>
 
                     @foreach($lines as $item)
-
                     <tr>
-                        <td class="alnleft td2">
+                        <td class="alnleft td3">
                             {{ $item->quantity }}
                             @php($quantity = $item->quantity)
                         </td>
-
-                        <td class="alnleft td2">
+                        <td class="alnleft td3">
                             @if($item->sku == $item->sub_sku)
                             {{ $item->name_product }}
                             @else
@@ -268,42 +178,43 @@
                             . <strong>@lang('quote.warranty')</strong>:{{ $item->warranty }}
                             @endif
                         </td>
-
-                        <td class="alnright td2">
+                        <td class="alnright td3">
                             @if($quote->tax_detail == 1)
-                            @php($unit_price = $item->unit_price_exc_tax)
+                                @php($unit_price = $item->unit_price_exc_tax)
                             @else
-                            @php($unit_price = $item->unit_price_inc_tax)
+                                @php($unit_price = $item->unit_price_inc_tax)
                             @endif
 
                             @php($total = $unit_price * $quantity)
                             @if($item->discount_type == "fixed")
-                            @php($discount = $item->discount_amount * $quantity)
-                            @php($discount_single = $item->discount_amount)
+                                @php($discount = $item->discount_amount * $quantity)
+                                @php($discount_single = $item->discount_amount)
                             @else
-                            @php($discount = (($item->discount_amount / 100 ) * $unit_price) * $quantity)
-                            @php($discount_single = (($item->discount_amount / 100 ) * $unit_price))
+                                @php($discount = (($item->discount_amount / 100 ) * $unit_price) * $quantity)
+                                @php($discount_single = (($item->discount_amount / 100 ) * $unit_price))
                             @endif
                             @php($total_final = $total - $discount )
                             @php($unit_price_final = $unit_price - $discount_single )
-                            {{ number_format($unit_price_final, 4) }}
 
-
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($unit_price_final) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($unit_price_final) }}
+                            @endif
                         </td>
-
-                        <td class="alnright td2">
-
-
-                            {{ number_format($total_final, 2) }}
+                        <td class="alnright td3">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($total_final) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($total_final) }}
+                            @endif
                         </td>
                     </tr>
-
                     @endforeach
                 </table>
             </div>
 
             <table class="table1" style="width: 100%;">       
-
                 <tr>
                     @if($quote->tax_detail == 1)
                     <td style="width: 60%" rowspan="4">{{ $value_letters }}</td>
@@ -315,56 +226,77 @@
                     @else
                     <td style="width: 20%" class="alnleft">{{ mb_strtoupper(__('quote.discount_percent')) }}</td>
                     @endif
-                    <td style="width: 20%" class="alnright">{{ number_format($quote->discount_amount, 2) }}</td>
-                </tr>
-
-
-
-                
-
+                    <td style="width: 20%" class="alnright">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($quote->discount_amount) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($quote->discount_amount) }}
+                        @endif
+                    </td>
+                </tr>                
                 @if($quote->tax_detail == 1)
-                <tr>
+                    <tr>
 
-                    <td style="width: 20%" class="alnleft">{{ mb_strtoupper(__('quote.subtotal')) }}</td>
-                    <td style="width: 20%" class="alnright">{{ number_format($quote->total_before_tax, 2) }}</td>
+                        <td style="width: 15%" class="alnleft">{{ mb_strtoupper(__('quote.subtotal')) }}</td>
+                        <td style="width: 25%" class="alnright">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($quote->total_before_tax) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($quote->total_before_tax) }}
+                            @endif
+                        </td>
 
-                </tr>
-
-                <tr>
-                    <td style="width: 20%" class="alnleft">{{ mb_strtoupper(__('quote.iva')) }}</td>
-                    <td style="width: 20%" class="alnright">{{ number_format($quote->tax_amount, 2) }}</td>
-                </tr>
+                    </tr>
+                    <tr>
+                        <td style="width: 15%" class="alnleft">{{ mb_strtoupper(__('quote.iva')) }}</td>
+                        <td style="width: 25%" class="alnright">
+                            @if ($business->currency_symbol_placement == 'after')
+                                {{ @num_format($quote->tax_amount) }} {{ $business->currency->symbol }}
+                            @else
+                                {{ $business->currency->symbol }} {{ @num_format($quote->tax_amount) }}
+                            @endif
+                        </td>
+                    </tr>
                 @endif
-
                 <tr>
-                    <td style="width: 20%" class="alnleft">{{ mb_strtoupper(__('quote.total')) }}</td>
-                    <td style="width: 20%" class="alnright">{{ number_format($quote->total_final, 2) }}</td>
-                </tr>
-
-            </table>
-            <br>
-
-
-            <table class="table1" style="width: 100%;">       
-                <tr>                
-
-                    <td class="alnleft">
-                        {{ mb_strtoupper(__('quote.notes')) }}
-                    </td>
-
-                </tr>
-
-                <tr>
-                    <td class="alnleft">
-                        {{ $quote->note }}
+                    <td style="width: 15%" class="alnleft">{{ mb_strtoupper(__('quote.total')) }}</td>
+                    <td style="width: 25%" class="alnright">
+                        @if ($business->currency_symbol_placement == 'after')
+                            {{ @num_format($quote->total_final) }} {{ $business->currency->symbol }}
+                        @else
+                            {{ $business->currency->symbol }} {{ @num_format($quote->total_final) }}
+                        @endif
                     </td>
                 </tr>
             </table>
             <br>
+            <p>
+                <strong>{{ __('quote.conditions') }}:</strong> <br>
+                {{ $quote->terms_conditions }}
+            </p>
+            <p>
+                <strong>{{ __('quote.validity_report') }}:</strong> {{ $quote->validity }}
+            </p>
+            <p>
+                <strong>{{ __('quote.delivery_time') }}:</strong> {{ $quote->delivery_time }}
+            </p>
+            <p>
+                <strong>{{ __('quote.notes') }}:</strong> {{ $quote->note }}
+            </p>
 
-            <strong>{{ mb_strtoupper(__('quote.authorized')) }}</strong> ________________________________
-
-
+            <table class="table1" style="width: 100%;">
+                <tr>
+                    
+                    <td style="width: 15%; text-align: center;" class="td2">
+                        <br><br><br> ________________________________ <br>
+                        <strong >{{ mb_strtoupper(__('quote.authorized')) }}</strong>
+                    </td>
+                    <td style="width: 10%" class="td2">
+                    </td>
+                    <td style="width: 20%" class="alncenter td2">
+                    </td>
+                </tr>
+            </table>
         </main>
     </body>
     </html>

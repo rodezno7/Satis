@@ -27,6 +27,7 @@ use App\CustomerVehicle;
 use App\SellingPriceGroup;
 use App\Utils\ProductUtil;
 use App\Exports\QuoteExport;
+use App\Utils\EmployeeUtil;
 use App\Variation;
 use App\VariationLocationDetails;
 use Illuminate\Http\Request;
@@ -37,11 +38,13 @@ class QuoteController extends Controller
     protected $taxUtil;
     protected $productUtil;
     protected $transactionUtil;
+    protected $employeeUtil;
 
-    public function __construct(TaxUtil $taxUtil, ProductUtil $productUtil, TransactionUtil $transactionUtil){
+    public function __construct(TaxUtil $taxUtil, ProductUtil $productUtil, TransactionUtil $transactionUtil, EmployeeUtil $employeeUtil){
         $this->taxUtil = $taxUtil;
         $this->productUtil = $productUtil;
         $this->transactionUtil = $transactionUtil;
+        $this->employeeUtil = $employeeUtil;
     }
 
     /**
@@ -978,8 +981,10 @@ class QuoteController extends Controller
         ->where('line.quote_id', $id)
         ->orderBy('line.id', 'asc')
         ->get();
+        $quote_date = $this->employeeUtil->getDate($quote->quote_date, true);
+        $customer_name = ucwords(strtolower($quote->customer_name));
 
-        $pdf = \PDF::loadView('quote.view', compact('quote', 'lines', 'value_letters', 'legend'));
+        $pdf = \PDF::loadView('quote.view', compact('quote', 'business', 'quote_date', 'customer_name', 'lines', 'value_letters', 'legend'));
         return $pdf->stream('quote.pdf');
     }
 
