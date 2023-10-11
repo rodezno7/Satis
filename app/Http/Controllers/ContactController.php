@@ -452,11 +452,11 @@ class ContactController extends Controller
             // $input['is_exempt'] = null;
             // $input['is_excluded_subject'] = null;
             if($request->input('organization_type') == 'natural'){
-                $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : null;
+                $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : 0;
             }
 
             if($request->input('organization_type') == 'juridica'){
-                $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+                $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : 0;
             }
             
             $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
@@ -722,11 +722,11 @@ class ContactController extends Controller
                     //$input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
 
                     if($request->input('organization_type') == 'natural'){
-                        $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : null;
+                        $input['is_excluded_subject'] = $request->input("is_excluded_subject") ? $request->input("is_excluded_subject") : 0;
                     }
         
                     if($request->input('organization_type') == 'juridica'){
-                        $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : null;
+                        $input['is_exempt'] = $request->input("is_exempt") ? $request->input("is_exempt") : 0;
                     }
 
                     $input['supplier_catalogue_id'] = $input['is_supplier'] ? $request->input("supplier_catalogue_id") : null;
