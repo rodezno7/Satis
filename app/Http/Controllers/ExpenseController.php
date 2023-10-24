@@ -593,7 +593,9 @@ class ExpenseController extends Controller
             }
 
             /** Delete expense lines */
-            $expense_lines = ExpenseLine::whereNotIn('id', $ids)->get();
+            $expense_lines = ExpenseLine::whereNotIn('id', $ids)
+                ->where('transaction_id', $id)->get();
+                
             foreach ($expense_lines as $el) {
                 $el->delete();
             }
